@@ -2074,12 +2074,12 @@
     <dependency>
       <groupId>net.bytebuddy</groupId>
       <artifactId>byte-buddy-agent</artifactId>
-      <version>1.17.8</version>
+      <version>1.18.10</version>
     </dependency>
     <dependency>
       <groupId>net.bytebuddy</groupId>
       <artifactId>byte-buddy</artifactId>
-      <version>1.17.8</version>
+      <version>1.18.10</version>
     </dependency>
     <dependency>
       <groupId>net.java.dev.jna</groupId>
@@ -2180,6 +2180,11 @@
       <groupId>net.sourceforge.serp</groupId>
       <artifactId>serp</artifactId>
       <version>1.15.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>4.13.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.ant</groupId>
@@ -3877,9 +3882,29 @@
       <version>5.1.0.Final</version>
     </dependency>
     <dependency>
+      <groupId>org.hibernate.models</groupId>
+      <artifactId>hibernate-models-bytebuddy</artifactId>
+      <version>1.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.models</groupId>
+      <artifactId>hibernate-models</artifactId>
+      <version>1.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-community-dialects</artifactId>
+      <version>8.0.0.Beta1</version>
+    </dependency>
+    <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>7.0.9.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>8.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
@@ -4014,7 +4039,7 @@
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
-      <version>3.6.0.Final</version>
+      <version>3.6.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.narayana.arjunacore</groupId>

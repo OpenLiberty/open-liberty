@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.lang.reflect.Proxy;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
@@ -233,6 +234,22 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
                     props.put("hibernate.enhancer.enableDirtyTracking", "false");
                 }
             }
+            // Inject the Hibernate OSGi bundle's classloader as the first entry in
+            // Hibernate's AggregatedClassLoader to prevent LinkageErrors.  When
+            // Hibernate iterates classloaders it checks AppClassLoader first, which
+            // loads Hibernate-internal classes from dev/api/third-party/.  But
+            // OSGi-wired packages (e.g. org.hibernate.service) come from
+            // EquinoxClassLoader, causing a loader constraint violation.
+            // By making the OSGi classloader first, all Hibernate classes are found
+            // consistently through the same classloader hierarchy.
+            // Only applies to persistence 4.0+ where the Hibernate bundle is present,
+            // whether provided by Liberty (persistence-4.0) or by the user (persistenceContainer-4.0).
+            if (jpaVersion.greaterThanOrEquals(JPAVersion.JPA40)) {
+                ClassLoader hibernateBundleCL = getHibernateBundleClassLoader(loader);
+                if (hibernateBundleCL != null) {
+                    props.putIfAbsent("hibernate.classLoaders", Collections.singletonList(hibernateBundleCL));
+                }
+            }
         }
 
         // Log third party provider name and version info once per provider
@@ -245,6 +262,28 @@ public abstract class AbstractJPAProviderIntegration implements JPAProviderInteg
      */
     @Override
     public void updatePersistenceUnitProperties(String providerClassName, Properties props) {
+    }
+
+    /**
+     * Returns the OSGi classloader of the Hibernate bundle by loading a well-known exported
+     * Hibernate class ({@code org.hibernate.jpa.HibernatePersistenceProvider}) through the
+     * application classloader and obtaining its classloader.
+     * <p>
+     * This works whether Hibernate is provided by Liberty (persistence-4.0) or by the user
+     * (persistenceContainer-4.0), as long as {@code org.hibernate.jpa} is on the app classpath.
+     *
+     * @param appClassLoader the application classloader
+     * @return the Hibernate bundle's classloader, or {@code null} if unavailable
+     */
+    @FFDCIgnore(ClassNotFoundException.class)
+    private static ClassLoader getHibernateBundleClassLoader(ClassLoader appClassLoader) {
+        try {
+            return appClassLoader.loadClass("org.hibernate.jpa.HibernatePersistenceProvider").getClassLoader();
+        } catch (ClassNotFoundException x) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(AbstractJPAProviderIntegration.class, tc, "Unable to obtain Hibernate bundle classloader", x);
+            return null;
+        }
     }
 
     /**
