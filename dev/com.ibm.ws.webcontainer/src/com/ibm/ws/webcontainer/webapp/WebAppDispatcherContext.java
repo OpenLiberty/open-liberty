@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2025 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTRequestContext;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.util.UnsynchronizedStack;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
@@ -748,15 +749,27 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
             // add the server info to the front of the url
             int urlPort = request.getServerPort();
 
+            String serverName = request.getServerName();
             StringBuffer url = new StringBuffer(urlScheme);
             url.append("://");
-            url.append(request.getServerName());
+            url.append(serverName);
 
             // Add the port to the URL if it is not the default one for the scheme
             if (((urlScheme.equals("http") == true) && (urlPort != 80)) || ((urlScheme.equals("https") == true) && (urlPort != 443)))
             {
                 url.append(":");
                 url.append(urlPort);
+            }
+
+            // Trace the facts after the host and port are resolved. $WSSP is a sensitive private header that is
+            // dropped by the HTTP channel when its sender is not trusted, so if it is present here it was accepted.
+            // Whether it determined the port is shown by comparing it with the serverPort and the resulting URL prefix.
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+                String wssp = request.getIRequest().getHeader(HttpHeaderKeys.HDR_$WSSP.getName());
+                logger.logp(Level.FINE, CLASS_NAME,"convertRelativeURIToURL", "sendRedirect relative URI [" + relativeURI + "], scheme --> " + urlScheme
+                                                                              + ", serverName --> " + serverName + ", serverPort --> " + urlPort
+                                                                              + ", $WSSP header --> " + (wssp != null ? wssp : "not present")
+                                                                              + ", Location prefix --> " + url);
             }
 
             String redirectURL = null;

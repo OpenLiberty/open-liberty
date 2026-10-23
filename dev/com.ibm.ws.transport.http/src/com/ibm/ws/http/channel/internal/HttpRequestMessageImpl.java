@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -77,6 +79,15 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     /** RAS trace variable */
     private static final TraceComponent tc = Tr.register(HttpRequestMessageImpl.class, HttpMessages.HTTP_TRACE_NAME,
             HttpMessages.HTTP_BUNDLE);
+
+    /** Minimum time between non-sensitive $WSSP warning messages, so the warning is repeated and not lost when logs roll over */
+    private static final long WSSP_WARNING_INTERVAL_NANOS = TimeUnit.MINUTES.toNanos(10);
+
+    /** Time, from System.nanoTime(), that the last non-sensitive $WSSP warning was issued */
+    private static final AtomicLong wsspLastWarningNanos = new AtomicLong();
+
+    /** True once a non-sensitive $WSSP warning has been issued, so wsspLastWarningNanos is valid */
+    private static volatile boolean wsspWarningIssued = false;
 
     /** Serialization ID field */
     private static final long serialVersionUID = 5759292362534888246L;
@@ -2249,12 +2260,49 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
             rc = HttpDispatcher.isPrivateHeaderTrusted(remoteAddr, hkey, isWssp ? value : null, desensitizePrivatePortHeader);
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && !rc) {
-                Tr.debug(tc, "filterAdd: WAS private header [" + key.getName()
-                        + "] not permitted from [" + remoteAddr + "]");
+            if (!rc) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "filterAdd: WAS private header [" + key.getName()
+                            + "] not permitted from [" + remoteAddr + "]");
+                }
+
+                if (isWssp) {
+                    // The $WSSP value comes from a peer that is not trusted, so it is deliberately not logged.
+                    int clientPort = (hisc != null) ? hisc.getRemotePort() : -1;
+
+                    // warn at most once per interval to avoid flooding the log, but trace every request
+                    if (shouldIssueWsspWarning()) {
+                        Tr.warning(tc, "wssp.header.non.sensitive.address", remoteAddr, clientPort);
+                    }
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "filterAdd: $WSSP header received from non-sensitive address: clientAddress=" + remoteAddr
+                                     + ", clientPort=" + clientPort);
+                    }
+                }
             }
         }
         return rc;
+    }
+
+    /**
+     * Determines whether the non-sensitive $WSSP warning should be issued now.
+     * The warning is issued for the first occurrence and then again only after
+     * the warning interval has elapsed since the last warning.
+     *
+     * @return true if the caller should issue the warning
+     */
+    private static boolean shouldIssueWsspWarning() {
+        long now = System.nanoTime();
+        long last = wsspLastWarningNanos.get();
+        if (wsspWarningIssued && (now - last) < WSSP_WARNING_INTERVAL_NANOS) {
+            return false;
+        }
+        // only the thread that wins the update issues the warning
+        if (wsspLastWarningNanos.compareAndSet(last, now)) {
+            wsspWarningIssued = true;
+            return true;
+        }
+        return false;
     }
 
     /**
