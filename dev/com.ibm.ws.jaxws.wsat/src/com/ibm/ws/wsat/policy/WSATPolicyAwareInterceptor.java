@@ -112,7 +112,10 @@ public class WSATPolicyAwareInterceptor extends AbstractPhaseInterceptor<Message
 
     @Override
     public void handleMessage(Message message) throws Fault {
-        boolean feature_exist = WSATFeatureService.isWSATPresent();
+        // Outbound (client) processing requires the public wsAtomicTransaction-1.2 feature. With only the
+        // private internal features (inbound participant support) outbound must behave exactly as if
+        // WS-AT were not installed, i.e. take the feature_no_exist path.
+        boolean feature_exist = isOut ? WSATFeatureService.isPublicFeaturePresent() : WSATFeatureService.isWSATPresent();
         //We need assert the assertion anyway...
         boolean assertionExist = assertAssertion(message);
         if (!feature_exist && ((getPhase().equals(Phase.PRE_PROTOCOL) && !isOut) || (getPhase().equals(Phase.WRITE)) && isOut)) {
@@ -149,6 +152,7 @@ public class WSATPolicyAwareInterceptor extends AbstractPhaseInterceptor<Message
             //NOTE: message.getInterceptorChain() is the current interceptor list.
             //If we are in the middle of the interceptor process, the list will NOT be refreshed again from ex.getEndpoint().getOutInterceptors()
             //So message.getInterceptorChain() is the correct and only way to modify it.
+
             message.getInterceptorChain().add(service.getCoorContextOutInterceptor());
         } else if (!isOut && busType.equals(LibertyApplicationBus.Type.SERVER)) {
             String requrl = (String) message.get(Message.PATH_INFO);

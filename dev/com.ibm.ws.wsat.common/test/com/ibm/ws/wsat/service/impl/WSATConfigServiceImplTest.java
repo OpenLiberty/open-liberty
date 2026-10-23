@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,10 +32,10 @@ import com.ibm.ws.wsat.service.Handler;
 import com.ibm.ws.wsat.test.MockProxy;
 import com.ibm.wsspi.http.VirtualHost;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
- * Unit tests for the virtualHostRef support added to WSATConfigServiceImpl.
+ * Unit tests for WSATConfigServiceImpl, which is immutable: every scenario builds a new instance
+ * through the DS constructor, exactly as DS does after any configuration or reference change.
  *
  * Tests cover:
  * UT-1 getWSATUrl() returns URL from the configured virtual host, not default_host
@@ -44,7 +43,9 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * UT-3 unregisterVirtualHostVariable() is called during deactivate()
  * UT-4 fallback to default_host + warning when lookupVirtualHost() finds nothing
  * UT-5 externalURLPrefix overrides virtual host URL construction (regression guard)
- * UT-6 no redundant BundleContext lookup when virtualHostRef unchanged across modified() calls
+ * UT-6 deactivate() releases the directly-obtained virtual host service
+ * UT-7 the beta propagation attribute is ignored outside a beta edition and honoured within one
+ * UT-8 modified() preserves active configuration without mutating state
  */
 public class WSATConfigServiceImplTest {
 
@@ -182,29 +183,20 @@ public class WSATConfigServiceImplTest {
     // Fields
     // -----------------------------------------------------------------------
 
-    private WSATConfigServiceImpl impl;
+    private static final String BETA_PROPERTY = "com.ibm.ws.beta.edition";
+
     private MockComponentContext  mockCc;
     private MockBundleContext     mockBundleCc;
     private MockVariableRegistry  mockVarReg;
     private MockHandler           mockHandler;
-
-    private AtomicServiceReference<VirtualHost>      httpOptionsRef;
-    private AtomicServiceReference<Handler>          handlerServiceRef;
-    private AtomicServiceReference<VariableRegistry> variableRegistryAtomicRef;
+    private MockVirtualHost       defaultVH;
+    private String                savedBetaProperty;
 
     // -----------------------------------------------------------------------
     // Helpers
     // -----------------------------------------------------------------------
 
-    /** Reflectively retrieve a named static AtomicServiceReference field. */
-    @SuppressWarnings("unchecked")
-    private static <T> AtomicServiceReference<T> getStaticRef(String fieldName) throws Exception {
-        Field f = WSATConfigServiceImpl.class.getDeclaredField(fieldName);
-        f.setAccessible(true);
-        return (AtomicServiceReference<T>) f.get(null);
-    }
-
-    /** Build a base properties map suitable for passing to modified(). */
+    /** Build a base properties map suitable for passing to the constructor. */
     private Map<String, Object> baseProperties() {
         Map<String, Object> props = new HashMap<>();
         props.put("virtualHostRef",        "default_host");
@@ -216,20 +208,13 @@ public class WSATConfigServiceImplTest {
         return props;
     }
 
-    /**
-     * Wire httpOptions to a default VH (port 9080) so that modified() can complete
-     * without NPE on the getWSATUrl() -> httpOptions.getService() call.
-     * Returns the MockVirtualHost so tests can inspect call counts.
-     */
-    private MockVirtualHost setupDefaultHttpOptions() throws Exception {
-        MockVirtualHost defaultVH = new MockVirtualHost("http://host:9080");
-        @SuppressWarnings("unchecked")
-        ServiceReference<VirtualHost> defaultVhRef =
-            new MockServiceRef<VirtualHost>().mkRef();
-        mockCc.register("httpOptions", defaultVH.asMock(VirtualHost.class));
-        httpOptionsRef.setReference(defaultVhRef);
-        httpOptionsRef.activate(mockCc.asMock(ComponentContext.class));
-        return defaultVH;
+    /** Create the component the way DS does: one constructor call with the config and references. */
+    private WSATConfigServiceImpl activate(Map<String, Object> props) {
+        return new WSATConfigServiceImpl(mockCc.asMock(ComponentContext.class),
+                                         props,
+                                         mockHandler.asMock(Handler.class),
+                                         defaultVH.asMock(VirtualHost.class),
+                                         mockVarReg.asMock(VariableRegistry.class));
     }
 
     // -----------------------------------------------------------------------
@@ -237,49 +222,24 @@ public class WSATConfigServiceImplTest {
     // -----------------------------------------------------------------------
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setUp() throws Exception {
-        impl = new WSATConfigServiceImpl();
+        savedBetaProperty = System.getProperty(BETA_PROPERTY);
+        System.clearProperty(BETA_PROPERTY);
 
-        // Obtain the static AtomicServiceReference fields via reflection.
-        // Field names must match the private static final field names in WSATConfigServiceImpl.
-        httpOptionsRef            = getStaticRef("httpOptions");
-        handlerServiceRef         = getStaticRef("handlerService");
-        variableRegistryAtomicRef = getStaticRef("variableRegistryRef");
-
-        // Build shared mocks
         mockVarReg   = new MockVariableRegistry();
         mockHandler  = new MockHandler();
         mockBundleCc = new MockBundleContext();
         mockCc       = new MockComponentContext(mockBundleCc);
-
-        // Register handler and variableRegistry services in the ComponentContext mock
-        mockCc.register("variableRegistry", mockVarReg.asMock(VariableRegistry.class));
-        mockCc.register("handler",          mockHandler.asMock(Handler.class));
-
-        ComponentContext cc = mockCc.asMock(ComponentContext.class);
-
-        // Activate variableRegistry AtomicServiceReference
-        ServiceReference<VariableRegistry> varRegSvcRef =
-            new MockServiceRef<VariableRegistry>().mkRef();
-        variableRegistryAtomicRef.setReference(varRegSvcRef);
-        variableRegistryAtomicRef.activate(cc);
-
-        // Activate handler AtomicServiceReference
-        ServiceReference<Handler> handlerSvcRef =
-            new MockServiceRef<Handler>().mkRef();
-        handlerServiceRef.setReference(handlerSvcRef);
-        handlerServiceRef.activate(cc);
+        defaultVH    = new MockVirtualHost("http://host:9080");
     }
 
     @After
     public void tearDown() throws Exception {
-        // Deactivate all static AtomicServiceReferences to reset their state between tests.
-        // The fields are static final so they persist across test instances.
-        ComponentContext cc = mockCc.asMock(ComponentContext.class);
-        httpOptionsRef.deactivate(cc);
-        handlerServiceRef.deactivate(cc);
-        variableRegistryAtomicRef.deactivate(cc);
+        if (savedBetaProperty == null) {
+            System.clearProperty(BETA_PROPERTY);
+        } else {
+            System.setProperty(BETA_PROPERTY, savedBetaProperty);
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -288,28 +248,22 @@ public class WSATConfigServiceImplTest {
 
     @Test
     public void testGetWSATUrlUsesConfiguredVirtualHost() throws Exception {
-        // Wire default VH (port 9080) as the starting httpOptions
-        setupDefaultHttpOptions();
-
-        // Build a custom VH that answers on port 9090
         MockVirtualHost customVH = new MockVirtualHost("http://host:9090");
-        @SuppressWarnings("unchecked")
-        ServiceReference<VirtualHost> customVhRef =
-            new MockServiceRef<VirtualHost>().mkRef();
-
-        // BundleContext returns customVhRef when asked for the VH with id=wsatHost
-        mockBundleCc.vhRefs = Collections.singletonList(customVhRef);
-        // getService(customVhRef) must return the customVH instance
+        // BundleContext returns customVhRef when asked for the VH with id=wsatHost,
+        // and getService(customVhRef) returns the customVH instance
+        mockBundleCc.vhRefs = Collections.singletonList(new MockServiceRef<VirtualHost>().mkRef());
         mockBundleCc.vhService = customVH.asMock(VirtualHost.class);
-        // locateService("httpOptions", customVhRef) must return customVH
-        mockCc.register("httpOptions", customVH.asMock(VirtualHost.class));
 
         Map<String, Object> props = baseProperties();
         props.put("virtualHostRef", "wsatHost");
 
-        impl.modified(mockCc.asMock(ComponentContext.class), props);
+        assertEquals("http://host:9090/ibm/wsatservice", activate(props).getWSATUrl());
+    }
 
-        assertEquals("http://host:9090/ibm/wsatservice", impl.getWSATUrl());
+    @Test
+    public void testGetWSATUrlUsesDefaultVirtualHost() throws Exception {
+        assertEquals("http://host:9080/ibm/wsatservice", activate(baseProperties()).getWSATUrl());
+        assertEquals("No BundleContext lookup is needed for default_host", 0, mockBundleCc.getServiceReferencesCallCount);
     }
 
     // -----------------------------------------------------------------------
@@ -318,15 +272,12 @@ public class WSATConfigServiceImplTest {
 
     @Test
     public void testRegisterVirtualHostVariable_customValue() throws Exception {
-        setupDefaultHttpOptions();
-
         Map<String, Object> props = baseProperties();
         props.put("virtualHostRef", "wsatHost");
 
-        impl.modified(mockCc.asMock(ComponentContext.class), props);
+        activate(props);
 
-        assertEquals("wsatHost",
-            mockVarReg.variables.get("wsat.webservice.virtualHostRef"));
+        assertEquals("wsatHost", mockVarReg.variables.get("wsat.webservice.virtualHostRef"));
     }
 
     // -----------------------------------------------------------------------
@@ -335,15 +286,12 @@ public class WSATConfigServiceImplTest {
 
     @Test
     public void testRegisterVirtualHostVariable_nullFallsBackToDefaultHost() throws Exception {
-        setupDefaultHttpOptions();
-
         Map<String, Object> props = baseProperties();
         props.put("virtualHostRef", null);
 
-        impl.modified(mockCc.asMock(ComponentContext.class), props);
+        activate(props);
 
-        assertEquals("default_host",
-            mockVarReg.variables.get("wsat.webservice.virtualHostRef"));
+        assertEquals("default_host", mockVarReg.variables.get("wsat.webservice.virtualHostRef"));
     }
 
     // -----------------------------------------------------------------------
@@ -352,15 +300,12 @@ public class WSATConfigServiceImplTest {
 
     @Test
     public void testRegisterVirtualHostVariable_emptyFallsBackToDefaultHost() throws Exception {
-        setupDefaultHttpOptions();
-
         Map<String, Object> props = baseProperties();
         props.put("virtualHostRef", "");
 
-        impl.modified(mockCc.asMock(ComponentContext.class), props);
+        activate(props);
 
-        assertEquals("default_host",
-            mockVarReg.variables.get("wsat.webservice.virtualHostRef"));
+        assertEquals("default_host", mockVarReg.variables.get("wsat.webservice.virtualHostRef"));
     }
 
     // -----------------------------------------------------------------------
@@ -369,16 +314,11 @@ public class WSATConfigServiceImplTest {
 
     @Test
     public void testDeactivateRemovesVirtualHostVariable() throws Exception {
-        setupDefaultHttpOptions();
-
-        // Activate to register the variable
-        impl.modified(mockCc.asMock(ComponentContext.class), baseProperties());
-        assertTrue("Variable should be present after modified()",
+        WSATConfigServiceImpl impl = activate(baseProperties());
+        assertTrue("Variable should be present after activation",
             mockVarReg.variables.containsKey("wsat.webservice.virtualHostRef"));
 
-        // Deactivate — unregisterVirtualHostVariable() must be called
-        // before variableRegistryRef.deactivate(cc) so getService() still works
-        impl.deactivate(mockCc.asMock(ComponentContext.class));
+        impl.deactivate();
 
         assertFalse("Variable should be removed after deactivate()",
             mockVarReg.variables.containsKey("wsat.webservice.virtualHostRef"));
@@ -390,24 +330,14 @@ public class WSATConfigServiceImplTest {
 
     @Test
     public void testLookupVirtualHostFallsBackToDefaultWhenNotFound() throws Exception {
-        // Wire default VH (port 9080) — this should remain in use after fallback
-        setupDefaultHttpOptions();
-
         // BundleContext returns nothing for the requested VH
         mockBundleCc.vhRefs = Collections.emptyList();
 
         Map<String, Object> props = baseProperties();
         props.put("virtualHostRef", "nonExistentHost");
 
-        impl.modified(mockCc.asMock(ComponentContext.class), props);
-
-        // configuredVirtualHostId should have been reset to "default_host"
-        Field f = WSATConfigServiceImpl.class.getDeclaredField("configuredVirtualHostId");
-        f.setAccessible(true);
-        assertEquals("default_host", f.get(impl));
-
-        // URL should still come from the default VH (port 9080)
-        assertEquals("http://host:9080/ibm/wsatservice", impl.getWSATUrl());
+        // URL should come from the default VH (port 9080)
+        assertEquals("http://host:9080/ibm/wsatservice", activate(props).getWSATUrl());
     }
 
     // -----------------------------------------------------------------------
@@ -416,111 +346,105 @@ public class WSATConfigServiceImplTest {
 
     @Test
     public void testExternalURLPrefixOverridesVirtualHost() throws Exception {
-        MockVirtualHost trackingVH = new MockVirtualHost("http://host:9080");
-        @SuppressWarnings("unchecked")
-        ServiceReference<VirtualHost> vhRef =
-            new MockServiceRef<VirtualHost>().mkRef();
-        mockCc.register("httpOptions", trackingVH.asMock(VirtualHost.class));
-        httpOptionsRef.setReference(vhRef);
-        httpOptionsRef.activate(mockCc.asMock(ComponentContext.class));
-
         Map<String, Object> props = baseProperties();
         props.put("externalURLPrefix", "https://proxy.example.com");
 
-        impl.modified(mockCc.asMock(ComponentContext.class), props);
+        WSATConfigServiceImpl impl = activate(props);
 
         assertEquals("https://proxy.example.com/ibm/wsatservice", impl.getWSATUrl());
         assertEquals("VirtualHost.getUrlString() must not be called when proxy is set",
-            0, trackingVH.getUrlStringCallCount);
+            0, defaultVH.getUrlStringCallCount);
     }
 
     // -----------------------------------------------------------------------
-    // UT-6: no redundant BundleContext lookup when virtualHostRef is unchanged
+    // UT-6: deactivate() releases the directly-obtained virtual host service
     // -----------------------------------------------------------------------
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void testNoRedundantLookupWhenVirtualHostRefUnchanged() throws Exception {
-        // Build a custom VH for port 9090
-        MockVirtualHost customVH = new MockVirtualHost("http://host:9090");
-        ServiceReference<VirtualHost> customVhRef =
-            new MockServiceRef<VirtualHost>().mkRef();
-        mockBundleCc.vhRefs = Collections.singletonList(customVhRef);
-        // getService(customVhRef) must return the customVH instance so the
-        // non-null check in modified() succeeds and configuredVirtualHost is set
-        mockBundleCc.vhService = customVH.asMock(VirtualHost.class);
-
-        // Wire a default VH first so modified() doesn't NPE before the VH lookup
-        setupDefaultHttpOptions();
-        // Register customVH as the service returned for httpOptions after modified() switches
-        mockCc.register("httpOptions", customVH.asMock(VirtualHost.class));
+    public void testDeactivateReleasesConfiguredVirtualHost() throws Exception {
+        mockBundleCc.vhRefs = Collections.singletonList(new MockServiceRef<VirtualHost>().mkRef());
+        mockBundleCc.vhService = new MockVirtualHost("http://host:9090").asMock(VirtualHost.class);
 
         Map<String, Object> props = baseProperties();
         props.put("virtualHostRef", "wsatHost");
+        WSATConfigServiceImpl impl = activate(props);
+        assertEquals(0, mockBundleCc.ungetServiceCallCount);
 
-        // First call — must trigger exactly one BundleContext lookup
-        impl.modified(mockCc.asMock(ComponentContext.class), props);
-        int afterFirst = mockBundleCc.getServiceReferencesCallCount;
-        assertEquals("Expected exactly one BundleContext lookup on first modified()", 1, afterFirst);
+        impl.deactivate();
 
-        // After modified() called setReference(customVhRef), re-activate httpOptions
-        // so getService() resolves correctly on the second modified() call
-        httpOptionsRef.setReference(customVhRef);
-        httpOptionsRef.activate(mockCc.asMock(ComponentContext.class));
+        assertEquals("Expected ungetService() to be called once", 1, mockBundleCc.ungetServiceCallCount);
+    }
 
-        // Second call with the same virtualHostRef — the guard must suppress the lookup
-        impl.modified(mockCc.asMock(ComponentContext.class), props);
-        assertEquals("Expected no additional BundleContext lookup on repeated modified()",
-            afterFirst, mockBundleCc.getServiceReferencesCallCount);
+    @Test
+    public void testDeactivateDoesNotReleaseWhenUsingDefaultVirtualHost() throws Exception {
+        activate(baseProperties()).deactivate();
+
+        assertEquals("Nothing was obtained directly, so nothing must be released", 0, mockBundleCc.ungetServiceCallCount);
     }
 
     // -----------------------------------------------------------------------
-    // UT-7: revert to default_host after modified() switches back from a custom VH
+    // UT-7: the propagation attribute is beta
     // -----------------------------------------------------------------------
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void testRevertToDefaultHostAfterCustomVirtualHost() throws Exception {
-        // Wire default VH (port 9080)
-        MockVirtualHost defaultVH = setupDefaultHttpOptions();
-
-        // Build a custom VH on port 9090
-        MockVirtualHost customVH = new MockVirtualHost("http://host:9090");
-        ServiceReference<VirtualHost> customVhRef =
-            new MockServiceRef<VirtualHost>().mkRef();
-        mockBundleCc.vhRefs = Collections.singletonList(customVhRef);
-        mockBundleCc.vhService = customVH.asMock(VirtualHost.class);
-
-        ComponentContext cc = mockCc.asMock(ComponentContext.class);
-
-        // First modified() — switch to wsatHost
+    public void testPropagationIgnoredOutsideBetaEdition() throws Exception {
         Map<String, Object> props = baseProperties();
-        props.put("virtualHostRef", "wsatHost");
-        impl.modified(cc, props);
-        assertEquals("Expected custom VH URL after first modified()",
-            "http://host:9090/ibm/wsatservice", impl.getWSATUrl());
+        props.put("propagation", "check_wsdl");
 
-        // Second modified() — revert to default_host.
-        // Clear vhRefs so lookupVirtualHost() is not called (default_host skips the lookup).
-        mockBundleCc.vhRefs = Collections.emptyList();
-        mockBundleCc.vhService = null;
-        // Re-register the default VH as the locateService result for httpOptions
-        mockCc.register("httpOptions", defaultVH.asMock(VirtualHost.class));
+        assertFalse("propagation must be ignored when not running a beta edition",
+            activate(props).isCheckWsdlMode());
+    }
 
-        Map<String, Object> defaultProps = baseProperties();
-        defaultProps.put("virtualHostRef", "default_host");
-        impl.modified(cc, defaultProps);
+    @Test
+    public void testPropagationCheckWsdlHonouredInBetaEdition() throws Exception {
+        System.setProperty(BETA_PROPERTY, "true");
+        Map<String, Object> props = baseProperties();
+        props.put("propagation", "check_wsdl");
 
-        // URL must now come from httpOptions (default VH, port 9080)
-        assertEquals("Expected default VH URL after revert",
-            "http://host:9080/ibm/wsatservice", impl.getWSATUrl());
+        assertTrue(activate(props).isCheckWsdlMode());
+    }
 
-        // ungetService() must have been called exactly once (to release the custom VH ref)
-        assertEquals("Expected ungetService() to be called once on revert",
-            1, mockBundleCc.ungetServiceCallCount);
+    @Test
+    public void testPropagationAlwaysAndUnsetAreNotCheckWsdlInBetaEdition() throws Exception {
+        System.setProperty(BETA_PROPERTY, "true");
 
-        // No additional BundleContext lookups for the default_host path
-        assertEquals("Expected exactly one BundleContext lookup total (for wsatHost only)",
-            1, mockBundleCc.getServiceReferencesCallCount);
+        Map<String, Object> always = baseProperties();
+        always.put("propagation", "always");
+        assertFalse(activate(always).isCheckWsdlMode());
+
+        // No value at all: no default was supplied (the public feature is not enabled)
+        assertFalse(activate(baseProperties()).isCheckWsdlMode());
+    }
+
+    // -----------------------------------------------------------------------
+    // UT-8: modified() preserves active configuration
+    // -----------------------------------------------------------------------
+
+    @Test
+    public void testModifiedPreservesActiveConfiguration() throws Exception {
+        System.setProperty(BETA_PROPERTY, "true");
+
+        Map<String, Object> props = baseProperties();
+        props.put("virtualHostRef", "default_host");
+        props.put("sslEnabled", false);
+        props.put("propagation", "always");
+
+        WSATConfigServiceImpl impl = activate(props);
+        assertEquals("http://host:9080/ibm/wsatservice", impl.getWSATUrl());
+        assertFalse(impl.isSSLEnabled());
+        assertFalse(impl.isCheckWsdlMode());
+
+        // Invoke modified with changed properties
+        Map<String, Object> updatedProps = baseProperties();
+        updatedProps.put("virtualHostRef", "wsatHost");
+        updatedProps.put("sslEnabled", true);
+        updatedProps.put("propagation", "check_wsdl");
+
+        impl.modified(updatedProps);
+
+        // Active instance must continue returning original configuration (deferred to restart)
+        assertEquals("http://host:9080/ibm/wsatservice", impl.getWSATUrl());
+        assertFalse(impl.isSSLEnabled());
+        assertFalse(impl.isCheckWsdlMode());
     }
 }
