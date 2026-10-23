@@ -55,6 +55,7 @@ import com.ibm.ws.security.jaas.common.JAASConfigurationFactory;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.wsspi.security.token.SingleSignonToken;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 import test.common.SharedOutputManager;
 
@@ -129,6 +130,10 @@ public class UsernameAndPasswordLoginModuleTest extends LoginModuleTester {
                 will(returnValue(0L));
                 allowing(ssoTokenOverride).getExpiration();
                 will(returnValue(0L));
+                allowing(ssoToken).getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+                will(returnValue(null));
+                allowing(ssoTokenOverride).getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+                will(returnValue(null));
             }
         });
         jaasServiceCollab.setJaasConfigurationFactory(jaasConfigurationFactoryRef);

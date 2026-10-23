@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2011 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,7 +18,7 @@ package com.ibm.wsspi.security.ltpa;
  * the LTPA token. The TokenFactory implementation should handle loading
  * the Token implementation.
  * </p>
- * 
+ *
  * @ibm-spi
  */
 
@@ -26,37 +26,43 @@ public interface Token extends java.lang.Cloneable {
 
     /**
      * Validates the token including expiration, signature, etc.
-     * 
+     *
      * @param com.ibm.ws.security.ltpa.Token token
      * @return boolean
      * @throws com.ibm.websphere.security.auth.InvalidTokenException
      * @throws com.ibm.websphere.security.auth.TokenExpiredException
      */
-    public boolean isValid()
-                    throws com.ibm.websphere.security.auth.InvalidTokenException,
-                    com.ibm.websphere.security.auth.TokenExpiredException;
+    public boolean isValid() throws com.ibm.websphere.security.auth.InvalidTokenException, com.ibm.websphere.security.auth.TokenExpiredException;
 
     /**
      * Gets the encrypted bytes for inclusion in the WSCredential or SSO cookie.
-     * 
+     *
      * @return byte[]
      * @throws com.ibm.websphere.security.auth.InvalidTokenException
      * @throws com.ibm.websphere.security.auth.TokenExpiredException
      */
-    public byte[] getBytes()
-                    throws com.ibm.websphere.security.auth.InvalidTokenException,
-                    com.ibm.websphere.security.auth.TokenExpiredException;
+    public byte[] getBytes() throws com.ibm.websphere.security.auth.InvalidTokenException, com.ibm.websphere.security.auth.TokenExpiredException;
 
     /**
      * Gets the expiration as a long.
-     * 
+     *
      * @return long
      */
     public long getExpiration();
 
     /**
+     * Determines whether this token should be refreshed based on its remaining lifetime
+     * and the configured refresh threshold. This is a beta feature and is only available
+     * when running in beta mode.
+     *
+     * @return true if the token should be refreshed, false otherwise
+     * @ibm-api
+     */
+    public boolean shouldRefreshToken();
+
+    /**
      * Gets the version of the token as an short.
-     * 
+     *
      * @return short
      */
     public short getVersion();
@@ -66,7 +72,7 @@ public interface Token extends java.lang.Cloneable {
      * Gets the attribute value based on the named value. A string array
      * is returned containing all values of the attribute previously set.
      * </p>
-     * 
+     *
      * @param String key
      * @return String[]
      **/
@@ -80,7 +86,7 @@ public interface Token extends java.lang.Cloneable {
      * set for key, not including the current value being set, or null
      * if not previously set.
      * </p>
-     * 
+     *
      * @param String key
      * @param String value
      * @return String[]
@@ -89,14 +95,14 @@ public interface Token extends java.lang.Cloneable {
 
     /**
      * Gets the attribute names
-     * 
+     *
      * @return java.lang.Enumeration
      */
     public java.util.Enumeration getAttributeNames();
 
     /**
      * Makes a deep copy of this token when necessary
-     * 
+     *
      * @return Object
      */
     public Object clone();
