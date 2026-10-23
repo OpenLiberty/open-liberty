@@ -286,6 +286,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	@Test
 	public void testIsfFeatureTolerates() throws Exception {
 		final String METHOD_NAME = "testIsfFeatureTolerates";
+		replaceWlpProperties("24.0.0.8");
 		Log.entering(c, METHOD_NAME);
 		String[] filesList = { "lib/features/io.openliberty.wimcore.internal.ee-9.0.mf",
 				"lib/features/com.ibm.websphere.appserver.federatedRegistry-1.0.mf" };
@@ -377,6 +378,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	@Test
 	public void testResolveAsSetThenResolve() throws Exception {
 		final String METHOD_NAME = "testResolveAsSetThenResolve";
+		replaceWlpProperties("24.0.0.8");
 		Log.entering(c, METHOD_NAME);
 
 		copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/adminCenterServerXml/server.xml");
