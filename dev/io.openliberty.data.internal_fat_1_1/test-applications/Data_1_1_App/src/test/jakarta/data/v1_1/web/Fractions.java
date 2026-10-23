@@ -332,6 +332,13 @@ public interface Fractions {
     Stream<Fraction> where(Restriction<Fraction> filter);
 
     @Find
+    @OrderBy(_Fraction.DECIMAL_TRUNCATED)
+    List<Fraction> whereTruncated //
+    (
+     @By(_Fraction.DECIMAL_TRUNCATED) //
+     Between<? extends Comparable<? extends Number>> bounds);
+
+    @Find
     @OrderBy(_Fraction.DENOMINATOR)
     @OrderBy(_Fraction.NUMERATOR)
     Stream<Fraction> withDenominatorBetweenNamedBeforeAndNumeratorNotBetween //
