@@ -52,6 +52,7 @@ import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
 import com.ibm.ws.http.internal.netty.RequestMetadata;
 import com.ibm.ws.http.netty.NettyConnectionLink;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
+import com.ibm.ws.http.netty.NettyHeaderUtils;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.message.BodyQueue;
@@ -96,6 +97,7 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.util.ReferenceCountUtil;
+import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.netty.internal.impl.QuiesceState;
 
 /**
@@ -392,6 +394,22 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         if (nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null) {
+
+            TimeoutHandler timeoutHandler = nettyContext.pipeline().get(TimeoutHandler.class);
+            if (timeoutHandler != null && this.isc != null && vc != null
+                            && vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS) != null) {
+                if ("true".equalsIgnoreCase((String) vc.getStateMap().get(TransportConstants.UPGRADED_LISTENER))) {
+                    nettyContext.pipeline().remove(timeoutHandler);
+                } else {
+                    FullHttpRequest requestReference = (this.nettyRequest != null) ? this.nettyRequest : this.nettyHeaderOnly;
+                    if (!this.isc.isPersistent() || (requestReference != null && !HttpUtil.isKeepAlive(requestReference))) {
+                        signalAppDoneOnEventLoop();
+                        nettyContext.channel().close();
+                        return;
+                    }
+                    timeoutHandler.armPersistAfterUpgrade();
+                }
+            }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "nettyClose: upgraded connection; not closing channel");
@@ -758,6 +776,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             this.isc.setRemoteAddr(remoteAddress);
 
         }
+
+        // Remove WAS private ($WS*) headers for sources that are not listed in the trust-origin configuration. 
+        boolean desensitizePrivatePortHeader = this.isc.getHttpConfig().desensitizePrivatePortHeader();
+        boolean trustNonSensitive = HttpDispatcher.usePrivateHeaders(this.remoteAddress);
+        boolean trustSensitive    = HttpDispatcher.usePrivateSensitiveHeaders(this.remoteAddress);
+        NettyHeaderUtils.filterPrivateHeaders(this.remoteAddress, nettyRequest.headers(), desensitizePrivatePortHeader, trustNonSensitive, trustSensitive);
 
         //Add for Servlet 6.0
         //HttpDispatcherLink can be reused but ready(VirtualConnection) is always called to get a current VirtualConnection.

@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.http.netty.timeout;
 
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -21,6 +22,7 @@ import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.pipeline.inbound.read.PurgeStartedEvent;
+import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.RequestConsumedEvent;
 
 import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
@@ -57,7 +59,7 @@ public class TimeoutHandler extends ChannelDuplexHandler {
     private Phase phase = Phase.OFF;
 
     private static final TimeUnit LEGACY_UNIT = TimeUnit.MILLISECONDS;
-    private ChannelHandlerContext parentContext;
+    private volatile ChannelHandlerContext parentContext;
 
     private int readTimeout;
     private int persistTimeout;
@@ -68,6 +70,8 @@ public class TimeoutHandler extends ChannelDuplexHandler {
     private final boolean useKeepAlive;
     private boolean clientRequestedKeepAlive = false;
     private boolean serverKeepAlive = false;
+    private boolean responseStartedWithoutReadFlow = false;
+    private boolean readFlowPresent = false;
 
     private boolean firstRequest = true;
     private boolean readRetried = false;
@@ -115,6 +119,9 @@ public class TimeoutHandler extends ChannelDuplexHandler {
     @Override
     public void handlerAdded(ChannelHandlerContext context) {
         this.parentContext = context;
+        // ALPN HTTP/1 installs ReadFlowHandler before TimeoutHandler; other
+        // pipelines notify us when ReadFlowHandler is added later.
+        readFlowPresent = context.pipeline().get(ReadFlowHandler.class) != null;
 
         if (streamOnly) {
             return;
@@ -132,6 +139,10 @@ public class TimeoutHandler extends ChannelDuplexHandler {
     public void handlerRemoved(ChannelHandlerContext context) throws Exception {
         cancel();
         super.handlerRemoved(context);
+    }
+
+    public void readFlowHandlerChanged(boolean present) {
+        readFlowPresent = present;
     }
 
     @Override
@@ -176,21 +187,28 @@ public class TimeoutHandler extends ChannelDuplexHandler {
     public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) throws Exception {
 
         if (message instanceof HttpResponse) {
-            serverKeepAlive = shouldKeepAliveResponse(context, message);
+            // Before an h2c fallback installs the HTTP/1 response handlers, an
+            // initial timeout response still needs a terminal-write close.
+            // Once ReadFlowHandler is present, it and Netty's keep-alive handler
+            // own response completion. A queued request must not change the
+            // close decision for the response currently being written.
+            responseStartedWithoutReadFlow = !readFlowPresent;
+            if (responseStartedWithoutReadFlow) {
+                serverKeepAlive = shouldKeepAliveResponse(context, message);
+            }
         }
+        final boolean closeOnComplete = responseStartedWithoutReadFlow && !serverKeepAlive;
         super.write(context, message, promise);
 
-        promise.addListener(future -> {
-            if (future.isSuccess() && isResponseEnd(message) && !streamOnly) {
-                if (!serverKeepAlive) {
+        if (closeOnComplete && isResponseEnd(message) && !streamOnly) {
+            promise.addListener(future -> {
+                if (future.isSuccess()) {
                     context.close();
                 }
-                // Persist timeout is armed via RequestConsumedEvent fired by
-                // ReadFlowHandler — either immediately (body already consumed)
-                // or after purge completes. TimeoutHandler stays decoupled from
-                // FlowState entirely.
-            }
-        }); //-> TODO: move over to keep-alive handler when implemented
+            });
+        }
+        // Persist timeout is armed via RequestConsumedEvent fired by
+        // ReadFlowHandler after the body has been consumed or purged.
 
     }
 
@@ -224,6 +242,31 @@ public class TimeoutHandler extends ChannelDuplexHandler {
 
     private void armPersistIfNeeded(ChannelHandlerContext context) {
         if (currentProtocol(context) != ProtocolName.WEBSOCKET) {
+            arm(context, Phase.PERSIST);
+        }
+    }
+
+    /** Suspend HTTP timing while the application initializes an upgraded connection. */
+    public void suspendForUpgrade() {
+        cancel();
+    }
+
+    /** Start the configured persistence deadline after a generic upgrade without a listener. */
+    public void armPersistAfterUpgrade() {
+        ChannelHandlerContext context = parentContext;
+        if (context == null) {
+            return;
+        }
+        if (!context.executor().inEventLoop()) {
+            try {
+                context.executor().execute(this::armPersistAfterUpgrade);
+            } catch (RejectedExecutionException e) {
+                // The channel's event loop is shutting down.
+            }
+            return;
+        }
+        if (context.pipeline().context(this) == context && phase != Phase.PERSIST
+                        && context.channel().isActive() && persistTimeout > 0) {
             arm(context, Phase.PERSIST);
         }
     }

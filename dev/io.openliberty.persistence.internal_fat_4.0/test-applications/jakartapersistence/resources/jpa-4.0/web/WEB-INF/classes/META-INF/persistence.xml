@@ -20,6 +20,10 @@
         <!-- Explicit class list required: Liberty app classloader scanning is limited -->
         <class>io.openliberty.jpa.persistence.tests.models.SimpleEmployee</class>
         <class>io.openliberty.jpa.persistence.tests.models.Product</class>
+        <class>io.openliberty.jpa.persistence.tests.models.EmployeeWithSkills</class>
+        <class>io.openliberty.jpa.persistence.tests.models.Skill</class>
+        <class>io.openliberty.jpa.persistence.tests.models.SkillSet</class>
+        <class>io.openliberty.jpa.persistence.tests.models.EmployeeDirectSkills</class>
         <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
         <properties>
             <!-- Drop and recreate the database schema for clean test runs -->

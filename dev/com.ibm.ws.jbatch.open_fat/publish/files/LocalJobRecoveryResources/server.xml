@@ -19,12 +19,12 @@
 	<transaction totalTranLifetimeTimeout="6m"/>
 
 	<library id="H2Lib">
-	    <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
+	    <fileset dir="${shared.resource.dir}/h2" includes="h2.jar"/>
 	</library>
 
 	<dataSource id="batchDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
 		<jdbcDriver libraryRef="H2Lib" />
-	       <properties.h2 URL="jdbc:h2:${server.config.dir}/../resources/LocalRecoveryDB;OPTIMIZE_REUSE_RESULTS=0;DB_CLOSE_DELAY=-1;MODE=LEGACY;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH;NON_KEYWORDS=VALUE" user="user" password="pass" />
+	       <properties.h2 URL="jdbc:h2:${server.config.dir}/../resources/LocalRecoveryDB;DB_CLOSE_DELAY=-1;MODE=LEGACY;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH;NON_KEYWORDS=VALUE" user="user" password="pass" />
 	</dataSource>
 	
 	<!-- ssl keystore to enable SSL port for batch rest connector -->
@@ -45,6 +45,6 @@
 	</authorization-roles>
 	
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-	<javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}/h2/h2.jar" className="java.security.AllPermission"/>
 
 </server>

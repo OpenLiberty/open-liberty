@@ -12,10 +12,15 @@
  *******************************************************************************/
 package test.jakarta.data.errpaths.v1_1.web;
 
+import java.util.Optional;
+
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
+import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
+import jakarta.data.repository.Update;
 import jakarta.data.repository.Repository;
 import jakarta.persistence.PersistenceUnit;
 import jakarta.persistence.query.NativeQuery;
@@ -43,5 +48,11 @@ public interface Operations extends DataRepository<Operation, String> {
 
     @Insert
     void define(Operation op);
+
+    @Find
+    Optional<Operation> named(@By("name") String opName);
+
+    @Update
+    void revise(Operation... ops);
 
 }

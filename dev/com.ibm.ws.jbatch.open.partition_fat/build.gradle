@@ -12,6 +12,15 @@
  *******************************************************************************/
 //apply from: '../wlp-gradle/subprojects/fat.gradle'
 
+// Rotation drivers (db2, sqlserver, oracle) come from copyJdbcDrivers, but:
+//  - use the latest H2 instead of the Java 8 H2 (2.1.214), which can return stale cached query results
+//  - Derby is not used by this bucket, so don't copy it
+copyJdbcDrivers {
+	exclude "h2-${h2Java8Version}.jar"
+	exclude "derby*.jar"
+	from configurations.h2
+}
+
 addRequiredLibraries {
 	dependsOn copyJdbcDrivers
 	dependsOn addJakartaTransformer

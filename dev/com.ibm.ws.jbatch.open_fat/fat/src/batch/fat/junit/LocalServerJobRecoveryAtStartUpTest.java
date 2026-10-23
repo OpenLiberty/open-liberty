@@ -14,6 +14,7 @@ package batch.fat.junit;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class LocalServerJobRecoveryAtStartUpTest extends BatchFATHelper {
     @BeforeClass
     public static void setup() throws Exception {
         server = LibertyServerFactory.getLibertyServer("batchFAT");
+        deleteLocalRecoveryDB();
         BatchFATHelper.setConfig("LocalJobRecoveryResources/server.xml", testClass);
 
         BatchAppUtils.addDropinsBatchFATWar(server);
@@ -63,8 +65,31 @@ public class LocalServerJobRecoveryAtStartUpTest extends BatchFATHelper {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer();
+        try {
+            if (server != null && server.isStarted()) {
+                server.stopServer();
+            }
+        } finally {
+            deleteLocalRecoveryDB();
+        }
+    }
+
+    private static boolean isH2() {
+        String dbType = System.getProperty("fat.bucket.db.type");
+        return dbType == null || dbType.trim().isEmpty() || "h2".equalsIgnoreCase(dbType.trim());
+    }
+
+    private static void deleteLocalRecoveryDB() {
+        if (isH2() && server != null && server.getUserDir() != null) {
+            File resourcesDir = new File(server.getUserDir(), "servers/resources");
+            if (resourcesDir.exists()) {
+                File[] files = resourcesDir.listFiles((dir, name) -> name.startsWith("LocalRecoveryDB"));
+                if (files != null) {
+                    for (File f : files) {
+                        f.delete();
+                    }
+                }
+            }
         }
     }
 
