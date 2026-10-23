@@ -210,6 +210,9 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
                 com.ibm.ws.ssl.provider.AbstractJSSEProvider.removeEntryFromSSLContextMap(keyStorePath);
                 com.ibm.ws.ssl.config.SSLConfigManager.getInstance().resetDefaultSSLContextIfNeeded(keyStorePath);
 
+                // Refresh the inner TrustManager[] of any live WSX509TrustManager instances
+                // that were built from this truststore file, so they pick up the new certs immediately.
+                com.ibm.ws.ssl.core.WSX509TrustManager.refreshTrustManagers(keyStorePath);
             }
             Tr.audit(tc, "ssl.keystore.modified.CWPKI0811I", modifiedFiles.toArray());
         } catch (Exception e) {
@@ -237,6 +240,10 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
                 com.ibm.ws.ssl.config.KeyStoreManager.getInstance().findKeyStoreInMapAndClear(modifiedKeyStoreName);
                 com.ibm.ws.ssl.provider.AbstractJSSEProvider.removeEntryFromSSLContextMap(modifiedKeyStoreName);
                 com.ibm.ws.ssl.config.SSLConfigManager.getInstance().resetDefaultSSLContextIfNeeded(modifiedKeyStoreName);
+
+                // Refresh the inner TrustManager[] of any live WSX509TrustManager instances
+                // that were built from this truststore, so they pick up the new certs immediately.
+                com.ibm.ws.ssl.core.WSX509TrustManager.refreshTrustManagers(modifiedKeyStoreName);
                 Tr.audit(tc, "ssl.keystore.modified.CWPKI0811I", modifiedKeyStores.toArray());
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
