@@ -178,5 +178,10 @@ cls.classloader.suggested.feature=CWWKL0084W: The {0} class could not be loaded.
 cls.classloader.suggested.feature.explanation=A class that is typically provided by one or more server features could not be loaded.
 cls.classloader.suggested.feature.useraction=Try enabling the specified feature or a newer version of the feature in the server.xml file.
 
+# {0} - shared library id from server.xml
+cls.native.access.not.enabled=CWWKL0085W: The shared library {0} is configured with native libraries but the JVM was not started with native access enabled for classpath code. This causes JVM warnings on Java 24 and later and will cause failures in a future Java release.
+cls.native.access.not.enabled.explanation=Starting with Java 24 (JEP 472), loading a native library from classpath code (an unnamed module) is a restricted operation. The --enable-native-access=ALL-UNNAMED JVM option was not set when the server was started.
+cls.native.access.not.enabled.useraction=Add --enable-native-access=ALL-UNNAMED to the ${server.config.dir}/jvm.options file.
+
 ####################### com.ibm.ws.classloader.context bundle messages 0090-0099 ###################
 ####################################################################################################

@@ -193,6 +193,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private final Iterable<LibertyLoader> beforeAppDelegateLoaders;
     private final Iterable<LibertyLoader> afterAppDelegateLoaders;
     private final List<File> nativeLibraryFiles = new ArrayList<File>();
+    /** Guards against logging the native-access warning more than once per loader. */
+    private volatile boolean nativeAccessWarningLogged = false;
     private final List<ClassFileTransformer> transformers = new ArrayList<ClassFileTransformer>();
     private final List<ClassFileTransformer> systemTransformers;
     private final DeclaredApiAccess apiAccess;
@@ -1146,6 +1148,63 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
                 nativeLibraryFiles.add(file);
             }
         }
+
+        // On Java 24+, loading a native library from classpath code is a restricted
+        // operation (JEP 472). Warn once per class loader if a native file (.so/.dll/.dylib)
+        // was just registered and the JVM was not started with native access enabled.
+        if (!nativeAccessWarningLogged && hasNativeLibraryFile(library)
+                && !NativeLibraryAccessChecker.isNativeAccessEnabled()) {
+            nativeAccessWarningLogged = true;
+            Tr.warning(tc, "cls.native.access.not.enabled", library.id());
+        }
+    }
+
+    /**
+     * Returns true if the given library contains at least one file whose name
+     * looks like a native library (.so, .dylib, .dll) rather than a JAR or
+     * class directory. Used to avoid false-positive CWWKL0085W warnings for
+     * libraries that only contain JARs configured via &lt;file&gt; or &lt;fileset&gt;.
+     */
+    private static boolean hasNativeLibraryFile(Library library) {
+        Collection<File> files = library.getFiles();
+        if (files != null) {
+            for (File f : files) {
+                if (isNativeLibraryName(f.getName())) {
+                    return true;
+                }
+            }
+        }
+        for (Fileset fileset : library.getFilesets()) {
+            for (File f : fileset.getFileset()) {
+                if (isNativeLibraryName(f.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the file name looks like a native library.
+     * Covers: .dll/.DLL (Windows), .so/.so.N (Linux/z/OS), .dylib (macOS).
+     */
+    private static boolean isNativeLibraryName(String name) {
+        if (name == null) {
+            return false;
+        }
+        // Windows
+        if (name.endsWith(".dll") || name.endsWith(".DLL")) {
+            return true;
+        }
+        // macOS
+        if (name.endsWith(".dylib")) {
+            return true;
+        }
+        // Linux/z/OS: libfoo.so or libfoo.so.1.2.3
+        if (name.endsWith(".so") || name.contains(".so.")) {
+            return true;
+        }
+        return false;
     }
 
     /**
