@@ -635,8 +635,8 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
         } catch (IOException e) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "IOException while doing IO requested on local: " + conn.getSocketIOChannel().getSocket().getLocalSocketAddress() + " remote: "
-                             + conn.getSocketIOChannel().getSocket().getRemoteSocketAddress());
+                Tr.event(tc, "IOException while doing IO requested on local: " + ioChannel.getSocket().getLocalSocketAddress() + " remote: "
+                             + ioChannel.getSocket().getRemoteSocketAddress());
                 Tr.event(tc, "Exception is: " + e);
             }
             // the following block of commented code was to handle temporary IO
