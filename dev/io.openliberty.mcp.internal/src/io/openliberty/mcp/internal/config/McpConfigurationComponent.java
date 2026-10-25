@@ -37,6 +37,7 @@ public class McpConfigurationComponent {
 
     private volatile McpServerConfigProps config;
     private volatile String servicePid;
+    private volatile String parentPid;
 
     @Activate
     protected void activate(Map<String, Object> properties) {
@@ -51,11 +52,13 @@ public class McpConfigurationComponent {
     @Deactivate
     protected void deactivate() {
         this.servicePid = null;
+        this.parentPid = null;
         this.config = null;
     }
 
     private void processConfig(Map<String, Object> properties) {
         this.servicePid = (String) properties.get("service.pid");
+        this.parentPid = (String) properties.get("config.parentPID");
         String moduleName = (String) properties.get("moduleName");
         String path = (String) properties.get("path");
         boolean stateless = (boolean) properties.get("stateless");
@@ -90,6 +93,13 @@ public class McpConfigurationComponent {
 
     public String getServicePid() {
         return servicePid;
+    }
+
+    /**
+     * @return the PID of the configuration this mcp element is nested in, or null if it is not nested
+     */
+    public String getParentPid() {
+        return parentPid;
     }
 
 }

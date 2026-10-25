@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -53,10 +54,11 @@ public class McpServerApplicationTracker {
     private final Map<String, McpConfigurationComponent> mcpPidToMcpConfigComponent = new HashMap<>();
 
     /**
-     * A record of the application name and the list of mcpPids that application references. Keeps these 2 pieces of
-     * per-app data co-located and impossible to get out of sync
+     * A record of the application name, the list of mcpPids that application references and the PID that mcp
+     * configurations nested in the application are parented to. Keeps these pieces of per-app data co-located and
+     * impossible to get out of sync
      */
-    private record AppEntry(String appName, List<String> mcpPids) {};
+    private record AppEntry(String appName, List<String> mcpPids, String parentPid) {};
 
     /**
      * Map from an application PID to its AppEntry record
@@ -91,13 +93,13 @@ public class McpServerApplicationTracker {
     protected void addMcpConfiguration(McpConfigurationComponent config) {
         synchronized (this) {
             mcpPidToMcpConfigComponent.put(config.getServicePid(), config);
-            updateAppsUsingMcpConfig(config.getServicePid());
+            updateAppsUsingMcpConfig(config.getServicePid(), config.getParentPid());
         }
     }
 
     protected void updatedMcpConfiguration(McpConfigurationComponent config) {
         synchronized (this) {
-            updateAppsUsingMcpConfig(config.getServicePid());
+            updateAppsUsingMcpConfig(config.getServicePid(), config.getParentPid());
         }
     }
 
@@ -105,7 +107,7 @@ public class McpServerApplicationTracker {
         String mcpPid = config.getServicePid();
         synchronized (this) {
             mcpPidToMcpConfigComponent.remove(mcpPid);
-            updateAppsUsingMcpConfig(mcpPid);
+            updateAppsUsingMcpConfig(mcpPid, config.getParentPid());
         }
     }
 
@@ -128,10 +130,8 @@ public class McpServerApplicationTracker {
         }
         synchronized (this) {
             List<String> mcpPidList = (mcpPids != null && mcpPids.length > 0) ? Arrays.asList(mcpPids) : Collections.emptyList();
-            appPidToAppEntry.put(appPid, new AppEntry(appName, mcpPidList));
-            if (!mcpPidList.isEmpty()) {
-                updateAppMcpConfigProps(appPid);
-            }
+            appPidToAppEntry.put(appPid, new AppEntry(appName, mcpPidList, getParentPid(appProps)));
+            updateAppMcpConfigProps(appPid);
         }
     }
 
@@ -154,7 +154,7 @@ public class McpServerApplicationTracker {
                 appNameToMcpConfigProps.remove(oldEntry.appName());
             }
             List<String> mcpPidList = (mcpPids != null && mcpPids.length > 0) ? Arrays.asList(mcpPids) : Collections.emptyList();
-            appPidToAppEntry.put(appPid, new AppEntry(appName, mcpPidList));
+            appPidToAppEntry.put(appPid, new AppEntry(appName, mcpPidList, getParentPid(appProps)));
             updateAppMcpConfigProps(appPid);
         }
     }
@@ -178,13 +178,28 @@ public class McpServerApplicationTracker {
     }
 
     /**
-     * Given an mcp PID that was just added or updated, scan all `appEntries` to find applications
-     * that reference it and trigger a config rebuild for each, via `updateAppMcpConfigProps()`
+     * Returns the PID that mcp configurations nested in the application are parented to. This is the PID of the
+     * configuration element that was actually configured ({@code ibm.extends.source.pid}), or the application's own
+     * service PID when the application does not extend another configuration.
+     *
+     * The service properties of an Application are only copied from its configuration when it is first registered, so
+     * the {@code mcp} reference list can be stale if the mcp configuration arrived later. The parent PID does not change.
+     */
+    private static String getParentPid(Map<String, Object> appProps) {
+        String sourcePid = (String) appProps.get("ibm.extends.source.pid");
+        return sourcePid != null ? sourcePid : (String) appProps.get("service.pid");
+    }
+
+    /**
+     * Given an mcp PID that was just added, updated or removed, scan all `appEntries` to find applications
+     * that reference it, or that the mcp configuration is nested in, and trigger a config rebuild for each,
+     * via `updateAppMcpConfigProps()`
      *
      */
-    private void updateAppsUsingMcpConfig(String mcpPid) {
+    private void updateAppsUsingMcpConfig(String mcpPid, String mcpParentPid) {
         for (Map.Entry<String, AppEntry> appEntry : appPidToAppEntry.entrySet()) {
-            if (appEntry.getValue().mcpPids.contains(mcpPid)) {
+            if (appEntry.getValue().mcpPids.contains(mcpPid)
+                || (mcpParentPid != null && mcpParentPid.equals(appEntry.getValue().parentPid))) {
                 updateAppMcpConfigProps(appEntry.getKey());
             }
         }
@@ -193,6 +208,7 @@ public class McpServerApplicationTracker {
     /**
      * Given an application's PID, looks up its AppEntry, and build a complete list of resolved
      * {@link McpServerConfigProps} by streaming the {@code mcpPids}, map each to its {@link McpConfigurationComponent},
+     * add the components whose parent PID is the application's parent PID,
      * filter out nulls, then map to {@link McpServerConfigProps}, filter out nulls and collect the resulting
      * list.
      * If the resulting list is empty the appEntry is removed from {@link appNameToMcpConfigProps}, otherwise the new
@@ -208,8 +224,13 @@ public class McpServerApplicationTracker {
         }
         String appName = appEntry.appName();
 
-        List<McpServerConfigProps> newPropsList = appEntry.mcpPids().stream()
-                                                          .map(mcpPid -> mcpPidToMcpConfigComponent.get(mcpPid))
+        String parentPid = appEntry.parentPid();
+        Stream<McpConfigurationComponent> referenced = appEntry.mcpPids().stream()
+                                                               .map(mcpPid -> mcpPidToMcpConfigComponent.get(mcpPid));
+        Stream<McpConfigurationComponent> nested = parentPid == null ? Stream.empty()
+                                                                     : mcpPidToMcpConfigComponent.values().stream()
+                                                                                                 .filter(c -> parentPid.equals(c.getParentPid()));
+        List<McpServerConfigProps> newPropsList = Stream.concat(referenced, nested)
                                                           .filter(Objects::nonNull)
                                                           .map(mcpConfigComponent -> mcpConfigComponent.getConfigProps())
                                                           .filter(Objects::nonNull)
