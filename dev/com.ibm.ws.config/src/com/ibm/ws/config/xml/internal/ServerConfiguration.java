@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -208,18 +208,17 @@ public class ServerConfiguration extends BaseConfiguration {
                 }
 
                 if (parentEntry.isSingleton()) {
-                    if (!visited.contains(parentEntry)) {
-                        if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Getting singleton instances of {0} using alias {1}", parentEntry, parentEntry.getAlias());
-                        }
-                        SingletonElement element = getSingleton(parentEntry.getPid(), parentEntry.getAlias());
-                        if (element != null) {
-                            parentInstances.add(element);
-                        }
-                        if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, "About to look for nested instances of parentPID {0}. Current parentInstances size: {1}", parentEntry, parentInstances.size());
-                        }
-                        visited.add(parentEntry);
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Getting singleton instances of {0} using alias {1}", parentEntry, parentEntry.getAlias());
+                    }
+                    SingletonElement element = getSingleton(parentEntry.getPid(), parentEntry.getAlias());
+                    if (element != null) {
+                        parentInstances.add(element);
+                    }
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "About to look for nested instances of parentPID {0}. Current parentInstances size: {1}", parentEntry, parentInstances.size());
+                    }
+                    if (visited.add(parentEntry)) {
                         parentInstances.addAll(getNestedInstances(parentEntry, visited));
                     }
                 } else {
@@ -234,21 +233,20 @@ public class ServerConfiguration extends BaseConfiguration {
 
                         @Override
                         public boolean entry(RegistryEntry registryEntry) {
-                            if (!visited.contains(registryEntry)) {
-                                visited.add(registryEntry);
-                                try {
-                                    Map<ConfigID, FactoryElement> parentFactoryInstances = getFactoryInstancesUsingDefaultId(registryEntry.getPid(), registryEntry.getAlias(),
-                                                                                                                             registryEntry.getDefaultId());
-                                    parentInstances.addAll(parentFactoryInstances.values());
-                                    if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, "About to look for nested instances of parentPID {0}. Current parentInstances size: {1}", registryEntry,
-                                                 parentInstances.size());
-                                    }
-                                    parentInstances.addAll(getNestedInstances(registryEntry, visited));
-                                } catch (ConfigMergeException e) {
-                                    this.e = e;
-                                    return false;
+                            try {
+                                Map<ConfigID, FactoryElement> parentFactoryInstances = getFactoryInstancesUsingDefaultId(registryEntry.getPid(), registryEntry.getAlias(),
+                                                                                                                         registryEntry.getDefaultId());
+                                parentInstances.addAll(parentFactoryInstances.values());
+                                if (tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "About to look for nested instances of parentPID {0}. Current parentInstances size: {1}", registryEntry,
+                                             parentInstances.size());
                                 }
+                                if (visited.add(registryEntry)) {
+                                    parentInstances.addAll(getNestedInstances(registryEntry, visited));
+                                }
+                            } catch (ConfigMergeException e) {
+                                this.e = e;
+                                return false;
                             }
                             return true;
                         }
