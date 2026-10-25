@@ -241,6 +241,12 @@ public class TCPUtils {
      * On success registers the channel and invokes openListener.
      * On terminal failure logs the error and invokes openListener with the failed future.
      *
+     * Outbound (connect) callers block until openListener fires, so every outbound exit
+     * must notify it, including the ones that return without a bind/connect result
+     * (interrupted, channel already closed).  See notifyOutboundFailure().
+     * Inbound exits that return silently are left as is: a closed inbound channel means it
+     * was stopped, and notifying would make the chain report a spurious startup failure.
+     *
      * @return the terminal ChannelFuture, or null if the channel was closed before binding
      */
     @FFDCIgnore(IOException.class)
@@ -262,11 +268,16 @@ public class TCPUtils {
                     Tr.debug(tc, "open interrupted for " + config.getExternalName());
                 }
                 Thread.currentThread().interrupt();
+                // Outbound: release the caller blocked on the connect outcome.
+                notifyOutboundFailure(framework, config, openListener, channel.newFailedFuture(ie));
                 return null;
             }
 
             if (future == null) {
-                // channel was closed before the bind started
+                // channel was closed before the bind/connect started.
+                // Outbound: release the caller blocked on the connect outcome.
+                notifyOutboundFailure(framework, config, openListener,
+                                      channel.newFailedFuture(new IOException("Channel closed before connect for " + config.getExternalName())));
                 return null;
             }
 
@@ -331,6 +342,9 @@ public class TCPUtils {
                     }
                 }
 
+                // Inbound only (the enclosing if requires config.isInbound()).  No caller is
+                // blocked waiting on a connect here, so the silent "return null" exits below
+                // intentionally do not call notifyOutboundFailure().
                 if (!activeListenerDetected) {
                     try {
                         future = bindOrConnect(framework, channel, config, resolvedHost, inetPort, true);
@@ -391,6 +405,10 @@ public class TCPUtils {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "No retries left and channel is not open, returning for " + config.getExternalName());
                 }
+                // A failed outbound connect closes the channel; still notify the listener so
+                // callers blocked waiting for the outcome are released.  Inbound keeps the
+                // existing silent return: a closed inbound channel means it was stopped.
+                notifyOutboundFailure(framework, config, openListener, future);
                 return future;
             }
 
@@ -428,6 +446,34 @@ public class TCPUtils {
                 }
             }
             return future;
+        }
+    }
+
+    /**
+     * Notify openListener of an outbound (connect) failure on an exit path that would
+     * otherwise return silently.  Outbound callers (e.g. JFAP connectOverNetwork) block on
+     * a semaphore until this listener fires, so skipping it hangs them.
+     *
+     * No-op for inbound channels: the chain's listener treats a failed future as a startup
+     * error (notifyStopped without a matching notifyStarted), which is wrong when an inbound
+     * channel was simply stopped.
+     *
+     * Dispatched via generateOpenListenerWrapper so the listener runs on a Liberty executor
+     * thread, consistent with the other listener calls in open().
+     */
+    private static void notifyOutboundFailure(NettyFrameworkImpl framework,
+                                              TCPConfigurationImpl config, ChannelFutureListener openListener,
+                                              ChannelFuture failedFuture) {
+        if (config.isInbound() || openListener == null) {
+            return;
+        }
+        try {
+            generateOpenListenerWrapper(framework, openListener).operationComplete(failedFuture);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Exception dispatching openListener outbound failure callback for "
+                             + config.getExternalName() + ": " + e.getMessage());
+            }
         }
     }
 
