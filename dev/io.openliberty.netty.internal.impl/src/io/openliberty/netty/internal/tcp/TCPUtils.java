@@ -9,14 +9,18 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
+import java.io.IOException;
 import java.net.Inet6Address;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.nio.channels.SocketChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -239,6 +243,7 @@ public class TCPUtils {
      *
      * @return the terminal ChannelFuture, or null if the channel was closed before binding
      */
+    @FFDCIgnore(IOException.class)
     private static ChannelFuture open(NettyFrameworkImpl framework, final Channel channel,
                                       final TCPConfigurationImpl config, final String inetHost,
                                       final int inetPort, final ChannelFutureListener openListener,
@@ -287,53 +292,81 @@ public class TCPUtils {
             }
 
             // If soReuseAddress is enabled (the default) and this was a BindException,
-            // immediately retry once with SO_REUSEADDR=true — mirroring CHFW's
-            // TCPPort.finishInitServerSocket() behaviour.
-            // With SO_REUSEADDR=true the OS allows binding over a TIME_WAIT socket but
-            // still rejects the bind if something is actively listening, so a real
-            // conflict is correctly detected here without a probe socket.
-            // This extra attempt does not consume a portOpenRetries count.
+            // use a probe-socket to distinguish TIME_WAIT from a real active-listener
+            // conflict — mirroring CHFW's TCPPort.finishInitServerSocket() pattern:
+            //
+            //   1. Attempt an outbound connection to the same host:port.
+            //      - Succeeds  → someone is actively listening  → real conflict,
+            //                    skip SO_REUSEADDR=true, fall through to retry loop.
+            //      - Fails (connection refused / IOException) → only TIME_WAIT sockets
+            //                    remain → safe to retry with SO_REUSEADDR=true.
+            //   2. Retry with SO_REUSEADDR=true only in the TIME_WAIT case.
             if (config.isInbound() && config.getSoReuseAddress()
                 && future.cause() instanceof java.net.BindException
                 && channel.isOpen()) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Bind failed with SO_REUSEADDR=false for " + config.getExternalName()
-                             + ", retrying immediately with SO_REUSEADDR=true to handle TIME_WAIT");
+
+                boolean activeListenerDetected = false;
+                String probeHost = config.getHostname();
+                if (probeHost == null || probeHost.equals("*")) {
+                    probeHost = "localhost";
                 }
-                try {
-                    future = bindOrConnect(framework, channel, config, resolvedHost, inetPort, true);
-                } catch (InterruptedException ie) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "open interrupted (reuseAddr retry) for " + config.getExternalName());
-                    }
-                    Thread.currentThread().interrupt();
-                    return null;
-                }
-                if (future == null) {
-                    return null;
-                }
-                if (future.isSuccess()) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Bind succeeded with SO_REUSEADDR=true (TIME_WAIT reuse) for " + config.getExternalName());
-                    }
-                    registerSuccess(framework, channel, config, resolvedHost, inetPort);
-                    if (openListener != null) {
-                        try {
-                            generateOpenListenerWrapper(framework, openListener).operationComplete(future);
-                        } catch (Exception e) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Exception dispatching openListener success callback (reuseAddr): " + e.getMessage());
-                            }
-                            channel.close();
+                InetSocketAddress probeAddr = new InetSocketAddress(probeHost, inetPort);
+                if (!probeAddr.isUnresolved()) {
+                    try {
+                        SocketChannel probe = SocketChannel.open(probeAddr);
+                        // Connection succeeded — someone is actively listening.
+                        probe.close();
+                        activeListenerDetected = true;
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Probe connection to " + probeHost + ":" + inetPort
+                                     + " succeeded — real port conflict for " + config.getExternalName());
+                        }
+                    } catch (IOException probeIoe) {
+                        // Connection refused — only TIME_WAIT sockets present, no active listener.
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Probe connection refused on " + probeHost + ":" + inetPort
+                                     + " — TIME_WAIT only, retrying with SO_REUSEADDR=true for "
+                                     + config.getExternalName());
                         }
                     }
-                    return future;
                 }
-                // SO_REUSEADDR=true also failed — real conflict, not TIME_WAIT.
-                // Fall through to the portOpenRetries / terminal-failure path below.
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Bind also failed with SO_REUSEADDR=true for " + config.getExternalName()
-                             + " — real port conflict: " + future.cause().getMessage());
+
+                if (!activeListenerDetected) {
+                    try {
+                        future = bindOrConnect(framework, channel, config, resolvedHost, inetPort, true);
+                    } catch (InterruptedException ie) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "open interrupted (reuseAddr retry) for " + config.getExternalName());
+                        }
+                        Thread.currentThread().interrupt();
+                        return null;
+                    }
+                    if (future == null) {
+                        return null;
+                    }
+                    if (future.isSuccess()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Bind succeeded with SO_REUSEADDR=true (TIME_WAIT reuse) for " + config.getExternalName());
+                        }
+                        registerSuccess(framework, channel, config, resolvedHost, inetPort);
+                        if (openListener != null) {
+                            try {
+                                generateOpenListenerWrapper(framework, openListener).operationComplete(future);
+                            } catch (Exception e) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Exception dispatching openListener success callback (reuseAddr): " + e.getMessage());
+                                }
+                                channel.close();
+                            }
+                        }
+                        return future;
+                    }
+                    // SO_REUSEADDR=true failed even though probe said no active listener.
+                    // Unusual — fall through to the portOpenRetries loop.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Bind failed with SO_REUSEADDR=true after probe for " + config.getExternalName()
+                                 + ": " + future.cause().getMessage());
+                    }
                 }
             }
 
