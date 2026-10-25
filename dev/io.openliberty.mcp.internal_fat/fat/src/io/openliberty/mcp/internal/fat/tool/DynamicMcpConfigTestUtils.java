@@ -21,6 +21,8 @@ import static org.junit.Assert.assertNotNull;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
@@ -40,6 +42,9 @@ final class DynamicMcpConfigTestUtils {
 
     /** The path configured with {@code <mcp path="...">} in every server configuration these tests use. */
     static final String MCP_PATH = "/dynamic-mcp-updated";
+
+    /** The serverInfo name configured with {@code <info name="...">} in every server configuration these tests use. */
+    static final String SERVER_INFO_NAME = "ibm-mq-mcp-server";
 
     private static final String INITIALIZE_REQUEST = """
                     {
@@ -77,7 +82,8 @@ final class DynamicMcpConfigTestUtils {
     /** Asserts that the configured MCP path serves an MCP session, then closes the session. */
     static void assertEndpointLive(LibertyServer server) throws Exception {
         HttpRequest request = newInitializeRequest(server).expectCode(200);
-        request.run(String.class);
+        String response = request.run(String.class);
+        assertServerInfoName(response);
 
         String sessionId = request.getResponseHeader(MCP_SESSION_ID);
         assertNotNull("Expected a session ID in the response from " + MCP_PATH, sessionId);
@@ -86,6 +92,13 @@ final class DynamicMcpConfigTestUtils {
                                                           .requestProp(MCP_SESSION_ID, sessionId)
                                                           .method("DELETE")
                                                           .run(String.class);
+    }
+
+    /** Asserts that the initialize response carries the serverInfo name configured with {@code <info name="...">}. */
+    static void assertServerInfoName(String initializeResponse) throws Exception {
+        JSONAssert.assertEquals("Expected the configured serverInfo name in the initialize response",
+                                "{\"result\":{\"serverInfo\":{\"name\":\"" + SERVER_INFO_NAME + "\"}}}",
+                                initializeResponse, JSONCompareMode.LENIENT);
     }
 
     private static HttpRequest newInitializeRequest(LibertyServer server) {

@@ -96,7 +96,8 @@ public class DynamicMcpPathUpdateUsingServerXMLIncludesTest extends FATServletCl
                                                                                        .jsonBody(request)
                                                                                        .method("POST")
                                                                                        .expectCode(200);
-        httpRequest.run(String.class);
+        String response = httpRequest.run(String.class);
+        DynamicMcpConfigTestUtils.assertServerInfoName(response);
 
         String sessionId = httpRequest.getResponseHeader(MCP_SESSION_ID);
         assertNotNull("Expected a session ID in response", sessionId);
