@@ -90,7 +90,6 @@ import io.netty.handler.timeout.WriteTimeoutHandler;
 import io.netty.util.AsciiString;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.timeout.TimeoutHandler;
-import io.netty.handler.timeout.WriteTimeoutException;
 import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
 import io.openliberty.netty.internal.impl.QuiesceHandler;
@@ -714,10 +713,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             }
             sendErrorMessage(cause);
             return;
-        } else if (cause instanceof WriteTimeoutException) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "The connection is closing due to a write timeout; channel=" + context.channel());
-            }
         } else if(cause instanceof TimeoutException){
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "The connection closed due to idle timeout");
