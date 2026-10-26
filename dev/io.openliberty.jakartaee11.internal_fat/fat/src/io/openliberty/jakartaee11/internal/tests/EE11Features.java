@@ -266,6 +266,9 @@ public class EE11Features {
             features.remove("wmqJmsClient-1.1");
             features.remove("wmqJmsClient-2.0");
 
+            // EE10 only
+            features.remove("more-1.0.5");
+
             // heritage API features
             features.remove("heritageAPIs-1.0");
             features.remove("heritageAPIs-1.1");
