@@ -714,18 +714,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             }
             sendErrorMessage(cause);
             return;
-        } else if (cause instanceof TimeoutException) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Idle timeout; closing channel");
-            }
-            sendErrorMessage(cause);
-            return;
         } else if (cause instanceof WriteTimeoutException) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "The connection is closing due to a write timeout; channel=" + context.channel());
             }
-            context.close();
-            return;
         } else if(cause instanceof TimeoutException){
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "The connection closed due to idle timeout");
