@@ -1,0 +1,40 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+-->
+<server description="Dynamic MCP path: mcp-1.0 and three applications added together">
+
+  <featureManager>
+    <feature>servlet-6.0</feature>
+    <feature>cdi-4.0</feature>
+    <feature>mcp-1.0</feature>
+  </featureManager>
+
+  <logging traceSpecification="*=info:MCP=all:com.ibm.ws.app.manager=all"/>
+
+  <enterpriseApplication location="dynamicMcpMultiAppOne.ear">
+    <mcp path="/mcp-one">
+      <info name="multi-app-one" version="1.0.0"/>
+    </mcp>
+  </enterpriseApplication>
+
+  <enterpriseApplication location="dynamicMcpMultiAppTwo.ear">
+    <mcp path="/mcp-two">
+      <info name="multi-app-two" version="1.0.0"/>
+    </mcp>
+  </enterpriseApplication>
+
+  <application location="dynamicMcpMultiAppThree.ear">
+    <mcp path="/mcp-three">
+      <info name="multi-app-three" version="1.0.0"/>
+    </mcp>
+  </application>
+
+  <include location="../fatTestPorts.xml" />
+
+</server>

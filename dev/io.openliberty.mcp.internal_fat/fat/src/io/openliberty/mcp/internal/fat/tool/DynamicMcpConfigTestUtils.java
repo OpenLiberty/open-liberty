@@ -67,45 +67,67 @@ final class DynamicMcpConfigTestUtils {
 
     /** Exports an EAR containing {@link #APP_NAME}.war to the server's apps directory. */
     static void deployEar(LibertyServer server) throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+        deployEar(server, APP_NAME);
+    }
+
+    /** Exports an EAR containing {@code appName}.war to the server's apps directory. The context root is {@code /appName}. */
+    static void deployEar(LibertyServer server, String appName) throws Exception {
+        WebArchive war = ShrinkWrap.create(WebArchive.class, appName + ".war")
                                    .addPackage(BasicTools.class.getPackage());
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME + ".ear")
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, appName + ".ear")
                                           .addAsModule(war);
         ShrinkHelper.exportAppToServer(server, ear, new DeployOptions[] { SERVER_ONLY, DISABLE_VALIDATION });
     }
 
     /** Asserts that the configured MCP path is not served (404). */
     static void assertEndpointNotFound(LibertyServer server) throws Exception {
-        newInitializeRequest(server).expectCode(404).run(String.class);
+        assertEndpointNotFound(server, APP_NAME, MCP_PATH);
+    }
+
+    /** Asserts that {@code mcpPath} in the application {@code appName} is not served (404). */
+    static void assertEndpointNotFound(LibertyServer server, String appName, String mcpPath) throws Exception {
+        newInitializeRequest(server, appName, mcpPath).expectCode(404).run(String.class);
     }
 
     /** Asserts that the configured MCP path serves an MCP session, then closes the session. */
     static void assertEndpointLive(LibertyServer server) throws Exception {
-        HttpRequest request = newInitializeRequest(server).expectCode(200);
+        assertEndpointLive(server, APP_NAME, MCP_PATH, SERVER_INFO_NAME);
+    }
+
+    /**
+     * Asserts that {@code mcpPath} in the application {@code appName} serves an MCP session whose serverInfo name is
+     * {@code serverInfoName}, then closes the session.
+     */
+    static void assertEndpointLive(LibertyServer server, String appName, String mcpPath, String serverInfoName) throws Exception {
+        HttpRequest request = newInitializeRequest(server, appName, mcpPath).expectCode(200);
         String response = request.run(String.class);
-        assertServerInfoName(response);
+        assertServerInfoName(response, serverInfoName);
 
         String sessionId = request.getResponseHeader(MCP_SESSION_ID);
-        assertNotNull("Expected a session ID in the response from " + MCP_PATH, sessionId);
+        assertNotNull("Expected a session ID in the response from " + mcpPath, sessionId);
 
-        new HttpRequest(server, "/" + APP_NAME + MCP_PATH)
-                                                          .requestProp(MCP_SESSION_ID, sessionId)
-                                                          .method("DELETE")
-                                                          .run(String.class);
+        new HttpRequest(server, "/" + appName + mcpPath)
+                                                        .requestProp(MCP_SESSION_ID, sessionId)
+                                                        .method("DELETE")
+                                                        .run(String.class);
     }
 
     /** Asserts that the initialize response carries the serverInfo name configured with {@code <info name="...">}. */
     static void assertServerInfoName(String initializeResponse) throws Exception {
+        assertServerInfoName(initializeResponse, SERVER_INFO_NAME);
+    }
+
+    static void assertServerInfoName(String initializeResponse, String serverInfoName) throws Exception {
         JSONAssert.assertEquals("Expected the configured serverInfo name in the initialize response",
-                                "{\"result\":{\"serverInfo\":{\"name\":\"" + SERVER_INFO_NAME + "\"}}}",
+                                "{\"result\":{\"serverInfo\":{\"name\":\"" + serverInfoName + "\"}}}",
                                 initializeResponse, JSONCompareMode.LENIENT);
     }
 
-    private static HttpRequest newInitializeRequest(LibertyServer server) {
-        return new HttpRequest(server, "/" + APP_NAME + MCP_PATH)
-                                                                 .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                 .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
-                                                                 .jsonBody(INITIALIZE_REQUEST)
-                                                                 .method("POST");
+    private static HttpRequest newInitializeRequest(LibertyServer server, String appName, String mcpPath) {
+        return new HttpRequest(server, "/" + appName + mcpPath)
+                                                               .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                               .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
+                                                               .jsonBody(INITIALIZE_REQUEST)
+                                                               .method("POST");
     }
 }
