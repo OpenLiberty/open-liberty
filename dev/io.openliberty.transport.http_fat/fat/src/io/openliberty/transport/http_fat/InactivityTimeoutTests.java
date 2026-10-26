@@ -471,7 +471,7 @@ public class InactivityTimeoutTests {
                        server.findStringsInLogsAndTraceUsingMark("connection closed due to idle timeout").size() == 1);
         }
     }
-
+    // trying to reproduce 
     /**
      * The test will set the inactivitiyTimeout to a value of 5s.
      *
