@@ -266,13 +266,13 @@ netty.content.length.exceeded=CWWKT0059E: The request chunk size exceeded the ma
 netty.content.length.exceeded.explanation=The incoming HTTP request body exceeded the configured maximum message size limit.
 netty.content.length.exceeded.useraction=Increase the maximum message size limit in the server configuration or reduce the request payload size.
 
-netty.read.failed.end.of.stream=CWWKT0060E: Connection closed: Read failed. Possible end of stream encountered. Local: {0} Remote: {1}
-netty.read.failed.end.of.stream.explanation=The remote endpoint closed the connection or reached the end of stream while reading.
-netty.read.failed.end.of.stream.useraction=Verify network connectivity between the client and server.
+netty.read.failed.end.of.stream=CWWKT0060E: The connection between the {0} local address and the {1} remote address closed unexpectedly during a read operation because an end-of-stream condition occurred.
+netty.read.failed.end.of.stream.explanation=The remote endpoint closed the connection, reset the socket, or reached the end of the data stream before the server finished reading the expected request data.
+netty.read.failed.end.of.stream.useraction=Verify network connectivity between the client and server. Ensure that the client application does not close connections prematurely and check client and server timeout configurations.
 
 netty.request.before.protocol.established=CWWKT0061E: A request was received before the connection protocol was established: {0}
-netty.request.before.protocol.established.explanation=A request arrived on a connection before protocol negotiation or initialization was complete.
-netty.request.before.protocol.established.useraction=Verify that the client adheres to the supported connection and protocol handshake sequence.
+netty.request.before.protocol.established.explanation=The client sent request data before completing the required protocol negotiation, TLS handshake, or connection upgrade sequence. The server cannot process requests on an uninitialized protocol channel.
+netty.request.before.protocol.established.useraction=Verify that the client adheres to the supported connection and protocol handshake sequence. Ensure that the client waits for protocol negotiation and handshake completion before transmitting request data.
 
 netty.request.metadata.already.initialized=CWWKT0062E: Netty request metadata is already initialized.
 netty.request.metadata.already.initialized.explanation=An attempt was made to initialize the request metadata on a request context where it had already been set.
