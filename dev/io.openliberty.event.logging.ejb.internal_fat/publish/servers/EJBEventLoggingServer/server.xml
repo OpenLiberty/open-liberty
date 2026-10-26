@@ -20,6 +20,7 @@
         <feature>wasJmsClient-2.0</feature>
         <feature>eventLogging-1.0</feature>
         <feature>componenttest-1.0</feature>
+        <feature>noShip-1.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
