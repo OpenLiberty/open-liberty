@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.v1_1.web;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -1652,6 +1653,43 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * A repository method is annotated JakartaQuery and Select and returns
+     * a Java record. The Select annotations on the method determine the
+     * order of and which entity attributes are chosen to construct an
+     * instance of the Java record.
+     */
+    @Test
+    public void testJakartaQueryAndSelectAnnosOnMethod() {
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
+
+        assertArrayEquals(new Ratio[] { new Ratio(7, 8),
+                                        new Ratio(5, 8),
+                                        new Ratio(3, 8) },
+                          fractions.toRatiosIfReduced("% Eighths", true));
+    }
+
+    /**
+     * A repository method is annotated JakartaQuery and returns a
+     * Java record with record components that are annotated Select.
+     * The Select annotations on the record components determine the
+     * order of and which entity attributes are chosen to construct
+     * instances of the Java record.
+     */
+    @Test
+    public void testJakartaQueryAnnoOnMethodAndSelectOnRecordComponent() {
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
+
+        Slope slope = fractions.toSlope("Four Sevenths");
+
+        assertEquals(4,
+                     slope.rise());
+        assertEquals(7,
+                     slope.run());
+    }
+
+    /**
      * Use a repository method that is annotated JakartaQuery that has
      * both Restriction and Order parameters.
      */
@@ -2937,6 +2975,48 @@ public class Data_1_1_Servlet extends FATServlet {
                      fractions.where(restriction)
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * A repository method is annotated by Query and Select and returns
+     * a Java record. The Select annotations on the method determine the
+     * order of and which entity attributes are chosen to construct an
+     * instance of the Java record.
+     */
+    @Test
+    public void testQueryAndSelectAnnosOnMethod() {
+        Ratio ratio = fractions.asRatioOfNumeratorToDenominator("Five Twelfths")
+                        .orElseThrow();
+        assertEquals(5,
+                     ratio.term1());
+        assertEquals(12,
+                     ratio.term2());
+
+        assertEquals(false,
+                     fractions.asRatioOfNumeratorToDenominator("none")
+                                     .isPresent());
+    }
+
+    /**
+     * A repository method is annotated Query and returns a Java record
+     * with record components that are annotated Select. The Select
+     * annotations on the record components determine the order of and
+     * which entity attributes are chosen to construct instances of the
+     * Java record.
+     */
+    @Test
+    public void testQueryAnnoOnMethodAndSelectOnRecordComponents() {
+        assertEquals(List.of(new Slope(2, 15),
+                             new Slope(4, 15),
+                             new Slope(7, 15),
+                             new Slope(8, 15),
+                             new Slope(11, 15),
+                             new Slope(13, 15),
+                             new Slope(14, 15),
+                             new Slope(2, 5),
+                             new Slope(3, 5),
+                             new Slope(4, 5)),
+                     fractions.asSlopesIfReduced("% Fif%ths", true));
     }
 
     /**
