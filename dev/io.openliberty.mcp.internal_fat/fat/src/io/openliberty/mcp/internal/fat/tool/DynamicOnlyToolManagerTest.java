@@ -10,7 +10,12 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
 import static org.hamcrest.Matchers.hasKey;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.skyscreamer.jsonassert.JSONCompareMode.STRICT;
 
@@ -38,7 +43,9 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.dynamicOnlyToolManagerApp.DynamicOnlyStartupBean;
+import io.openliberty.mcp.internal.fat.tool.noMcpApp.NonMcpServlet;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 /**
@@ -53,6 +60,8 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 public class DynamicOnlyToolManagerTest extends FATServletClient {
 
     private static final String APP_NAME = "DynamicOnlyToolManagerTest";
+    private static final String NO_MCP_APP_NAME = "NonMcpApp";
+    private static final String FILE_NOT_FOUND_ERROR_MESSAGE = "SRVE0190E: File not found: /mcp";
 
     @Server("mcp-server")
     public static LibertyServer server;
@@ -65,14 +74,22 @@ public class DynamicOnlyToolManagerTest extends FATServletClient {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(DynamicOnlyStartupBean.class.getPackage());
 
+        WebArchive nonMcpApp = ShrinkWrap.create(WebArchive.class, NO_MCP_APP_NAME + ".war")
+                                         .addPackage(NonMcpServlet.class.getPackage());
+
         ShrinkHelper.exportDropinAppToServer(server, app, SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, nonMcpApp, SERVER_ONLY);
 
         server.startServer();
+
+        // Verify the MCP endpoint started for the dynamic-only app
+        assertNotNull("MCP endpoint must be logged for the dynamic-only app",
+                      server.waitForStringInLog("MCP server endpoint: .*/DynamicOnlyToolManagerTest/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        server.stopServer(FILE_NOT_FOUND_ERROR_MESSAGE);
     }
 
     /**
@@ -123,6 +140,25 @@ public class DynamicOnlyToolManagerTest extends FATServletClient {
                         }
                         """;
         JSONAssert.assertEquals(expected, client.callMCP(request), STRICT);
+    }
+
+    /**
+     * Verifies that a CDI-enabled web app with no MCP tools and no {@code ToolManager}
+     * injection does NOT get an MCP servlet installed — its {@code /mcp} endpoint must
+     * return 404.
+     * <p>
+     * This ensures the fix for issue #36103 does not regress to installing the MCP servlet
+     * in every CDI-enabled web module regardless of MCP participation.
+     */
+    @Test
+    public void testNonMcpAppHasNoMcpEndpoint() throws Exception {
+        new HttpRequest(server, "/" + NO_MCP_APP_NAME + "/mcp")
+                        .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                        .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
+                        .method("POST")
+                        .expectCode(404)
+                        .run(String.class);
+        assertNotNull(server.waitForStringInLogUsingMark(FILE_NOT_FOUND_ERROR_MESSAGE, server.getDefaultLogFile()));
     }
 
     private Map<String, JsonObject> getTools() throws Exception {

@@ -35,7 +35,6 @@ import io.openliberty.mcp.internal.security.SecurityRequirement;
 import io.openliberty.mcp.internal.security.SecurityRequirement.SecurityAnnotation;
 import io.openliberty.mcp.internal.spi.MetaCarrierBuilderImpl;
 import io.openliberty.mcp.tools.ToolManager;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.json.JsonObject;
 import jakarta.json.bind.Jsonb;
 
@@ -48,7 +47,7 @@ public class ToolRegistry implements ToolManager {
         if (staticInstance != null) {
             return staticInstance;
         }
-        return CDI.current().select(McpCdiExtension.class).get().getCurrentToolRegistry();
+        return McpCdiExtension.get().getCurrentToolRegistry();
     }
 
     /**

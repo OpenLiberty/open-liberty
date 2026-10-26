@@ -36,6 +36,7 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIService;
+import jakarta.enterprise.inject.spi.CDI;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.mcp.annotations.DefaultValueConverter;
@@ -80,6 +81,15 @@ public class McpCdiExtension implements Extension {
     private static final TraceComponent tc = Tr.register(McpCdiExtension.class);
     private static final ServiceCaller<CDIService> CDI_SERVICE = new ServiceCaller<>(McpCdiExtension.class, CDIService.class);
 
+    /**
+     * Returns the current module's {@link McpCdiExtension} instance via CDI.
+     *
+     * @throws IllegalStateException if CDI is not active
+     */
+    public static McpCdiExtension get() {
+        return CDI.current().select(McpCdiExtension.class).get();
+    }
+
     private static final List<Class<? extends Annotation>> UNSUPPORTED_ANNOTATIONS = List.of(
                                                                                              Prompt.class,
                                                                                              Resource.class,
@@ -92,6 +102,7 @@ public class McpCdiExtension implements Extension {
     private final Map<Bean<?>, Integer> encoderPriorities = new HashMap<>();
     private final Map<Bean<?>, Type> converterBeans = new HashMap<>();
     private ConcurrentHashMap<J2EEName, Map<String, ArrayList<String>>> duplicateToolsMap = new ConcurrentHashMap<>();
+    private final Set<J2EEName> modulesWithToolManagerInjection = ConcurrentHashMap.newKeySet();
 
     private SchemaRegistry schemas = new SchemaRegistry();
     private Jsonb jsonb = createJsonb();
@@ -116,6 +127,19 @@ public class McpCdiExtension implements Extension {
     void endModuleContext(@Observes @BeforeDestroyed(ApplicationScoped.class) Object event) {
         if (moduleContext != null) {
             moduleContext.shutdown();
+        }
+    }
+
+    void discoverToolManagerInjections(@Observes ProcessManagedBean<?> pmb) {
+        Bean<?> bean = pmb.getBean();
+        boolean hasToolManagerInjection = bean.getInjectionPoints().stream()
+                                              .anyMatch(ip -> ip.getType().equals(io.openliberty.mcp.tools.ToolManager.class));
+        if (hasToolManagerInjection) {
+            J2EEName module = getModuleForBean(bean);
+            modulesWithToolManagerInjection.add(module);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "discoverToolManagerInjections: recorded module=" + module + " for bean=" + bean.getBeanClass().getName());
+            }
         }
     }
 
@@ -425,6 +449,18 @@ public class McpCdiExtension implements Extension {
 
     public ToolRegistry getCurrentToolRegistry() {
         return toolRegistries.getCurrent();
+    }
+
+    /**
+     * Returns {@code true} if any bean in the given module declared an injection point
+     * for {@link io.openliberty.mcp.tools.ToolManager}, indicating the module intends
+     * to register tools programmatically at runtime.
+     *
+     * @param moduleName the J2EE name of the module to check
+     * @return {@code true} if {@code ToolManager} was injected in the module
+     */
+    public boolean hasToolManagerInjection(J2EEName moduleName) {
+        return modulesWithToolManagerInjection.contains(moduleName);
     }
 
     public SchemaRegistry getSchemaRegistry() {
