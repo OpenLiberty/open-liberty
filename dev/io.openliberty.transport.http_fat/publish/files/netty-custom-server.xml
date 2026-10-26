@@ -7,7 +7,7 @@
     
     SPDX-License-Identifier: EPL-2.0
  -->
-<server description="Test Netty Custom Config">
+<server description="Test Netty Custom Config" quiesceTimeout="1m30s">
 
     <include location="../fatTestCommon.xml"/>
 
