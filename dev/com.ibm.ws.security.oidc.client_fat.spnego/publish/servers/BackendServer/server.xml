@@ -62,7 +62,7 @@
 		</application-bnd>
 	</application>
 
-	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 --> <!-- HashiCorpIgnore -->
 
 	<include location="../fatTestCommon.xml" />	
 

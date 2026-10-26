@@ -48,7 +48,7 @@ public class TestOLGH19998_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
         if (isDB2ForZOS())
             return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
 
-        final String testName = "jpa10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_EJB_SL_AMJTA_Web";
+        final String testName = "jpa10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_EJB_SL_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testUpdateAllQueryWithTimestampLocking";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -59,7 +59,7 @@ public class TestOLGH19998_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
         if (isDB2ForZOS())
             return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
 
-        final String testName = "jpa10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_EJB_SL_AMRL_Web";
+        final String testName = "jpa10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_EJB_SL_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testUpdateAllQueryWithTimestampLocking";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -70,7 +70,7 @@ public class TestOLGH19998_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
         if (isDB2ForZOS())
             return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
 
-        final String testName = "jpa10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_EJB_SL_CMTS_Web";
+        final String testName = "jpa10_query_olgh19998_testUpdateAllQueryWithTimestampLocking_EJB_SL_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testUpdateAllQueryWithTimestampLocking";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);
@@ -83,7 +83,7 @@ public class TestOLGH19998_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
         if (isDB2ForZOS())
             return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
 
-        final String testName = "jpa10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_EJB_SL_AMJTA_Web";
+        final String testName = "jpa10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_EJB_SL_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testTimestampLockingUpdateWithUpdateAllQuery";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -94,7 +94,7 @@ public class TestOLGH19998_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
         if (isDB2ForZOS())
             return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
 
-        final String testName = "jpa10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_EJB_SL_AMRL_Web";
+        final String testName = "jpa10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_EJB_SL_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testTimestampLockingUpdateWithUpdateAllQuery";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -105,7 +105,7 @@ public class TestOLGH19998_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
         if (isDB2ForZOS())
             return; // Requires an IBM JDK with EBCDIC codepage support, which OpenJDK/Semeru does not have.
 
-        final String testName = "jpa10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_EJB_SL_CMTS_Web";
+        final String testName = "jpa10_query_olgh19998_testTimestampLockingUpdateWithUpdateAllQuery_EJB_SL_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testTimestampLockingUpdateWithUpdateAllQuery";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);

@@ -13,12 +13,12 @@
     <include location="${shared.config.dir}/${env.repeat_phase}"/>
     <dataSource id="DefaultDataSource" fat.modify="true">
         <jdbcDriver libraryRef="JDBCLib"/>
-    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- HashiCorpIgnore -->
     </dataSource>
 
     <dataSource id="H2DataSource" jndiName="jdbc/H2DataSource">
         <jdbcDriver libraryRef="H2JDBCLib"/>
-        <properties.h2 url="jdbc:h2:mem:ds1;DB_CLOSE_DELAY=-1" user="dbuser1" password="{xor}Oz0vKDtu" />
+        <properties.h2 url="jdbc:h2:mem:ds1;DB_CLOSE_DELAY=-1" user="dbuser1" password="{xor}Oz0vKDtu" /> <!-- HashiCorpIgnore -->
     </dataSource>
 
     <library id="JDBCLib">

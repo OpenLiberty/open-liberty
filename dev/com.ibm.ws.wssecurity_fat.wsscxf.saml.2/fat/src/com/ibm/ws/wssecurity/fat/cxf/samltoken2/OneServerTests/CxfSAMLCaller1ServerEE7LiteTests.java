@@ -104,7 +104,7 @@ public class CxfSAMLCaller1ServerEE7LiteTests extends SAMLCommonTest {
         String webServicePort = "SamlCallerToken03";
         String policyName = "CallerHttpsPolicy";
         String titleToCheck = "CXF SAML Caller Service Client";
-        String partToCheck = "pass:true::FatSamlC03Service";
+        String partToCheck = "pass:true::FatSamlC03Service"; // HashiCorpIgnore
         String testMode = "positive";
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 

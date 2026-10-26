@@ -565,7 +565,7 @@ public class CxfX509MigSymTests {
      * soapenv:mustUnderstand="1">
      * <wsse:BinarySecurityToken EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary"
      * ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3"
-     * wsu:Id="EEF851A0D5D1683B36135603085959817">
+     * wsu:Id="EEF851A0D5D1683B36135603085959817"> // pragma: allowlist secret
      * MIIBzTCCATagAwIBAgIEUKwHVjANBgkqhkiG9w0BAQQFADArMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMQ4wDAYDVQQDEwV0ZXN0MjAeFw0xMjExMjAyMjQyMzBaFw0zNDEwMTYyMjQyMzBaMCsxCzAJBgNVBAYTAlVTMQwwCgYDVQQKEwNJQk0xDjAMBgNVBAMTBXRlc3QyMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDPWOQKPX8I3qzsZdcKWHxFZC1a
      * +yysPEZpB5ZqlHc0ZKxfj/20k+1O6Gu8C7yqY2ZqkZSSyKVHWEhcUMZ38r+9Ib664YNFTzYxvNLqFGZW8+79h5Jb8h+jQ8/iN0MuMEevz0LpzPsbyG+mNKyg/
      * dhiVh6uhd5SiGm5EJTjcz7Q9QIDAQABMA0GCSqGSIb3DQEBBAUAA4GBAAnykqGOEjrrWFyfK7ULICLnMQ3hqwcvyj29LpbkrBHJ1Ko7M7ptlz1Vx0teoTdMv04WkOeBhg5y0SqtWxPmrfsrkBC6pYfJZoDr26DIT5ZfMJE
@@ -2254,7 +2254,7 @@ public class CxfX509MigSymTests {
                              thisMethod.substring(4);
             }
             if (respReceived != null && respReceived.isEmpty()) {
-                respReceived = "pass:false:'received nothing'";
+                respReceived = "pass:false:'received nothing'"; // HashiCorpIgnore
             }
             Log.info(thisClass, methodFull, "The response received is: '" + respReceived + "'");
             assertTrue("Failed to get back the expected text. But :" + respReceived, respReceived.contains("<p>pass:true:"));

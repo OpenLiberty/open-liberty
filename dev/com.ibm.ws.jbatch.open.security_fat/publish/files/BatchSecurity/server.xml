@@ -27,7 +27,7 @@
 	</dataSource>
 	
 	<!-- ssl keystore to enable SSL port for batch rest connector -->
-    <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.p12" type="PKCS12" password="{xor}EzY9Oi0rJg==" />
+    <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.p12" type="PKCS12" password="{xor}EzY9Oi0rJg==" /> <!-- HashiCorpIgnore -->
     
     <logging
         traceSpecification="com.ibm.jbatch.*=all=enabled:jsr352.test.servlet.*=all=enabled:com.ibm.ws.jbatch.*=all:com.ibm.jbatch.tck.*=all:com.ibm.ws.security.*=all:com.ibm.ws.webcontainer.security.*=all:com.ibm.wsspi.rest.handler.*=all:batch.security.*=all" />

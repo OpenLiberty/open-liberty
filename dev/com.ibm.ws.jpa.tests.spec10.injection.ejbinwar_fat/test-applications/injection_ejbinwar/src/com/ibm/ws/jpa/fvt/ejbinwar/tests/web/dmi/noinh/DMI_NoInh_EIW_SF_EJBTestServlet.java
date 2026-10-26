@@ -53,7 +53,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -133,7 +133,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -213,7 +213,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -293,7 +293,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -379,7 +379,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -399,7 +399,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -419,7 +419,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -439,7 +439,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -459,7 +459,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -479,7 +479,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -499,7 +499,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -519,7 +519,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -539,7 +539,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -559,7 +559,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -579,7 +579,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -599,7 +599,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -619,7 +619,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -639,7 +639,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -659,7 +659,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -679,7 +679,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -701,7 +701,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -721,7 +721,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -741,7 +741,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -761,7 +761,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -781,7 +781,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -801,7 +801,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -821,7 +821,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -841,7 +841,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -861,7 +861,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -881,7 +881,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -901,7 +901,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -921,7 +921,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -941,7 +941,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -961,7 +961,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -981,7 +981,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1001,7 +1001,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1023,7 +1023,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1043,7 +1043,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1063,7 +1063,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1083,7 +1083,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_NOOVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_NOOVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_NOOVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "emf_amjta_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1103,7 +1103,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1123,7 +1123,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1143,7 +1143,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1163,7 +1163,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_NOOVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_NOOVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_NOOVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "emf_amrl_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1183,7 +1183,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1203,7 +1203,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1223,7 +1223,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1243,7 +1243,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_NOOVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_NOOVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_NOOVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "em_cmts_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1263,7 +1263,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1283,7 +1283,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1303,7 +1303,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1323,7 +1323,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_NOOVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_NOOVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_NOOVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "em_cmex_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1347,7 +1347,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1407,7 +1407,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pub_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pub_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pub_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1427,7 +1427,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1447,7 +1447,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pri_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pri_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pri_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1487,7 +1487,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pub_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pub_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pub_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1507,7 +1507,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1527,7 +1527,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pri_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pri_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pri_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1567,7 +1567,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pub_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pub_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pub_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1587,7 +1587,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_PKG_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1647,7 +1647,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pub_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pub_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUName_Pub_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_common_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1673,7 +1673,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1693,7 +1693,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1713,7 +1713,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1733,7 +1733,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1753,7 +1753,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1773,7 +1773,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1793,7 +1793,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1813,7 +1813,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1833,7 +1833,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1853,7 +1853,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1873,7 +1873,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1893,7 +1893,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1913,7 +1913,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1933,7 +1933,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1953,7 +1953,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1973,7 +1973,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testCommonPUNameSpecifiedPersistencePathLibJar_PUB_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_common_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -1995,7 +1995,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2015,7 +2015,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2035,7 +2035,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2055,7 +2055,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2075,7 +2075,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2095,7 +2095,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2115,7 +2115,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2135,7 +2135,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2155,7 +2155,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2175,7 +2175,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2195,7 +2195,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2215,7 +2215,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2235,7 +2235,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PKG_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2255,7 +2255,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRI_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2275,7 +2275,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PRO_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2295,7 +2295,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameAppModule_PUB_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_ejb_ejb";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2317,7 +2317,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2337,7 +2337,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2357,7 +2357,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2377,7 +2377,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_OVD_EJBSF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_OVD_EJBSF_AMJTA";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_OVD_EJBSF_AMJTA"; // pragma: allowlist secret
         final String resource = "ovdemf_amjta_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2397,7 +2397,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2417,7 +2417,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2437,7 +2437,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2457,7 +2457,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_OVD_EJBSF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_OVD_EJBSF_AMRL";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_OVD_EJBSF_AMRL"; // pragma: allowlist secret
         final String resource = "ovdemf_amrl_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2477,7 +2477,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2497,7 +2497,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2517,7 +2517,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2537,7 +2537,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_OVD_EJBSF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_OVD_EJBSF_CMTS";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_OVD_EJBSF_CMTS"; // pragma: allowlist secret
         final String resource = "ovdem_cmts_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2557,7 +2557,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PKG_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2577,7 +2577,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRI_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2597,7 +2597,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PRO_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -2617,7 +2617,7 @@ public class DMI_NoInh_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_OVD_EJBSF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_OVD_EJBSF_CMEX";
+        final String testName = "jpa10_Injection_EJBInWAR_DMI_NoInh_testUniquePUNameLibJar_PUB_OVD_EJBSF_CMEX"; // pragma: allowlist secret
         final String resource = "ovdem_cmex_jpalib_earlib";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

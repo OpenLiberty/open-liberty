@@ -85,7 +85,7 @@ public class AnnotatedJNDIEJBSFExServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJB_SF_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJB_SF_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_CMEX";
+        final String testName = "jpa10_Injection_EJB_SF_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -112,7 +112,7 @@ public class AnnotatedJNDIEJBSFExServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJB_SF_JNDI_testUniquePUNameAppModule_ANO_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJB_SF_JNDI_testUniquePUNameAppModule_ANO_CMEX";
+        final String testName = "jpa10_Injection_EJB_SF_JNDI_testUniquePUNameAppModule_ANO_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -139,7 +139,7 @@ public class AnnotatedJNDIEJBSFExServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_EJB_SF_JNDI_testUniquePUNameLibJar_ANO_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_EJB_SF_JNDI_testUniquePUNameLibJar_ANO_CMEX";
+        final String testName = "jpa10_Injection_EJB_SF_JNDI_testUniquePUNameLibJar_ANO_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

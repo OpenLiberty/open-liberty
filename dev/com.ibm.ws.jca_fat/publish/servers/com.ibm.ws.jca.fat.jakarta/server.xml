@@ -41,7 +41,7 @@
       <properties.FAT1 queueName="queue1"/>
     </jmsQueue>
     
-    <authData id="activation1auth" password="{xor}HhwLCW4PCBs=" user="ACTV1USER"/>
+    <authData id="activation1auth" password="{xor}HhwLCW4PCBs=" user="ACTV1USER"/> <!-- HashiCorpIgnore -->
 
     <jmsActivationSpec id="fvtapp/fvtweb/FVTMessageDrivenBean" authDataRef="activation1auth">
       <properties.FAT1 destinationRef="queue1"/>
@@ -61,7 +61,7 @@
 
     <resourceAdapter id="FAT1" location="${server.config.dir}/connectors/JCAFAT1.rar">
       <classloader commonLibraryRef="DerbyLib"/>
-      <properties.FAT1 databaseName="jcafvtdb" createDatabase="true" password="{xor}DR4Nbg8IGw==" userName="RAR1USER"/>
+      <properties.FAT1 databaseName="jcafvtdb" createDatabase="true" password="{xor}DR4Nbg8IGw==" userName="RAR1USER"/> <!-- HashiCorpIgnore -->
     </resourceAdapter>
     
     <!-- This is used by the fake RAR -->

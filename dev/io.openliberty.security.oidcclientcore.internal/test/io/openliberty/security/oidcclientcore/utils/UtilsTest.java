@@ -18,7 +18,7 @@ import org.junit.Test;
 
 public class UtilsTest {
 
-    private final String input = "abcdefghijklmnopqrstuvwxyz10123456789";
+    private final String input = "abcdefghijklmnopqrstuvwxyz10123456789"; // pragma: allowlist secret
 
     @Test
     public void test_getStrHashCode_nullInput() {

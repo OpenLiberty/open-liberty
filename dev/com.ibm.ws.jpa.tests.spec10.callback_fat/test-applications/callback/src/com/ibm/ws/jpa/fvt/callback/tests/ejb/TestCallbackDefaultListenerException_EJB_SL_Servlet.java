@@ -76,7 +76,7 @@ public class TestCallbackDefaultListenerException_EJB_SL_Servlet extends EJBDBTe
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SL() throws Exception {
-        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SL";
+        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SL"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException002";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -328,7 +328,7 @@ public class TestCallbackDefaultListenerException_EJB_SL_Servlet extends EJBDBTe
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_CallbackDefaultListener_RuntimeException_PublicProtection_001_XML_AMJTA_EJB_SL() throws Exception {
-        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PublicProtection_001_XML_AMJTA_EJB_SL";
+        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PublicProtection_001_XML_AMJTA_EJB_SL"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException002";
         final String testResource = "test-jpa-resource-amjta";
 

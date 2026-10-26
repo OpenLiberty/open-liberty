@@ -40,7 +40,7 @@ public class TestOLGH8014_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testEmptyAggregateFunctionsWithPrimitives
     @Test
     public void jpa_spec10_query_olgh8014_testEmptyAggregateFunctionsWithPrimitives_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh8014_testEmptyAggregateFunctionsWithPrimitives_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa10_query_olgh8014_testEmptyAggregateFunctionsWithPrimitives_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testEmptyAggregateFunctionsWithPrimitives";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -49,7 +49,7 @@ public class TestOLGH8014_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testEmptyAggregateFunctionsWithWrappers
     @Test
     public void jpa_spec10_query_olgh8014_testEmptyAggregateFunctionsWithWrappers_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh8014_testEmptyAggregateFunctionsWithWrappers_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa10_query_olgh8014_testEmptyAggregateFunctionsWithWrappers_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testEmptyAggregateFunctionsWithWrappers";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -58,7 +58,7 @@ public class TestOLGH8014_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testAggregateFunctionsWithPrimitives
     @Test
     public void jpa_spec10_query_olgh8014_testAggregateFunctionsWithPrimitives_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh8014_testAggregateFunctionsWithPrimitives_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa10_query_olgh8014_testAggregateFunctionsWithPrimitives_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testAggregateFunctionsWithPrimitives";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -67,7 +67,7 @@ public class TestOLGH8014_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testAggregateFunctionsWithWrappers
     @Test
     public void jpa_spec10_query_olgh8014_testAggregateFunctionsWithWrappers_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh8014_testAggregateFunctionsWithWrappers_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa10_query_olgh8014_testAggregateFunctionsWithWrappers_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testAggregateFunctionsWithWrappers";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);

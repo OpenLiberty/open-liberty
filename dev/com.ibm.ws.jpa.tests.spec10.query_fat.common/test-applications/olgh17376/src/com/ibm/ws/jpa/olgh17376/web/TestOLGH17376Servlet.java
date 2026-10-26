@@ -109,7 +109,7 @@ public class TestOLGH17376Servlet extends JPADBTestServlet {
     // testQueryINSUBQUERYLiterals1
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYLiterals1_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals1_AMJTA_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals1_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYLiterals1";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -117,7 +117,7 @@ public class TestOLGH17376Servlet extends JPADBTestServlet {
 
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYLiterals1_AMRL_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals1_AMRL_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals1_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYLiterals1";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -125,7 +125,7 @@ public class TestOLGH17376Servlet extends JPADBTestServlet {
 
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYLiterals1_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals1_CMTS_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals1_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYLiterals1";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);
@@ -134,7 +134,7 @@ public class TestOLGH17376Servlet extends JPADBTestServlet {
     // testQueryINSUBQUERYParameters1
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYParameters1_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters1_AMJTA_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters1_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYParameters1";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -142,7 +142,7 @@ public class TestOLGH17376Servlet extends JPADBTestServlet {
 
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYParameters1_AMRL_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters1_AMRL_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters1_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYParameters1";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -150,7 +150,7 @@ public class TestOLGH17376Servlet extends JPADBTestServlet {
 
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYParameters1_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters1_CMTS_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters1_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYParameters1";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);
@@ -159,7 +159,7 @@ public class TestOLGH17376Servlet extends JPADBTestServlet {
     // testQueryINSUBQUERYLiterals2
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYLiterals2_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals2_AMJTA_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals2_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYLiterals2";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -167,7 +167,7 @@ public class TestOLGH17376Servlet extends JPADBTestServlet {
 
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYLiterals2_AMRL_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals2_AMRL_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals2_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYLiterals2";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -175,7 +175,7 @@ public class TestOLGH17376Servlet extends JPADBTestServlet {
 
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYLiterals2_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals2_CMTS_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals2_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYLiterals2";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);
@@ -184,7 +184,7 @@ public class TestOLGH17376Servlet extends JPADBTestServlet {
     // testQueryINSUBQUERYParameters2
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYParameters2_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters2_AMJTA_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters2_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYParameters2";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -192,7 +192,7 @@ public class TestOLGH17376Servlet extends JPADBTestServlet {
 
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYParameters2_AMRL_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters2_AMRL_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters2_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYParameters2";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -200,7 +200,7 @@ public class TestOLGH17376Servlet extends JPADBTestServlet {
 
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYParameters2_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters2_CMTS_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters2_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYParameters2";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);

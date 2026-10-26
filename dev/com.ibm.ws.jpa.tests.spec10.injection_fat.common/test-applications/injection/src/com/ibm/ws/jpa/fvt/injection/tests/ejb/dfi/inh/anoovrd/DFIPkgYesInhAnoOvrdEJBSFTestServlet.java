@@ -58,7 +58,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFTestServlet extends EJBDBTestVehicleServlet
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testCommonPUName_PKG_NOOVRD_EJB_SF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUName_PKG_NOOVRD_EJB_SF_AMJTA";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUName_PKG_NOOVRD_EJB_SF_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -81,7 +81,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFTestServlet extends EJBDBTestVehicleServlet
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testCommonPUName_PKG_NOOVRD_EJB_SF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUName_PKG_NOOVRD_EJB_SF_AMRL";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUName_PKG_NOOVRD_EJB_SF_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -104,7 +104,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFTestServlet extends EJBDBTestVehicleServlet
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testCommonPUName_PKG_NOOVRD_EJB_SF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUName_PKG_NOOVRD_EJB_SF_CMTS";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUName_PKG_NOOVRD_EJB_SF_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -135,7 +135,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFTestServlet extends EJBDBTestVehicleServlet
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVRD_EJB_SF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVRD_EJB_SF_AMJTA";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVRD_EJB_SF_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -158,7 +158,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFTestServlet extends EJBDBTestVehicleServlet
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVRD_EJB_SF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVRD_EJB_SF_AMRL";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVRD_EJB_SF_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -181,7 +181,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFTestServlet extends EJBDBTestVehicleServlet
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVRD_EJB_SF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVRD_EJB_SF_CMTS";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVRD_EJB_SF_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -208,7 +208,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFTestServlet extends EJBDBTestVehicleServlet
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PKG_NOOVRD_EJB_SF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PKG_NOOVRD_EJB_SF_AMJTA";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PKG_NOOVRD_EJB_SF_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -231,7 +231,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFTestServlet extends EJBDBTestVehicleServlet
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PKG_NOOVRD_EJB_SF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PKG_NOOVRD_EJB_SF_AMRL";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PKG_NOOVRD_EJB_SF_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -254,7 +254,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFTestServlet extends EJBDBTestVehicleServlet
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PKG_NOOVRD_EJB_SF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PKG_NOOVRD_EJB_SF_CMTS";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PKG_NOOVRD_EJB_SF_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -281,7 +281,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFTestServlet extends EJBDBTestVehicleServlet
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PKG_NOOVRD_EJB_SF_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PKG_NOOVRD_EJB_SF_AMJTA";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PKG_NOOVRD_EJB_SF_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -304,7 +304,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFTestServlet extends EJBDBTestVehicleServlet
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PKG_NOOVRD_EJB_SF_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PKG_NOOVRD_EJB_SF_AMRL";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PKG_NOOVRD_EJB_SF_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -327,7 +327,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFTestServlet extends EJBDBTestVehicleServlet
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PKG_NOOVRD_EJB_SF_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PKG_NOOVRD_EJB_SF_CMTS";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PKG_NOOVRD_EJB_SF_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

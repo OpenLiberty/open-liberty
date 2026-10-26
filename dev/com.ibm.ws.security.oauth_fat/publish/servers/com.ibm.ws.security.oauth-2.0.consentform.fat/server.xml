@@ -65,36 +65,34 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
-				enabled="true" />
+				enabled="true"
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 			<client
 				name="client02"
-				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client02"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
-				enabled="true" />
+				enabled="true"
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 			<client
 				name="client03"
-				secret="{xor}LDo8LTorbm1saw=="
+
 				displayname="client03"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
-				enabled="true" />
+				enabled="true"
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 			<client
 				name="client04"
-				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client04"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
-				enabled="true" />
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 			<client
 				name="user1"
-				secret="{xor}LDo8Ki02KyY="
 				displayname="user1"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true"
-			>
-			</client>
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 		</localStore>
 	</oauthProvider>
 
@@ -109,10 +107,10 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
-				enabled="true" />
+				enabled="true"
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 		</localStore>
 	</oauthProvider>
 
@@ -129,34 +127,34 @@
 		<localStore>
 			<client
 				name="pclient01"
-				secret="{xor}LDo8LTorbm1saw=="
 				displayname="pclient01"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
-				enabled="true" />
+				enabled="true"
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 			<client
 				name="pclient02"
-				secret="{xor}LDo8LTorbm1saw=="
 				displayname="pclient02"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
-				enabled="true" />
+				enabled="true"
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 			<client
 				name="pclient03"
-				secret="{xor}LDo8LTorbm1saw=="
 				displayname="pclient03"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
-				enabled="true" />
+				enabled="true"
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 			<client
 				name="pclient04"
-				secret="{xor}LDo8LTorbm1saw=="
 				displayname="pclient04"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
-				enabled="true" />
+				enabled="true"
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 			<client
 				name="user2"
-				secret="{xor}LDo8Ki02KyY="
 				displayname="user2"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
-				enabled="true" />
+				enabled="true"
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 		</localStore>
 	</oauthProvider>
 
@@ -165,10 +163,10 @@
 		<localStore>
 			<client
 				name="nclient01"
-				secret="{xor}LDo8LTorbm1saw=="
 				displayname="nclient01"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
-				enabled="true" />
+				enabled="true"
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 		</localStore>
 	</oauthProvider>
 
@@ -183,10 +181,10 @@
 		<localStore>
 			<client
 				name="mediatorclient"
-				secret="{xor}LDo8LTorbm1saw=="
 				displayname="mediatorclient"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
-				enabled="true" />
+				enabled="true"
+				secret="{xor}LDo8LTorbm1saw==" /> <!-- HashiCorpIgnore -->
 		</localStore>
 	</oauthProvider>
 

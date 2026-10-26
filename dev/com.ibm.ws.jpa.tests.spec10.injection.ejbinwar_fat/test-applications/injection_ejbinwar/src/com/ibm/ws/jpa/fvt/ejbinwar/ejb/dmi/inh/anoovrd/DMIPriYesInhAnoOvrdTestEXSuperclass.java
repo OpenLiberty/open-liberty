@@ -116,7 +116,7 @@ public abstract class DMIPriYesInhAnoOvrdTestEXSuperclass extends DMIInhCommonEJ
 
     @SuppressWarnings("unused")
     @PersistenceContext(unitName = "JPALIB_JTA", type = PersistenceContextType.EXTENDED,
-                        name = "jpa/DMIPriYesInhAnoOvrdTestEJB/ovdem_cmex_jpalib_earlib")
+                        name = "jpa/DMIPriYesInhAnoOvrdTestEJB/ovdem_cmex_jpalib_earlib") // pragma: allowlist secret
     private void setOvdem_cmex_jpalib_earlib(EntityManager ovdemCmtsJpalibEarlib) {
         ovdem_cmex_jpalib_earlib = ovdemCmtsJpalibEarlib;
     }

@@ -92,7 +92,7 @@ public class DMIProNoInhEJBSFEXTestServlet extends EJBDBTestVehicleServlet {
      */
     @Test
     public void jpa10_Injection_DMI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_EJB_SF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_DMI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_EJB_SF_CMEX";
+        final String testName = "jpa10_Injection_DMI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_EJB_SF_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -119,7 +119,7 @@ public class DMIProNoInhEJBSFEXTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_DMI_NoInheritance_testUniquePUNameAppModule_PRO_NOOVRD_EJB_SF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_DMI_NoInheritance_testUniquePUNameAppModule_PRO_NOOVRD_EJB_SF_CMEX";
+        final String testName = "jpa10_Injection_DMI_NoInheritance_testUniquePUNameAppModule_PRO_NOOVRD_EJB_SF_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -146,7 +146,7 @@ public class DMIProNoInhEJBSFEXTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_DMI_NoInheritance_testUniquePUNameLibJar_PRO_NOOVRD_EJB_SF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_DMI_NoInheritance_testUniquePUNameLibJar_PRO_NOOVRD_EJB_SF_CMEX";
+        final String testName = "jpa10_Injection_DMI_NoInheritance_testUniquePUNameLibJar_PRO_NOOVRD_EJB_SF_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -206,7 +206,7 @@ public class DMIProNoInhEJBSFEXTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_DMI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_EJB_SF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_DMI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_EJB_SF_CMEX";
+        final String testName = "jpa10_Injection_DMI_NoInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_OVRD_EJB_SF_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -233,7 +233,7 @@ public class DMIProNoInhEJBSFEXTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_DMI_NoInheritance_testUniquePUNameAppModule_PRO_OVRD_EJB_SF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_DMI_NoInheritance_testUniquePUNameAppModule_PRO_OVRD_EJB_SF_CMEX";
+        final String testName = "jpa10_Injection_DMI_NoInheritance_testUniquePUNameAppModule_PRO_OVRD_EJB_SF_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -260,7 +260,7 @@ public class DMIProNoInhEJBSFEXTestServlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa10_Injection_DMI_NoInheritance_testUniquePUNameLibJar_PRO_OVRD_EJB_SF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_DMI_NoInheritance_testUniquePUNameLibJar_PRO_OVRD_EJB_SF_CMEX";
+        final String testName = "jpa10_Injection_DMI_NoInheritance_testUniquePUNameLibJar_PRO_OVRD_EJB_SF_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

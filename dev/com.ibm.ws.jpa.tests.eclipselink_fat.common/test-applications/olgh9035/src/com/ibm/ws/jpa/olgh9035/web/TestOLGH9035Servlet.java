@@ -59,7 +59,7 @@ public class TestOLGH9035Servlet extends JPADBTestServlet {
     // DB2Z tests
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_AMJTA_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_AMJTA_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_DB2ZOS";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -67,7 +67,7 @@ public class TestOLGH9035Servlet extends JPADBTestServlet {
 
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_AMRL_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_AMRL_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_DB2ZOS";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);

@@ -456,7 +456,7 @@ public class TxSynchronizationDDCMEXSpecificUnsyncTestServlet extends EJBDBTestV
 
     @Test
     public void jpa_jpa21_TxSynchronizationTest_DD_CMEXSpecific_testRemove_003_Unsync_EJB_CMEX_SF() throws Exception {
-        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_CMEXSpecific_testRemove_003_Unsync_EJB_CMEX_SF";
+        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_CMEXSpecific_testRemove_003_Unsync_EJB_CMEX_SF"; // pragma: allowlist secret
         final String testMethod = "testRemove003";
         final String testResource = "test-jpa-resource-txunsync";
         executeDDL("JPA21_TXSYNC_DELETE_${dbvendor}.ddl");
@@ -476,7 +476,7 @@ public class TxSynchronizationDDCMEXSpecificUnsyncTestServlet extends EJBDBTestV
 
     @Test
     public void jpa_jpa21_TxSynchronizationTest_DD_CMEXSpecific_testRemove_004_Unsync_Nojoin_EJB_CMEX_SF() throws Exception {
-        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_CMEXSpecific_testRemove_004_Unsync_Nojoin_EJB_CMEX_SF";
+        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_CMEXSpecific_testRemove_004_Unsync_Nojoin_EJB_CMEX_SF"; // pragma: allowlist secret
         final String testMethod = "testRemove004";
         final String testResource = "test-jpa-resource-txunsync";
         executeDDL("JPA21_TXSYNC_DELETE_${dbvendor}.ddl");

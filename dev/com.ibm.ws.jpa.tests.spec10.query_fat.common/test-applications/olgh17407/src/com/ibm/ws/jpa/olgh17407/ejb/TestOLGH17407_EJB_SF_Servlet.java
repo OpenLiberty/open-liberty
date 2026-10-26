@@ -44,7 +44,7 @@ public class TestOLGH17407_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
     // testQueryHavingLiterals1
     @Test
     public void jpa_spec10_query_olgh17407_testQueryHavingLiterals1_EJB_SF_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17407_testQueryHavingLiterals1_EJB_SF_AMJTA_Web";
+        final String testName = "jpa10_query_olgh17407_testQueryHavingLiterals1_EJB_SF_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryHavingLiterals1";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -52,7 +52,7 @@ public class TestOLGH17407_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh17407_testQueryHavingLiterals1_EJB_SF_AMRL_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17407_testQueryHavingLiterals1_EJB_SF_AMRL_Web";
+        final String testName = "jpa10_query_olgh17407_testQueryHavingLiterals1_EJB_SF_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryHavingLiterals1";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -60,7 +60,7 @@ public class TestOLGH17407_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh17407_testQueryHavingLiterals1_EJB_SF_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17407_testQueryHavingLiterals1_EJB_SF_CMTS_Web";
+        final String testName = "jpa10_query_olgh17407_testQueryHavingLiterals1_EJB_SF_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryHavingLiterals1";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);
@@ -69,7 +69,7 @@ public class TestOLGH17407_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
     // testQueryHavingParameters1
     @Test
     public void jpa_spec10_query_olgh17407_testQueryHavingParameters1_EJB_SF_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17407_testQueryHavingParameters1_EJB_SF_AMJTA_Web";
+        final String testName = "jpa10_query_olgh17407_testQueryHavingParameters1_EJB_SF_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryHavingParameters1";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -77,7 +77,7 @@ public class TestOLGH17407_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh17407_testQueryHavingParameters1_EJB_SF_AMRL_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17407_testQueryHavingParameters1_EJB_SF_AMRL_Web";
+        final String testName = "jpa10_query_olgh17407_testQueryHavingParameters1_EJB_SF_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryHavingParameters1";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -85,7 +85,7 @@ public class TestOLGH17407_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh17407_testQueryHavingParameters1_EJB_SF_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17407_testQueryHavingParameters1_EJB_SF_CMTS_Web";
+        final String testName = "jpa10_query_olgh17407_testQueryHavingParameters1_EJB_SF_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryHavingParameters1";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);

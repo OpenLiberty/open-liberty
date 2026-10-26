@@ -4338,7 +4338,7 @@ public class H2FATDriverServlet extends FATServlet {
          * :path: /H2TestModule/H2HeadersAndBody
          * T: t
          */
-        h2Client.sendBytes(parseHexBinary("0000270104000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F64791001540174"));
+        h2Client.sendBytes(parseHexBinary("0000270104000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F64791001540174")); // pragma: allowlist secret
 
         blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
@@ -4404,7 +4404,7 @@ public class H2FATDriverServlet extends FATServlet {
          * t: T
          * <dynamic window update>
          */
-        h2Client.sendBytes(parseHexBinary("0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F6479100174015421"));
+        h2Client.sendBytes(parseHexBinary("0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F6479100174015421")); // pragma: allowlist secret
 
         //Use CountDownLatch to block this test thread until we know the test is done (meaning, the connection has been closed)
         blockUntilConnectionIsDone.await();
@@ -4472,7 +4472,7 @@ public class H2FATDriverServlet extends FATServlet {
          * t: t
          * <invalid header index>
          */
-        h2Client.sendBytes(parseHexBinary("0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F64791001740154C6"));
+        h2Client.sendBytes(parseHexBinary("0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F64791001740154C6")); // pragma: allowlist secret
 
         blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
@@ -4536,7 +4536,7 @@ public class H2FATDriverServlet extends FATServlet {
          * t: t
          * <invalid huffman header>
          */
-        h2Client.sendBytes(parseHexBinary("0000330105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F647910017401540085F2B24A84FF8449509FFF"));
+        h2Client.sendBytes(parseHexBinary("0000330105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F647910017401540085F2B24A84FF8449509FFF")); // pragma: allowlist secret
         blockUntilConnectionIsDone.await();
 
         handleErrors(h2Client, testName);
@@ -4592,7 +4592,7 @@ public class H2FATDriverServlet extends FATServlet {
          * t: t
          * <header with invalid index>
          */
-        String frameBytes = "0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F6479100174015480";
+        String frameBytes = "0000280105000000038286141E2F4832546573744D6F64756C652F483248656164657273416E64426F6479100174015480"; // pragma: allowlist secret
         h2Client.sendBytes(parseHexBinary(frameBytes));
         blockUntilConnectionIsDone.await();
 

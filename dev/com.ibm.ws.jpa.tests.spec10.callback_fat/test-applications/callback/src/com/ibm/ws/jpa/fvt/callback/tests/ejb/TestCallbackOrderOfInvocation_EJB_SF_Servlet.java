@@ -114,7 +114,7 @@ public class TestCallbackOrderOfInvocation_EJB_SF_Servlet extends EJBDBTestVehic
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PackageProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_Callback_OrderOfInvocation_PackageProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_Callback_OrderOfInvocation_PackageProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testOrderOfInvocation001";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -354,7 +354,7 @@ public class TestCallbackOrderOfInvocation_EJB_SF_Servlet extends EJBDBTestVehic
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testOrderOfInvocation001";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -380,7 +380,7 @@ public class TestCallbackOrderOfInvocation_EJB_SF_Servlet extends EJBDBTestVehic
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMRL_EJB_SF() throws Exception {
-        final String testName = "jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMRL_EJB_SF";
+        final String testName = "jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMRL_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testOrderOfInvocation001";
         final String testResource = "test-jpa-resource-amrl";
 

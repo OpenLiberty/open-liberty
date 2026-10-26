@@ -40,7 +40,7 @@ public class TestOLGH17376_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testQueryINLiterals1
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINLiterals1_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINLiterals1_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINLiterals1_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINLiterals1";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -49,7 +49,7 @@ public class TestOLGH17376_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testQueryINParameters1
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINParameters1_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINParameters1_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINParameters1_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINParameters1";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -58,7 +58,7 @@ public class TestOLGH17376_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testQueryINSUBQUERYLiterals1
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYLiterals1_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals1_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals1_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYLiterals1";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -67,7 +67,7 @@ public class TestOLGH17376_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testQueryINSUBQUERYParameters1
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYParameters1_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters1_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters1_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYParameters1";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -76,7 +76,7 @@ public class TestOLGH17376_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testQueryINSUBQUERYLiterals2
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYLiterals2_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals2_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYLiterals2_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYLiterals2";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -85,7 +85,7 @@ public class TestOLGH17376_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testQueryINSUBQUERYParameters2
     @Test
     public void jpa_spec10_query_olgh17376_testQueryINSUBQUERYParameters2_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters2_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa10_query_olgh17376_testQueryINSUBQUERYParameters2_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryINSUBQUERYParameters2";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);

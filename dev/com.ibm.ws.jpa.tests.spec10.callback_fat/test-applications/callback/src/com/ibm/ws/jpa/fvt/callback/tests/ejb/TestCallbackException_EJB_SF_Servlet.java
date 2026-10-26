@@ -89,7 +89,7 @@ public class TestCallbackException_EJB_SF_Servlet extends EJBDBTestVehicleServle
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_Callback_RuntimeException_EntityDeclared_PackageProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_Callback_RuntimeException_EntityDeclared_PackageProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_Callback_RuntimeException_EntityDeclared_PackageProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException001";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -167,7 +167,7 @@ public class TestCallbackException_EJB_SF_Servlet extends EJBDBTestVehicleServle
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_Callback_RuntimeException_EntityDeclared_PrivateProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_Callback_RuntimeException_EntityDeclared_PrivateProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_Callback_RuntimeException_EntityDeclared_PrivateProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException001";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -323,7 +323,7 @@ public class TestCallbackException_EJB_SF_Servlet extends EJBDBTestVehicleServle
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_Callback_RuntimeException_EntityDeclared_PublicProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_Callback_RuntimeException_EntityDeclared_PublicProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_Callback_RuntimeException_EntityDeclared_PublicProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException001";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -411,7 +411,7 @@ public class TestCallbackException_EJB_SF_Servlet extends EJBDBTestVehicleServle
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_Callback_RuntimeException_EntityDeclared_MSC_PackageProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_Callback_RuntimeException_EntityDeclared_MSC_PackageProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_Callback_RuntimeException_EntityDeclared_MSC_PackageProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException001";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -489,7 +489,7 @@ public class TestCallbackException_EJB_SF_Servlet extends EJBDBTestVehicleServle
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_Callback_RuntimeException_EntityDeclared_MSC_PrivateProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_Callback_RuntimeException_EntityDeclared_MSC_PrivateProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_Callback_RuntimeException_EntityDeclared_MSC_PrivateProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException001";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -645,7 +645,7 @@ public class TestCallbackException_EJB_SF_Servlet extends EJBDBTestVehicleServle
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_Callback_RuntimeException_EntityDeclared_MSC_PublicProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_Callback_RuntimeException_EntityDeclared_MSC_PublicProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_Callback_RuntimeException_EntityDeclared_MSC_PublicProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException001";
         final String testResource = "test-jpa-resource-amjta";
 

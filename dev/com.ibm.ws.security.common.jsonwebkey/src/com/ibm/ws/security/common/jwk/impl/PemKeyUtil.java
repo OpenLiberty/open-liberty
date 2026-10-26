@@ -46,7 +46,7 @@ public class PemKeyUtil {
 
     protected final static String BEGIN_PUBLIC = "-----BEGIN PUBLIC KEY-----";
     protected final static String END_PUBLIC = "-----END PUBLIC KEY-----";
-    protected final static String BEGIN_PRIVATE = "-----BEGIN PRIVATE KEY-----";
+    protected final static String BEGIN_PRIVATE = "-----BEGIN PRIVATE KEY-----"; // pragma: allowlist secret
     protected final static String END_PRIVATE = "-----END PRIVATE KEY-----";
     protected final static String BEGIN_RSA_PUBLIC = "-----BEGIN RSA PUBLIC KEY-----";
     protected final static String END_RSA_PUBLIC = "-----END RSA PUBLIC KEY-----";

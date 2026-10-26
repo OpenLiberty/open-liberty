@@ -76,6 +76,6 @@ public abstract class DFIPubYesInhDDOvrdTestEXSuperclass extends BMTEJBTestVehic
 
     // This EntityManager should refer to the JPALIB_JTA in the jar in the Application's Library directory
     @PersistenceContext(unitName = "JPALIB_JTA", type = PersistenceContextType.EXTENDED,
-                        name = "jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmex_jpalib_earlib")
+                        name = "jpa/DFIPubYesInhDDOvrdTestEJB/ovdem_cmex_jpalib_earlib") // pragma: allowlist secret
     public EntityManager ovdem_cmex_jpalib_earlib;
 }

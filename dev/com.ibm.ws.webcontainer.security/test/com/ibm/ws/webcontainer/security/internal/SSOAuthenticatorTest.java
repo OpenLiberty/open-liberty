@@ -52,7 +52,7 @@ public class SSOAuthenticatorTest {
     private final WebAppSecurityConfig webAppSecConfig = mock.mock(WebAppSecurityConfig.class);
     private final SSOCookieHelper ssoCookieHelper = mock.mock(SSOCookieHelper.class);
 
-    private final String cookieValue = "4TUZR3aU8II+cWveDgIB7ffDQZaKxx1VKlUBW7KsLa2AQjiB6RWBoNuoH+OIUbtntMIsS2956ZvdzSshAuPNuk7y30BhN00WclWtMY6AD7je2aecQxsGNrV/ogCAOip9EobBue4N1zU8S7yD1jEajykfN8Eo2rIqnMK/DraTV65gmlE378VS3Wy6IFHmZm9BBlaSNqPLBkyJ1Xh98PACMr8f/bF290AD75nGrrB0oXODaeoA85/hpiHpvxSNCFx+P3QDvRly5Bb16SQRhHmUhX0uegAdURKAaeX3gmu8zXQ=";
+    private final String cookieValue = "4TUZR3aU8II+cWveDgIB7ffDQZaKxx1VKlUBW7KsLa2AQjiB6RWBoNuoH+OIUbtntMIsS2956ZvdzSshAuPNuk7y30BhN00WclWtMY6AD7je2aecQxsGNrV/ogCAOip9EobBue4N1zU8S7yD1jEajykfN8Eo2rIqnMK/DraTV65gmlE378VS3Wy6IFHmZm9BBlaSNqPLBkyJ1Xh98PACMr8f/bF290AD75nGrrB0oXODaeoA85/hpiHpvxSNCFx+P3QDvRly5Bb16SQRhHmUhX0uegAdURKAaeX3gmu8zXQ="; // pragma: allowlist secret
     private final Cookie cookie = new Cookie("LTPAToken2", cookieValue);
     private final Cookie[] cookieArray = { cookie };
     private SSOAuthenticator ssoAuth;

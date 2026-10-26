@@ -69,7 +69,7 @@ public abstract class AbstractOidcRegistrationBaseTest extends CommonTestClass {
 
     public static final String FUNCTIONAL_USER_ID = "testuser";
 
-    public static final String SALT = "HStFDlTCZ4rJQThbSddZG5q0Ovf2ozDlrJtT1AYiUhM=";
+    public static final String SALT = "HStFDlTCZ4rJQThbSddZG5q0Ovf2ozDlrJtT1AYiUhM="; // pragma: allowlist secret
     public static final String ALG = "PBKDF2WithHmacSHA512";
 
     protected ClientRegistrationHelper clientRegistrationHelper = new ClientRegistrationHelper(false);

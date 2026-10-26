@@ -114,7 +114,7 @@ public abstract class DFIPkgYesInhDDOvrdTestSuperclass extends BMTEJBTestVehicle
 
     // This EntityManager should refer to the JPALIB_JTA in the jar in the Application's Library directory
     @PersistenceContext(unitName = "JPALIB_JTA", type = PersistenceContextType.TRANSACTION,
-                        name = "jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_jpalib_earlib")
+                        name = "jpa/DFIPkgYesInhDDOvrdTestEJB/ovdem_cmts_jpalib_earlib") // pragma: allowlist secret
     EntityManager ovdem_cmts_jpalib_earlib;
 
     // Application Managed Persistence Unit, JTA-Transaction
@@ -128,7 +128,7 @@ public abstract class DFIPkgYesInhDDOvrdTestSuperclass extends BMTEJBTestVehicle
     EntityManagerFactory ovdemf_amjta_ejb_ejb;
 
     // This EntityManager should refer to the COMMON_JTA in the jar in the Application's Library directory
-    @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_JTA", name = "jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_common_earlib")
+    @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_JTA", name = "jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amjta_common_earlib") // pragma: allowlist secret
     EntityManagerFactory ovdemf_amjta_common_earlib;
 
     // This EntityManager should refer to the JPALIB_JTA in the jar in the Application's Library directory
@@ -146,10 +146,10 @@ public abstract class DFIPkgYesInhDDOvrdTestSuperclass extends BMTEJBTestVehicle
     EntityManagerFactory ovdemf_amrl_ejb_ejb;
 
     // This EntityManager should refer to the COMMON_RL in the jar in the Application's Library directory
-    @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_RL", name = "jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_common_earlib")
+    @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_RL", name = "jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_common_earlib") // pragma: allowlist secret
     EntityManagerFactory ovdemf_amrl_common_earlib;
 
     // This EntityManager should refer to the JPALIB_RL in the jar in the Application's Library directory
-    @PersistenceUnit(unitName = "JPALIB_RL", name = "jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_jpalib_earlib")
+    @PersistenceUnit(unitName = "JPALIB_RL", name = "jpa/DFIPkgYesInhDDOvrdTestEJB/ovdemf_amrl_jpalib_earlib") // pragma: allowlist secret
     EntityManagerFactory ovdemf_amrl_jpalib_earlib;
 }

@@ -43,7 +43,7 @@ public class TestOLGH11795_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_olgh11795_testJoinColumnWithSameDuplicateName_EJB_SF_AMJTA_Web() throws Exception {
-        final String testName = "jpa_spec10_olgh11795_testJoinColumnWithSameDuplicateName_EJB_SF_AMJTA_Web";
+        final String testName = "jpa_spec10_olgh11795_testJoinColumnWithSameDuplicateName_EJB_SF_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testJoinColumnWithSameDuplicateName";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -52,7 +52,7 @@ public class TestOLGH11795_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_olgh11795_testJoinColumnWithSameDuplicateName_EJB_SF_AMRL_Web() throws Exception {
-        final String testName = "jpa_spec10_olgh11795_testJoinColumnWithSameDuplicateName_EJB_SF_AMRL_Web";
+        final String testName = "jpa_spec10_olgh11795_testJoinColumnWithSameDuplicateName_EJB_SF_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testJoinColumnWithSameDuplicateName";
         final String testResource = "test-jpa-resource-amrl";
 
@@ -61,7 +61,7 @@ public class TestOLGH11795_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_olgh11795_testJoinColumnWithSameDuplicateName_EJB_SF_CMTS_Web() throws Exception {
-        final String testName = "jpa_spec10_olgh11795_testJoinColumnWithSameDuplicateName_EJB_SF_CMTS_Web";
+        final String testName = "jpa_spec10_olgh11795_testJoinColumnWithSameDuplicateName_EJB_SF_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testJoinColumnWithSameDuplicateName";
         final String testResource = "test-jpa-resource-cmts";
 

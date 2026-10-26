@@ -94,7 +94,7 @@ public class TestOLGH17369_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
     // testQueryCaseLiterals2
     @Test
     public void jpa_spec10_query_olgh17369_testQueryCaseLiterals2_EJB_SL_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17369_testQueryCaseLiterals2_EJB_SL_AMJTA_Web";
+        final String testName = "jpa10_query_olgh17369_testQueryCaseLiterals2_EJB_SL_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryCaseLiterals2";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -102,7 +102,7 @@ public class TestOLGH17369_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh17369_testQueryCaseLiterals2_EJB_SL_AMRL_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17369_testQueryCaseLiterals2_EJB_SL_AMRL_Web";
+        final String testName = "jpa10_query_olgh17369_testQueryCaseLiterals2_EJB_SL_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryCaseLiterals2";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -119,7 +119,7 @@ public class TestOLGH17369_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
     // testQueryCaseParameters2
     @Test
     public void jpa_spec10_query_olgh17369_testQueryCaseParameters2_EJB_SL_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17369_testQueryCaseParameters2_EJB_SL_AMJTA_Web";
+        final String testName = "jpa10_query_olgh17369_testQueryCaseParameters2_EJB_SL_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryCaseParameters2";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -127,7 +127,7 @@ public class TestOLGH17369_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh17369_testQueryCaseParameters2_EJB_SL_AMRL_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17369_testQueryCaseParameters2_EJB_SL_AMRL_Web";
+        final String testName = "jpa10_query_olgh17369_testQueryCaseParameters2_EJB_SL_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryCaseParameters2";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -144,7 +144,7 @@ public class TestOLGH17369_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
     // testQueryCaseLiterals3
     @Test
     public void jpa_spec10_query_olgh17369_testQueryCaseLiterals3_EJB_SL_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17369_testQueryCaseLiterals3_EJB_SL_AMJTA_Web";
+        final String testName = "jpa10_query_olgh17369_testQueryCaseLiterals3_EJB_SL_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryCaseLiterals3";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -194,7 +194,7 @@ public class TestOLGH17369_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
     // testQueryCaseLiterals4
     @Test
     public void jpa_spec10_query_olgh17369_testQueryCaseLiterals4_EJB_SL_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17369_testQueryCaseLiterals4_EJB_SL_AMJTA_Web";
+        final String testName = "jpa10_query_olgh17369_testQueryCaseLiterals4_EJB_SL_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryCaseLiterals4";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -202,7 +202,7 @@ public class TestOLGH17369_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh17369_testQueryCaseLiterals4_EJB_SL_AMRL_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17369_testQueryCaseLiterals4_EJB_SL_AMRL_Web";
+        final String testName = "jpa10_query_olgh17369_testQueryCaseLiterals4_EJB_SL_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryCaseLiterals4";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -219,7 +219,7 @@ public class TestOLGH17369_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
     // testQueryCaseParameters4
     @Test
     public void jpa_spec10_query_olgh17369_testQueryCaseParameters4_EJB_SL_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17369_testQueryCaseParameters4_EJB_SL_AMJTA_Web";
+        final String testName = "jpa10_query_olgh17369_testQueryCaseParameters4_EJB_SL_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryCaseParameters4";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -227,7 +227,7 @@ public class TestOLGH17369_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh17369_testQueryCaseParameters4_EJB_SL_AMRL_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17369_testQueryCaseParameters4_EJB_SL_AMRL_Web";
+        final String testName = "jpa10_query_olgh17369_testQueryCaseParameters4_EJB_SL_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryCaseParameters4";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);

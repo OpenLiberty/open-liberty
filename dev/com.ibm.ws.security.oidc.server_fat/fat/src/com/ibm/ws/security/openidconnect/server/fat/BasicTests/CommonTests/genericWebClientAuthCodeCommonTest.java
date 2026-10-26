@@ -600,7 +600,7 @@ public class genericWebClientAuthCodeCommonTest extends CommonTest {
         String hashSecret = isFips ? "{hash}ARAAAAAUUEJLREYyV2l0aEhtYWNTSEE1MTIgAAM0UDAAAAAsSFN0RkRsVENaNHJKUVRoYlNkZFpHNXEwT3ZmMm96RGxySnRUMUFZaVVoTT1AAAAAIKXbFUzZRRrAc1crX0XHX/jTvSvrRK3R3FyVKMcu5GKw" : "{hash}ARAAAAAUUEJLREYyV2l0aEhtYWNTSEE1MTIgAAAIAFAAAAAgMAAAACxIU3RGRGxUQ1o0ckpRVGhiU2RkWkc1cTBPdmYyb3pEbHJKdFQxQVlpVWhNPUAAAAAE/u6cVw==";
         Integer hashLen = isFips ? 256 : 32;
         String compID = "OAuthConfigDerby";
-        String salt = "HStFDlTCZ4rJQThbSddZG5q0Ovf2ozDlrJtT1AYiUhM=";
+        String salt = "HStFDlTCZ4rJQThbSddZG5q0Ovf2ozDlrJtT1AYiUhM="; // pragma: allowlist secret
         String algorithm = "PBKDF2WithHmacSHA512";
         Integer iterations = isFips ? 210000 : 2048;
         // Add user directly to the database

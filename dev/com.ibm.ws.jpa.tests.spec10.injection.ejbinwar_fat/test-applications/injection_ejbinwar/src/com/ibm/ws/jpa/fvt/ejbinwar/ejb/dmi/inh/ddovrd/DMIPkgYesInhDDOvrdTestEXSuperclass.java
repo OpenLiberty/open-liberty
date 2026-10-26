@@ -97,7 +97,7 @@ public abstract class DMIPkgYesInhDDOvrdTestEXSuperclass extends DMIInhCommonEJB
     }
 
     @PersistenceContext(unitName = "../lib/jpapulib.jar#COMMON_JTA", type = PersistenceContextType.EXTENDED,
-                        name = "jpa/DMIPkgYesInhDDOvrdTestEJB/ovdem_cmex_common_earlib")
+                        name = "jpa/DMIPkgYesInhDDOvrdTestEJB/ovdem_cmex_common_earlib") // pragma: allowlist secret
     void setOvdem_cmex_common_earlib(EntityManager ovdemCmtsCommonEarlib) {
         ovdem_cmex_common_earlib = ovdemCmtsCommonEarlib;
     }
@@ -108,7 +108,7 @@ public abstract class DMIPkgYesInhDDOvrdTestEXSuperclass extends DMIInhCommonEJB
     }
 
     @PersistenceContext(unitName = "JPALIB_JTA", type = PersistenceContextType.EXTENDED,
-                        name = "jpa/DMIPkgYesInhDDOvrdTestEJB/ovdem_cmex_jpalib_earlib")
+                        name = "jpa/DMIPkgYesInhDDOvrdTestEJB/ovdem_cmex_jpalib_earlib") // pragma: allowlist secret
     void setOvdem_cmex_jpalib_earlib(EntityManager ovdemCmtsJpalibEarlib) {
         ovdem_cmex_jpalib_earlib = ovdemCmtsJpalibEarlib;
     }

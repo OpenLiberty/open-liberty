@@ -220,8 +220,8 @@ public class Jose4jRsaJWK extends RsaJsonWebKey implements JWK {
     //    "kty": "RSA",
     //    "alg": "RS256",
     //    "use": "sig",
-    //    "kid": "70aae097be0fa2a999852d57a480e4cad6bdb81c",
-    //    "n": "1NdMI-DCDkINz0LrnugfpyubBKBniVtzl0RpY4eVq0vxZSZtwXFt1kX5XT6xyiIDAqq7vHzoaByp3gXXWoGEqFHPgk3ssX_goMP1xrj4eFZuyo73NA3gJmCjFKKmemsDhl-mCgp3f3noAPaguMZFQUyoK1UPFfOShTkAOQ6b87XdR_ylhHE2faJZK_L7H3nx-P_PSGC6VYKvlmjuB0qU64oILH2iL5svYq0yz3jxtB7JWknY3KlEHkgBnvcO64gxb4yOSYTqH5oi2za4DmatKPfYvbsJTzg0iGI98xSQkYWtGolwZgpSPdweX5PSTuIYmcRxMHHTlXIz27Tn-eL8XQ==",
+    //    "kid": "70aae097be0fa2a999852d57a480e4cad6bdb81c", // pragma: allowlist secret
+    //    "n": "1NdMI-DCDkINz0LrnugfpyubBKBniVtzl0RpY4eVq0vxZSZtwXFt1kX5XT6xyiIDAqq7vHzoaByp3gXXWoGEqFHPgk3ssX_goMP1xrj4eFZuyo73NA3gJmCjFKKmemsDhl-mCgp3f3noAPaguMZFQUyoK1UPFfOShTkAOQ6b87XdR_ylhHE2faJZK_L7H3nx-P_PSGC6VYKvlmjuB0qU64oILH2iL5svYq0yz3jxtB7JWknY3KlEHkgBnvcO64gxb4yOSYTqH5oi2za4DmatKPfYvbsJTzg0iGI98xSQkYWtGolwZgpSPdweX5PSTuIYmcRxMHHTlXIz27Tn-eL8XQ==", // pragma: allowlist secret
     //    "e": "AQAB"
     //   }
 

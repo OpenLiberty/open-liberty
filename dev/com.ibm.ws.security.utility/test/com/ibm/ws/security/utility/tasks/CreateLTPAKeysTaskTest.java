@@ -447,7 +447,7 @@ public class CreateLTPAKeysTaskTest {
     public void handleTask_specifiedFile_fileCreated_base64_aes() throws Exception {
 
         CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
-        String[] args = new String[] { "securityUtility", "--passwordEncoding=aes", "--passwordBase64Key=JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=",
+        String[] args = new String[] { "securityUtility", "--passwordEncoding=aes", "--passwordBase64Key=JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=", // pragma: allowlist secret
                                        "--password=Liberty",
                                        "--file=targetLtpaKeysFile" };
 
@@ -472,7 +472,7 @@ public class CreateLTPAKeysTaskTest {
         try (MockedStatic<AesConfigFileParser> passwordUtil = Mockito.mockStatic(AesConfigFileParser.class, Mockito.CALLS_REAL_METHODS)) {
 
             Map<String, String> props = new HashMap<>();
-            props.put(PasswordUtil.PROPERTY_AES_KEY, "JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=");
+            props.put(PasswordUtil.PROPERTY_AES_KEY, "JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI="); // pragma: allowlist secret
             String aesConfigFilePath = "keys.xml";
 
             passwordUtil.when(() -> {

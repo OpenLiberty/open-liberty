@@ -91,7 +91,7 @@ public class ConfigurationProviderMetadataTests extends CommonAnnotatedSecurityT
         RESPONSE, MESSAGES
     };
 
-    protected static final String client_secret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger";
+    protected static final String client_secret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"; // pragma: allowlist secret
 
     // create repeats for opaque and jwt tokens - in lite mode, only run with jwt tokens
     @ClassRule

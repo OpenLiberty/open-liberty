@@ -76,7 +76,7 @@ public class ClientRegistrationHelper {
         String hashClientSecret = null;
 
         if (isHash) {
-            hashClientSecret = HashSecretUtils.hashSecret(AbstractOidcRegistrationBaseTest.CLIENT_SECRET, AbstractOidcRegistrationBaseTest.CLIENT_ID, true, AbstractOidcRegistrationBaseTest.SALT, AbstractOidcRegistrationBaseTest.ALG, HashSecretUtils.DEFAULT_ITERATIONS, HashSecretUtils.DEFAULT_KEYSIZE);
+            hashClientSecret = HashSecretUtils.hashSecret(AbstractOidcRegistrationBaseTest.CLIENT_SECRET, AbstractOidcRegistrationBaseTest.CLIENT_ID, true, AbstractOidcRegistrationBaseTest.SALT, AbstractOidcRegistrationBaseTest.ALG, HashSecretUtils.DEFAULT_ITERATIONS, HashSecretUtils.DEFAULT_KEYSIZE); // pragma: allowlist secret
         }
 
         OidcBaseClient testOidcBaseClient = new OidcBaseClient(AbstractOidcRegistrationBaseTest.CLIENT_ID, isHash ? hashClientSecret : AbstractOidcRegistrationBaseTest.CLIENT_SECRET, redirectUris, AbstractOidcRegistrationBaseTest.CLIENT_NAME, AbstractOidcRegistrationBaseTest.COMPONENT_ID, AbstractOidcRegistrationBaseTest.IS_ENABLED);

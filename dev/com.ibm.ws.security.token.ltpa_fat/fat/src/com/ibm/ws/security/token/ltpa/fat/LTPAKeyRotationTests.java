@@ -102,8 +102,8 @@ public class LTPAKeyRotationTests {
     private static List<String> commonShutdownErrors = new ArrayList<>(Arrays.asList("CWWKS4112E"));
     // Each test will add expected errors for as they run. This list is cleared in resetServer()
     private static List<String> testSpecificMessages = new ArrayList<>();
-    private static String validationKeyPassword = "{xor}Lz4sLCgwLTs=";
-    private static String validationKeyFIPSPassword = "{xor}CDo9Hgw=";
+    private static String validationKeyPassword = "{xor}Lz4sLCgwLTs="; // HashiCorpIgnore
+    private static String validationKeyFIPSPassword = "{xor}CDo9Hgw="; // HashiCorpIgnore
 
     private static int timeoutMillis = isWindows() ? 5 * 60 * 1000 : 5 * 1000;
 
@@ -1885,9 +1885,9 @@ public class LTPAKeyRotationTests {
         if (fips140_3Enabled) {
             contents = new HashMap<String, String>() {
                 {
-                    put("com.ibm.websphere.ltpa.SharedKey", "HN+OHlQXsBdZnX0O2G5I4pn30mmJ8myHSo6YYW/VaR6SYfar5qclKil7qdYicp3v");
+                    put("com.ibm.websphere.ltpa.SharedKey", "HN+OHlQXsBdZnX0O2G5I4pn30mmJ8myHSo6YYW/VaR6SYfar5qclKil7qdYicp3v"); // pragma: allowlist secret
                     put("com.ibm.websphere.ltpa.PrivateKey",
-                        "G3O0DQPW8PFa9jVV2ZSeSOmYJwydTb0lfYsCkHjgbzm6Feq6FfF4+rdGuNb5xUzJpaJ9ymXDNPH0316XY7x8/RykPJA/eg8OO7PzwPU7pOxElqkctE1D4BAPELXPZn22TQbt34qdaOTAPTpXH8DsmgnB1jkJalSF0cq3cztfP3Gdo36h8+fciJuWMN5s1jWQ35l3UZTrvwY222QTpUch5yeMbpqCVT7Ymvrv2UsOOsP64wU1i2iBuOHlMshq1ai5FhLEP8xPFaegRV8fFBznIp2SRkqNROHucELX61VC4FCSYYCvv974FMGyDPOJyF8PiI+Xqbdnb2MwtM2+hjH2PjNWSsdxvHjawCvTB1354gYP7Gam1vlmSeroZyzTX1QLxRtfh2TAOwLOa1NJvyKMZiFW0P+Uag4xOkHErDQX+cTIRC3eaCoHWUQjpxsv+QKq/0DHxbjncX/jvPywDpwmDXwo3h/QgV0dvzzXRxXAWF6U4FMfBj8ccJLONPZeBHlldvsp92/z+ZuzcsbgQGWoOkLxWx6jZU1OmKUC3dzYn0lHvTr5Tmk5gq6Fer2uBvqOLD11xhbxZTDatrrkQZUYbzZ5nJO6knK38MPcrSjwWtJ5EmPBOXtNklDmVoYDJdjrz06J2CMtajF7t4+IEF69gP/BbKwu7SWQNEtlK6QofhPjpvwu/3hnP5NY9rpNefNL");
+                        "G3O0DQPW8PFa9jVV2ZSeSOmYJwydTb0lfYsCkHjgbzm6Feq6FfF4+rdGuNb5xUzJpaJ9ymXDNPH0316XY7x8/RykPJA/eg8OO7PzwPU7pOxElqkctE1D4BAPELXPZn22TQbt34qdaOTAPTpXH8DsmgnB1jkJalSF0cq3cztfP3Gdo36h8+fciJuWMN5s1jWQ35l3UZTrvwY222QTpUch5yeMbpqCVT7Ymvrv2UsOOsP64wU1i2iBuOHlMshq1ai5FhLEP8xPFaegRV8fFBznIp2SRkqNROHucELX61VC4FCSYYCvv974FMGyDPOJyF8PiI+Xqbdnb2MwtM2+hjH2PjNWSsdxvHjawCvTB1354gYP7Gam1vlmSeroZyzTX1QLxRtfh2TAOwLOa1NJvyKMZiFW0P+Uag4xOkHErDQX+cTIRC3eaCoHWUQjpxsv+QKq/0DHxbjncX/jvPywDpwmDXwo3h/QgV0dvzzXRxXAWF6U4FMfBj8ccJLONPZeBHlldvsp92/z+ZuzcsbgQGWoOkLxWx6jZU1OmKUC3dzYn0lHvTr5Tmk5gq6Fer2uBvqOLD11xhbxZTDatrrkQZUYbzZ5nJO6knK38MPcrSjwWtJ5EmPBOXtNklDmVoYDJdjrz06J2CMtajF7t4+IEF69gP/BbKwu7SWQNEtlK6QofhPjpvwu/3hnP5NY9rpNefNL"); // pragma: allowlist secret
                     put("com.ibm.websphere.ltpa.PublicKey",
                         "ANm29hjJBlWr1LXsb9APXS1lLrcpMnXJMaaXZeKKjCk9rt+8ubQAR2N5JRVjh1ev52ITREOku02g+Gv8McReUTpW4+T8ehYhlBpCGRrj3XpDJIplGc7/VmC25e7qvB7TrP5hP/8xMIBG5hrrChUtbYNNm0Av14UOCy5/syoHaoi9VaARZxuaQNGp3Lr61S2Ky4WhG20HcAc7+kAFAl5hwjGl4kJ/xT8OpCV4KxakB3mQpHjAb3Mh9nePIAJW0usOS3PV+sFGjErCHTc0A1c2wVRDef5ZcbLU+vv2TFCXkmSXTwKDm38/2VKTwm+kEi9x/zlk+BJxAiWURBh/JEZ/zgUBAAE\\=");
                 }
@@ -1899,7 +1899,7 @@ public class LTPAKeyRotationTests {
                     put("com.ibm.websphere.ltpa.PrivateKey",
                         "kmhgRjTUcxvFJoVw8jxWuh3ffuxym/SLYW8TQYKjK/4TJoPx9h2FJvNHkiaxfvACUWN5Lw5A1c500PRD+kcUtY+05IpNbGd0xu7BsjDQoLaEi4jrtBjT0REEYepsj9QQXnQTG9GL3CuNkSmPLxlHWBKZkDlcv4MtOKn2ozeXQjQ5doAJGDm6qk8QxxB7jGHCdQI9L6G4ic34w6DWV9qKZiX/Yp39neL6jR9mH3e9U7EFyefrtOTF7EUscfikBnw0sQUNnwTx2vMv+Q9QI+ykZMJULvzGKf2fW7Qz+OfQIlTatBCYRWtG0BQGi0BkUULApK2qIxQbvLVT7ijEwg2YsWTREcsnbVvHFmSqTF5jf8w\\=");
                     put("com.ibm.websphere.ltpa.PublicKey",
-                        "AK/MQIy6PT5GCI1qYDhH6b7yyZPdCcc4cgOKyJOkS/F4IHA51rjW5gVUm0gWkqfCkoU6LsWkBetxiJeZ7ECL4mUOSTfEFx4cPtvCu62DxtgleQt6pbEuvtaDalFL6/6p35y2uyuKhX4YiG9w25lLXTNCMfw3mQn+RpC3pVjYKpB9AQAB");
+                        "AK/MQIy6PT5GCI1qYDhH6b7yyZPdCcc4cgOKyJOkS/F4IHA51rjW5gVUm0gWkqfCkoU6LsWkBetxiJeZ7ECL4mUOSTfEFx4cPtvCu62DxtgleQt6pbEuvtaDalFL6/6p35y2uyuKhX4YiG9w25lLXTNCMfw3mQn+RpC3pVjYKpB9AQAB"); // pragma: allowlist secret
                 }
             };
         }

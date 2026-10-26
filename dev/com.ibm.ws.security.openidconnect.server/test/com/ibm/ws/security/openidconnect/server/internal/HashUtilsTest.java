@@ -35,7 +35,7 @@ public class HashUtilsTest {
     public void testDigestNormal() {
         String methodName = "testDigestNormal";
         String input = "ThisIsASampleString.";
-        String output = "pmrF0bjTQv2LAS+xhZVeNTn4V0tLOJq+VbXnUX93k/4=";
+        String output = "pmrF0bjTQv2LAS+xhZVeNTn4V0tLOJq+VbXnUX93k/4="; // pragma: allowlist secret
 
         try {
             assertEquals(output, HashUtils.digest(input));

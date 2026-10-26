@@ -153,7 +153,7 @@ public class TestArithmeticServlet extends JPADBTestServlet {
 
     @Test
     public void jpa_eclipselink_query_olgh17837_testSQRT1_PartialBind_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_query_olgh17837_testSQRT1_PartialBind_CMTS_Web";
+        final String testName = "jpa_eclipselink_query_olgh17837_testSQRT1_PartialBind_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testSQRT1_PartialBind";
         final String testResource = "test-jpa-resource-cmts-partial-bind";
 

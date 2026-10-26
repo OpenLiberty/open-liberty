@@ -108,7 +108,7 @@ public abstract class DMIPubYesInhDDOvrdTestEXSuperclass extends DMIInhCommonEJB
     }
 
     @PersistenceContext(unitName = "JPALIB_JTA", type = PersistenceContextType.EXTENDED,
-                        name = "jpa/DMIPubYesInhDDOvrdTestEJB/ovdem_cmex_jpalib_earlib")
+                        name = "jpa/DMIPubYesInhDDOvrdTestEJB/ovdem_cmex_jpalib_earlib") // pragma: allowlist secret
     public void setOvdem_cmex_jpalib_earlib(EntityManager ovdemCmtsJpalibEarlib) {
         ovdem_cmex_jpalib_earlib = ovdemCmtsJpalibEarlib;
     }
