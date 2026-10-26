@@ -45,6 +45,7 @@ tested.features: databaseRotation, cdi-5.0
 	io.openliberty.jakarta.data.1.1;version=latest,\
 	io.openliberty.jakarta.interceptor.2.2,\
 	io.openliberty.jakarta.persistence.4.0,\
+	io.openliberty.persistence.4.0.thirdparty;version=latest,\
 	io.openliberty.jakarta.servlet.6.1;version=latest,\
 	io.openliberty.jakarta.transaction.2.0;version=latest,\
 	io.openliberty.org.testcontainers;version=latest,\

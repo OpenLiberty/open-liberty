@@ -6,7 +6,7 @@ receivers:
 
 exporters:
  prometheus:
-   endpoint: otel-collector-metrics:3131
+   endpoint: 0.0.0.0:3131
    resource_to_telemetry_conversion:
      enabled: true
    enable_open_metrics: true

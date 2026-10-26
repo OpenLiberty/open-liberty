@@ -33,6 +33,7 @@ import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.ssl.SslHandshakeCompletionEvent;
 import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
+import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
 import io.openliberty.netty.internal.impl.QuiesceHandler;
 
@@ -235,7 +236,20 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
     @Override
     public void handlerAdded(ChannelHandlerContext context) throws Exception {
         state(context.channel()).readFlowHandlerContext = context;
+        TimeoutHandler timeoutHandler = context.pipeline().get(TimeoutHandler.class);
+        if (timeoutHandler != null) {
+            timeoutHandler.readFlowHandlerChanged(true);
+        }
         super.handlerAdded(context);
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext context) throws Exception {
+        TimeoutHandler timeoutHandler = context.pipeline().get(TimeoutHandler.class);
+        if (timeoutHandler != null) {
+            timeoutHandler.readFlowHandlerChanged(false);
+        }
+        super.handlerRemoved(context);
     }
 
     @Override

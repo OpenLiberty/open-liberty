@@ -3,6 +3,7 @@
 
 package io.jaegertracing.api_v2;
 
+@SuppressWarnings("deprecation")
 public final class Model {
     private Model() {
     }

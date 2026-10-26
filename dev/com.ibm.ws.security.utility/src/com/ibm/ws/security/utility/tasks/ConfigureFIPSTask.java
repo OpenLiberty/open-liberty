@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -51,6 +50,7 @@ public class ConfigureFIPSTask extends BaseCommandTask {
     static final String ENABLE_FIPS140_3_ENV_VAR = "ENABLE_FIPS140_3";
 
     static final String LIBERTY_PROFILE_FILE_NAME = "FIPS140-3-Liberty.properties";
+    static final String LIBERTY_ZOS_PROFILE_FILE_NAME = "FIPS140-3-Liberty-zos.properties";
     static final String APP_PROFILE_FILE_NAME = "FIPS140-3-Liberty-Application.properties";
 
     static final String PROFILE_NAME_HOLDER = "PROFILE_NAME_HOLDER";
@@ -121,18 +121,13 @@ public class ConfigureFIPSTask extends BaseCommandTask {
         this.stdout = stdout;
         this.stderr = stderr;
 
-        if (ProductInfo.getBetaEdition()) {
-            stdout.println("BETA: The SecurityUtility configureFIPS task is only available in beta." + NL);
-        }
-
         String serverName = getArgumentValue(ARG_SERVER, args, null);
         String clientName = getArgumentValue(ARG_CLIENT, args, null);
         String customProfileFile = getArgumentValue(ARG_CUSTOMPROFILE_FILE, args, null);
         boolean disable = Arrays.asList(args).contains(ARG_DISABLE);
 
-        if (isZOS) {
-            stdout.println(getMessage("configureFIPS.zosNotAvailable"));
-            return SecurityUtilityReturnCodes.ERR_GENERIC;
+        if(isZOS){
+            stdout.println(getMessage("configureFIPS.zosEvaluation"));
         }
 
         try {
@@ -265,7 +260,7 @@ public class ConfigureFIPSTask extends BaseCommandTask {
         String javaHome = getJavaHome();
         String javaSecurity = javaHome + (javaHome.endsWith(SLASH) ? "" : SLASH) + "conf" + SLASH + "security" + SLASH + "java.security";
         if (fileUtility.exists(javaSecurity)) {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(javaSecurity), CHARSET))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(javaSecurity)))) {
                 String line = "";
                 while ((line = reader.readLine()) != null) {
                     if (line.startsWith("RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced.")) {
@@ -288,14 +283,21 @@ public class ConfigureFIPSTask extends BaseCommandTask {
         isIbmSdk = false;
 
         String javaHome = getJavaHome();
-        if (javaHome.endsWith("jre" + SLASH)) {
-            isIbmSdk = fileUtility.exists(javaHome + "fips140-3" + SLASH);
-        } else if (javaHome.endsWith("jre")) {
-            isIbmSdk = fileUtility.exists(javaHome + SLASH + "fips140-3" + SLASH);
-        } else if (javaHome.endsWith(SLASH)) {
-            isIbmSdk = fileUtility.exists(javaHome + "jre" + SLASH + "fips140-3" + SLASH);
-        } else {
-            isIbmSdk = fileUtility.exists(javaHome + SLASH + "jre" + SLASH + "fips140-3" + SLASH);
+
+        Set<String> dirs = Stream.of(new File(javaHome).listFiles())
+                .filter(File::isDirectory)
+                .map(File::getName)
+                .collect(Collectors.toSet());
+        // if dirs contains JRE, we need the contents of the jre directory
+        if(dirs.contains("jre")){
+            dirs = Stream.of(new File(javaHome + SLASH + "jre").listFiles())
+                    .filter(File::isDirectory)
+                    .map(File::getName)
+                    .collect(Collectors.toSet());
+        }
+
+        if(dirs.contains("fips140-3")){
+            isIbmSdk = true;
         }
 
         isIbmSdkChecked = true;
@@ -397,7 +399,7 @@ public class ConfigureFIPSTask extends BaseCommandTask {
         boolean fileEndsWithNewLineChar = false;
         boolean variableExpansionEnabled = false;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileUtility.resolvePath(file)), CHARSET))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileUtility.resolvePath(file))))) {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 if (line.replaceAll("\\s", "").equalsIgnoreCase("#enable_variable_expansion")) {
@@ -447,7 +449,7 @@ public class ConfigureFIPSTask extends BaseCommandTask {
 
         try {
             backupFile(file);
-            fileUtility.writeToFile(stderr, joiner.toString() + (fileEndsWithNewLineChar ? NL : ""), file, CHARSET);
+            fileUtility.writeToFile(stderr, joiner.toString() + (fileEndsWithNewLineChar ? NL : ""), file);
             stdout.println(getMessage("configureFIPS.updatedEnvFileToEnableFips", fileUtility.resolvePath(file)));
             printRestartServerMessage(serverName, clientName);
             return SecurityUtilityReturnCodes.OK;
@@ -473,7 +475,7 @@ public class ConfigureFIPSTask extends BaseCommandTask {
         boolean disabled = false;
         StringJoiner joiner = new StringJoiner(NL);
         boolean fileEndsWithNewLineChar = false;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileUtility.resolvePath(file)), CHARSET))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileUtility.resolvePath(file))))) {
             String line = "";
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith(ENABLE_FIPS140_3_ENV_VAR + "=") && !line.equals(ENABLE_FIPS140_3_ENV_VAR + "=false")) {
@@ -499,7 +501,7 @@ public class ConfigureFIPSTask extends BaseCommandTask {
 
         try {
             backupFile(file);
-            fileUtility.writeToFile(stderr, joiner.toString() + (fileEndsWithNewLineChar ? NL : ""), file, CHARSET);
+            fileUtility.writeToFile(stderr, joiner.toString() + (fileEndsWithNewLineChar ? NL : ""), file);
             stdout.println(getMessage("configureFIPS.updatedEnvFileToDisableFips", fileUtility.resolvePath(file)));
             printRestartServerMessage(serverName, clientName);
             return SecurityUtilityReturnCodes.OK;

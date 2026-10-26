@@ -94,19 +94,10 @@ public enum QueryType {
     LC_UPDATE(Update.class.getSimpleName(), //
               Is.LIFE_CYCLE_METHOD, //
               Require.AUTO_START_TX, //
-              !Require.DETACH_ENTITIES, //
-              !Require.RETURN_HIDDEN, //
+              Require.DETACH_ENTITIES, //
+              Require.RETURN_HIDDEN, //
               Require.STATELESS, //
               !Supports.QUERY_OPTIONS),
-
-    // stateless repository life cycle method @Update with entity result (find & merge)
-    LC_UPDATE_MERGE(Update.class.getSimpleName(), //
-                    Is.LIFE_CYCLE_METHOD, //
-                    Require.AUTO_START_TX, //
-                    Require.DETACH_ENTITIES, //
-                    Require.RETURN_HIDDEN, //
-                    Require.STATELESS, //
-                    !Supports.QUERY_OPTIONS),
 
     // stateful repository life cycle method @Merge
     MERGE("Merge", //

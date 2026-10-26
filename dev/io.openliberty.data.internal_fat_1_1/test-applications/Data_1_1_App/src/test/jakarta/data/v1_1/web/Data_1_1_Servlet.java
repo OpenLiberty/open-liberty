@@ -74,6 +74,8 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import test.jakarta.data.v1_1.web.Fraction.Decimal;
 import test.jakarta.data.v1_1.web.Fraction.Decimal.Type;
+import test.jakarta.data.v1_1.web.Mail.RecipientAddress;
+import test.jakarta.data.v1_1.web.Mail.SenderAddress;
 
 @SuppressWarnings("serial")
 @WebServlet(loadOnStartup = 1, // ensure data from init is available to other servlets
@@ -94,6 +96,9 @@ public class Data_1_1_Servlet extends FATServlet {
 
     @Inject
     Fractions fractions;
+
+    @Inject
+    Mailbox mailbox;
 
     @Inject
     Sectors sectors; // has security roles that will eventually be enforced
@@ -566,6 +571,33 @@ public class Data_1_1_Servlet extends FATServlet {
         // Ensure we did not delete a non-matching entity:
         assertEquals(true,
                      statefulFractions.fetch(3, 20).isPresent());
+    }
+
+    /**
+     * A repository method can declare a Constraint on a supertype of an
+     * entity attribute that is convertible to the attribute type. This
+     * behavior works without being explicitly required by Jakarta Data.
+     * This test guards against regression.
+     */
+    @Test
+    public void testConstraintOnSupertypeOfAttribute() {
+        assertEquals(List.of(BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3500, 4),
+                             BigDecimal.valueOf(3529, 4),
+                             BigDecimal.valueOf(3571, 4),
+                             BigDecimal.valueOf(3636, 4),
+                             BigDecimal.valueOf(3684, 4),
+                             BigDecimal.valueOf(3750, 4),
+                             BigDecimal.valueOf(3750, 4)),
+                     fractions.whereTruncated(Between.bounds(0.333, 0.377))
+                                     .stream()
+                                     .map(f -> f.decimal.truncated())
+                                     .toList());
     }
 
     /**
@@ -1060,6 +1092,199 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a repostitory method annotated Fetching to eagerly load the value of
+     * an ElementCollection attribute of an embeddable. This verifies that a dot
+     * can be used to navigate from attributes to subattributes and so on.
+     */
+    @Test
+    public void testFetchingAttributeOfEmbeddable() throws Exception {
+        mailbox.empty();
+
+        tx.begin();
+        Mail mail = Mail.of(101L, 82, 0.42f,
+                            RecipientAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jack Karta",
+                                                "H115",
+                                                "Building 50, Floor 2",
+                                                "IBM Rochester Campus")),
+                            SenderAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jay Karta",
+                                                "C220",
+                                                "Building 30, Floor 2",
+                                                "IBM Rochester Campus")));
+        mailbox.send(mail);
+        tx.commit();
+
+        // evict the persisted instance so the query must reload it
+        mailbox.detach(mail);
+
+        mail = mailbox.withRecipientLines(101L)
+                        .orElseThrow();
+
+        // detach the freshly loaded instance so lazy loading can't happen
+        mailbox.detach(mail);
+
+        assertEquals(101L,
+                     mail.id);
+
+        assertEquals(82,
+                     mail.postage);
+
+        assertEquals(0.42f,
+                     mail.weight,
+                     0.001f);
+
+        assertNotNull(mail.recipient);
+        assertNotNull(mail.recipient.address);
+        assertEquals("Rochester",
+                     mail.recipient.address.city);
+        assertEquals("MN",
+                     mail.recipient.address.stateCode);
+        assertEquals(Integer.valueOf(55901),
+                     mail.recipient.address.zip);
+        // should have been eagerly fetched:
+        assertEquals(List.of("Jack Karta",
+                             "H115",
+                             "Building 50, Floor 2",
+                             "IBM Rochester Campus"),
+                     mail.recipient.address.lines);
+
+        assertNotNull(mail.sender);
+        assertNotNull(mail.sender.address);
+        assertEquals("Rochester",
+                     mail.sender.address.city);
+        assertEquals("MN",
+                     mail.sender.address.stateCode);
+        assertEquals(Integer.valueOf(55901),
+                     mail.sender.address.zip);
+        // sender.address.lines was not requested by the Fetching annotation,
+        // but we cannot assert that it is unloaded: Hibernate 8.0.0 Beta 3
+        // loads collection attributes under a nested embeddable eagerly even
+        // with a fetch graph that excludes them, EclipseLink loads them eagerly
+        // regardless, and PersistenceUtil.isLoaded raises an exception for them
+        // on EclipseLink.
+
+        mailbox.empty();
+    }
+
+    /**
+     * Use a repostitory method annotated Fetching to eagerly load the values of
+     * two ElementCollection attributes of an embeddable. This verifies that a dot
+     * can be used to navigate from attributes to subattributes and so on.
+     */
+    @Test
+    public void testFetchingAttributesOfEmbeddable() throws Exception {
+        mailbox.empty();
+
+        tx.begin();
+        Mail mail = Mail.of(102L, 140, 1.81f,
+                            RecipientAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jake Arta",
+                                                "E206",
+                                                "Building 30, Floor 3",
+                                                "IBM Rochester Campus")),
+                            SenderAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jack Karta",
+                                                "A215",
+                                                "Building 50, Floor 3",
+                                                "IBM Rochester Campus")));
+        mailbox.send(mail);
+        tx.commit();
+
+        // evict the persisted instance so the query must reload it
+        mailbox.detach(mail);
+
+        mail = mailbox.withBothLines(102L)
+                        .orElseThrow();
+
+        // detach the freshly loaded instance so lazy loading can't happen
+        mailbox.detach(mail);
+
+        assertEquals(102L,
+                     mail.id);
+
+        assertEquals(140,
+                     mail.postage);
+
+        assertEquals(1.81f,
+                     mail.weight,
+                     0.001f);
+
+        assertNotNull(mail.recipient);
+        assertNotNull(mail.recipient.address);
+        assertEquals("Rochester",
+                     mail.recipient.address.city);
+        assertEquals("MN",
+                     mail.recipient.address.stateCode);
+        assertEquals(Integer.valueOf(55901),
+                     mail.recipient.address.zip);
+        // should have been eagerly fetched:
+        assertEquals(List.of("Jake Arta",
+                             "E206",
+                             "Building 30, Floor 3",
+                             "IBM Rochester Campus"),
+                     mail.recipient.address.lines);
+
+        assertNotNull(mail.sender);
+        assertNotNull(mail.sender.address);
+        assertEquals("Rochester",
+                     mail.sender.address.city);
+        assertEquals("MN",
+                     mail.sender.address.stateCode);
+        assertEquals(Integer.valueOf(55901),
+                     mail.sender.address.zip);
+        // should have been eagerly fetched:
+        assertEquals(List.of("Jack Karta",
+                             "A215",
+                             "Building 50, Floor 3",
+                             "IBM Rochester Campus"),
+                     mail.sender.address.lines);
+
+        mailbox.empty();
+    }
+
+    /**
+     * Use a repostitory method annotated Fetching to eagerly load the value of
+     * an ElementCollection attribute of an embeddable. The method is also
+     * annotated Select to retrieve only the value of the ElementCollection
+     * attribute.
+     */
+    @Test
+    public void testFetchingSelected() throws Exception {
+        mailbox.empty();
+
+        tx.begin();
+        Mail mail = Mail.of(103L, 82, 0.36f,
+                            RecipientAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jie Karta",
+                                                "G124",
+                                                "Building 25, Floor 3",
+                                                "IBM Rochester Campus")),
+                            SenderAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jack Karta",
+                                                "B115",
+                                                "Building 50, Floor 2",
+                                                "IBM Rochester Campus")));
+        mailbox.send(mail);
+        tx.commit();
+
+        // evict the persisted instance so the query must reload it
+        mailbox.detach(mail);
+
+        List<String> lines = mailbox.senderLines(103L)
+                        .orElseThrow();
+
+        // should have been eagerly fetched:
+        assertEquals(List.of("Jack Karta",
+                             "B115",
+                             "Building 50, Floor 2",
+                             "IBM Rochester Campus"),
+                     lines);
+
+        mailbox.empty();
+    }
+
+    /**
      * Tests a Find method with the First annotation specifying a value
      * larger than 1.
      */
@@ -1105,6 +1330,11 @@ public class Data_1_1_Servlet extends FATServlet {
                                                   reverseAlphabetized));
     }
 
+    /**
+     * Tests interoperability with Jakarta Persistence's Inheritance
+     * and DiscriminatorColumn by defining entities that inherit from
+     * a common abstract ancestor entity, for which a repository is defined.
+     */
     @Test
     public void testInheritanceFromAbstractEntity() {
         ads.removeBySponsorIn(List.of("Open Liberty",
@@ -3196,6 +3426,54 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that imposes restrictions and constraints on
+     * a find-and-delete operation.
+     */
+    @Test
+    public void testRestrictedFindAndDelete() {
+        ads.removeBySponsorIn(List.of("IBM", "Open Liberty"));
+
+        ads.add(Billboard.create(7,
+                                 "Open Liberty",
+                                 LocalDate.now().minusDays(5),
+                                 LocalDate.now(),
+                                 "3222 40th Avenue NW, Rochester, MN 55901"));
+
+        ads.add(Billboard.create(8,
+                                 "IBM",
+                                 LocalDate.now().minusDays(8),
+                                 LocalDate.now(),
+                                 "3222 40th Avenue NW, Rochester, MN 55901"));
+
+        ads.add(Billboard.create(9,
+                                 "Open Liberty",
+                                 LocalDate.now().minusDays(9),
+                                 LocalDate.now().minusDays(1),
+                                 "3222 40th Avenue NW, Rochester, MN 55901"));
+
+        ads.add(Billboard.create(10,
+                                 "Open Liberty",
+                                 LocalDate.now().minusDays(5),
+                                 LocalDate.now(),
+                                 "2800 37th Street NW, Rochester, MN 55901"));
+
+        List<Billboard> removed = ads //
+                        .dismantle("3222 40th Avenue NW, Rochester, MN 55901",
+                                   _Advertisement.sponsor //
+                                                   .upper()
+                                                   .equalTo("OPEN LIBERTY"));
+
+        assertEquals(List.of(7, 9),
+                     removed.stream()
+                                     .map(b -> b.id)
+                                     .sorted()
+                                     .toList());
+
+        assertEquals(2L,
+                     ads.removeBySponsorIn(List.of("IBM", "Open Liberty")));
+    }
+
+    /**
      * Use a repository method that includes a Restriction and also has
      * sorting by expressions.
      */
@@ -3616,12 +3894,6 @@ public class Data_1_1_Servlet extends FATServlet {
                                   AtMost.max(Integer.MAX_VALUE),
                                   Restrict.unrestricted());
         }
-    }
-
-    @Test
-    public void testBooleanRestriction() {
-        fractions.where(Restrict.all(_Fraction.name.contains("Four"),
-                                     _Fraction.reduced.isTrue()));
     }
 
 }
