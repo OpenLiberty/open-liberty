@@ -19,6 +19,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -49,23 +50,28 @@ public class McpServletInitializer implements ServletContainerInitializer {
     @FFDCIgnore(IllegalStateException.class)
     public void onStartup(Set<Class<?>> c, ServletContext context) throws ServletException, IllegalStateException {
         try {
-            ToolRegistry registry = ToolRegistry.get();
-            if (!registry.hasTools()) {
+            McpCdiExtension extension = McpCdiExtension.get();
+            ToolRegistry registry = extension.getCurrentToolRegistry();
+
+            ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+            J2EEName moduleName = componentMetaData != null ? componentMetaData.getModuleMetaData().getJ2EEName() : null;
+
+            if (!registry.hasTools() && (moduleName == null || !extension.hasToolManagerInjection(moduleName))) {
                 return;
             }
+
             // Register introspector context listener
             context.addListener(new McpIntrospectorContextListener(registry));
 
-            ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             String appName = getApplicationName(componentMetaData);
-            String moduleName = getModuleName(componentMetaData);
+            String moduleNameStr = getModuleName(componentMetaData);
 
             McpServerConfigProps configProps = null;
 
             if (appName != null) {
-                configProps = mcpAppTrackerService.run(tracker -> tracker.getConfigForModule(appName, moduleName)).get();
+                configProps = mcpAppTrackerService.run(tracker -> tracker.getConfigForModule(appName, moduleNameStr)).get();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Looking up MCP config for application: " + appName + ", module: " + moduleName +
+                    Tr.debug(this, tc, "Looking up MCP config for application: " + appName + ", module: " + moduleNameStr +
                                        ", found: " + (configProps));
                 }
             }

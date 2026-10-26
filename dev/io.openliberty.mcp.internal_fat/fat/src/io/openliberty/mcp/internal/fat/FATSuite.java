@@ -46,6 +46,7 @@ import io.openliberty.mcp.internal.fat.tool.CancellationTest;
 import io.openliberty.mcp.internal.fat.tool.ConfigurableMcpPathTest;
 import io.openliberty.mcp.internal.fat.tool.ConfigurableSessionTelemetryTest;
 import io.openliberty.mcp.internal.fat.tool.DefaultValueTest;
+import io.openliberty.mcp.internal.fat.tool.DynamicOnlyToolManagerTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.DualConfigurableMcpPathTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateTest;
@@ -54,6 +55,7 @@ import io.openliberty.mcp.internal.fat.tool.ExceptionLoggingTest;
 import io.openliberty.mcp.internal.fat.tool.GenericToolTest;
 import io.openliberty.mcp.internal.fat.tool.InactiveCdiTest;
 import io.openliberty.mcp.internal.fat.tool.LocaleTest;
+import io.openliberty.mcp.internal.fat.tool.MixedEarModuleTest;
 import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
 import io.openliberty.mcp.internal.fat.tool.MultiModuleToolTestToolManager;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
@@ -86,6 +88,7 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 CustomServerInfoTest.class,
                 DefaultValueTest.class,
                 DeploymentProblemTest.class,
+                DynamicOnlyToolManagerTest.class,
                 DualConfigurableMcpPathTest.class,
                 DynamicMcpPathUpdateTest.class,
                 EncoderTest.class,
@@ -102,6 +105,7 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 McpMonitorTest.class,
                 McpUrlPathTest.class,
                 MultiAppIsolationTest.class,
+                MixedEarModuleTest.class,
                 MultiModuleToolTestToolManager.class,
                 NonRequiredArgsToolsTest.class,
                 NoParamNameTest.class,
