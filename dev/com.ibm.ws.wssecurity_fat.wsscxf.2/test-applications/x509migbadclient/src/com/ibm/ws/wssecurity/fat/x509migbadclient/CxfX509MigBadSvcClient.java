@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -279,7 +279,12 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testBadBasic192Service")) {
                 service = new FatBAX31Service();
                 strExpect = "LIBERTYFAT X509 bax31";
-                strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
+                if ("true".equals(System.getProperty("semeru.fips"))) {
+                    // With FIPS 140-3 the request is encrypted with aes256-gcm, which the BSP check rejects (R5620)
+                    strSubErrMsg = "BSP:R5620";
+                } else {
+                  strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
+                }
             } else if (thisMethod.equals("testBadTripleDesService")) {
                 service = new FatBAX32Service();
                 strExpect = "LIBERTYFAT X509 bax32";

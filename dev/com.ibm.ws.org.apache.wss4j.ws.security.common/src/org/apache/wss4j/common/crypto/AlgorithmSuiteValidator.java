@@ -32,6 +32,7 @@ import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.xml.security.exceptions.DERDecodingException;
 import org.apache.xml.security.utils.DERDecoderUtils;
 import org.apache.xml.security.utils.KeyUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * Validate signature/encryption/etc. algorithms against an AlgorithmSuite policy.
@@ -101,8 +102,19 @@ public class AlgorithmSuiteValidator {
             // Digest Algorithm
             String digestMethod = reference.getDigestMethod().getAlgorithm();
             Set<String> allowedDigestAlgorithms = algorithmSuite.getDigestAlgorithms();
-            if (!allowedDigestAlgorithms.isEmpty()
-                    && !allowedDigestAlgorithms.contains(digestMethod)) {
+      
+            // Liberty Change Start: FIPS 140-3 support - check digest algorithm
+            boolean digestMethodValid = allowedDigestAlgorithms.isEmpty()
+                || allowedDigestAlgorithms.contains(digestMethod);
+            
+            // When FIPS 140-3 is enabled, also accept SHA-256 even if the suite specifies SHA-1
+            if (!digestMethodValid && CryptoUtils.isFips140_3Enabled()) {
+                String sha256 = "http://www.w3.org/2001/04/xmlenc#sha256";
+                digestMethodValid = sha256.equals(digestMethod);
+            }
+            
+            if (!digestMethodValid) {
+            // Liberty Change End
                 LOG.warn(
                     "DigestMethod " + digestMethod + " does not match required value"
                 );
@@ -181,8 +193,35 @@ public class AlgorithmSuiteValidator {
         String symmetricAlgorithm
     ) throws WSSecurityException {
         Set<String> encryptionMethods = algorithmSuite.getEncryptionMethods();
-        if (!encryptionMethods.isEmpty()
-            && !encryptionMethods.contains(symmetricAlgorithm)) {
+        boolean encryptionMethodValid = encryptionMethods.isEmpty()
+            || encryptionMethods.contains(symmetricAlgorithm);
+
+        // Liberty Change Start: FIPS 140-3 support - allow aes256-gcm/aes256-cbc when FIPS Java build is active
+        if (!encryptionMethodValid) {
+            // When FIPS 140-3 is enabled, accept aes256-gcm as the FIPS-required algorithm
+            // even when the policy suite specifies a non-GCM algorithm such as aes128-cbc (Basic128).
+            if (CryptoUtils.isFips140_3Enabled()) {
+                String aes256Gcm = "http://www.w3.org/2009/xmlenc11#aes256-gcm";
+                encryptionMethodValid = aes256Gcm.equals(symmetricAlgorithm);
+            }
+            // When running on a FIPS-capable Java build in non-FIPS mode, the RSA-OAEP key-wrap
+            // update forces AES-256 symmetric encryption. Accept aes256-cbc when the policy suite
+            // allows any AES-CBC variant (e.g. aes128-cbc in Basic128).
+            if (!encryptionMethodValid && CryptoUtils.isOpenJCEPlusAvailable()) {
+                String aes256Cbc = "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
+                if (aes256Cbc.equals(symmetricAlgorithm)) {
+                    for (String method : encryptionMethods) {
+                        if (method.contains("aes") && method.contains("cbc")) {
+                            encryptionMethodValid = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!encryptionMethodValid) {
+        // Liberty Change End
             LOG.warn(
                 "The encryption algorithm does not match the requirement"
             );

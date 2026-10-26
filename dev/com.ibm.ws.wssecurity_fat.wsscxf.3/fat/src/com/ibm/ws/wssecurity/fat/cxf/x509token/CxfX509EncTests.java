@@ -21,6 +21,8 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.Rule;
+import org.junit.rules.TestRule;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -40,6 +42,9 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
+
 
 @MinimumJavaLevel(javaLevel = 17)
 @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
@@ -64,6 +69,9 @@ public class CxfX509EncTests extends CommonTests {
     protected static String clientHttpsUrl = "";
     protected static String ENDPOINT_BASE = "";
     protected static String NAMESPACE_URI = "";
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.wssecurity_fat.x509enc");
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -402,7 +410,11 @@ public class CxfX509EncTests extends CommonTests {
      */
 
     @Test
-    //issue 230606
+    // With FIPS 140-3 the client always wraps the key with rsa-oaep (rsa-1_5 is not allowed) and the
+    // provider accepts rsa-oaep/aes256-gcm for every algorithm suite, so the Basic128Rsa15 vs Basic128
+    // key algorithm mismatch this test relies on can no longer be detected.
+    @SkipJavaSemeruWithFipsEnabledRule
+    //issue 23060
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
     public void testCXFClientWrongEncKeyAlgorithm() throws Exception {
 
@@ -413,7 +425,7 @@ public class CxfX509EncTests extends CommonTests {
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
 
-        //issue 230606
+        //issue 23060
         genericTest(
                     // test name for logging
                     thisMethod,
