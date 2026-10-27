@@ -1009,6 +1009,11 @@ public class VirtualHostMapTest {
         }
 
         @Override
+        public String getRequestedRoutingHost() {
+            return host;
+        }
+
+        @Override
         public String toString() {
             return host + ":" + port;
         }

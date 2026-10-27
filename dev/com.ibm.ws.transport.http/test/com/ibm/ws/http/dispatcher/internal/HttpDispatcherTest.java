@@ -33,6 +33,9 @@ import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.osgi.framework.ServiceReference;
 
+import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
+import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
+import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpRequestImpl;
 import com.ibm.wsspi.http.VirtualHostListener;
@@ -51,7 +54,10 @@ public class HttpDispatcherTest {
     static Field linkRequest;
     static Field linkRemoteContextAddress;
     static Field linkUsePrivateHeaders;
+    static Field linkUsePrivateSensitiveHeaders;
     static Field linkRemoteAddress;
+    static Field linkIsc;
+    static Field iscMsgSentState;
     final String wsprHeader = HttpHeaderKeys.HDR_$WSPR.getName();
     final String wsraHeader = HttpHeaderKeys.HDR_$WSRA.getName();
     final String wsspHeader = HttpHeaderKeys.HDR_$WSSP.getName();
@@ -72,8 +78,17 @@ public class HttpDispatcherTest {
         linkUsePrivateHeaders = HttpDispatcherLink.class.getDeclaredField("usePrivateHeaders");
         linkUsePrivateHeaders.setAccessible(true);
 
+        linkUsePrivateSensitiveHeaders = HttpDispatcherLink.class.getDeclaredField("usePrivateSensitiveHeaders");
+        linkUsePrivateSensitiveHeaders.setAccessible(true);
+
         linkRemoteAddress = HttpDispatcherLink.class.getDeclaredField("remoteAddress");
         linkRemoteAddress.setAccessible(true);
+
+        linkIsc = HttpDispatcherLink.class.getDeclaredField("isc");
+        linkIsc.setAccessible(true);
+
+        iscMsgSentState = HttpServiceContextImpl.class.getDeclaredField("msgSentState");
+        iscMsgSentState.setAccessible(true);
     }
 
     @AfterClass
@@ -714,6 +729,17 @@ public class HttpDispatcherTest {
         final String host = "a.b.c.d";
         final HttpRequestImpl mockRequest = context.mock(HttpRequestImpl.class);
 
+        // No dispatcher, no private header
+        context.checking(new Expectations() {
+            {
+                one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+                will(returnValue(null));
+
+                one(mockRequest).getVirtualHost();
+                will(returnValue(host));
+            }
+        });
+
         HttpDispatcherLink link = new HttpDispatcherLink();
         linkRequest.set(link, mockRequest);
         linkRemoteContextAddress.set(link, sourceAddr);
@@ -722,16 +748,6 @@ public class HttpDispatcherTest {
 
         final Object unknownPrivateHeader = linkUsePrivateHeaders.get(link);
 
-        // No dispatcher: requested host comes from the request virtual host, not $WSSN.
-        context.checking(new Expectations() {
-            {
-                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
-
-                one(mockRequest).getVirtualHost();
-                will(returnValue(host));
-            }
-        });
-
         try {
             Assert.assertSame("No registered dispatcher: should return the result of getVirtualHost",
                               host, link.getRequestedHost());
@@ -739,27 +755,48 @@ public class HttpDispatcherTest {
             context.assertIsSatisfied();
         }
 
-        // Registered dispatcher, trust all headers: $WSSN must still not override Host.
-        HttpDispatcher d = new HttpDispatcher();
-        d.activate(buildMap(true, null, "*", "*"));
-
+        // No dispatcher, $WSSN header present but equal to Host — branch reads $WSSN and also
+        // calls getVirtualHost() twice (once inside getEffectiveWssn() for the equality check,
+        // once in getDefaultHostName() on the return path).
         context.checking(new Expectations() {
             {
-                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+                one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+                will(returnValue(host));
 
-                one(mockRequest).getVirtualHost();
+                exactly(2).of(mockRequest).getVirtualHost();
                 will(returnValue(host));
             }
         });
 
         try {
-            Assert.assertSame("Registered dispatcher, trusted private headers: should still return getVirtualHost for requested host",
+            Assert.assertSame("No registered dispatcher, but $WSSN header present: should return the header value",
                               host, link.getRequestedHost());
         } finally {
             context.assertIsSatisfied();
         }
 
-        // Registered dispatcher, trust header from non-matching source.
+        // Registered dispatcher, trust all headers: $WSSN == host — same equality-check path.
+        HttpDispatcher d = new HttpDispatcher();
+        d.activate(buildMap(true, null, "*", "*"));
+
+        context.checking(new Expectations() {
+            {
+                one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+                will(returnValue(host));
+
+                exactly(2).of(mockRequest).getVirtualHost();
+                will(returnValue(host));
+            }
+        });
+
+        try {
+            Assert.assertSame("Registered dispatcher, trusted $WSSN header present: should return the header value",
+                              host, link.getRequestedHost());
+        } finally {
+            context.assertIsSatisfied();
+        }
+
+        // Registered dispatcher, trust header from non-matching source (no invocation of getHeader)
         d.modified(buildMap(true, null, "2.3.4.5", "2.3.4.5"));
 
         // reset the cached value of use private headers for the connection
@@ -768,8 +805,6 @@ public class HttpDispatcherTest {
 
         context.checking(new Expectations() {
             {
-                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
-
                 one(mockRequest).getVirtualHost();
                 will(returnValue(host));
             }
@@ -782,7 +817,7 @@ public class HttpDispatcherTest {
             context.assertIsSatisfied();
         }
 
-        // Registered dispatcher, trust header from matching source: $WSSN is still ignored for requested host.
+        // Registered dispatcher, trust header from matching source: $WSSN == host — equality-check path.
         d.modified(buildMap(true, null, "1.2.3.4", "*"));
 
         // reset the cached value of use private headers for the connection
@@ -791,21 +826,22 @@ public class HttpDispatcherTest {
 
         context.checking(new Expectations() {
             {
-                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+                one(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+                will(returnValue(host));
 
-                one(mockRequest).getVirtualHost();
+                exactly(2).of(mockRequest).getVirtualHost();
                 will(returnValue(host));
             }
         });
 
         try {
-            Assert.assertSame("Registered dispatcher, trusted private header source: should still return getVirtualHost",
+            Assert.assertSame("Registered dispatcher, trust header from matching source: $WSSN equals Host so Host is returned",
                               host, link.getRequestedHost());
         } finally {
             context.assertIsSatisfied();
         }
 
-        // Registered dispatcher, trust no headers.
+        // Registered dispatcher, trust no headers
         d.modified(buildMap(true, null, "none", "none"));
 
         // reset the cached value of use private headers for the connection
@@ -814,8 +850,6 @@ public class HttpDispatcherTest {
 
         context.checking(new Expectations() {
             {
-                never(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
-
                 one(mockRequest).getVirtualHost();
                 will(returnValue(host));
             }
@@ -827,6 +861,209 @@ public class HttpDispatcherTest {
         } finally {
             context.assertIsSatisfied();
         }
+    }
+
+    private static final String UNAPPROVED_HOST = "a.b.c.d";
+    private static final String UNAPPROVED_WSSN = "pluginHost.com";
+
+    /**
+     * Build a link on a trusted peer that receives an unapproved $WSSN.
+     * The link has a mock inbound service context that returns the supplied response
+     * message. When the response is null the link has no inbound service context.
+     */
+    private HttpDispatcherLink buildUnapprovedLink(String id, final HttpResponseMessageImpl response, boolean headersSent) throws Exception {
+        HttpDispatcherLink link = new HttpDispatcherLink();
+        linkRemoteContextAddress.set(link, "1.2.3.4");
+        linkRemoteAddress.set(link, InetAddress.getByAddress(UNAPPROVED_HOST, InetAddress.getByName("1.2.3.4").getAddress()));
+
+        HttpDispatcher d = new HttpDispatcher();
+        d.activate(buildMap(true, null, "*", "none"));
+
+        final HttpRequestImpl req = context.mock(HttpRequestImpl.class, "req_" + id);
+        linkRequest.set(link, req);
+        context.checking(new Expectations() {
+            {
+                allowing(req).getHeader(HttpHeaderKeys.HDR_$WSSN);
+                will(returnValue(UNAPPROVED_WSSN));
+                allowing(req).getVirtualHost();
+                will(returnValue(UNAPPROVED_HOST));
+            }
+        });
+
+        if (response != null) {
+            // headersSent() is final, so the real method runs on the mock; set its backing field.
+            final HttpInboundServiceContextImpl isc = context.mock(HttpInboundServiceContextImpl.class, "isc_" + id);
+            context.checking(new Expectations() {
+                {
+                    allowing(isc).getResponse();
+                    will(returnValue(response));
+                }
+            });
+            iscMsgSentState.set(isc, headersSent ? 1 : 0);
+            linkIsc.set(link, isc);
+        }
+        return link;
+    }
+
+    @Test
+    public void testGetRequestedHostUnapprovedHeadersNotSent() throws Exception {
+        HttpResponseMessageImpl response = new HttpResponseMessageImpl();
+        HttpDispatcherLink link = buildUnapprovedLink("notSent", response, false);
+
+        Assert.assertEquals("API host should be $WSSN", UNAPPROVED_WSSN, link.getRequestedHost());
+        Assert.assertTrue("Response should be marked no-store", response.isForceNoStore());
+        Assert.assertEquals("Routing host should stay Host", UNAPPROVED_HOST, link.getRequestedRoutingHost());
+    }
+
+    @Test
+    public void testGetRequestedHostUnapprovedKeyAlreadySet() throws Exception {
+        HttpResponseMessageImpl response = new HttpResponseMessageImpl();
+        response.setForceNoStore(true);
+        // Headers already sent, but the response is already marked, so $WSSN is still returned.
+        HttpDispatcherLink link = buildUnapprovedLink("keySet", response, true);
+
+        Assert.assertEquals("API host should be $WSSN", UNAPPROVED_WSSN, link.getRequestedHost());
+        Assert.assertTrue("Response should remain marked no-store", response.isForceNoStore());
+    }
+
+    @Test
+    public void testGetRequestedHostUnapprovedHeadersSent() throws Exception {
+        HttpResponseMessageImpl response = new HttpResponseMessageImpl();
+        HttpDispatcherLink link = buildUnapprovedLink("sent", response, true);
+
+        Assert.assertEquals("API host should be Host", UNAPPROVED_HOST, link.getRequestedHost());
+        Assert.assertFalse("Response should not be marked no-store", response.isForceNoStore());
+    }
+
+    @Test
+    public void testGetRequestedHostUnapprovedNullIsc() throws Exception {
+        HttpDispatcherLink link = buildUnapprovedLink("nullIsc", null, false);
+
+        Assert.assertEquals("API host should be Host", UNAPPROVED_HOST, link.getRequestedHost());
+    }
+
+    @Test
+    public void testGetRequestedHostUnapprovedNullRemoteAddress() throws Exception {
+        HttpResponseMessageImpl response = new HttpResponseMessageImpl();
+        HttpDispatcherLink link = buildUnapprovedLink("nullAddr", response, false);
+        linkRemoteAddress.set(link, null);
+
+        Assert.assertFalse("Null remote address must not be sensitive-trusted", link.useTrustedSensitiveHeaders());
+        Assert.assertEquals("Routing host should be Host", UNAPPROVED_HOST, link.getRequestedRoutingHost());
+        Assert.assertEquals("API host is the unapproved $WSSN, handled as for any unapproved value", UNAPPROVED_WSSN, link.getRequestedHost());
+        Assert.assertTrue("Response should be marked no-store", response.isForceNoStore());
+        Assert.assertEquals("Routing host should still be Host", UNAPPROVED_HOST, link.getRequestedRoutingHost());
+    }
+
+    @Test
+    public void testGetRequestedHostUnapprovedNullRemoteAddressNullIsc() throws Exception {
+        HttpDispatcherLink link = buildUnapprovedLink("nullAddrNullIsc", null, false);
+        linkRemoteAddress.set(link, null);
+
+        Assert.assertFalse("Null remote address must not be sensitive-trusted", link.useTrustedSensitiveHeaders());
+        Assert.assertEquals("Routing host should be Host", UNAPPROVED_HOST, link.getRequestedRoutingHost());
+        Assert.assertEquals("API host should be Host", UNAPPROVED_HOST, link.getRequestedHost());
+    }
+
+    @Test
+    public void testGetRequestedHostApprovedAllowedServerNames() throws Exception {
+        final String host = "a.b.c.d";
+        final String pluginHost = "pluginHost.com";
+        final HttpRequestImpl req = context.mock(HttpRequestImpl.class, "req_allowed");
+
+        HttpDispatcherLink link = new HttpDispatcherLink();
+        linkRequest.set(link, req);
+        linkRemoteContextAddress.set(link, "1.2.3.4");
+        linkRemoteAddress.set(link, InetAddress.getByAddress(host, InetAddress.getByName("1.2.3.4").getAddress()));
+
+        HttpDispatcher d = new HttpDispatcher();
+        Map<String, Object> mapWithAllowed = buildMap(true, null, "*", "none");
+        mapWithAllowed.put(HttpDispatcher.PROP_ALLOWED_SERVER_NAMES, new String[] { pluginHost });
+        d.activate(mapWithAllowed);
+
+        context.checking(new Expectations() {
+            {
+                allowing(req).getHeader(HttpHeaderKeys.HDR_$WSSN);
+                will(returnValue(pluginHost));
+                allowing(req).getVirtualHost();
+                will(returnValue(host));
+            }
+        });
+
+        Assert.assertEquals("Listed $WSSN: API host should be $WSSN", pluginHost, link.getRequestedHost());
+        Assert.assertEquals("Listed $WSSN: Routing host should be $WSSN", pluginHost, link.getRequestedRoutingHost());
+    }
+
+    @Test
+    public void testGetRequestedHostApprovedSensitiveTrusted() throws Exception {
+        final String host = "a.b.c.d";
+        final String pluginHost = "pluginHost.com";
+        final HttpRequestImpl req = context.mock(HttpRequestImpl.class, "req_sensitive");
+
+        HttpDispatcherLink link = new HttpDispatcherLink();
+        linkRequest.set(link, req);
+        linkRemoteContextAddress.set(link, "1.2.3.4");
+        linkRemoteAddress.set(link, InetAddress.getByAddress(host, InetAddress.getByName("1.2.3.4").getAddress()));
+
+        HttpDispatcher d = new HttpDispatcher();
+        d.activate(buildMap(true, null, "*", "*"));
+
+        context.checking(new Expectations() {
+            {
+                allowing(req).getHeader(HttpHeaderKeys.HDR_$WSSN);
+                will(returnValue(pluginHost));
+                allowing(req).getVirtualHost();
+                will(returnValue(host));
+            }
+        });
+
+        Assert.assertEquals("Sensitive-trusted peer: API host should be $WSSN", pluginHost, link.getRequestedHost());
+        Assert.assertEquals("Sensitive-trusted peer: Routing host should be $WSSN", pluginHost, link.getRequestedRoutingHost());
+    }
+
+        @Test
+    public void testGetLocalHostAlias() throws Exception {
+        final String sourceAddr = "1.2.3.4";
+        final String host = "a.b.c.d";
+        final String pluginHost = "pluginHost.com";
+        final HttpRequestImpl mockRequest = context.mock(HttpRequestImpl.class);
+
+        HttpDispatcherLink link = new HttpDispatcherLink();
+        linkRequest.set(link, mockRequest);
+        linkRemoteContextAddress.set(link, sourceAddr);
+        final InetAddress testAddr = InetAddress.getByAddress("a.b.c.d", InetAddress.getByName("1.2.3.4").getAddress());
+        linkRemoteAddress.set(link, testAddr);
+
+        final Object unknownPrivateHeader = linkUsePrivateHeaders.get(link);
+        final Object unknownPrivateSensitiveHeader = linkUsePrivateSensitiveHeaders.get(link);
+
+        HttpDispatcher d = new HttpDispatcher();
+        d.activate(buildMap(true, null, "*", "none"));
+
+        // Unapproved $WSSN: routing host is Host
+        context.checking(new Expectations() {
+            {
+                allowing(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSN);
+                will(returnValue(pluginHost));
+                allowing(mockRequest).getHeader(HttpHeaderKeys.HDR_$WSSP);
+                will(returnValue("9080"));
+                allowing(mockRequest).getVirtualHost();
+                will(returnValue(host));
+                allowing(mockRequest).getVirtualPort();
+                will(returnValue(9080));
+            }
+        });
+
+        Assert.assertEquals("Local host alias uses routing host", "a.b.c.d:9080", link.getLocalHostAlias());
+
+        // Change config to listed: alias is not cached and reflects the change immediately
+        Map<String, Object> mapWithAllowed = buildMap(true, null, "*", "none");
+        mapWithAllowed.put(HttpDispatcher.PROP_ALLOWED_SERVER_NAMES, new String[] { pluginHost });
+        d.modified(mapWithAllowed);
+        linkUsePrivateHeaders.set(link, unknownPrivateHeader);
+        linkUsePrivateSensitiveHeaders.set(link, unknownPrivateSensitiveHeader);
+
+        Assert.assertEquals("Local host alias recomputes dynamically without caching", "pluginHost.com:9080", link.getLocalHostAlias());
     }
 
     @Test
