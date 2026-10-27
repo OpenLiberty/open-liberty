@@ -244,8 +244,8 @@ public class TCPUtils {
      * Outbound (connect) callers block until openListener fires, so every outbound exit
      * must notify it, including the ones that return without a bind/connect result
      * (interrupted, channel already closed).  See notifyOutboundFailure().
-     * Inbound exits that return silently are left as is: a closed inbound channel means it
-     * was stopped, and notifying would make the chain report a spurious startup failure.
+     * Inbound exits that return silently are left as is (existing behaviour): the channel
+     * was normally closed by NettyChain.stop(), which already notifies the virtual host.
      *
      * @return the terminal ChannelFuture, or null if the channel was closed before binding
      */
@@ -347,7 +347,7 @@ public class TCPUtils {
                 // intentionally do not call notifyOutboundFailure().
                 if (!activeListenerDetected) {
                     try {
-                        future = bindOrConnect(framework, channel, config, resolvedHost, inetPort, true);
+                        future = bindOrConnect(framework, channel, config, resolvedHost, inetPort, config.getSoReuseAddress());
                     } catch (InterruptedException ie) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "open interrupted (reuseAddr retry) for " + config.getExternalName());
@@ -407,7 +407,7 @@ public class TCPUtils {
                 }
                 // A failed outbound connect closes the channel; still notify the listener so
                 // callers blocked waiting for the outcome are released.  Inbound keeps the
-                // existing silent return: a closed inbound channel means it was stopped.
+                // existing silent return: the channel was normally closed by NettyChain.stop().
                 notifyOutboundFailure(framework, config, openListener, future);
                 return future;
             }
@@ -454,9 +454,9 @@ public class TCPUtils {
      * otherwise return silently.  Outbound callers (e.g. JFAP connectOverNetwork) block on
      * a semaphore until this listener fires, so skipping it hangs them.
      *
-     * No-op for inbound channels: the chain's listener treats a failed future as a startup
-     * error (notifyStopped without a matching notifyStarted), which is wrong when an inbound
-     * channel was simply stopped.
+     * No-op for inbound channels: their silent exits are left unchanged.  The channel was
+     * normally closed by NettyChain.stop(), which already notifies the virtual host, so
+     * reporting a failed future to the chain's listener is unnecessary.
      *
      * Dispatched via generateOpenListenerWrapper so the listener runs on a Liberty executor
      * thread, consistent with the other listener calls in open().

@@ -286,6 +286,69 @@ public class NettyChain extends AbstractHttpChain {
 
     }
 
+    /**
+     * Block until an in-flight bind started by {@link #startNettyChannel()} reaches a terminal
+     * state (STARTED or STOPPED), or the bind timeout expires.  Returns immediately if the chain
+     * is not STARTING.
+     *
+     * startNettyChannel() returns while the bind is still pending (the result arrives on
+     * channelFutureHandler()), so callers that must verify the final chain state, such as
+     * HttpEndpointImpl.resume(), call this first.  It is deliberately not folded into
+     * startNettyChannel() so config updates never block on the bind.
+     *
+     * The state is not changed on timeout: the bind may still complete later, and forcing STOPPED
+     * would make channelFutureHandler() shut that channel down.  The caller sees the chain still
+     * STARTING and treats it as a failure.
+     */
+    public synchronized void awaitBindResult() {
+        if (state.get() != ChainState.STARTING) {
+            return;
+        }
+        long timeoutMs = getBindTimeoutMs();
+        long deadline = System.currentTimeMillis() + timeoutMs;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Waiting up to " + timeoutMs + "ms for bind result on " + endpointName);
+        }
+        while (state.get() == ChainState.STARTING) {
+            long remaining = deadline - System.currentTimeMillis();
+            if (remaining <= 0) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Timed out after " + timeoutMs + "ms waiting for bind result on " + endpointName);
+                }
+                return;
+            }
+            try {
+                // Releases this monitor so channelFutureHandler() can record the result.
+                wait(remaining);
+            } catch (InterruptedException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Interrupted while waiting for bind result on " + endpointName);
+                }
+                Thread.currentThread().interrupt();
+                return;
+            }
+        }
+    }
+
+    /**
+     * The bind retries once per second, portOpenRetries times after the first attempt, so allow
+     * (portOpenRetries + 1) seconds.
+     */
+    private long getBindTimeoutMs() {
+        int portOpenRetries = 0;
+        Object retries = owner.getTcpOptions().get("portOpenRetries");
+        if (retries instanceof Integer) {
+            portOpenRetries = (Integer) retries;
+        } else if (retries instanceof String) {
+            try {
+                portOpenRetries = Integer.parseInt((String) retries);
+            } catch (NumberFormatException ignored) {
+                // use the default of 0
+            }
+        }
+        return (portOpenRetries + 1L) * 1000L;
+    }
+
     private void channelFutureHandler(ChannelFuture future) {
         if (state.get() == ChainState.STOPPING || state.get() == ChainState.STOPPED) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
