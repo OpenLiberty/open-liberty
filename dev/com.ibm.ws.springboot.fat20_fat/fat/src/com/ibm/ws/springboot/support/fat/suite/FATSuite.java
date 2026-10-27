@@ -50,6 +50,7 @@ import com.ibm.ws.springboot.support.fat.JPAEclipseLinkWeavingAppTests20War;
 import com.ibm.ws.springboot.support.fat.JPAHibernateAppTests20War;
 import com.ibm.ws.springboot.support.fat.JPALibertyAppTests20War;
 import com.ibm.ws.springboot.support.fat.JSPTests20;
+import com.ibm.ws.springboot.support.fat.JTAAppDropinsTests20;
 import com.ibm.ws.springboot.support.fat.JTAAppTests20;
 import com.ibm.ws.springboot.support.fat.JTAAppTests20War;
 import com.ibm.ws.springboot.support.fat.JavaeeFeatureTests15;
@@ -146,6 +147,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 ApplicationStartedEventTests.class,
                 JNDINoEEContextAppTests.class,
                 JTAAppTests20.class,
+                JTAAppDropinsTests20.class,
                 JTAAppTests20War.class,
                 ProgrammaticTransAppTests20.class,
                 ProgrammaticTransAppTests20War.class,

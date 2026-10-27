@@ -49,6 +49,8 @@ import com.ibm.ws.springboot.support.fat.JPAHibernateAppTests40;
 import com.ibm.ws.springboot.support.fat.JPAHibernateAppTests40War;
 import com.ibm.ws.springboot.support.fat.JPALibertyAppTests40War;
 import com.ibm.ws.springboot.support.fat.JSPTests40;
+import com.ibm.ws.springboot.support.fat.JTAAppDropinsTests40;
+import com.ibm.ws.springboot.support.fat.JTAAppNoEEContextTests40;
 import com.ibm.ws.springboot.support.fat.JTAAppTests40;
 import com.ibm.ws.springboot.support.fat.JTAAppTests40War;
 import com.ibm.ws.springboot.support.fat.JakartaFeatureTests40;
@@ -132,6 +134,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 MBeanAppTests40.class,
                 MBeanAppTests40War.class,
                 JTAAppTests40.class,
+                JTAAppDropinsTests40.class,
+                JTAAppNoEEContextTests40.class,
                 JTAAppTests40War.class,
                 JPAEclipseLinkAppTests40War.class,
                 JPAEclipseLinkWeavingAppTests40War.class,
