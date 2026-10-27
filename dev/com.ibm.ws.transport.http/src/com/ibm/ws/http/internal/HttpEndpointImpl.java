@@ -1365,6 +1365,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Chain work processed, verifying states");
             }
+            // The Netty bind completes asynchronously; wait for the result before checking states.
+            nettyChain.awaitBindResult();
+            nettySecureChain.awaitBindResult();
             logChainStates();
             verifyResumedChainStates();
 
@@ -1427,6 +1430,13 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             }
             return;
         }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Chain states invalid after resume - HTTP: " + ChainState.printState(httpChainState)
+                               + ", HTTPS: " + ChainState.printState(httpsChainState));
+        }
+        throw new PauseableComponentException("The request to resume HTTP endpoint " + name + " did not complete successfully. HTTPChain: " + httpChain.toString()
+                                              + ". HTTPSChain: " + httpsChain.toString());
     }
 
 
