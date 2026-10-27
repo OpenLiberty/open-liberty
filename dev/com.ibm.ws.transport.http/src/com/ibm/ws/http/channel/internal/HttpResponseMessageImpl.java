@@ -70,6 +70,8 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
     private byte[] myReasonBytes = null;
     /** Reason phrase as a String */
     private transient String myReason = null;
+    /** True when Cache-Control: no-store must be added at marshal time */
+    private transient boolean forceNoStore = false;
 
     /**
      * Default constructor with no service context.
@@ -112,6 +114,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      * @param sc
      */
     public void init(HttpInboundServiceContext sc) {
+        this.forceNoStore = false;
         setOwner(sc);
         setBinaryParseState(HttpInternalConstants.PARSING_BINARY_VERSION);
         initVersion();
@@ -135,6 +138,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      * @param hdrs
      */
     public void init(HttpInboundServiceContext sc, BNFHeaders hdrs) {
+        this.forceNoStore = false;
         setOwner(sc);
         setBinaryParseState(HttpInternalConstants.PARSING_BINARY_VERSION);
         if (null != hdrs) {
@@ -292,6 +296,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
         this.myStatusCode = StatusCodes.OK;
         this.myReason = null;
         this.myReasonBytes = null;
+        this.forceNoStore = false;
     }
 
     /**
@@ -304,6 +309,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
         }
         HttpObjectFactory tempFactory = getObjectFactory();
         super.destroy();
+        this.forceNoStore = false;
         if (null != tempFactory) {
             tempFactory.releaseResponse(this);
         }
@@ -741,9 +747,39 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
 
         }
 
+        if (this.forceNoStore) {
+            applyNoStoreCacheControl();
+        }
+
         if (bTrace && tc.isEntryEnabled()) {
             Tr.exit(tc, "headerComplianceCheck");
         }
+    }
+
+    /**
+     * Set Cache-Control to no-store, replacing any existing value.
+     */
+    private void applyNoStoreCacheControl() {
+        setSpecialHeader(HttpHeaderKeys.HDR_CACHE_CONTROL, "no-store");
+    }
+
+    /**
+     * Mark this response so that Cache-Control: no-store is added at marshal time.
+     * Called when the API server name came from an unapproved $WSSN source.
+     *
+     * @param value
+     */
+    public void setForceNoStore(boolean value) {
+        this.forceNoStore = value;
+    }
+
+    /**
+     * Returns true if Cache-Control: no-store should be added at marshal time.
+     *
+     * @return boolean
+     */
+    public boolean isForceNoStore() {
+        return this.forceNoStore;
     }
 
     /**

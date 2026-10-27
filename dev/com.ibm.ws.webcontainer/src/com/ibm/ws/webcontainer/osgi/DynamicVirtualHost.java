@@ -43,8 +43,10 @@ import com.ibm.ws.webcontainer.osgi.webapp.WebGroupConfiguration;
 import com.ibm.ws.webcontainer.util.URIMatcher;
 import com.ibm.ws.webcontainer.util.WSURLDecoder;
 import com.ibm.wsspi.http.HttpContainer;
+import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.wsspi.http.HttpInboundConnection;
 import com.ibm.wsspi.http.channel.values.ConnectionValues;
+import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
@@ -321,7 +323,8 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
              */
             @Override
             public void handleRequest(ServletRequest req, ServletResponse res) throws Exception {
-                String hostAlias = WebContainer.getHostAliasKey(req.getServerName(), req.getServerPort());
+                String routingHost = getRoutingHost(httpInboundConnection, req);
+                String hostAlias = WebContainer.getHostAliasKey(routingHost, req.getServerPort());
 
                 addSecureRedirect(req, hostAlias);
 
@@ -345,6 +348,17 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
 
 
     }
+
+    private static String getRoutingHost(HttpInboundConnection conn, ServletRequest req) {
+        if (conn instanceof HttpInboundConnectionExtended) {
+            Object link = ((HttpInboundConnectionExtended) conn).getHttpDispatcherLink();
+            if (link instanceof HttpDispatcherLink) {
+                return ((HttpDispatcherLink) link).getRequestedRoutingHost();
+            }
+        }
+        return req.getServerName();
+    }
+
     @Override
     protected void addSecureRedirect(ServletRequest req, String hostAlias) {
         int secureRedirect = vHostConfig.getSecureHttpPort(hostAlias);

@@ -115,6 +115,9 @@ public class HttpDispatcher {
      */
     static final String PROP_TRUSTED_SENSITIVE_HEADER_ORIGIN = "trustedSensitiveHeaderOrigin";
 
+    /** Property name for the allowed server names list. */
+    static final String PROP_ALLOWED_SERVER_NAMES = "allowedServerNames";
+
     /**
      * Active HttpDispatcher instance. May be null between deactivate and activate
      * calls.
@@ -140,6 +143,13 @@ public class HttpDispatcher {
 
     /** keep track of the hosts for which private headers are trusted */
     private volatile TrustedHeaderOriginLists trustedLists = null;
+
+    /** allowedServerNames as last configured, for change detection */
+    private volatile String[] origAllowedServerNames = null;
+
+    /** parsed allowedServerNames; empty (never matches) unless configured */
+    private volatile AllowedServerNamesMatcher allowedServerNamesMatcher =
+        AllowedServerNamesMatcher.parse((String[]) null);
 
     /** Web Container property for HSTS header value **/
     private volatile static String hstsHeader = "noValue";
@@ -222,6 +232,8 @@ public class HttpDispatcher {
                                                                    new String[] { "none" });
 
         parseTrustedPrivateHeaderOrigin(origHeaderOrigin, origSensitiveHeaderOrigin);
+
+        setAllowedServerNames(config.get(PROP_ALLOWED_SERVER_NAMES));
     }
 
     public static Boolean isWelcomePageEnabled() {
@@ -304,6 +316,43 @@ public class HttpDispatcher {
     }
 
     /**
+     * Parse and store the allowedServerNames attribute. Skips re-parse when the
+     * configured value is unchanged. Fails closed to an empty list on any error.
+     */
+    private void setAllowedServerNames(Object configValue) {
+        String[] values;
+        AllowedServerNamesMatcher matcher;
+        try {
+            values = MetatypeUtils.parseStringArray(CONFIG_ALIAS, PROP_ALLOWED_SERVER_NAMES,
+                                                    configValue, null);
+            if (Arrays.equals(values, origAllowedServerNames)) {
+                return;
+            }
+            matcher = AllowedServerNamesMatcher.parse(values);
+        } catch (RuntimeException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "allowedServerNames: value could not be parsed, no names are listed: " + e);
+            }
+            allowedServerNamesMatcher = AllowedServerNamesMatcher.parse((String[]) null);
+            origAllowedServerNames = null;
+            return;
+        }
+        for (AllowedServerNamesMatcher.RejectedEntry re : matcher.getRejectedEntries()) {
+            Tr.info(tc, "allowedServerNames: entry "
+                    + AllowedServerNamesMatcher.traceSafe(re.getEntry())
+                    + " rejected, reason: " + re.getReason());
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            for (String accepted : matcher.getAcceptedEntries()) {
+                Tr.debug(tc, "allowedServerNames: accepted entry "
+                        + AllowedServerNamesMatcher.traceSafe(accepted));
+            }
+        }
+        allowedServerNamesMatcher = matcher;
+        origAllowedServerNames = values;
+    }
+
+    /**
      * Create a InetAddress object from an address string. Returns null if an exception is encountered, or if
      * the passed address string is null
      *
@@ -374,6 +423,18 @@ public class HttpDispatcher {
     }
 
 
+
+    /**
+     * Returns the active {@link AllowedServerNamesMatcher}. Returns the empty
+     * (never-matches) matcher when no dispatcher instance is active.
+     */
+    public static AllowedServerNamesMatcher getAllowedServerNamesMatcher() {
+        HttpDispatcher f = instance.get();
+        if (f != null) {
+            return f.allowedServerNamesMatcher;
+        }
+        return AllowedServerNamesMatcher.parse((String) null);
+    }
 
     /**
      * Check whether the source host address is trusted to send SENSITIVE private headers.

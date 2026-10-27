@@ -78,6 +78,8 @@ public class VirtualHostMap {
         String getRequestedHost();
 
         int getRequestedPort();
+
+        String getRequestedRoutingHost();
     }
 
     /**
@@ -244,7 +246,7 @@ public class VirtualHostMap {
 
         // Now that we know we have virtual hosts to choose from, do the evaluation of http headers
         // to figure out what the requested host/port were..
-        return selector.findVirtualHost(endpointPid, helper.getRequestedHost(), helper.getRequestedPort());
+        return selector.findVirtualHost(endpointPid, helper.getRequestedRoutingHost(), helper.getRequestedPort());
     }
 
     private static class AlternateHostSelector {

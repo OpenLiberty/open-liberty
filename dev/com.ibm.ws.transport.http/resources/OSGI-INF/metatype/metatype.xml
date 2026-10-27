@@ -374,6 +374,9 @@
 
         <AD name="%dispatcher.trustedSensitiveHeaderOrigin" description="%dispatcher.trustedSensitiveHeaderOrigin.desc"
             id="trustedSensitiveHeaderOrigin" required="false" type="String" default="none" cardinality="2147483647" />
+
+        <AD name="Allowed server names" description="Host names or *.-wildcard names that are accepted from $WSSN as the server name when the request comes from a peer that passes trustedHeaderOrigin."
+            id="allowedServerNames" required="false" type="String" cardinality="2147483647" />
     </OCD>
 
     <Designate pid="com.ibm.ws.http.dispatcher">
