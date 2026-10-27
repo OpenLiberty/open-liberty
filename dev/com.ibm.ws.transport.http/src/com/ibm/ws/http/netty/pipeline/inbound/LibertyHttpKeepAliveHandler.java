@@ -26,7 +26,7 @@ import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 
 /**
  * Extends Netty's {@link HttpServerKeepAliveHandler} to enforce Liberty-specific
- * keep-alive configuration: {@code keepAliveEnabled} and {@code maxPersistentRequests}.
+ * keep-alive configuration: {@code keepAliveEnabled} and {@code maxKeepAliveRequests}.
  *
  * <p>This handler consolidates all keep-alive logic in one place:
  * <ul>

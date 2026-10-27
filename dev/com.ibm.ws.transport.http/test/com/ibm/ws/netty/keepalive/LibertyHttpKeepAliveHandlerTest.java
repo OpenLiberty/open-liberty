@@ -29,13 +29,16 @@ import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpKeepAliveHandler;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.DefaultLastHttpContent;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 
 /**
@@ -260,6 +263,83 @@ public class LibertyHttpKeepAliveHandlerTest {
     }
 
     // ---------------------------------------------------------------------
+    // Upgrade requests (WebSocket / Servlet upgrade)
+    // ---------------------------------------------------------------------
+
+    /**
+     * Control for the upgrade tests below: an ordinary request with
+     * {@code keepAliveEnabled=false} and an ordinary {@code 200} response must
+     * close the connection after the response. This proves the harness drives
+     * Netty's parent {@code HttpServerKeepAliveHandler} the way production does.
+     */
+    @Test
+    public void nonUpgrade_keepAliveDisabled_200Response_closesChannel() {
+        channel = newChannel(config(false, -1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
+        sendRequest(HttpVersion.HTTP_1_1);
+
+        FullHttpResponse out = writeResponse(newResponse(HttpResponseStatus.OK));
+
+        assertTrue("The response must tell the client the connection is closing",
+                   out.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true));
+        assertFalse("The channel must be closed after the response", channel.isOpen());
+    }
+
+    /**
+     * A client asks for a protocol upgrade (WebSocket, Servlet {@code HttpUpgradeHandler})
+     * and the server agrees with {@code 101 Switching Protocols}. Even with
+     * {@code keepAliveEnabled=false} the 101 must still say
+     * {@code Connection: Upgrade} and the channel must stay open, because the
+     * upgraded protocol now owns the socket.
+     *
+     * <p>The handler marks this request {@code Connection: close}, so this test
+     * pins down what Netty's parent {@code HttpServerKeepAliveHandler} does with
+     * a 101 in that situation: it leaves the response alone and does not close
+     * the channel. It guards against a Netty upgrade or a change to this
+     * handler altering that. The end-to-end behavior, including the server's own
+     * upgrade handling, is covered by the servlet upgrade tests in
+     * {@code KeepAliveEnforcementTest}.
+     */
+    @Test
+    public void upgrade_keepAliveDisabled_101Response_staysUpgradeAndOpen() {
+        channel = newChannel(config(false, -1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
+        writeAndRead(newUpgradeRequest());
+
+        FullHttpResponse switching = newResponse(HttpResponseStatus.SWITCHING_PROTOCOLS);
+        switching.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE);
+        switching.headers().set(HttpHeaderNames.UPGRADE, HttpHeaderValues.WEBSOCKET);
+        FullHttpResponse out = writeResponse(switching);
+
+        assertTrue("A 101 response must keep Connection: Upgrade",
+                   out.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE, true));
+        assertFalse("A 101 response must not become Connection: close",
+                    out.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true));
+        assertTrue("The channel must stay open for the upgraded protocol", channel.isOpen());
+    }
+
+    /**
+     * The upgrade exemption must be decided by the <em>server's response</em>,
+     * never by request headers alone. A client can put {@code Connection: Upgrade}
+     * and {@code Upgrade: websocket} on every request. If those headers were
+     * enough to skip enforcement, the client could defeat
+     * {@code keepAliveEnabled=false} and {@code maxKeepAliveRequests}, which is
+     * the same class of bypass as the spoofed {@code x-http2-stream-id} header.
+     *
+     * <p>Here the client asks to upgrade but the server answers an ordinary
+     * {@code 200}, so keep-alive is still enforced.
+     */
+    @Test
+    public void upgradeHeadersOnRequest_but200Response_stillClosesChannel() {
+        channel = newChannel(config(false, -1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
+        writeAndRead(newUpgradeRequest());
+
+        FullHttpResponse out = writeResponse(newResponse(HttpResponseStatus.OK));
+
+        assertTrue("Upgrade headers on the request must not bypass keepAliveEnabled=false",
+                   out.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true));
+        assertFalse("The channel must be closed after a non-101 response", channel.isOpen());
+    }
+
+    // ---------------------------------------------------------------------
     // Helpers
     // ---------------------------------------------------------------------
 
@@ -293,6 +373,30 @@ public class LibertyHttpKeepAliveHandlerTest {
     /** Creates a bare GET request with no Connection header. */
     private static HttpRequest newRequest(HttpVersion version) {
         return new DefaultHttpRequest(version, HttpMethod.GET, "/");
+    }
+
+    /** Creates a GET request asking to upgrade to WebSocket. */
+    private static HttpRequest newUpgradeRequest() {
+        HttpRequest request = newRequest(HttpVersion.HTTP_1_1);
+        request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE);
+        request.headers().set(HttpHeaderNames.UPGRADE, HttpHeaderValues.WEBSOCKET);
+        return request;
+    }
+
+    /** Creates an empty response with a self-defined length ({@code Content-Length: 0}). */
+    private static FullHttpResponse newResponse(HttpResponseStatus status) {
+        FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status);
+        response.headers().set(HttpHeaderNames.CONTENT_LENGTH, 0);
+        return response;
+    }
+
+    /** Writes a response outbound through the handler and returns what reaches the wire. */
+    private FullHttpResponse writeResponse(FullHttpResponse response) {
+        channel.writeOutbound(response);
+        channel.runPendingTasks();
+        FullHttpResponse out = channel.readOutbound();
+        assertNotNull("The handler must forward the response", out);
+        return out;
     }
 
     /** Writes a new GET request through the handler and returns what comes out. */

@@ -74,6 +74,7 @@ public class KeepAliveEnforcementTest {
 
     private static final String APP_NAME = "keepAliveApp";
     private static final String SERVLET_PATH = "/" + APP_NAME + "/KeepAliveServlet";
+    private static final String UPGRADE_SERVLET_PATH = "/" + APP_NAME + "/UpgradeServlet";
 
     /** The header Netty's HTTP/2-to-HTTP/1 adapter adds. A client can also send it. */
     private static final String SPOOFED_STREAM_ID_HEADER = "x-http2-stream-id: 3";
@@ -262,6 +263,116 @@ public class KeepAliveEnforcementTest {
     }
 
     // ---------------------------------------------------------------------
+    // Servlet 3.1 HttpUpgradeHandler upgrades
+    // ---------------------------------------------------------------------
+
+    /**
+     * With {@code keepAliveEnabled=false}, a Servlet 3.1 upgrade must still
+     * succeed and the socket must stay open.
+     *
+     * <p>Keep-alive describes how a connection is reused for further HTTP
+     * requests. After {@code 101 Switching Protocols} the connection no longer
+     * carries HTTP; it belongs to the upgraded protocol (here, an echo handler).
+     * Closing it because "keep-alive is disabled" would break every servlet
+     * upgrade on a server that disables keep-alive. The legacy channel framework
+     * exempts upgraded connections, so Netty must behave the same way.
+     *
+     * <p>The test proves the connection is alive by sending bytes after the
+     * {@code 101} and expecting the same bytes echoed back, then confirming the
+     * server has not closed the socket.
+     */
+    @Test
+    public void keepAliveDisabled_servletUpgrade_staysOpen() throws Exception {
+        setKeepAliveOptions(false, null);
+
+        try (RawConnection connection = new RawConnection()) {
+            assertUpgradeSucceedsAndStaysOpen(connection, false);
+        }
+    }
+
+    /**
+     * With {@code maxKeepAliveRequests=1} the upgrade request is itself request
+     * number 1, the last one allowed on the connection. The upgrade must still
+     * succeed and the socket must stay open, for the same reason as above: the
+     * request limit applies to HTTP requests, and the connection has stopped
+     * carrying HTTP.
+     */
+    @Test
+    public void maxKeepAliveRequestsOne_servletUpgrade_staysOpen() throws Exception {
+        setKeepAliveOptions(null, 1);
+
+        try (RawConnection connection = new RawConnection()) {
+            assertUpgradeSucceedsAndStaysOpen(connection, false);
+        }
+    }
+
+    /**
+     * Same as {@link #keepAliveDisabled_servletUpgrade_staysOpen()} but the
+     * upgrade handler uses plain blocking reads and never sets a
+     * {@code ReadListener}.
+     *
+     * <p>Setting a {@code ReadListener} marks the connection as a listener-based
+     * upgrade, and the server's close logic handles those separately from
+     * handlers that never set one. This test covers the listener-less path.
+     * The handler stays in {@code init} reading until the client disconnects.
+     * If it returned instead, the server would close the socket on both
+     * transports, which says nothing about keep-alive.
+     */
+    @Test
+    public void keepAliveDisabled_blockingServletUpgrade_staysOpen() throws Exception {
+        setKeepAliveOptions(false, null);
+
+        try (RawConnection connection = new RawConnection()) {
+            assertUpgradeSucceedsAndStaysOpen(connection, true);
+        }
+    }
+
+    /**
+     * Same as {@link #maxKeepAliveRequestsOne_servletUpgrade_staysOpen()} but
+     * with the blocking, listener-less upgrade handler. See
+     * {@link #keepAliveDisabled_blockingServletUpgrade_staysOpen()} for why this
+     * path is tested separately.
+     */
+    @Test
+    public void maxKeepAliveRequestsOne_blockingServletUpgrade_staysOpen() throws Exception {
+        setKeepAliveOptions(null, 1);
+
+        try (RawConnection connection = new RawConnection()) {
+            assertUpgradeSucceedsAndStaysOpen(connection, true);
+        }
+    }
+
+    /**
+     * Sends a servlet upgrade request, expects {@code 101 Switching Protocols}
+     * with {@code Connection: Upgrade}, then checks the upgraded connection is
+     * alive by echoing bytes through it and confirming the server did not close
+     * the socket.
+     *
+     * @param blocking true to use the blocking, listener-less upgrade handler
+     */
+    private void assertUpgradeSucceedsAndStaysOpen(RawConnection connection, boolean blocking) throws IOException {
+        connection.sendUpgradeRequest(blocking);
+        RawResponse response = connection.readResponseHead();
+        LOG.info("upgrade response:\n" + response);
+
+        assertEquals("The servlet upgrade must be accepted with 101 Switching Protocols",
+                     101, response.statusCode);
+        // The Connection header is a token list. The channel framework sends
+        // "Upgrade, Close" here when keep-alive is disabled, and still hands the
+        // socket to the upgraded protocol, so only require the Upgrade token.
+        // Whether the socket really stays usable is checked by the echo below.
+        assertTrue("The 101 must keep the Upgrade token in Connection: " + response.headers.get("connection"),
+                   response.hasConnectionToken("upgrade"));
+
+        String payload = "PING";
+        connection.writeRaw(payload);
+        assertEquals("The upgraded connection must echo what is written to it",
+                     payload, connection.readRaw(payload.length()));
+        assertFalse("The server must not close an upgraded connection",
+                    connection.isClosedByServer(STAYS_OPEN_TIMEOUT_MS));
+    }
+
+    // ---------------------------------------------------------------------
     // Configuration helper
     // ---------------------------------------------------------------------
 
@@ -311,6 +422,20 @@ public class KeepAliveEnforcementTest {
             return connection != null && connection.trim().equalsIgnoreCase("close");
         }
 
+        /** True when the comma-separated {@code Connection} header contains the token (case-insensitive). */
+        boolean hasConnectionToken(String token) {
+            String connection = headers.get("connection");
+            if (connection == null) {
+                return false;
+            }
+            for (String part : connection.split(",")) {
+                if (part.trim().equalsIgnoreCase(token)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         @Override
         public String toString() {
             return "status=" + statusCode + " headers=" + headers + " body=" + body.trim();
@@ -354,11 +479,47 @@ public class KeepAliveEnforcementTest {
         }
 
         /**
-         * Reads exactly one response: the status line, the headers, and a body of
-         * {@code Content-Length} bytes. Fails the test if the response has no
-         * Content-Length, since the servlet is expected to always set one.
+         * Sends a GET to the upgrade servlet asking for a protocol upgrade. The
+         * servlet answers {@code 101} and hands the connection to an echo handler.
+         *
+         * @param blocking true to select the blocking, listener-less handler with {@code ?mode=blocking}
          */
-        RawResponse readResponse() throws IOException {
+        void sendUpgradeRequest(boolean blocking) throws IOException {
+            String request = "GET " + UPGRADE_SERVLET_PATH + (blocking ? "?mode=blocking" : "") + " HTTP/1.1\r\n"
+                             + "Host: " + server.getHostname() + ':' + server.getHttpDefaultPort() + "\r\n"
+                             + "Upgrade: KeepAliveEcho\r\n"
+                             + "Connection: Upgrade\r\n"
+                             + "\r\n";
+            out.write(request.getBytes(StandardCharsets.ISO_8859_1));
+            out.flush();
+        }
+
+        /** Writes raw bytes on the connection, for use after an upgrade. */
+        void writeRaw(String data) throws IOException {
+            out.write(data.getBytes(StandardCharsets.ISO_8859_1));
+            out.flush();
+        }
+
+        /** Reads exactly {@code length} raw bytes, for use after an upgrade. */
+        String readRaw(int length) throws IOException {
+            byte[] data = new byte[length];
+            int read = 0;
+            while (read < length) {
+                int count = in.read(data, read, length - read);
+                if (count < 0) {
+                    break;
+                }
+                read += count;
+            }
+            return new String(data, 0, read, StandardCharsets.ISO_8859_1);
+        }
+
+        /**
+         * Reads only the status line and headers. Used directly for a
+         * {@code 101 Switching Protocols}, which has no body and no
+         * Content-Length.
+         */
+        RawResponse readResponseHead() throws IOException {
             String statusLine = readLine();
             assertNotNull("Connection closed before a status line was received", statusLine);
 
@@ -373,6 +534,16 @@ public class KeepAliveEnforcementTest {
                     response.headers.put(line.substring(0, colon).trim().toLowerCase(), line.substring(colon + 1).trim());
                 }
             }
+            return response;
+        }
+
+        /**
+         * Reads exactly one response: the status line, the headers, and a body of
+         * {@code Content-Length} bytes. Fails the test if the response has no
+         * Content-Length, since the servlet is expected to always set one.
+         */
+        RawResponse readResponse() throws IOException {
+            RawResponse response = readResponseHead();
 
             String contentLength = response.headers.get("content-length");
             assertNotNull("Response must have a Content-Length so it can be read off a shared socket: " + response,
