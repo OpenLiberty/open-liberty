@@ -17,11 +17,10 @@ src: \
  test-applications/batchSecurity.war/src,\
  test-applications/batchSecurity.war/resources,\
  test-applications/fat.common/DbServletApp.war/src,\
- test-applications/fat.common/DbServletApp.war/resources,\
- test-applications/fat.common/BonusPayout.war/src,\
- test-applications/fat.common/BonusPayout.war/resources
+ test-applications/fat.common/DbServletApp.war/resources
 
 fat.project: true
+fat.minimum.java.level: 11
 
 tested.features: \
  batch-2.0,\

@@ -58,8 +58,8 @@ public class DataStandaloneTckLauncher {
         additionalProps.put("included.groups", "standalone & nosql");
 
         //Comment out to use SNAPSHOT
-//        additionalProps.put("jakarta.data.groupid", "jakarta.data");
-//        additionalProps.put("jakarta.data.tck.version", "1.1.0");
+        additionalProps.put("jakarta.data.groupid", "jakarta.data");
+        additionalProps.put("jakarta.data.tck.version", "1.1.0-M4");
 
         TCKRunner.build(DONOTSTART, Type.JAKARTA, "Data")
                         .withPlatformVersion("12")

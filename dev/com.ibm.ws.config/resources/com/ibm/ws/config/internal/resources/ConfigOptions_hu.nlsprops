@@ -49,3 +49,6 @@ option-key.outputVersion=--outputVersion
 
 # "outputVersion=2.0" is not translated.  "xsd:any" is not translated
 option-desc.outputVersion=Ha az outputVersion=2.0 van megadva, akkor csak az xsd:any elem ker\u00fcl alkalmaz\u00e1sra a kimeneti f\u00e1jlban, hogy az ismeretlen elemek XSD \u00e9rv\u00e9nyes\u00edt\u00e9se az ismert elemek \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9nek mell\u0151z\u00e9se \u00e1r\u00e1n megt\u00f6rt\u00e9nhessen.
+
+option-key.strict=--strict
+option-desc.strict=K\u00e9sz\u00edtsen olyan s\u00e9m\u00e1t, amely kiz\u00e1r\u00f3lag a meghat\u00e1rozott attrib\u00fatumok \u00e9rv\u00e9nyess\u00e9g\u00e9t ellen\u0151rzi.

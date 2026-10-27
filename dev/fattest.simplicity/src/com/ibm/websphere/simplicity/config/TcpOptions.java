@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,8 @@ public class TcpOptions extends ConfigElement {
     private Integer maxOpenConnections;
     private Integer portOpenRetries;
     private Integer soLinger;
+    private Boolean acceptThread;
+    private Boolean waitToAccept;
 
     public Boolean isSoReuseAddr() {
         return this.soReuseAddr;
@@ -63,6 +65,14 @@ public class TcpOptions extends ConfigElement {
 
     public Integer getSoLinger() {
         return soLinger;
+    }
+
+    public Boolean isAcceptThread() {
+        return acceptThread;
+    }
+
+    public Boolean isWaitToAccept() {
+        return waitToAccept;
     }
 
     @XmlAttribute
@@ -109,6 +119,16 @@ public class TcpOptions extends ConfigElement {
         this.soLinger = soLinger;
     }
 
+    @XmlAttribute
+    public void setAcceptThread(Boolean acceptThread) {
+        this.acceptThread = acceptThread;
+    }
+
+    @XmlAttribute
+    public void setWaitToAccept(Boolean waitToAccept) {
+        this.waitToAccept = waitToAccept;
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("TcpOptions{");
@@ -132,6 +152,10 @@ public class TcpOptions extends ConfigElement {
             buf.append("portOpenRetries=\"" + portOpenRetries + "\" ");
         if (getSoLinger() != null)
             buf.append("soLinger=\"" + soLinger + "\" ");
+        if (isAcceptThread() != null)
+            buf.append("acceptThread=\"" + acceptThread + "\" ");
+        if (isWaitToAccept() != null)
+            buf.append("waitToAccept=\"" + waitToAccept + "\" ");
         buf.append("}");
         return buf.toString();
     }

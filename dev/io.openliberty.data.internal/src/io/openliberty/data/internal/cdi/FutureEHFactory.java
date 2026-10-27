@@ -51,8 +51,8 @@ import com.ibm.wsspi.persistence.DDLGenerationParticipant;
 import io.openliberty.data.internal.DataProvider;
 import io.openliberty.data.internal.EntityHandlerFactory;
 import io.openliberty.data.internal.Util;
-import io.openliberty.data.internal.provider.PUnitEHFactory;
-import io.openliberty.data.internal.service.DBStoreEHFactory;
+import io.openliberty.data.internal.ds.DBStoreEHFactory;
+import io.openliberty.data.internal.jpa.PUnitEHFactory;
 import jakarta.data.exceptions.DataException;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -333,6 +333,8 @@ public class FutureEHFactory extends CompletableFuture<EntityHandlerFactory> //
                 else
                     throw excJNDINameNotFound(jeeName, x);
             } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "createFactory", x);
                 throw (DataException) exc(DataException.class,
                                           "CWWKD1080.datastore.general.err",
                                           getClassNames(repositoryInterfaces),

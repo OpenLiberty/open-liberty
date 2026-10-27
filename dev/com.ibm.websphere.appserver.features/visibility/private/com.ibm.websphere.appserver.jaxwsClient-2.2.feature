@@ -35,7 +35,7 @@ IBM-API-Package: \
 -bundles=\
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2, \
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.3.2, \
-  com.ibm.ws.org.apache.neethi.3.1.1, \
+  io.openliberty.org.apache.neethi, \
   com.ibm.ws.javaee.ddmodel.wsbnd, \
   com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2, \
   com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2, \

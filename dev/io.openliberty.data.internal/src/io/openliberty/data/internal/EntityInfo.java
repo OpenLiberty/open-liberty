@@ -24,12 +24,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.concurrent.CompletableFuture;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import jakarta.data.event.PostDeleteEvent;
+import jakarta.data.event.PostInsertEvent;
+import jakarta.data.event.PostUpdateEvent;
+import jakarta.data.event.PostUpsertEvent;
+import jakarta.data.event.PreDeleteEvent;
+import jakarta.data.event.PreInsertEvent;
+import jakarta.data.event.PreUpdateEvent;
+import jakarta.data.event.PreUpsertEvent;
 import jakarta.data.exceptions.MappingException;
+import jakarta.enterprise.util.TypeLiteral;
 import jakarta.persistence.Inheritance;
 
 /**
@@ -55,15 +63,6 @@ public class EntityInfo {
     // lower case attribute name --> properly cased/qualified JPQL attribute name
     final Map<String, String> attributeNames;
 
-    /**
-     * Names of attributes to use for entity update,
-     * or null if em.merge must be used instead.
-     * Excludes id and version.
-     * Excludes inner relation attributes, such as location.address
-     * when there is also a location.address.zipcode
-     */
-    public final SortedSet<String> attributeNamesForEntityUpdate;
-
     // properly cased/qualified JPQL attribute name --> type
     final SortedMap<String, Class<?>> attributeTypes;
 
@@ -71,13 +70,30 @@ public class EntityInfo {
     final Map<String, Class<?>> collectionElementTypes;
 
     public final Class<?> entityClass; // will be a generated class for entity records
-    final EntityHandlerFactory factory;
+    public final EntityHandlerFactory factory;
     final Class<?> idType; // type of the id, which could be a JPA IdClass for composite ids
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
     public final boolean isHibernate;
-    final String name; // entity name to use in query language. If a record, the name will be [RecordName]Entity.
+
+    /**
+     * Entity name to use in query language.
+     * If a record, the name will be [RecordName]Entity.
+     */
+    final String name;
+
+    // for life cycle events in Data 1.1+. Otherwise null.
+    final TypeLiteral<PostDeleteEvent<Object>> postDeleteLiteral;
+    final TypeLiteral<PostInsertEvent<Object>> postInsertLiteral;
+    final TypeLiteral<PostUpdateEvent<Object>> postUpdateLiteral;
+    final TypeLiteral<PostUpsertEvent<Object>> postUpsertLiteral;
+    final TypeLiteral<PreDeleteEvent<Object>> preDeleteLiteral;
+    final TypeLiteral<PreInsertEvent<Object>> preInsertLiteral;
+    final TypeLiteral<PreUpdateEvent<Object>> preUpdateLiteral;
+    final TypeLiteral<PreUpsertEvent<Object>> preUpsertLiteral;
+
     final Class<?> recordClass; // null if not a record
+
     final String versionAttributeName; // null if unversioned
 
     // embeddable class -> fully qualified attribute names of embeddable, or
@@ -90,7 +106,6 @@ public class EntityInfo {
                Class<?> recordClass,
                Map<String, List<Member>> attributeAccessors,
                Map<String, String> attributeNames,
-               SortedSet<String> attributeNamesForUpdate,
                SortedMap<String, Class<?>> attributeTypes,
                Map<String, Class<?>> collectionElementTypes,
                Map<Class<?>, List<String>> relationAttributeNames,
@@ -104,7 +119,6 @@ public class EntityInfo {
         this.entityClass = entityClass;
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
-        this.attributeNamesForEntityUpdate = attributeNamesForUpdate;
         this.attributeTypes = attributeTypes;
         this.collectionElementTypes = collectionElementTypes;
         this.relationAttributeNames = relationAttributeNames;
@@ -115,6 +129,28 @@ public class EntityInfo {
         this.versionAttributeName = versionAttributeName;
 
         inheritance = entityClass.getAnnotation(Inheritance.class) != null;
+
+        @SuppressWarnings("unchecked")
+        Class<Object> entityType = (Class<Object>) getType();
+        if (entityHandlerFactory.provider.compat.atLeast(1, 1)) {
+            postDeleteLiteral = new EventTypeLiteral<>(PostDeleteEvent.class, entityType);
+            postInsertLiteral = new EventTypeLiteral<>(PostInsertEvent.class, entityType);
+            postUpdateLiteral = new EventTypeLiteral<>(PostUpdateEvent.class, entityType);
+            postUpsertLiteral = new EventTypeLiteral<>(PostUpsertEvent.class, entityType);
+            preDeleteLiteral = new EventTypeLiteral<>(PreDeleteEvent.class, entityType);
+            preInsertLiteral = new EventTypeLiteral<>(PreInsertEvent.class, entityType);
+            preUpdateLiteral = new EventTypeLiteral<>(PreUpdateEvent.class, entityType);
+            preUpsertLiteral = new EventTypeLiteral<>(PreUpsertEvent.class, entityType);
+        } else {
+            postDeleteLiteral = null;
+            postInsertLiteral = null;
+            postUpdateLiteral = null;
+            postUpsertLiteral = null;
+            preDeleteLiteral = null;
+            preInsertLiteral = null;
+            preUpdateLiteral = null;
+            preUpsertLiteral = null;
+        }
 
         validate();
     }
@@ -229,7 +265,6 @@ public class EntityInfo {
                 writer.println(indent + "    " + relationClass.getName() + ": " + relAttrNames);
             });
         }
-        writer.println(indent + "  attributes for entity update: " + attributeNamesForEntityUpdate);
     }
 
     /**

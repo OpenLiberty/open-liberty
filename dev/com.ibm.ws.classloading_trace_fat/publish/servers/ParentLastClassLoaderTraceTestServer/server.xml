@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>ejb-3.2</feature>
+        <feature>jca-1.7</feature>
+    </featureManager>
+
+    <!-- parentLast delegation is set statically so tests need no config updates -->
+    <enterpriseApplication id="traceTestEar"
+                          location="traceTestEar.ear"
+                          name="traceTestEar">
+        <classloader delegation="parentLast"/>
+    </enterpriseApplication>
+
+</server>

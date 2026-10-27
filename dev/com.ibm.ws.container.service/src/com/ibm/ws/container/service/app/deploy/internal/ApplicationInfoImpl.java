@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,9 +23,6 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
-/**
- *
- */
 class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<ApplicationMetaData> {
 
     private final String appName;
@@ -39,7 +36,7 @@ class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<App
         this.appMetaData = new ApplicationMetaDataImpl(j2eeName);
         this.appContainer = appContainer;
         this.configHelper = configHelper;
-        /* get jandex configuration from overlay cache */
+
         ApplicationInfoForContainer applicationInformation = null;
         try {
             NonPersistentCache cache = appContainer.adapt(NonPersistentCache.class);
@@ -66,6 +63,11 @@ class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<App
     }
 
     @Override
+    public boolean getReadWebInfJandex() {
+        return applicationInformation != null ? applicationInformation.getReadWebInfJandex() : false;
+    }
+
+    @Override
     public Container getContainer() {
         return appContainer;
     }
@@ -80,11 +82,6 @@ class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<App
         return configHelper;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.container.service.app.deploy.ApplicationInfo#getDeploymentName()
-     */
     @Override
     public String getDeploymentName() {
         if (appMetaData.getJ2EEName() == null)

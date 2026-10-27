@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -93,8 +93,8 @@ public class NettyJMSHeartbeatHandler extends IdleStateHandler{
 			IdleStateEvent event = (IdleStateEvent) evt;
 
 			if(event.state() != IdleState.READER_IDLE) {
-				if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) 
-					SibTr.warning(tc, "userEventTriggered: Event triggered was not a read timeout. Event will be moved through the pipeline.", evt);
+				if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled())
+					SibTr.warning(tc, "NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089", new Object[] {evt});
 			}else {
 				Attribute<Connection> attr = ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION);
 				Connection connection = attr.get();
@@ -115,14 +115,14 @@ public class NettyJMSHeartbeatHandler extends IdleStateHandler{
 						return;
 					}else {
 						if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-							SibTr.warning(tc, "userEventTriggered: Something's wrong. Callback, network connection, or read context is not netty specific. This shouldn't happen.", new Object[] {connection, callback, readCtx, networkConnection});
+							SibTr.warning(tc, "NETTY_UNEXPECTED_CALLBACK_SICJ0088", new Object[] {connection, callback, readCtx, networkConnection});
 						}
 						exceptionCaught(ctx, new NettyException("Illegal callback type for channel."));
 						return;
 					}
 				} else {
 					if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-						SibTr.warning(tc, "userEventTriggered", "could not associate an incoming event with a Connection. Event will be moved through pipeline.");
+						SibTr.warning(tc, "NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090", new Object[] {ctx.channel()});
 					}
 				}
 			}

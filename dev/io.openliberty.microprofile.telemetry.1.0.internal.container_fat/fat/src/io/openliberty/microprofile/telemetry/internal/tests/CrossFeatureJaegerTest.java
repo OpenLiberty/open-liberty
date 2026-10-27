@@ -20,7 +20,6 @@ import static io.opentelemetry.semconv.SemanticAttributes.URL_FULL;
 import static io.opentelemetry.semconv.resource.attributes.ResourceAttributes.TELEMETRY_SDK_NAME;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
-
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -59,6 +58,7 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
  * Tests propagating traces between liberty servers running mpOpenTracing-3.0 and mpTelemetry, feeding traces to the same trace server.
  * Spans are exported to Jaeger
  */
+@SuppressWarnings("deprecation")
 @RunWith(FATRunner.class)
 public class CrossFeatureJaegerTest {
 

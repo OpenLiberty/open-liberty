@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -450,19 +450,17 @@ public class ClassSourceImpl_MappedJar
     //
 
     @Override
-    protected boolean basicHasJandexIndex() {
-        return ( getJarFile().getJarEntry( getJandexIndexPath() ) != null );
+    protected boolean hasJandexIndex(String jandexPath) {
+        return ( getJarFile().getJarEntry(jandexPath) != null );
     }
 
     @Override
-    protected Index basicGetJandexIndex() {
-        String methodName = "basicGetJandexIndex";
-
-        String useJandexIndexPath = getJandexIndexPath();
+    protected Index getJandexIndex(String jandexPath) {
+        String methodName = "getJandexIndex";
 
         InputStream jandexStream;
         try {
-            jandexStream = openResourceStream(null, useJandexIndexPath, JANDEX_BUFFER_SIZE);
+            jandexStream = openResourceStream(null, jandexPath, JANDEX_BUFFER_SIZE);
             // throws ClassSource_Exception
 
         } catch ( ClassSource_Exception e ) {
@@ -472,7 +470,7 @@ public class ClassSourceImpl_MappedJar
             logger.logp(Level.SEVERE, CLASS_NAME, methodName,
                 "ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION",
                 new Object[] { getHashText(),
-                               useJandexIndexPath,
+                               jandexPath,
                                getAbsolutePath( getRawJarFile().getAbsolutePath() ),
                                e });
 
@@ -488,7 +486,7 @@ public class ClassSourceImpl_MappedJar
             if ( logger.isLoggable(Level.FINER) ) {
                 String message = MessageFormat.format(
                     "[ {0} ] Read JANDEX index [ {1} ] from [ {2} ] Classes  [ {3} ]", 
-                    new Object[] { getHashText(), getAbsolutePath(useJandexIndexPath), getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) });
+                    new Object[] { getHashText(), getAbsolutePath(jandexPath), getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) });
                 logger.logp(Level.FINER, CLASS_NAME, methodName, message);
             }
             return jandexIndex;
@@ -501,7 +499,7 @@ public class ClassSourceImpl_MappedJar
             logger.logp(Level.SEVERE, CLASS_NAME, methodName,
                 "ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION",
                 new Object[] { getHashText(),
-                               useJandexIndexPath,
+                               jandexPath,
                                getAbsolutePath( getRawJarFile().getAbsolutePath() ),
                                e });
 
@@ -510,14 +508,12 @@ public class ClassSourceImpl_MappedJar
     }
 
     @Override
-    protected SparseIndex basicGetSparseJandexIndex() {
-        String methodName = "basicGetSparseJandexIndex";
-
-        String useJandexIndexPath = getJandexIndexPath();
+    protected SparseIndex getSparseJandexIndex(String jandexPath) {
+        String methodName = "getSparseJandexIndex";
 
         InputStream jandexStream;
         try {
-            jandexStream = openResourceStream(null, useJandexIndexPath, JANDEX_BUFFER_SIZE);
+            jandexStream = openResourceStream(null, jandexPath, JANDEX_BUFFER_SIZE);
             // throws ClassSource_Exception
         } catch ( ClassSource_Exception e ) {
             // ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION=CWWKC0087W:
@@ -526,7 +522,7 @@ public class ClassSourceImpl_MappedJar
             logger.logp(Level.SEVERE, CLASS_NAME, methodName,
                 "ANNO_CLASSSOURCE_ENTRY_JANDEX_OPEN_EXCEPTION",
                 new Object[] { getHashText(),
-                               useJandexIndexPath,
+                               jandexPath,
                                getAbsolutePath( getRawJarFile().getAbsolutePath() ),
                                e });
 
@@ -543,7 +539,7 @@ public class ClassSourceImpl_MappedJar
             if ( logger.isLoggable(Level.FINER) ) {
                 String message = MessageFormat.format(
                     "[ {0} ] Read sparse JANDEX index [ {1} ] from [ {2} ] Classes  [ {3} ]", 
-                    new Object[] { getHashText(), getAbsolutePath(useJandexIndexPath), getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) });
+                    new Object[] { getHashText(), getAbsolutePath(jandexPath), getCanonicalName(), Integer.toString(jandexIndex.getKnownClasses().size()) });
                 logger.logp(Level.FINER, CLASS_NAME, methodName, message);
             }
             return jandexIndex;
@@ -556,7 +552,7 @@ public class ClassSourceImpl_MappedJar
             logger.logp(Level.SEVERE, CLASS_NAME, methodName,
                 "ANNO_CLASSSOURCE_ENTRY_JANDEX_READ_EXCEPTION",
                 new Object[] { getHashText(),
-                               useJandexIndexPath,
+                               jandexPath,
                                getAbsolutePath( getRawJarFile().getAbsolutePath() ),
                                e });
 

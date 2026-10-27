@@ -48,10 +48,25 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
         excludeParent,
     }
     final ClassLoader parent;
+    private final String toStringCache;
 
     public LibertyLoader(ClassLoader parent) {
         super(parent);
         this.parent = parent;
+        this.toStringCache = computeToString(parent);
+    }
+
+    private String computeToString(ClassLoader parent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append("@");
+        sb.append(Integer.toHexString(this.hashCode()));
+
+        if (parent != null) {
+            sb.append(" parent=[").append(parent).append("]");
+        }
+
+        return sb.toString();
     }
 
     private final KeyBasedLockStore<String, NameBasedClassLoaderLock> classNameLockStore = new KeyBasedLockStore<>(NameBasedClassLoaderLock.LOCK_SUPPLIER);
@@ -113,15 +128,6 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
     @Override
     @Trivial
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append("@");
-        sb.append(Integer.toHexString(this.hashCode()));
-        
-        if (parent != null) {
-            sb.append(" parent=").append(parent.getClass().getSimpleName());
-        }
-        
-        return sb.toString();
+        return toStringCache;
     }
 }

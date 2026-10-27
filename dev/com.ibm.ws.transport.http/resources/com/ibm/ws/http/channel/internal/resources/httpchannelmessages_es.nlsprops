@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,3 +212,43 @@ log.rollover.interval.too.short.warning.useraction=Especifique un intervalo de r
 cookie.attribute.name.invalid=CWWKT0047E: El atributo de cookie [{0}] contiene un car\u00e1cter no v\u00e1lido.
 cookie.attribute.name.invalid.explanation=El nombre de atributo de cookie no puede contener ning\u00fan car\u00e1cter especial [() < > @,;: \\/ []? = {}].
 cookie.attribute.name.invalid.useraction=Corrija el nombre de atributo de cookie para que no utilice ning\u00fan car\u00e1cter especial.
+
+endpoint.netty.not.initialized=CWWKT0048E: El punto final {0}HTTP no se puede iniciar porque el marco Netty no est\u00e1 inicializado.
+endpoint.netty.not.initialized.explanation=Se requiere el servicio del marco \u00ab Netty \u00bb, pero dicho servicio no estaba disponible cuando el punto final intent\u00f3 iniciarse.
+endpoint.netty.not.initialized.useraction=Comprueba la configuraci\u00f3n del servidor y aseg\u00farate de que el paquete del marco de trabajo \u00ab Netty \u00bb necesario est\u00e9 activo.
+
+endpoint.channel.not.initialized=CWWKT0049E: El punto final {0} HTTP no se puede iniciar porque el marco de canales no est\u00e1 inicializado.
+endpoint.channel.not.initialized.explanation=Se requiere el servicio de estructura de canales, pero dicho servicio no estaba disponible cuando el punto final intent\u00f3 iniciarse.
+endpoint.channel.not.initialized.useraction=Comprueba la configuraci\u00f3n del servidor y aseg\u00farate de que el paquete del marco de canales necesario est\u00e9 activo.
+
+endpoint.executor.not.available=CWWKT0050E: El punto final {0}HTTP no se puede iniciar porque el servicio de ejecuci\u00f3n no est\u00e1 disponible.
+endpoint.executor.not.available.explanation=Se requiere el servicio de ejecuci\u00f3n, pero este no estaba disponible cuando el punto final intent\u00f3 iniciarse.
+endpoint.executor.not.available.useraction=Comprueba la configuraci\u00f3n del servidor y aseg\u00farate de que el servicio de ejecuci\u00f3n necesario est\u00e9 activo.
+
+endpoint.event.not.available=CWWKT0051E: El punto final {0}HTTP no se puede iniciar porque el servicio de eventos no est\u00e1 disponible.
+endpoint.event.not.available.explanation=El servicio de eventos es obligatorio, pero no estaba disponible cuando el punto final intent\u00f3 iniciarse.
+endpoint.event.not.available.useraction=Comprueba la configuraci\u00f3n del servidor y aseg\u00farate de que el servicio de eventos necesario est\u00e9 activo.
+
+netty.blocking.write.on.event.loop=CWWKT0052E: No se puede invocar una operaci\u00f3n de escritura bloqueante en el hilo del bucle de eventos \u00ab Netty \u00bb.
+netty.blocking.write.on.event.loop.explanation=Al realizar una operaci\u00f3n de escritura bloqueante en el hilo del bucle de eventos \u00ab Netty \u00bb se produce un interbloqueo.
+netty.blocking.write.on.event.loop.useraction=Aseg\u00farate de que las operaciones de escritura que bloquean se ejecuten en un hilo independiente y no se invoquen desde un controlador del bucle de eventos de \u00ab Netty \u00bb.
+
+netty.socket.timeout=CWWKT0053E: Se ha agotado el tiempo de espera de una operaci\u00f3n de socket antes de que esta se completara. Presencial: {0} / {1} : {2} A distancia: {3} / {4} : {5}
+netty.socket.timeout.explanation=Una operaci\u00f3n de lectura en el socket no se complet\u00f3 dentro del periodo de tiempo de espera configurado.
+netty.socket.timeout.useraction=Comprueba la conexi\u00f3n de red o aumenta el valor del tiempo de espera de lectura si la operaci\u00f3n tarda m\u00e1s tiempo en completarse.
+
+netty.h2.window.ratio.error=CWWKT0054W: No se puede actualizar la relaci\u00f3n de actualizaci\u00f3n de ventanas \u00ab HTTP/2 \u00bb: {0} El servidor utiliza la relaci\u00f3n de actualizaci\u00f3n de ventanas predeterminada.
+netty.h2.window.ratio.error.explanation=No es posible establecer el ratio de actualizaci\u00f3n de la ventana de control de flujo \u00ab HTTP/2 \u00bb en el valor configurado. El servidor utiliza la frecuencia de actualizaci\u00f3n de ventanas predeterminada.
+netty.h2.window.ratio.error.useraction=No es necesario realizar ninguna acci\u00f3n si la frecuencia de actualizaci\u00f3n predeterminada de la ventana es aceptable. Si el mensaje sigue apareciendo, comprueba los par\u00e1metros de control de flujo de HTTP/2 en la configuraci\u00f3n del servidor.
+
+netty.tls.provider.not.loaded=CWWKT0055E: No se puede inicializar el punto final \u00ab HTTPS \u00bb porque el proveedor \u00ab TLS \u00bb no est\u00e1 cargado.
+netty.tls.provider.not.loaded.explanation=El servicio del proveedor \u00ab TLS \u00bb no estaba disponible cuando el punto final \u00ab HTTPS \u00bb intent\u00f3 iniciarse.
+netty.tls.provider.not.loaded.useraction=Comprueba la configuraci\u00f3n del servidor y aseg\u00farate de que el paquete del proveedor \u00ab TLS \u00bb est\u00e9 activo.
+
+netty.ssl.handler.create.failed=CWWKT0056E: El servidor no ha podido crear el controlador \u00ab SSL \u00bb para el punto final \u00ab {0} : {1} \u00bb.
+netty.ssl.handler.create.failed.explanation=No se puede crear el controlador \u00ab SSL \u00bb para el host y el puerto del punto final especificados.
+netty.ssl.handler.create.failed.useraction=Comprueba la configuraci\u00f3n de \u00ab SSL \u00bb del punto final y verifica que el proveedor \u00ab TLS \u00bb est\u00e9 configurado correctamente.
+
+h2.encode.header.failed=CWWKT0057E: El servidor no ha podido codificar un encabezado \u00ab HTTP/2 \u00bb: {0}
+h2.encode.header.failed.explanation=El servidor no ha podido codificar el pseudoencabezado \u00ab HTTP/2 \u00bb para la respuesta. El servidor cierra el flujo.
+h2.encode.header.failed.useraction=Comprueba los registros del servidor en busca de errores relacionados con \u00ab HTTP/2 \u00bb. Si el problema persiste, recopila informaci\u00f3n de diagn\u00f3stico y ponte en contacto con el servicio de asistencia de IBM.

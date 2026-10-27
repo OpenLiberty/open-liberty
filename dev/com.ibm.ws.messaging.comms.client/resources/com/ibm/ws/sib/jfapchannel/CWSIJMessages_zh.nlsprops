@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2003, 2010 IBM Corporation and others.
+# Copyright (c) 2003, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
 #
@@ -74,6 +71,7 @@
 EXCP_DURING_INIT_SICJ0001=CWSIJ0001E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u7531\u4e8e\u5f02\u5e38 {1}\uff0c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u7c7b {0} \u7684\u5bf9\u8c61\u3002
 EXCP_DURING_INIT_SICJ0001.explanation=CMSG0001
 EXCP_DURING_INIT_SICJ0001.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the method that could not be invoked
 # {1} the class to which the method which could not be invoked belongs
@@ -81,12 +79,14 @@ EXCP_DURING_INIT_SICJ0001.useraction=CMSG0002
 EXCP_DURING_INIT_SICJ0002=CWSIJ0002E: \u7531\u4e8e\u5f02\u5e38 {2}\uff0c\u5bfc\u81f4\u65e0\u6cd5\u8c03\u7528\u7c7b {1} \u7684\u65b9\u6cd5 {0}\u3002
 EXCP_DURING_INIT_SICJ0002.explanation=CMSG0001
 EXCP_DURING_INIT_SICJ0002.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the class name where the exception was caught
 # {1} is the value of the Exception
 EXCP_DURING_INIT_SICJ0003=CWSIJ0003E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u7531\u4e8e\u5f02\u5e38 {1}\uff0c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u7c7b {0} \u7684\u5bf9\u8c61\u3002
 EXCP_DURING_INIT_SICJ0003.explanation=CMSG0001
 EXCP_DURING_INIT_SICJ0003.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the method that could not be invoked
 # {1} the class to which the method which could not be invoked belongs
@@ -94,6 +94,7 @@ EXCP_DURING_INIT_SICJ0003.useraction=CMSG0002
 EXCP_DURING_INIT_SICJ0004=CWSIJ0004E: \u7531\u4e8e\u5f02\u5e38 {2}\uff0c\u5bfc\u81f4\u65e0\u6cd5\u8c03\u7528\u7c7b {1} \u7684\u65b9\u6cd5 {0}\u3002
 EXCP_DURING_INIT_SICJ0004.explanation=CMSG0001
 EXCP_DURING_INIT_SICJ0004.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 CF_NOT_AVAILABLE_SICJ0005=CWSIJ0005E: \u627e\u4e0d\u5230\u7528\u4e8e\u901a\u4fe1\u7684\u901a\u9053\u6846\u67b6\u670d\u52a1\u7684\u5b9e\u4f8b\u3002
 CF_NOT_AVAILABLE_SICJ0005.explanation=\u627e\u4e0d\u5230\u901a\u9053\u6846\u67b6\u670d\u52a1\u7684\u5b9e\u4f8b\u3002\u4e0d\u53ef\u80fd\u8fdb\u884c\u7f51\u7edc\u901a\u4fe1\u3002
@@ -133,80 +134,94 @@ NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=\u8bf7\u4e3a\u6b64\u5e94
 NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u627e\u4e0d\u5230\u7c7b {0} \u7684\u8868\u793a\u3002
 NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=CMSG0001
 NO_JFAP_CHANNEL_CLASS_SICJ0013.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_TCP_CHANNEL_CLASS_SICJ0014=CWSIJ0014E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u627e\u4e0d\u5230\u7c7b {0} \u7684\u8868\u793a\u3002
 NO_TCP_CHANNEL_CLASS_SICJ0014.explanation=CMSG0001
 NO_TCP_CHANNEL_CLASS_SICJ0014.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_SSL_CHANNEL_CLASS_SICJ0015=CWSIJ0015E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u627e\u4e0d\u5230\u7c7b {0} \u7684\u8868\u793a\u3002
 NO_SSL_CHANNEL_CLASS_SICJ0015.explanation=CMSG0001
 NO_SSL_CHANNEL_CLASS_SICJ0015.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_HTTP_CHANNEL_CLASS_SICJ0016=CWSIJ0016E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u627e\u4e0d\u5230\u7c7b {0} \u7684\u8868\u793a\u3002
 NO_HTTP_CHANNEL_CLASS_SICJ0016.explanation=CMSG0001
 NO_HTTP_CHANNEL_CLASS_SICJ0016.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the class which could not be located
 NO_HTTPT_CHANNEL_CLASS_SICJ0017=CWSIJ0017E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u627e\u4e0d\u5230\u7c7b {0} \u7684\u8868\u793a\u3002
 NO_HTTPT_CHANNEL_CLASS_SICJ0017.explanation=CMSG0001
 NO_HTTPT_CHANNEL_CLASS_SICJ0017.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created
 # {1} the exception which occurred
 CANNOT_CREATE_JFAP_CHANNEL_SICJ0018=CWSIJ0018E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u7531\u4e8e\u53d1\u751f\u5f02\u5e38 {1} \u800c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u901a\u9053 {0} \u7684\u5b9e\u4f8b\u3002
 CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.explanation=CMSG0001
 CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created
 # {1} the exception which occurred
 CANNOT_CREATE_TCP_CHANNEL_SICJ0019=CWSIJ0019E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u7531\u4e8e\u53d1\u751f\u5f02\u5e38 {1} \u800c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u901a\u9053 {0} \u7684\u5b9e\u4f8b\u3002
 CANNOT_CREATE_TCP_CHANNEL_SICJ0019.explanation=CMSG0001
 CANNOT_CREATE_TCP_CHANNEL_SICJ0019.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created
 # {1} the exception which occurred
 CANNOT_CREATE_SSL_CHANNEL_SICJ0020=CWSIJ0020E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u7531\u4e8e\u53d1\u751f\u5f02\u5e38 {1} \u800c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u901a\u9053 {0} \u7684\u5b9e\u4f8b\u3002
 CANNOT_CREATE_SSL_CHANNEL_SICJ0020.explanation=CMSG0001
 CANNOT_CREATE_SSL_CHANNEL_SICJ0020.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created
 # {1} the exception which occurred
 CANNOT_CREATE_HTTP_CHANNEL_SICJ0021=CWSIJ0021E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u7531\u4e8e\u53d1\u751f\u5f02\u5e38 {1} \u800c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u901a\u9053 {0} \u7684\u5b9e\u4f8b\u3002
 CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.explanation=CMSG0001
 CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel that could not be created
 # {1} the exception which occurred
 CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022=CWSIJ0022E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u7531\u4e8e\u53d1\u751f\u5f02\u5e38 {1} \u800c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u901a\u9053 {0} \u7684\u5b9e\u4f8b\u3002
 CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.explanation=CMSG0001
 CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel chain which cannot be defined
 # {1} the exception which occurred.
 CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023=CWSIJ0023E: \u7531\u4e8e\u53d1\u751f\u5f02\u5e38 {1}\uff0c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u7f3a\u7701\u51fa\u7ad9\u6d88\u606f\u4f20\u9012\u901a\u9053\u94fe {0}\u3002
 CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.explanation=CMSG0001
 CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel chain which cannot be defined
 # {1} the exception which occurred.
 CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024=CWSIJ0024E: \u7531\u4e8e\u53d1\u751f\u5f02\u5e38 {1}\uff0c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u5b89\u5168\u51fa\u7ad9\u6d88\u606f\u4f20\u9012\u901a\u9053\u94fe {0}\u3002
 CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.explanation=CMSG0001
 CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel chain which cannot be defined
 # {1} the exception which occurred.
 CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025=CWSIJ0025E: \u7531\u4e8e\u53d1\u751f\u5f02\u5e38 {1}\uff0c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u91c7\u7528\u96a7\u9053\u5f62\u5f0f\u7684\u51fa\u7ad9\u6d88\u606f\u4f20\u9012\u901a\u9053\u94fe {0}\u3002
 CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.explanation=CMSG0001
 CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the channel chain which cannot be defined
 # {1} the exception which occurred.
 CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026=CWSIJ0026E: \u7531\u4e8e\u53d1\u751f\u5f02\u5e38 {1}\uff0c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u91c7\u7528\u96a7\u9053\u5f62\u5f0f\u7684\u5b89\u5168\u51fa\u7ad9\u6d88\u606f\u4f20\u9012\u901a\u9053\u94fe {0}\u3002
 CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.explanation=CMSG0001
 CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 CANNOT_START_INBOUND_CHAINS_SICJ0027=CWSIJ0027W: \u65e0\u6cd5\u4e3a\u6b64\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u542f\u52a8\u5165\u7ad9\u6d88\u606f\u4f20\u9012\u901a\u9053\u94fe\u3002
 CANNOT_START_INBOUND_CHAINS_SICJ0027.explanation=\u65e0\u6cd5\u542f\u52a8\u5165\u7ad9\u6d88\u606f\u4f20\u9012\u901a\u9053\u94fe\uff0c\u53ef\u80fd\u662f\u56e0\u4e3a\u6ca1\u6709\u4e3a\u8be5\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u5b9a\u4e49\u8fd9\u4e9b\u901a\u9053\u94fe\u3002\u6d88\u606f\u4f20\u9012\u5ba2\u6237\u673a\u6216\u5176\u4ed6\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u53ef\u80fd\u65e0\u6cd5\u6210\u529f\u5730\u4e0e\u6b64\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u5efa\u7acb\u8fde\u63a5\u3002
@@ -257,12 +272,14 @@ INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.useraction=\u6307\u5b9a\u4e86\u4e0d\
 NO_NON_TSWITCH_IMPL_SICJ0033=CWSIJ0033E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u7531\u4e8e\u5f02\u5e38 {1}\uff0c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u7c7b {0} \u7684\u5bf9\u8c61\u3002
 NO_NON_TSWITCH_IMPL_SICJ0033.explanation=CMSG0001
 NO_NON_TSWITCH_IMPL_SICJ0033.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the class name where the exception was caught
 # {1} is the value of the Exception
 NO_DISPATCHTOALL_IMPL_SICJ0034=CWSIJ0034E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u7531\u4e8e\u5f02\u5e38 {1}\uff0c\u5bfc\u81f4\u65e0\u6cd5\u521b\u5efa\u7c7b {0} \u7684\u5bf9\u8c61\u3002
 NO_DISPATCHTOALL_IMPL_SICJ0034.explanation=CMSG0001
 NO_DISPATCHTOALL_IMPL_SICJ0034.useraction=CMSG0002
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the host name / endpoint and {1} is the chain name
 ME_UNEXPECTED_DISCONNECT_SICJ0035=CWSIJ0035E: \u5148\u524d\u4ece\u4f20\u8f93\u94fe {1} \u4e0a\u7684\u4e3b\u673a {0} \u8fde\u63a5\u7684\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u610f\u5916\u5730\u65ad\u5f00\u4e86\u8fde\u63a5\u3002
@@ -532,6 +549,45 @@ CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=\u8bf7\u68c0\u67e5\u6d88\u606f\u4e
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: \u6d88\u606f\u4f20\u9012\u4f20\u8f93\u94fe {0} \u5df2\u505c\u6b62\u3002
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=\u5728\u66f4\u6539\u5b89\u5168\u6027\u914d\u7f6e\u4e4b\u540e\uff0c\u4f20\u8f93\u94fe\u5df2\u505c\u6b62\uff0c\u8fd9\u610f\u5473\u7740\u5bf9\u5355\u5143\u5b9a\u4e49\u7684\u603b\u7ebf\u4e0d\u518d\u5141\u8bb8\u4f7f\u7528\u6b64\u4f20\u8f93\u94fe\u3002
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception which occurred
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086=CWSIJ0086E: \u7531\u4e8e\u4ee5\u4e0b\u5f02\u5e38\uff0c\u5185\u90e8\u9519\u8bef\u5bfc\u81f4\u65e0\u6cd5\u521d\u59cb\u5316 Netty \u4f20\u8f93\u5f15\u5bfc\u7a0b\u5e8f\uff1a {0}
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.explanation=\u65e0\u6cd5\u521d\u59cb\u5316 Netty \u4f20\u8f93\u5f15\u5bfc\u5bf9\u8c61\u3002 \u4f7f\u7528 Netty \u4f20\u8f93\u8def\u5f84\u7684\u51fa\u7ad9Java\u6d88\u606f\u670d\u52a1\uff08JMS\uff09\u8fde\u63a5\u65e0\u6cd5\u5efa\u7acb\u3002
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.useraction=\u8bf7\u68c0\u67e5\u6d88\u606f\u4e2d\u63d0\u5230\u7684\u5f02\u5e38\u4ee5\u53ca\u76f8\u5173\u7684\u670d\u52a1\u5668\u65e5\u5fd7\uff0c\u4ee5\u786e\u5b9a\u539f\u56e0\u3002 \u8bf7\u786e\u8ba4\u201c Netty \u201d\u6846\u67b6\u670d\u52a1\u5904\u4e8e\u6d3b\u52a8\u72b6\u6001\uff0c\u5e76\u4e14\u201c TCP \u201d\u4f20\u8f93\u9009\u9879\u5df2\u914d\u7f6e\u6b63\u786e\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel for which no connection could be found
+NETTY_READ_NO_CONNECTION_SICJ0087=CWSIJ0087W: {0} \u9891\u9053\u4e0a\u6536\u5230\u7684\u6d88\u606f\u65e0\u6cd5\u4e0e Java \u6d88\u606f\u670d\u52a1 (JMS) \u8fde\u63a5\u76f8\u5173\u8054\u3002 \u670d\u52a1\u5668\u4e22\u5f03\u8be5\u6d88\u606f\u5e76\u5173\u95ed\u901a\u9053\u3002
+NETTY_READ_NO_CONNECTION_SICJ0087.explanation=\u5728 Netty \u4f20\u8f93\u901a\u9053\u4e0a\u6536\u5230\u4e86\u4e00\u6761\u6d88\u606f\uff0c\u4f46\u8be5\u901a\u9053\u672a\u5173\u8054\u4efb\u4f55JMS\u8fde\u63a5\u5bf9\u8c61\u3002 \u8fd9\u79cd\u60c5\u51b5\u53ef\u80fd\u8868\u660e\u5728\u65ad\u5f00\u8fde\u63a5\u65f6\u53d1\u751f\u4e86\u7ade\u4e89\u6761\u4ef6\u3002 \u670d\u52a1\u5668\u65e0\u6cd5\u5904\u7406\u8be5\u6d88\u606f\u3002
+NETTY_READ_NO_CONNECTION_SICJ0087.useraction=\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\u4e2d\u662f\u5426\u5b58\u5728\u76f8\u5173\u7684\u9519\u8bef\u6216\u8b66\u544a\u4fe1\u606f\uff0c\u8fd9\u4e9b\u4fe1\u606f\u6216\u8bb8\u80fd\u89e3\u91ca\u4e3a\u4f55\u672a\u627e\u5230\u8fde\u63a5\u5bf9\u8c61\u3002 \u5982\u679c\u95ee\u9898\u4ecd\u7136\u5b58\u5728\uff0c\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u8ddf\u8e2a\u4fe1\u606f\uff0c\u5e76\u8054\u7cfb IBM \u6280\u672f\u652f\u6301\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the JMS Connection object
+# {1} the IOReadCompletedCallback object
+# {2} the IOReadRequestContext object
+# {3} the NetworkConnection object
+NETTY_UNEXPECTED_CALLBACK_SICJ0088=CWSIJ0088W: \u65e0\u6cd5\u5904\u7406 Netty \u901a\u9053\u4e0a\u7684\u4f20\u5165\u6d88\u606f\u6216\u5fc3\u8df3\u4e8b\u4ef6\uff0c\u56e0\u4e3a\u4e00\u4e2a\u6216\u591a\u4e2a\u5173\u8054\u5bf9\u8c61\u5e76\u975e\u9884\u671f\u7684 Netty \u7c7b\u578b\u3002 \u94fe\u63a5\uff1a {0} \u56de\u8c03\uff1a {1} ReadContext: {2} NetworkConnection: {3}
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.explanation=Netty \u901a\u9053\u63a5\u6536\u5230\u4e86\u6570\u636e\u6216\u8d85\u65f6\u4e8b\u4ef6\uff0c\u4f46\u4e0e\u8be5\u901a\u9053\u5173\u8054\u7684\u8fde\u63a5\u3001\u56de\u8c03\u3001\u8bfb\u53d6\u4e0a\u4e0b\u6587\u6216\u7f51\u7edc\u8fde\u63a5\u5bf9\u8c61\u5e76\u975e\u9884\u671f\u7684 Netty \u7279\u5b9a\u7c7b\u578b\u3002 \u670d\u52a1\u5668\u5173\u95ed\u4e86\u8be5\u901a\u9053\u3002 \u6b64\u60c5\u51b5\u8868\u660e\u5b58\u5728\u5185\u90e8\u7f16\u7a0b\u9519\u8bef\u3002
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.useraction=\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\u4ee5\u53ca\u4efb\u4f55\u201c\u9996\u6b21\u6545\u969c\u6570\u636e\u6355\u83b7\u201d\uff08FFDC\uff09\u8bb0\u5f55\uff0c\u67e5\u627e\u5176\u4e2d\u53ef\u80fd\u89e3\u91ca\u8fde\u63a5\u5bf9\u8c61\u4e3a\u4f55\u5e76\u975e\u9884\u671f\u7c7b\u578b\u7684\u76f8\u5173\u9519\u8bef\u6d88\u606f\u3002 \u5982\u679c\u95ee\u9898\u4ecd\u7136\u5b58\u5728\uff0c\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u8ddf\u8e2a\u4fe1\u606f\uff0c\u5e76\u8054\u7cfb IBM \u6280\u672f\u652f\u6301\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the IdleStateEvent that was received
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089=CWSIJ0089W: \u6536\u5230\u4e00\u4e2a\u7c7b\u578b\u5f02\u5e38\u7684 Netty \u7a7a\u95f2\u72b6\u6001\u4e8b\u4ef6\uff0c\u8be5\u4e8b\u4ef6\u5df2\u88ab\u4f20\u9012\u81f3\u5904\u7406\u7ba1\u9053\u3002 \u4e8b\u4ef6\uff1a{0}
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.explanation=Netty \u7684Java\u6d88\u606f\u670d\u52a1\uff08JMS\uff09\u5fc3\u8df3\u5904\u7406\u7a0b\u5e8f\u63a5\u6536\u5230\u4e86\u4e00\u4e2a\u975e\u201c\u8bfb\u53d6\u5668\u7a7a\u95f2\u201d\uff08\u8bfb\u53d6\u8d85\u65f6\uff09\u4e8b\u4ef6\u7684\u7a7a\u95f2\u72b6\u6001\u4e8b\u4ef6\u3002 \u5fc3\u8df3\u5904\u7406\u7a0b\u5e8f\u4ec5\u63a5\u53d7\u201creader-idle\u201d\u4e8b\u4ef6\u3002 \u670d\u52a1\u5668\u5c06\u8be5\u4e8b\u4ef6\u6cbf\u7ba1\u9053\u4f20\u9012\u4e0b\u53bb\uff0c\u4ee5\u4fbf\u8fdb\u884c\u8fdb\u4e00\u6b65\u5904\u7406\u3002
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.useraction=\u5982\u679c\u6b64\u6d88\u606f\u5f88\u5c11\u51fa\u73b0\uff0c\u5219\u65e0\u9700\u91c7\u53d6\u4efb\u4f55\u63aa\u65bd\u3002 \u5982\u679c\u6b64\u6d88\u606f\u53cd\u590d\u51fa\u73b0\uff0c\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\u4e2d\u662f\u5426\u6709\u76f8\u5173\u8b66\u544a\u6216\u9519\u8bef\uff0c\u5e76\u8054\u7cfb IBM \u6280\u672f\u652f\u6301\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel on which the heartbeat timeout event occurred
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090=CWSIJ0090W: {0} \u901a\u9053\u4e0a\u7684\u5fc3\u8df3\u8d85\u65f6\u4e8b\u4ef6\u65e0\u6cd5\u4e0e Java \u6d88\u606f\u670d\u52a1 (JMS) \u8fde\u63a5\u76f8\u5173\u8054\u3002 \u670d\u52a1\u5668\u5c06\u8be5\u4e8b\u4ef6\u901a\u8fc7\u7ba1\u9053\u4f20\u9012\u51fa\u53bb\u3002
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.explanation=\u5728\u672a\u5173\u8054\u4efb\u4f55 JMS \u8fde\u63a5\u5bf9\u8c61\u7684 Netty \u901a\u9053\u4e0a\u89e6\u53d1\u4e86\u8bfb\u53d6\u7a7a\u95f2\uff08\u5fc3\u8df3\u8d85\u65f6\uff09\u4e8b\u4ef6\u3002 \u8fd9\u79cd\u60c5\u51b5\u53ef\u80fd\u8868\u660e\u5728\u65ad\u5f00\u8fde\u63a5\u65f6\u53d1\u751f\u4e86\u7ade\u4e89\u6761\u4ef6\u3002 \u670d\u52a1\u5668\u65e0\u6cd5\u5904\u7406\u8be5\u4e8b\u4ef6\uff0c\u56e0\u6b64\u5c06\u5176\u6cbf\u7ba1\u9053\u8f6c\u53d1\u3002
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.useraction=\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\u4e2d\u662f\u5426\u5b58\u5728\u76f8\u5173\u7684\u9519\u8bef\u6216\u8b66\u544a\u4fe1\u606f\uff0c\u8fd9\u4e9b\u4fe1\u606f\u6216\u8bb8\u80fd\u89e3\u91ca\u4e3a\u4f55\u672a\u627e\u5230\u8fde\u63a5\u5bf9\u8c61\u3002 \u5982\u679c\u95ee\u9898\u4ecd\u7136\u5b58\u5728\uff0c\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u8ddf\u8e2a\u4fe1\u606f\uff0c\u5e76\u8054\u7cfb IBM \u6280\u672f\u652f\u6301\u3002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel (null) for which the SSL session was requested
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091=CWSIJ0091W: \u8bf7\u6c42\u5efa\u7acb\u5b89\u5168\u5957\u63a5\u5c42\uff08 SSL \uff09\u4f1a\u8bdd\uff0c\u4f46\u8be5\u8fde\u63a5\u672a\u6ce8\u518c\u4efb\u4f55 Netty \u901a\u9053\u3002 \u9891\u9053\uff1a {0}
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.explanation=\u65e0\u6cd5\u68c0\u7d22 SSL \u4f1a\u8bdd\uff0c\u56e0\u4e3a Netty \u901a\u9053\u672a\u4e0e\u8be5\u8fde\u63a5\u5bf9\u8c61\u76f8\u5173\u8054\u3002 \u8fd9\u79cd\u60c5\u51b5\u53ef\u80fd\u8868\u660e\u5728\u5efa\u7acb\u8fde\u63a5\u65f6\u51fa\u73b0\u4e86\u65f6\u5e8f\u95ee\u9898\u3002
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u65e5\u5fd7\u4e2d\u662f\u5426\u5b58\u5728\u76f8\u5173\u7684\u9519\u8bef\u6216\u8b66\u544a\u4fe1\u606f\uff0c\u8fd9\u4e9b\u4fe1\u606f\u53ef\u80fd\u80fd\u89e3\u91ca\u901a\u9053\u4e3a\u4f55\u672a\u80fd\u6ce8\u518c\u3002 \u5982\u679c\u95ee\u9898\u4ecd\u7136\u5b58\u5728\uff0c\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u8ddf\u8e2a\u4fe1\u606f\uff0c\u5e76\u8054\u7cfb IBM \u6280\u672f\u652f\u6301\u3002
 
 # Emergency use
 # -------------------------------------------------------------------------------------------------

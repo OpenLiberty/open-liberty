@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +48,7 @@ public class JakartaFeatureTests30 extends AbstractSpringTests {
     public void modifyServerConfiguration(ServerConfiguration config) {
         ORB orb = config.getOrb();
         orb.setId("defaultOrb");
-        orb.setOrbSSLInitTimeout("45");
+        orb.setOrbSSLInitTimeout("180");
 
         List<KeyStore> keystores = config.getKeyStores();
         keystores.clear();

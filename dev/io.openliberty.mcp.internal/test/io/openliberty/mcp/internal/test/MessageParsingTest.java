@@ -28,6 +28,7 @@ import io.openliberty.mcp.internal.ConverterRegistry;
 import io.openliberty.mcp.internal.Literals;
 import io.openliberty.mcp.internal.RequestMethod;
 import io.openliberty.mcp.internal.ToolRegistry;
+import io.openliberty.mcp.internal.ToolRegistry.ToolArgumentImpl;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.ImplementationInfoImpl;
 import io.openliberty.mcp.internal.requests.McpInitializeParams;
@@ -55,16 +56,16 @@ public class MessageParsingTest {
         testConverterRegistry = TestUtils.createTestConverterRegistry();
 
         Tool testTool = Literals.tool("echo", "Echo", "Echos the input");
-        List<ToolArgument> arguments = List.of(new ToolArgument("input", "", true, String.class, ""));
+        List<ToolArgument> arguments = List.of(new ToolArgumentImpl("input", "", true, String.class, ""));
         registry.addTool(ToolMetadataTestUtility.createFrom(testTool, arguments, Collections.emptyList()));
 
         Tool addTestTool = Literals.tool("add", "Add", "Addition calculator");
-        List<ToolArgument> additionArgs = List.of(new ToolArgument("num1", "", true, Integer.class, ""),
-                                                  new ToolArgument("num2", "", true, Integer.class, ""));
+        List<ToolArgument> additionArgs = List.of(new ToolArgumentImpl("num1", "", true, Integer.class, ""),
+                                                  new ToolArgumentImpl("num2", "", true, Integer.class, ""));
         registry.addTool(ToolMetadataTestUtility.createFrom(addTestTool, additionArgs, Collections.emptyList()));
 
         Tool toogleTestTool = Literals.tool("toggle", "Toggle", "Toggle a boolean");
-        List<ToolArgument> booleanArgs = List.of(new ToolArgument("input", "boolean value", true, Boolean.class, ""));
+        List<ToolArgument> booleanArgs = List.of(new ToolArgumentImpl("input", "boolean value", true, Boolean.class, ""));
         registry.addTool(ToolMetadataTestUtility.createFrom(toogleTestTool, booleanArgs, Collections.emptyList()));
     }
 

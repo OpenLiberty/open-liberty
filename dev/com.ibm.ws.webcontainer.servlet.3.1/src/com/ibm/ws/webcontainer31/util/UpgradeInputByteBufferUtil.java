@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
 package com.ibm.ws.webcontainer31.util;
 
 import java.io.IOException;
-
 import javax.servlet.ReadListener;
 import javax.servlet.http.WebConnection;
 
@@ -200,6 +199,9 @@ public class UpgradeInputByteBufferUtil {
                         Tr.debug(tc, "immediateRead, read from interface");
                     } 
                     bytesRead = _tcpContext.getReadInterface().read(0, WCCustomProperties31.UPGRADE_READ_TIMEOUT);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                        Tr.debug(tc, "WC immediateRead: amountToRead=" + amountToRead + " buffer.remaining()="+ _buffer.remaining());
+                    } 
                 } catch (IOException readException){
                     //If we encounter an exception here we need to return the 1 byte that we already have.
                     //Returned true immediately and the next read will catch the exception and propagate it properly
@@ -450,7 +452,6 @@ public class UpgradeInputByteBufferUtil {
                 
                 //Immediately read for some data. This will return immediately if there was anything
                 bytesRead = _tcpContext.getReadInterface().read(0, WCCustomProperties31.UPGRADE_READ_TIMEOUT);
-                
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
                     Tr.debug(tc, "isReady, Completed the read, " + bytesRead);
                 }

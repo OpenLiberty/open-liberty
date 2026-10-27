@@ -49,7 +49,9 @@ Private-Package: \
   org.apache.cxf.tools.common.jaxb
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-tools-common;${cxfVersion}}!/!META-INF/*
+  @${repo;org.apache.cxf:cxf-tools-common;${cxfVersion}}!/!META-INF/*, \
+  org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \
-  org.apache.cxf:cxf-tools-common;version=${cxfVersion}
+  org.apache.cxf:cxf-tools-common;version=${cxfVersion}, \
+  com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest

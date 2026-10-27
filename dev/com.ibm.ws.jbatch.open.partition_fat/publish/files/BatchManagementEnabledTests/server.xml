@@ -23,15 +23,8 @@
 
 	<dataSource id="batchDB" jndiName="jdbc/batch" fat.modify="true">
 		<jdbcDriver libraryRef="dbRotationLib" />
-	    <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
-       	is required beyond a single server start, configure the databaseName with a file location such as:
-       	databaseName="${shared.config.dir}/data/derbydb" -->
-        <properties.derby.embedded 
-            databaseName="memory:BATCHDB"
-            createDatabase="create" 
-            user="user" 
-            password="pass" />
-    </dataSource> 
+	       <properties.h2 databaseName="BATCHDB" URL="${env.DB_URL}" user="user" password="pass" />
+	   </dataSource>
 
     <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.p12" type="PKCS12" password="{xor}EzY9Oi0rJg==" />
 
@@ -73,6 +66,6 @@
 	</authorization-roles>
 	
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jdbc/derby.jar"/>
+	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jdbc/h2*.jar"/>
 	
 </server>

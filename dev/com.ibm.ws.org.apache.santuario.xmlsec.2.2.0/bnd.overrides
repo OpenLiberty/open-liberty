@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020,2025 IBM Corporation and others.
+# Copyright (c) 2020,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ Import-Package: \
  org.apache.xml.utils*;resolution:=optional,\
  org.apache.xpath*;resolution:=optional, \
  org.apache.xml.security.*;version=${santuarioVersion}, \
- javax.xml.bind.*;resolution:=optional,\,\
+ javax.xml.bind.*;resolution:=optional,\
  com.ctc.wstx.*;resolution:=optional,\
  org.codehaus.stax2.*;resolution:=optional,\
  *

@@ -14,6 +14,8 @@
         <queue id="MdbQuiesceEjbDefaultQueue"/>
         <queue id="MdbQuiesceEjbBndQueue"/>
         <queue id="MdbQuiesceEjbServerQueue"/>
+        <queue id="MdbQuiesceEjbInvalidQueue"/>
+        <queue id="MdbQuiesceEjbInvalidServerQueue"/>
         <queue id="MdbQuiesceWebDefaultQueue"/>
         <queue id="MdbQuiesceWebBndQueue"/>
         <queue id="MdbQuiesceWebServerQueue"/>
@@ -48,6 +50,22 @@
         <properties.wasJms destinationRef="MdbQuiesceEjbServerQueue"/>
     </jmsActivationSpec>
 
+    <jmsQueue id="MdbQuiesceEjbInvalidQueue" jndiName="jms/MdbQuiesceEjbInvalidQueue">
+        <properties.wasJms queueName="MdbQuiesceEjbInvalidQueue"/>
+    </jmsQueue>
+
+    <jmsActivationSpec id="MdbQuiesceApp/MdbQuiesceEjb/MdbQuiesceInvalid">
+        <properties.wasJms destinationRef="MdbQuiesceEjbInvalidQueue"/>
+    </jmsActivationSpec>
+
+    <jmsQueue id="MdbQuiesceEjbInvalidServerQueue" jndiName="jms/MdbQuiesceEjbInvalidServerQueue">
+        <properties.wasJms queueName="MdbQuiesceEjbInvalidServerQueue"/>
+    </jmsQueue>
+
+    <jmsActivationSpec id="MdbQuiesceApp/MdbQuiesceEjb/MdbQuiesceInvalidServer">
+        <properties.wasJms destinationRef="MdbQuiesceEjbInvalidServerQueue"/>
+    </jmsActivationSpec>
+
     <!-- Web Module Queues and Activation Specs -->
     <jmsQueue id="MdbQuiesceWebDefaultQueue" jndiName="jms/MdbQuiesceWebDefaultQueue">
         <properties.wasJms queueName="MdbQuiesceWebDefaultQueue"/>
@@ -77,6 +95,9 @@
         <ejb-jar-bnd moduleName="MdbQuiesceEjb">
             <message-driven name="MdbQuiesceServer">
                 <env-entry name="io.openliberty.ejb.deactivateOnQuiesce" value="false"/>
+            </message-driven>
+            <message-driven name="MdbQuiesceInvalidServer">
+                <env-entry name="io.openliberty.ejb.deactivateOnQuiesce" value="notABooleanServer"/>
             </message-driven>
         </ejb-jar-bnd>
         <ejb-jar-bnd moduleName="MdbQuiesceWeb">

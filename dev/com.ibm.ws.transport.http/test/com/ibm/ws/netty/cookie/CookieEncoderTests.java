@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,27 +11,22 @@ package com.ibm.ws.netty.cookie;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
-import com.ibm.ws.http.channel.internal.HttpConfigConstants.SameSite;
-import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
-import io.openliberty.http.netty.cookie.CookieDecoder;
 import io.openliberty.http.netty.cookie.CookieEncoder;
 
 /**
@@ -163,6 +158,38 @@ public class CookieEncoderTests{
         assertThat("Encoded cookie should have samesite=none", encoded, containsString("samesite=none"));
         assertThat("Encoded cookie should be secure", encoded, containsString("secure"));
         assertThat("Encoded cookie should be partitioned", encoded, containsString("partitioned"));
+    }
+
+    @Test
+    public void testEncodePreservesExplicitPartitionedWithoutSameSite() {
+        HttpCookie cookie = new HttpCookie(NAME, VALUE);
+        cookie.setAttribute(PARTITIONED, "");
+
+        String encoded = CookieEncoder.encodeCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE, config, UA).toLowerCase();
+
+        assertThat("Encoded cookie should preserve an application supplied Partitioned attribute", encoded, containsString("partitioned"));
+    }
+
+    @Test
+    public void testEncodeRemovesConfigDrivenPartitionedWithoutSameSiteNone() {
+        HttpCookie cookie = new HttpCookie(NAME, VALUE);
+        cookie.setAttribute(PARTITIONED, "true");
+
+        String encoded = CookieEncoder.encodeCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE, config, UA).toLowerCase();
+
+        assertThat("Config-driven Partitioned=true should not be emitted without SameSite=None", encoded, not(containsString("partitioned")));
+    }
+
+    @Test
+    public void testEncodeRemovesExplicitPartitionedWhenSameSiteIsLax() {
+        HttpCookie cookie = new HttpCookie(NAME, VALUE);
+        cookie.setAttribute(SAMESITE, SAMESITE_LAX);
+        cookie.setAttribute(PARTITIONED, "");
+
+        String encoded = CookieEncoder.encodeCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE, config, UA).toLowerCase();
+
+        assertThat("SameSite=Lax should still be emitted", encoded, containsString("samesite=lax"));
+        assertThat("Partitioned should not be emitted when SameSite is Lax", encoded, not(containsString("partitioned")));
     }
 
     /**

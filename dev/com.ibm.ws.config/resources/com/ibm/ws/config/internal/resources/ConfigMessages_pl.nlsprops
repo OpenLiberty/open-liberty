@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2020 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -492,6 +492,11 @@ schemagen.info.schema.file.created.useraction=Nie jest wymagana \u017cadna\nczyn
 error.config.root.deleted=CWWKG0110E: Wykryto aktualizacj\u0119 konfiguracji, ale plik server.xml nie istnieje. Nie dokonano \u017cadnych aktualizacji konfiguracji.
 error.config.root.deleted.explanation=Plik server.xml zosta\u0142 usuni\u0119ty. Aby nie powodowa\u0107 zak\u0142\u00f3ce\u0144 w dzia\u0142aniu aplikacji, nie wprowadza si\u0119 \u017cadnych zmian w konfiguracji.
 error.config.root.deleted.useraction=Dodaj plik server.xml z powrotem na serwer.
+
+warn.invalid.quiesce.timeout=CWWKG0111W: Warto\u015b\u0107 \u201e {0} \u201d podana w atrybucie \u201e quiesceTimeout \u201d elementu \u201eserver\u201d w pliku \u201e server.xml \u201d jest nieprawid\u0142owa. Warto\u015b\u0107 musi odpowiada\u0107 czasowi trwania wynosz\u0105cemu co najmniej 30 sekund. Serwer stosuje domy\u015bln\u0105 warto\u015b\u0107 wynosz\u0105c\u0105 30 sekund.
+warn.invalid.quiesce.timeout.explanation=Atrybut \u201e quiesceTimeout \u201d okre\u015bla czas, przez jaki nale\u017cy czeka\u0107 na osi\u0105gni\u0119cie stanu spoczynku przez serwer podczas wy\u0142\u0105czania. Nale\u017cy poda\u0107 dodatni\u0105 liczb\u0119 ca\u0142kowit\u0105, po kt\u00f3rej nast\u0119puje jednostka czasu, np. 30s, 1m lub 1m30s. Je\u015bli nie podasz jednostki czasu, serwer domy\u015blnie przyjmuje sekundy. Warto\u015b\u0107 musi wynosi\u0107 co najmniej 30 sekund. Warto\u015bci mniejsze ni\u017c 30 sekund nie zapewniaj\u0105 serwerowi wystarczaj\u0105cej ilo\u015bci czasu na zako\u0144czenie realizowanych \u017c\u0105da\u0144 i przeprowadzenie operacji prawid\u0142owego wy\u0142\u0105czania.
+warn.invalid.quiesce.timeout.useraction=W pliku ` server.xml ` zmie\u0144 atrybut ` quiesceTimeout ` elementu `server` na warto\u015b\u0107 czasu trwania wynosz\u0105c\u0105 co najmniej 30 sekund (na przyk\u0142ad ` 30s `, ` 45s ` lub ` 1m30s `) lub usu\u0144 ten atrybut, aby zastosowa\u0107 warto\u015b\u0107 domy\u015bln\u0105 wynosz\u0105c\u0105 30 sekund.
+
 
 # Non-TR message
 error.invalidOCDRef=B\u0141\u0104D: to\u017csamo\u015b\u0107 PID metatypu [{0}] okre\u015bla nieistniej\u0105cy identyfikator definicji klasy obiektu [{1}]

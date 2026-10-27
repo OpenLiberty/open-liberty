@@ -293,4 +293,9 @@ REDIRECT_URI_CONTAINED_ERROR=CWWKS1557E: Una solicitud de autenticaci\u00f3n ha 
 REDIRECT_URI_CONTAINED_ERROR.explanation=El estado de respuesta especificado indicaba que la autenticaci\u00f3n hab\u00eda fallado. El error y la descripci\u00f3n del error que se proporcionan en el mensaje contienen informaci\u00f3n adicional.
 REDIRECT_URI_CONTAINED_ERROR.useraction=Para obtener m\u00e1s informaci\u00f3n, consulte el error en el mensaje.
 
+# Do not translate "signed_metadata", "JWT"
+PRMD_SIGNED_METADATA_BUILD_FAILURE=CWWKS1558W: Los metadatos del recurso protegido no pueden incluir un JWT \u00absigned_metadata\u00bb, ya que el generador de JWT [ {0} ] no ha podido generar el token: {1}
+PRMD_SIGNED_METADATA_BUILD_FAILURE.explanation=El generador de JWT configurado ha generado una excepci\u00f3n al crear el token de metadatos firmado. El servidor devuelve el documento de metadatos sin el campo \u00absigned_metadata\u00bb.
+PRMD_SIGNED_METADATA_BUILD_FAILURE.useraction=Comprueba la configuraci\u00f3n del generador de JWT y los registros del servidor para obtener m\u00e1s informaci\u00f3n sobre el error.
+
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649

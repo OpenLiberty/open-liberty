@@ -94,19 +94,10 @@ public enum QueryType {
     LC_UPDATE(Update.class.getSimpleName(), //
               Is.LIFE_CYCLE_METHOD, //
               Require.AUTO_START_TX, //
-              !Require.DETACH_ENTITIES, //
-              !Require.RETURN_HIDDEN, //
+              Require.DETACH_ENTITIES, //
+              Require.RETURN_HIDDEN, //
               Require.STATELESS, //
               !Supports.QUERY_OPTIONS),
-
-    // stateless repository life cycle method @Update with entity result (find & merge)
-    LC_UPDATE_MERGE(Update.class.getSimpleName(), //
-                    Is.LIFE_CYCLE_METHOD, //
-                    Require.AUTO_START_TX, //
-                    Require.DETACH_ENTITIES, //
-                    Require.RETURN_HIDDEN, //
-                    Require.STATELESS, //
-                    !Supports.QUERY_OPTIONS),
 
     // stateful repository life cycle method @Merge
     MERGE("Merge", //
@@ -135,22 +126,22 @@ public enum QueryType {
             Require.STATEFUL, //
             !Supports.QUERY_OPTIONS),
 
-    // stateless repository query method delete/@Delete/@Query(DELETE)
+    // repository query method delete/@Delete/@Query(DELETE)
     QM_DELETE(Delete.class.getSimpleName(), //
               !Is.LIFE_CYCLE_METHOD, //
               Require.AUTO_START_TX, //
               !Require.DETACH_ENTITIES, //
               !Require.RETURN_HIDDEN, //
-              Require.STATELESS, //
+              null, // stateful or stateless
               Supports.QUERY_OPTIONS),
 
-    // stateless repository query method update/@Update/@Query(UPDATE)
+    // stateless repository query method @Update/@Query(UPDATE)
     QM_UPDATE(Update.class.getSimpleName(), //
               !Is.LIFE_CYCLE_METHOD, //
               Require.AUTO_START_TX, //
               !Require.DETACH_ENTITIES, //
               !Require.RETURN_HIDDEN, //
-              Require.STATELESS, //
+              Require.STATELESS, // TODO null, // stateful or stateless
               Supports.QUERY_OPTIONS),
 
     // stateful repository life cycle method @Refresh

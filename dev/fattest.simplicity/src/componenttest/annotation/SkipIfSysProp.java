@@ -82,7 +82,6 @@ public @interface SkipIfSysProp {
     // OS system properties
     public static final String OS_ZOS = "os.name=z/OS";
     public static final String OS_IBMI = "os.name=OS/400";
-    public static final String OS_ISERIES = "os.name=ISERIES";
     public static final String OS_AIX = "os.name=AIX";
 
     // Network system properties

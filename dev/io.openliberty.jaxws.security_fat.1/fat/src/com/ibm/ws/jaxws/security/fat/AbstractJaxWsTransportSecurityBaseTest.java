@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -314,6 +314,7 @@ abstract public class AbstractJaxWsTransportSecurityBaseTest {
         }
 
         String responseContent = sb.toString();
+        System.out.println("Received responseContent: " + responseContent); // Need to see response received to diagnose the issues
         if (exact) { // the response content must contain all the expect strings
             for (String expectStr : expectedResponses) {
                 if (!responseContent.contains(expectStr)) {

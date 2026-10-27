@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ package jaxrs21sse.delay;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
@@ -62,7 +63,7 @@ public class DelaySseResource extends Application {
             long delayTime2 = startTime + 10000;
             //get the Date to send
             Date testDate = new Date(delayTime2);
-            SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
             String sdfString = sdf.format(testDate);
             System.out.println("DelaySseResource:  Throwing 503-2:  sdfString = " + sdfString);
             throw new WebApplicationException(Response.status(503).header(HttpHeaders.RETRY_AFTER, sdfString).build());

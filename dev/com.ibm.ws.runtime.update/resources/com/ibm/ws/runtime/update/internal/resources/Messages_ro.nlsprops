@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ quiesce.end.useraction=Nicio ac\u0163iune necesar\u0103.
 
 quiece.warning=CWWKE1102W: Opera\u0163ia de dezactivare nu s-a finalizat. Serverul se va opri acum.
 quiece.warning.explanation=Procesul a fost \u00een imposibilitatea de a lini\u0219ti\u021bi toate serviciile \u00een perioada de timeout quiesce.
-quiece.warning.useraction=Pute\u0163i ignora f\u0103r\u0103 probleme mesajele de eroare care rezult\u0103 din serviciile necesare indisponibile. \u00cen cazul \u00een care problema persist\u0103, cre\u0219te durata "quiesceTimeout" prin ad\u0103ugarea atributului "quiesceTimeout" la elementul "executor" \u00een fi\u0219ierul "server.xml".
+quiece.warning.useraction=Ignora\u021bi mesajele de eroare care apar din cauza indisponibilit\u0103\u021bii serviciilor obligatorii. Dac\u0103 problema persist\u0103, m\u0103ri\u021bi durata \u201e quiesceTimeout \u201d ad\u0103ug\u00e2nd atributul \u201e quiesceTimeout \u201d la elementul \u201eserver\u201d din fi\u0219ierul \u201e server.xml \u201d.
 
 client.quiesce.begin=CWWKE1103I: A\u0219teptare pentru p\u00e2n\u0103 la {0} secunde pentru client pentru a quiesce.
 client.quiesce.begin.explanation=Clientul a\u0219teapt\u0103 ca serviciile s\u0103 se lini\u0219teasc\u0103 \u00eenainte de a continua cu \u00eenchiderea.
@@ -59,6 +59,6 @@ quiesce.listeners.not.complete=CWWKE1106W: {0} opera\u0163ii de oprire (shutdown
 quiesce.listeners.not.complete.explanation=Una sau mai multe opera\u0163ii care au fost ini\u0163iate \u00een timpul opera\u0163iei de oprire nu s-au finalizat.
 quiesce.listeners.not.complete.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 
-quiesce.waiting.on.threads=CWWKE1107W: {0} fire de execu\u0163ie nu s-au finalizat \u00een timpul perioadei de lini\u015ftire (quiesce). 
+quiesce.waiting.on.threads=CWWKE1107W: Un total de {0} de fire de execu\u021bie nu s-au finalizat \u00een timpul perioadei de inactivitate.
 quiesce.waiting.on.threads.explanation=Unul sau mai multe fire de execu\u0163ie care au fost active \u00eenainte de a opri serverul au fost \u00eenc\u0103 active la sf\u00e2r\u015fitul perioadei de lini\u015ftire.
-quiesce.waiting.on.threads.useraction=Nu este necesar\u0103 nici o ac\u0163iune. 
+quiesce.waiting.on.threads.useraction=Nu este necesar\u0103 nicio ac\u0163iune.

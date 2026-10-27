@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -95,7 +96,7 @@ public class FeatureList {
             addJVM(possibleJavaVersions, "17", "16", "15", "14", "13", "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             addJVM(possibleJavaVersions, "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
-            addJVM(possibleJavaVersions, "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
+            addJVM(possibleJavaVersions, "27", "26", "25", "24", "23", "22", "21", "20", "19", "18", "17", "16", "15", "14", "13", "12", "11", "10", "9", "1.8", "1.7", "1.6", "1.5", "1.4", "1.3", "1.2", "1.1");
             
 
             List<GenericMetadata> mostGeneralRange = ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=1.7))\"");
@@ -111,7 +112,7 @@ public class FeatureList {
             eeToCapability.put("JavaSE-17", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=17))\""));
             eeToCapability.put("JavaSE-21", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=21))\""));
             eeToCapability.put("JavaSE-25", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=25))\""));
-            eeToCapability.put("JavaSE-26", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=26))\""));
+            eeToCapability.put("JavaSE-27", ManifestHeaderProcessor.parseCapabilityString("osgi.ee; filter:=\"(&(osgi.ee=JavaSE)(version=27))\""));
         }
 
         gaBuild = isGABuild();
@@ -292,6 +293,9 @@ public class FeatureList {
             // write api/spi packages
             writeApiSpiPkgs(writer, apiPkgs, "apiPackage");
             writeApiSpiPkgs(writer, spiPkgs, "spiPackage");
+
+            // write maven coordinates from constituents
+            writeMavenCoordinates(writer, fd);
 
             // configElement
             if (showExternals) {
@@ -495,6 +499,66 @@ public class FeatureList {
                 }
 
                 writer.writeTextElementWithAttributes(elementName, nameToWrite, e.getValue());
+            }
+        }
+    }
+
+    /**
+     * Writes deduplicated {@code <mavenCoordinates>} elements for all bundle constituents
+     * reachable from the given public feature, recursing into private sub-features.
+     * <p>
+     * Direct bundle/jar constituents whose manifest entry carries a
+     * {@code mavenCoordinates="groupId:artifactId:version"} attribute are collected at
+     * every level. Private sub-features (non-PUBLIC feature constituents) are walked
+     * recursively; PUBLIC sub-features are skipped because they represent independent
+     * top-level features that will be processed on their own. A {@code visited} set
+     * guards against cycles.
+     */
+    private void writeMavenCoordinates(FeatureListWriter writer, ProvisioningFeatureDefinition fd) throws IOException, XMLStreamException {
+        LinkedHashSet<String> seen = new LinkedHashSet<String>();
+        collectMavenCoordinates(fd, seen, new HashSet<String>());
+        for (String coordinate : seen) {
+            writer.writeTextElement("mavenCoordinates", coordinate);
+        }
+    }
+
+    /**
+     * Recursively collects {@code mavenCoordinates} values from bundle/jar constituents
+     * of {@code fd} and all reachable private sub-features.
+     * <p>
+     * Package-private to allow direct invocation from unit tests in the same package.
+     *
+     * @param fd      the feature definition to inspect
+     * @param seen    accumulator for deduplicated coordinates (insertion-ordered)
+     * @param visited symbolic names already visited, to prevent cycles
+     */
+    void collectMavenCoordinates(ProvisioningFeatureDefinition fd,
+                                         LinkedHashSet<String> seen,
+                                         Set<String> visited) {
+        if (!visited.add(fd.getSymbolicName())) {
+            return; // already visited — cycle guard
+        }
+
+        // Collect mavenCoordinates from direct bundle/jar constituents at this level.
+        for (FeatureResource resource : fd.getConstituents(null)) {
+            String coordinate = resource.getAttributes().get("mavenCoordinates");
+            if (coordinate != null && !coordinate.isEmpty() && coordinate.split(":").length == 3) {
+                seen.add(coordinate);
+            }
+        }
+
+        // Recurse into private sub-features (non-PUBLIC feature-type constituents).
+        for (FeatureResource fr : fd.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
+            String symbolicName = fr.getSymbolicName();
+            ProvisioningFeatureDefinition sub = features.get(symbolicName);
+
+            // For extension repositories, also check core features.
+            if (sub == null && coreFeatures != null) {
+                sub = coreFeatures.get(symbolicName);
+            }
+
+            if (sub != null && sub.getVisibility() != Visibility.PUBLIC) {
+                collectMavenCoordinates(sub, seen, visited);
             }
         }
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -662,6 +662,11 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
 
     @Override
     public final long getElapsedRunTime(TimeUnit unit) {
+        // Read state first: abort() sets nsQueueEnd/nsRunEnd *before* transitioning
+        // the state to ABORTED. An aborted task never ran, so the run time is
+        // always 0, regardless of timestamp values.
+        if (state.get() == ABORTED)
+            return 0;
         long begin = nsQueueEnd;
         long elapsed = nsRunEnd - begin;
         if (elapsed < 0)
@@ -681,6 +686,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         return callback == null ? task.toString() : callback.getName(task);
     }
 
+    @Trivial
     @Override
     public boolean isCancelled() {
         int s = state.get();

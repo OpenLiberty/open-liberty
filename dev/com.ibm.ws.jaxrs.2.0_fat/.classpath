@@ -36,6 +36,7 @@
 	<classpathentry kind="src" path="test-applications/responseAPI/src"/>
 	<classpathentry kind="src" path="test-applications/restmetrics/src"/>
 	<classpathentry kind="src" path="test-applications/security/src"/>
+	<classpathentry kind="src" path="test-applications/securitylimits/src"/>
 	<classpathentry kind="src" path="test-applications/servicescope/src"/>
 	<classpathentry kind="src" path="test-applications/servletcoexist1/src"/>
 	<classpathentry kind="src" path="test-applications/servletcoexist2/src"/>

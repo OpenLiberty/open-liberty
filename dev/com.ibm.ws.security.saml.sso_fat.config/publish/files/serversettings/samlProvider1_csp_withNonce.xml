@@ -1,0 +1,41 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<!-- SAML provider configured with a nonce-based Content Security Policy header.
+     All required attributes are explicitly set so the IDP connection is fully
+     configured and the signed AuthnRequest is accepted by Shibboleth. -->
+<server>
+	<samlWebSso20
+		id="defaultSP"
+		authFilterRef="myAuthFilter1"
+		authnRequestsSigned="true"
+		clockSkew="300s"
+		contentSecurityPolicy="script-src 'self' 'nonce-%NONCE%' ; object-src 'none'; frame-ancestors 'self'"
+		forceAuthn="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		includeTokenInSubject="true"
+		isPassive="false"
+		keyAlias="sslspservercert"
+		keyStoreRef="samlKeyStore"
+		mapToUserRegistry="No"
+		nameIDFormat="unspecified"
+		signatureMethodAlgorithm="SHA256"
+		tokenReplayTimeout="30m"
+		trustStoreRef="serverStore"
+		wantAssertionsSigned="true"
+	/>
+	<authFilter id="myAuthFilter1">
+		<requestUrl id="myRequestUrl" matchType="contains" urlPattern="/samlclient/fat/defaultSP/"/>
+	</authFilter>
+</server>

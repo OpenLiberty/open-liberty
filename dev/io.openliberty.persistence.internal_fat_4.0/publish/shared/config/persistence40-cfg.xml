@@ -1,0 +1,31 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Repeat phase: JPA 4.0 with Hibernate 8 using persistence-4.0 (LITE mode).
+-->
+<server>
+    <featureManager>
+        <feature>persistence-4.0</feature>
+        <feature>servlet-6.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>xmlBinding-4.0</feature>
+        <feature>componenttest-2.0</feature>
+    </featureManager>
+
+    <!--
+        Need this as EclipseLink is still the default provider. 
+        This can be removed when the default provider changes are complete.
+    -->
+    <jpa defaultPersistenceProvider="org.hibernate.jpa.HibernatePersistenceProvider"/>
+
+    <library id="HibernateLib">
+        <fileset dir="${shared.resource.dir}/jpa_fat_jpa40_persistencecontainer" includes="*.jar"/>
+    </library>
+
+</server>

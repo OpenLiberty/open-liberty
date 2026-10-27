@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,9 @@ public abstract class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "acmeCA")
     private AcmeCA acmeCA;
+
+    @XmlElement(name = "audit")
+    private Audit audit;
 
     @XmlElement(name = "activationSpec")
     private ConfigElementList<ActivationSpec> activationSpecs;
@@ -328,6 +331,12 @@ public abstract class ServerConfiguration implements Cloneable {
     @XmlElement(name = "cveReporting")
     private CVEReportingElement cveReporting;
 
+    @XmlElement(name = "requestTiming")
+    private RequestTimingElement requestTiming;
+
+    @XmlElement(name = "eventLogging")
+    private EventLoggingElement eventLogging;
+
     public ServerConfiguration() {
         this.description = "Generation date: " + new Date();
     }
@@ -537,6 +546,16 @@ public abstract class ServerConfiguration implements Cloneable {
             this.messagingEngines = new ConfigElementList<MessagingEngine>();
         }
         return this.messagingEngines;
+    }
+
+    /**
+     * @return the audit configuration for this server
+     */
+    public Audit getAudit() {
+        if (this.audit == null) {
+            this.audit = new Audit();
+        }
+        return this.audit;
     }
 
     /**
@@ -1173,6 +1192,34 @@ public abstract class ServerConfiguration implements Cloneable {
         }
 
         return this.orb;
+    }
+
+    /**
+     * @return the requestTiming configuration for this server
+     */
+    public RequestTimingElement getRequestTiming() {
+        if (this.requestTiming == null) {
+            this.requestTiming = new RequestTimingElement();
+        }
+        return this.requestTiming;
+    }
+
+    /**
+     * @return the eventLogging configuration for this server
+     */
+    public EventLoggingElement getEventLogging() {
+        if (this.eventLogging == null) {
+            this.eventLogging = new EventLoggingElement();
+        }
+        return this.eventLogging;
+    }
+
+    /**
+     * Removes the eventLogging element from this configuration, so that the
+     * feature runs with its defaults when the configuration is written out.
+     */
+    public void removeEventLogging() {
+        this.eventLogging = null;
     }
 
     private List<Field> getAllXmlElements() {

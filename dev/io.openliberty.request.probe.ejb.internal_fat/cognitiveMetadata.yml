@@ -1,0 +1,5 @@
+---
+# YML metadata file made use of by the Cognitive Ecosystem.
+# Reference Cognitive Metadata is available at: https://github.com/OpenLiberty/open-liberty/tree/integration/dev/build.example_fat/cognitiveMetadata.yml
+# description: Verifies that the requestProbeEJB-1.0 bundle registers the four EJB transform descriptors (async, mdb, remote, timer) when eventLogging or requestTiming is combined with each EJB feature.
+functionalArea: Observability

@@ -51,7 +51,7 @@ public class McpIntrospector implements Introspector {
             String appName = entry.getKey();
             ToolRegistry registry = entry.getValue();
 
-            writer.println("Application: " + appName);
+            writer.println("Context path: " + appName);
 
             if (!registry.hasTools()) {
                 writer.println("  No tools registered.");

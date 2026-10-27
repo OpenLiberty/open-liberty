@@ -837,6 +837,69 @@
                                         "title": "Create a city"
                                     },
                                     {
+                                        "outputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "country":    { "type": "string" },
+                                                "isCapital":  { "type": "boolean" },
+                                                "name":       { "type": "string" },
+                                                "population": { "type": "integer" }
+                                            },
+                                            "required": ["name", "country", "population", "isCapital"]
+                                        },
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": { "description": "name of your city", "type": "string" }
+                                            },
+                                            "required": ["name"]
+                                        },
+                                        "name": "testOutputSchemaFromOnToolResponse",
+                                        "description": "ToolResponse return type with outputSchemaFrom=City generates City output schema",
+                                        "title": "Create a city via outputSchemaFrom"
+                                    },
+                                    {
+                                        "outputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "country":    { "type": "string" },
+                                                "isCapital":  { "type": "boolean" },
+                                                "name":       { "type": "string" },
+                                                "population": { "type": "integer" }
+                                            },
+                                            "required": ["name", "country", "population", "isCapital"]
+                                        },
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": { "description": "name of your city", "type": "string" }
+                                            },
+                                            "required": ["name"]
+                                        },
+                                        "name": "testOutputSchemaFromOverridesReturnType",
+                                        "description": "String return type with outputSchemaFrom=City generates City schema, not a string schema",
+                                        "title": "outputSchemaFrom overrides plain return type"
+                                    },
+                                    {
+                                        "outputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "cityName": { "type": "string" }
+                                            },
+                                            "required": ["cityName"]
+                                        },
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": { "description": "name of your city", "type": "string" }
+                                            },
+                                            "required": ["name"]
+                                        },
+                                        "name": "testSchemaAnnotationTakesPrecedenceOverOutputSchemaFrom",
+                                        "description": "@Schema inline JSON wins over outputSchemaFrom=City — schema has cityName, not City fields",
+                                        "title": "@Schema wins over outputSchemaFrom"
+                                    },
+                                    {
                                         "inputSchema": {
                                             "type": "object",
                                             "properties": {},

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -85,8 +86,8 @@ public class DataCoreTckLauncher {
         additionalProps.put("excluded.tests", FATSuite.getExcludedTestByDatabase(DatabaseContainerType.valueOf(FATSuite.relationalDatabase)));
 
         //Comment out to use SNAPSHOT
-//        additionalProps.put("jakarta.data.groupid", "jakarta.data");
-//        additionalProps.put("jakarta.data.tck.version", "1.1.0");
+        additionalProps.put("jakarta.data.groupid", "jakarta.data");
+        additionalProps.put("jakarta.data.tck.version", "1.1.0-M4");
 
         TCKRunner.build(persistenceServer, Type.JAKARTA, "Data")
                         .withPlatformVersion("12")
@@ -101,6 +102,7 @@ public class DataCoreTckLauncher {
      * Run the TCK (controlled by autoFVT/publish/tckRunner/tck/*)
      */
     @Test
+    @Ignore("TODO: wait until we have a nosql-1.1 feature")
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchDataTckCoreNoSQL() throws Exception {
 
@@ -137,8 +139,8 @@ public class DataCoreTckLauncher {
         additionalProps.put("excluded.tests", String.join(", ", exclude));
 
         //Comment out to use SNAPSHOT
-//        additionalProps.put("jakarta.data.groupid", "jakarta.data");
-//        additionalProps.put("jakarta.data.tck.version", "1.1.0");
+        additionalProps.put("jakarta.data.groupid", "jakarta.data");
+        additionalProps.put("jakarta.data.tck.version", "1.1.0-M4");
 
         TCKRunner.build(noSQLServer, Type.JAKARTA, "Data")
                         .withPlatformVersion("12")

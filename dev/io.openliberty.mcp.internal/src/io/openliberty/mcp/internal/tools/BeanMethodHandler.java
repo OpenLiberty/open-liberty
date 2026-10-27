@@ -28,6 +28,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.openliberty.mcp.internal.McpServlet.ToolArgumentsImpl;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
+import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
+import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.tools.ToolCallException;
 import io.openliberty.mcp.tools.ToolManager.ToolArguments;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -138,7 +140,14 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
         }
 
         var response = encoderRegistry.findToolResponseEncoder(result)
-                                      .map(e -> e.encode(result))
+                                      .map(encoder -> {
+                                          try {
+                                              return encoder.encode(result);
+                                          } catch (Exception e) {
+                                              Tr.error(tc, "CWMCM0019E.error.encoding.element", encoder.getClass().getName(), method.name(), e);
+                                              throw new JSONRPCException(JSONRPCErrorCode.INTERNAL_ERROR, null);
+                                          }
+                                      })
                                       .orElse(null);
 
         if (response == null) {
@@ -164,7 +173,14 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
      */
     private <T> ContentBlock encodeAsContent(T o, EncoderRegistry encoderRegistry) {
         return encoderRegistry.findContentEncoder(o)
-                              .map(encoder -> encoder.encode(o))
+                              .map(encoder -> {
+                                  try {
+                                      return encoder.encode(o);
+                                  } catch (Exception e) {
+                                      Tr.error(tc, "CWMCM0019E.error.encoding.element", encoder.getClass().getName(), method.name(), e);
+                                      throw new JSONRPCException(JSONRPCErrorCode.INTERNAL_ERROR, null);
+                                  }
+                              })
                               .orElseGet(() -> TextContent.of(Objects.toString(o)));
     }
 

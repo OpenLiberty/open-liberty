@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME SIP/ws/code/sip.utils/src/com/ibm/sip/util/log/messages.nlsprops
 #COMPONENTPREFIX CWSCT
@@ -928,3 +925,7 @@ info.sip.resolver.not.initialized.useraction=Reconfigure o Servi\u00e7o do Resol
 warning.traditional.enabled=CWSCT0441W: O SIP Container n\u00e3o suporta o PMI tradicional.
 warning.traditional.enabled.explanation=O atributo enableTraditionalPMI \u00e9 configurado como true no arquivo server.xml. O SIP Container n\u00e3o suporta o PMI tradicional no Liberty.
 warning.traditional.enabled.useraction=Remova a propriedade enableTraditionalPMI do arquivo server.xml.
+
+missingPorts.endpointDisabled=CWSCT0442W: O terminal SIP (Protocolo de Inicia\u00e7\u00e3o de Sess\u00e3o) do {0} n\u00e3o possui portas configuradas e est\u00e1 desativado.
+missingPorts.endpointDisabled.explanation=A configura\u00e7\u00e3o do terminal SIP n\u00e3o especifica nenhuma porta TCP, TLS ou UDP. O terminal n\u00e3o consegue escutar o tr\u00e1fego SIP recebido.
+missingPorts.endpointDisabled.useraction=No arquivo ` server.xml `, configure o atributo ` sipTCPPort, `, ` sipTLSPort, ` ou ` sipUDPPort ` para o terminal SIP.

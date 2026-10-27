@@ -15,6 +15,7 @@ package com.ibm.ws.kernel.boot;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.util.List;
@@ -30,11 +31,13 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -79,6 +82,46 @@ public class ServerStopTest {
         if (server.isStarted()) {
             stopServer();
         }
+    }
+
+    /**
+     * Verifies that the JEP 472 restricted-method warning
+     * ("A restricted method in java.lang.System has been called") is NOT present
+     * in the stdout of the server stop command on z/OS with Java 24+.
+     *
+     * On z/OS, the client JVM launched by "server stop" opens a log file via
+     * TaggedFileOutputStream, which triggers NativeMethodHelper.loadAndInitialize()
+     * and System.loadLibrary(). Without --enable-native-access=ALL-UNNAMED on the
+     * client JVM command line, Java 24+ emits a JEP 472 warning to stdout.
+     */
+    @Test
+    @MinimumJavaLevel(javaLevel = 24)
+    public void testNoJep472WarningOnStop() throws Exception {
+        final String METHOD_NAME = "testNoJep472WarningOnStop";
+        Log.info(c, METHOD_NAME, ENTERING);
+
+        // Skip on non-z/OS: JEP 472 restricted-method warnings only appear on z/OS
+        // (Java < 24 is already excluded by @MinimumJavaLevel above)
+        assumeTrue(server.getMachine().getOperatingSystem() == OperatingSystem.ZOS);
+
+        startServer();
+
+        String executionDir = server.getInstallRoot() + File.separator + "bin";
+        String command = "." + File.separator + "server";
+        ProgramOutput po = server.getMachine().execute(command,
+                                                       new String[] { "stop", SERVER_NAME },
+                                                       executionDir);
+        String stdout = po.getStdout();
+        Log.info(c, METHOD_NAME, "server stop stdout = " + stdout);
+        Log.info(c, METHOD_NAME, "server stop stderr = " + po.getStderr());
+
+        server.resetStarted();
+
+        assertFalse("JEP 472 restricted-method warning found in 'server stop' stdout -- "
+                    + "--enable-native-access=ALL-UNNAMED may be missing from the client JVM command line",
+                    stdout.contains("A restricted method in java.lang.System has been called"));
+
+        Log.info(c, METHOD_NAME, EXITING);
     }
 
     /**
@@ -263,154 +306,102 @@ public class ServerStopTest {
     ///////  BEGIN QUIESE TESTS
 
     /**
-     * Test - Quiesce NOT configured on server element - Beta Mode.
+     * Test - Quiesce NOT configured on server element.
      * Ensure default quiesce timeout is used when quiesceTimeout not configured.
      * Starts & Stops the server and verifies that the expected timeout value is in
      * the quiesce message in the logs.
      */
     @Test
-    public void testQuiesceTimeDefaultBetaMode() throws Exception {
-        final String METHOD_NAME = "testQuiesceTimeDefaultBetaMode()";
+    public void testQuiesceTimeDefault() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeDefault()";
         Log.info(c, METHOD_NAME, ENTERING);
-        
-        // Enable beta mode
-        server.setJvmOptions(java.util.Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-        
-        assertTrue("Default quiesce timeout should be 30 seconds in beta mode", runQuiesceTest("30"));
+        assertTrue("Default quiesce timeout should be 30 seconds", runQuiesceTest("30"));
         Log.info(c, METHOD_NAME, EXITING);
     }
 
     /**
-     * Test - Quiesce NOT configured on server element - Non-Beta Mode.
-     * Ensure default quiesce timeout is used when quiesceTimeout not configured.
-     */
-    @Test
-    public void testQuiesceTimeDefaultNonBetaMode() throws Exception {
-        final String METHOD_NAME = "testQuiesceTimeDefaultNonBetaMode()";
-        Log.info(c, METHOD_NAME, ENTERING);
-        
-        // Disable beta mode
-        server.setJvmOptions(java.util.Collections.emptyList());
-        
-        assertTrue("Default quiesce timeout should be 30 seconds in non-beta mode", runQuiesceTest("30"));
-        Log.info(c, METHOD_NAME, EXITING);
-    }
-
-    /**
-     * Test - Quiesce configured on server element but NOT valid - Beta Mode.
+     * Test - Quiesce configured on server element but NOT valid.
      * Ensure default quiesce timeout is used when quiesceTimeout value is NOT valid.
      */
     @Test
-    public void testQuiesceTimeNotValidBetaMode() throws Exception {
-        final String METHOD_NAME = "testQuiesceTimeNotValidBetaMode()";
+    public void testQuiesceTimeNotValid() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeNotValid()";
         Log.info(c, METHOD_NAME, ENTERING);
-
-        // Enable beta mode
-        server.setJvmOptions(java.util.Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-        
         Utils.createFile(serverXmlFilePath, getServerXmlContents("XXXXX"));
-        assertTrue("Quiesce timeout not valid. Should use default 30 seconds in beta mode", runQuiesceTest("30"));
+        assertTrue("Quiesce timeout not valid. Should use default 30 seconds", runQuiesceTest("30"));
         Log.info(c, METHOD_NAME, EXITING);
     }
 
     /**
-     * Test - Quiesce configured on server element but LESS than minimum - Beta Mode.
+     * Test - Quiesce configured on server element but LESS than minimum.
      * Ensure default quiesce timeout is used when quiesceTimeout value is LESS than minimum (30).
      */
     @Test
-    public void testQuiesceTimeValueLessThanMinimumBetaMode() throws Exception {
-        final String METHOD_NAME = "testQuiesceTimeValueLessThanMinimumBetaMode()";
+    public void testQuiesceTimeValueLessThanMinimum() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeValueLessThanMinimum()";
         Log.info(c, METHOD_NAME, ENTERING);
-        
-        // Enable beta mode
-        server.setJvmOptions(java.util.Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-        
         Utils.createFile(serverXmlFilePath, getServerXmlContents("15"));
-        assertTrue("Quiesce timeout below minimum should use default 30 seconds in beta mode", runQuiesceTest("30"));
+        assertTrue("Quiesce timeout below minimum should use default 30 seconds", runQuiesceTest("30"));
         Log.info(c, METHOD_NAME, EXITING);
     }
 
     /**
-     * Test - Quiesce configured on server element and is GREATER than default - Beta Mode.
+     * Test - Quiesce configured on server element and is GREATER than default.
      * Ensure the configured quiesce timeout is used when quiesceTimeout value is valid and GREATER than default.
      */
     @Test
-    public void testQuiesceTimeValueGreaterThanDefaultBetaMode() throws Exception {
-        final String METHOD_NAME = "testQuiesceTimeValueGreaterThanDefaultBetaMode()";
+    public void testQuiesceTimeValueGreaterThanDefault() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeValueGreaterThanDefault()";
         Log.info(c, METHOD_NAME, ENTERING);
-        
-        // Enable beta mode
-        server.setJvmOptions(java.util.Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-        
         Utils.createFile(serverXmlFilePath, getServerXmlContents("1m30s"));
-        assertTrue("Valid quiesce timeout should be used (90 seconds) in beta mode", runQuiesceTest("90"));
+        assertTrue("Valid quiesce timeout should be used (90 seconds)", runQuiesceTest("90"));
         Log.info(c, METHOD_NAME, EXITING);
     }
 
     /**
-     * Test - Quiesce configured on server element and is GREATER than default - Non-Beta Mode.
-     * Ensure the quiesceTimeout attribute is ignored when beta mode is disabled.
-     */
-    @Test
-    public void testQuiesceTimeValueGreaterThanDefaultNonBetaMode() throws Exception {
-        final String METHOD_NAME = "testQuiesceTimeValueGreaterThanDefaultNonBetaMode()";
-        Log.info(c, METHOD_NAME, ENTERING);
-        
-        // Disable beta mode
-        server.setJvmOptions(java.util.Collections.emptyList());
-        
-        Utils.createFile(serverXmlFilePath, getServerXmlContents("1m30s"));
-        assertTrue("Quiesce timeout attribute ignored in non-beta mode should use default 30 seconds", runQuiesceTest("30"));
-        Log.info(c, METHOD_NAME, EXITING);
-    }
-
-    /**
-     * Test - Dynamic update of quiesceTimeout value - Beta Mode.
+     * Test - Dynamic update of quiesceTimeout value.
      * Starts the server with one quiesceTimeout value, dynamically updates it to a different value,
      * then stops the server and verifies the new value was used.
      */
     @Test
-    public void testQuiesceTimeDynamicUpdateBetaMode() throws Exception {
-        final String METHOD_NAME = "testQuiesceTimeDynamicUpdateBetaMode()";
+    public void testQuiesceTimeDynamicUpdate() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeDynamicUpdate()";
         Log.info(c, METHOD_NAME, ENTERING);
-        
-        // Enable beta mode
-        server.setJvmOptions(java.util.Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-        
+
         // Start with initial timeout value of 47 seconds
         Utils.createFile(serverXmlFilePath, getServerXmlContents("47s"));
         startServer();
-        
+
         // Wait for server to be fully started
         assertNotNull("Server should have started", server.waitForStringInLog("CWWKF0011I"));
-        
+
         // Dynamically update the quiesceTimeout to 60 seconds
         Log.info(c, METHOD_NAME, "Updating quiesceTimeout from 47s to 60s");
         server.setMarkToEndOfLog();
         Utils.createFile(serverXmlFilePath, getServerXmlContents("60s"));
-        
+
         // Wait for config update to complete
         assertNotNull("Config update should complete", server.waitForStringInLog("CWWKG0017I|CWWKG0018I"));
-        
+
         // Now stop the server and verify the new timeout value (60 seconds) is used
         stopServer();
-        
+
         // Verify the quiesce message shows 60 seconds (the updated value)
         RemoteFile consoleLog = server.getConsoleLogFile();
         List<String> matches = server.findStringsInLogs("CWWKE1100I", consoleLog);
-        
+
         String lastMatch = null;
         for (String s : matches) {
             Log.info(c, METHOD_NAME, "Found quiesce message: [" + s + "]");
             lastMatch = s;
         }
-        
+
         assertNotNull("Quiesce message should be found", lastMatch);
         String actualTimeout = extractTimeValue(lastMatch);
         Log.info(c, METHOD_NAME, "Extracted timeout value: [" + actualTimeout + "]");
         assertTrue("Dynamic update should use new timeout value of 60 seconds, but got: " + actualTimeout,
                    "60".equals(actualTimeout));
-        
+
         Log.info(c, METHOD_NAME, EXITING);
     }
 

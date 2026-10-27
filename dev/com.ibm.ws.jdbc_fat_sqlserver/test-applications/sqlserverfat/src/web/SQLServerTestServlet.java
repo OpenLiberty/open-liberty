@@ -252,7 +252,8 @@ public class SQLServerTestServlet extends FATServlet {
 //                long duration = System.nanoTime() - start;
 //                fail("Statement should have been canceled. Instead it completed after " + TimeUnit.NANOSECONDS.toMillis(duration) + " ms");
             } catch (SQLException x) {
-                if (x.getErrorCode() != 1206) // distributed transaction cancelled (due to timeout)
+                if (x.getErrorCode() != 1206 && // server-side distributed transaction cancel
+                    !(x.getCause() instanceof java.net.SocketException)) // Liberty client-side connection abort
                     throw x;
             }
         } finally {

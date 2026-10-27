@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -566,6 +566,23 @@ public abstract class AnnotationsImpl implements Annotations {
         this.useJandex = useJandex;
     }
 
+    private boolean readWebInfJandex;
+    
+    // TODO: '@Override' is temporarily removed, until the API
+    // is added to the Annotations interface.
+    // Search for 'getReadWebInfJandex' in:
+    // com/ibm/ws/container/service/annocache/Annotations.java
+
+    // @Override
+    public boolean getReadWebInfJandex() {
+        return readWebInfJandex;
+    }
+
+    // @Override
+    public void setReadWebInfJandex(boolean jandexReadWebInf) {
+        this.readWebInfJandex = jandexReadWebInf;
+    }
+    
     protected ClassSource_Options createOptions() {
         ClassSource_Factory classSourceFactory = getClassSourceFactory();
         if ( classSourceFactory == null ) {
@@ -573,14 +590,37 @@ public abstract class AnnotationsImpl implements Annotations {
         }
 
         ClassSource_Options options = classSourceFactory.createOptions();
+        
+        // TODO:
+        //
+        // 'useJandex' and 'readWebInfJandex' may be overridden by system properties.
+        //
+        // The override is applied within the options constructor. That location
+        // is problematic, leading to the convoluted initialization steps, below.
+        // That is, after creating the options, if they have not been overridden
+        // during the initial construction, assign the externally supplied value.
+        //
+        // By default, the values must be explicitly set on the annotations object.
+        //
+        // The subclass, 'ModuleAnnotationsImpl', obtains the values from the
+        // application information.
+
         if ( !options.getIsSetUseJandex() ) {
             options.setUseJandex( getUseJandex() );
         } else {
-            // TODO: *Maybe*, NLS enable this.
-            //       The override is an unpublished system property.  This message should
-            //       never appear except during internal testing.
-            Tr.info(tc, "Application jandex setting [ " + getUseJandex() + " ] overridden by property setting [ " + options.getUseJandex() + " ]");
+            // NLS not done: INFO message for internal property used for testing.
+            Tr.info(tc, "Application jandex setting [ " + getUseJandex() + " ]" +
+                        " overridden by property setting [ " + options.getUseJandex() + " ]");
         }
+
+        if ( !options.getIsSetReadWebInfJandex() ) {
+            options.setReadWebInfJandex( getReadWebInfJandex() );
+        } else {
+            // NLS not done: INFO message for internal property used for testing.
+            Tr.info(tc, "Application jandex WEB-INF enablement [ " + getReadWebInfJandex() + " ]" +
+                        " overridden by property setting [ " + options.getReadWebInfJandex() + " ]");
+        }
+
         return options;
     }
 
@@ -1030,6 +1070,7 @@ public abstract class AnnotationsImpl implements Annotations {
         }
     }
 
+    @Override
     public InfoStore getInfoStore() {
         synchronized( infoStoreLock ) {
             if ( !isSetInfoStore ) {

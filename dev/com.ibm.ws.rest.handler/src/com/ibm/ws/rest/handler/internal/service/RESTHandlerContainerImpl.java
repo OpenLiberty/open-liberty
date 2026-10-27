@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@
 package com.ibm.ws.rest.handler.internal.service;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -404,6 +406,108 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
         return registeredKeys.iterator();
     }
 
+    /**
+     * Check for requests that could potentially be CSRF.
+     * Return false if the request should be rejected, true otherwise.
+     *
+     * Is the request non-simple?
+     *   yes, then accept
+     * Is the request from a scripted client (check using the Origin header)?
+     *   yes, then accept
+     * Is the request same origin?
+     *   yes then accept
+     */
+    @FFDCIgnore({ MalformedURLException.class})
+    private boolean isCSRFSafe(RESTRequest request) {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "CSRF check for " + request.getURL()
+            + " request method: " + request.getMethod()
+            + " content type: " + request.getContentType()
+            + " Sec-Fetch-Site: " + request.getHeader("Sec-Fetch-Site")
+            + " Origin: " + request.getHeader("Origin")
+            + " Referer: " + request.getHeader("Referer")
+            );
+        }
+
+        // Only POST requests can be CSRF
+        if (!request.getMethod().equals("POST")) {
+            return true;
+        }
+
+        // POST requests can only be simple with a limited set of content-types
+        String type = request.getContentType();
+        if (type != null
+                && !type.toLowerCase().startsWith("application/x-www-form-urlencoded")
+                && !type.toLowerCase().startsWith("multipart/form-data")
+                && !type.toLowerCase().startsWith("text/plain")) {
+            return true;
+        }
+
+        // Request is a simple POST request.
+        String fetchSiteHeader = request.getHeader("Sec-Fetch-Site");
+        if (fetchSiteHeader != null) {
+            if (fetchSiteHeader.equals("none") || fetchSiteHeader.equals("same-origin")) {
+                return true;
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "CSRF check: rejecting Sec-Fetch-Site header");
+                }
+                return false;
+            }
+        }
+
+        // Only async requests from a browser can be CSRF, and these
+        // should all have the Origin header set.
+        String origin = request.getHeader("Origin");
+        if (origin == null) {
+            return true;
+        }
+
+        // Sec-Fetch-Site=same-origin will only be true if the scheme and port match.
+        // Attempt to allow for requests with different scheme/port, so accept
+        // requests where the host in 'Origin' or 'Referer' matches the host from
+        // the request URL
+        String scriptHost = null;
+        try {
+            URL url = new URL(origin);
+            scriptHost = url.getHost();
+        } catch (MalformedURLException e) {
+             // Nothing to do here
+        }
+        if (scriptHost == null) {
+            String referer = request.getHeader("Referer");
+            if (referer != null) {
+                try {
+                    URL url = new URL(referer);
+                    scriptHost = url.getHost();
+                } catch (MalformedURLException e) {
+                    // Nothing to do here
+                }
+            }
+        }
+        if (scriptHost != null) {
+            try {
+                String requestHost = new URL(request.getURL()).getHost();
+                if (requestHost != null && scriptHost.equals(requestHost)) {
+                    return true;
+                }
+            } catch (MalformedURLException e) {
+                // Nothing to do here
+            }
+        }
+
+        // At this point it is fairly certain that the request is
+        //  - simple post request
+        //  - from a browser
+        //  - cross-origin
+        // This is a CSRF risk
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Rejecting potential CSRF request");
+        }
+        return false;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -420,6 +524,16 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
         if (handlerInfo == null && !isRouting) {
             //calling proxy servlet will handle this case
             return false;
+        }
+
+        if (!isCSRFSafe(request)) {
+            // No existing constants for 403. No message as it doesn't seem necessary
+            response.sendError(403);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.event(this, tc, "Auditing REST request for " + request.getMethod() + " at " + request.getCompleteURL() + ". Returned status: 403");
+            }
+            Audit.audit(Audit.EventID.SECURITY_REST_HANDLER_AUTHZ, request, response, response.getStatus());
+            return true;
         }
 
         try {

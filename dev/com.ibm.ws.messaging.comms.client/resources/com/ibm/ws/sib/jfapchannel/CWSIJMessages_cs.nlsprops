@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2003, 2010 IBM Corporation and others.
+# Copyright (c) 2003, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
 #
@@ -552,6 +549,45 @@ CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=Prov\u011b\u0159te v\u00fdjimku ve
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: Transportn\u00ed \u0159et\u011bzec syst\u00e9mu zpr\u00e1v {0} byl zastaven.
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=Transportn\u00ed \u0159et\u011bz byl zastaven po zm\u011bn\u011b konfigurace zabezpe\u010den\u00ed, kter\u00e1 znamen\u00e1, \u017ee \u017e\u00e1dn\u00e1 sb\u011brnice definovan\u00e1 pro bu\u0148ku nad\u00e1le nepovoluje jeho pou\u017eit\u00ed.
 INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the exception which occurred
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086=CWSIJ0086E: Vnit\u0159n\u00ed chyba znemo\u017enila inicializaci transportn\u00edho bootstrapu Netty z d\u016fvodu n\u00e1sleduj\u00edc\u00ed v\u00fdjimky: {0}
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.explanation=Objekt bootstrapu transportu typu \u201e Netty \u201c nelze inicializovat. Odchoz\u00ed p\u0159ipojen\u00ed slu\u017eby Java Message Service (JMS), kter\u00e1 vyu\u017e\u00edvaj\u00ed transportn\u00ed cestu \u201e Netty \u201c, se nemohou p\u0159ipojit.
+NETTY_BOOTSTRAP_INIT_FAIL_SICJ0086.useraction=Pro zji\u0161t\u011bn\u00ed p\u0159\u00ed\u010diny zkontrolujte v\u00fdjimku uvedenou ve zpr\u00e1v\u011b a souvisej\u00edc\u00ed protokoly serveru. Ov\u011b\u0159te, zda je slu\u017eba r\u00e1mce Netty aktivn\u00ed a zda jsou mo\u017enosti p\u0159enosu TCP spr\u00e1vn\u011b nakonfigurov\u00e1ny.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel for which no connection could be found
+NETTY_READ_NO_CONNECTION_SICJ0087=CWSIJ0087W: P\u0159\u00edchoz\u00ed zpr\u00e1va na kan\u00e1lu \u201e {0} \u201c nelze p\u0159i\u0159adit k p\u0159ipojen\u00ed slu\u017eby Java Message Service (JMS). Server zpr\u00e1vu zahod\u00ed a uzav\u0159e kan\u00e1l.
+NETTY_READ_NO_CONNECTION_SICJ0087.explanation=Na transportn\u00edm kan\u00e1lu typu \u201e Netty \u201c, kter\u00fd nem\u00e1 p\u0159i\u0159azen\u00fd objekt p\u0159ipojen\u00ed JMS, byla p\u0159ijata zpr\u00e1va. Tento stav m\u016f\u017ee nazna\u010dovat z\u00e1vodn\u00ed situaci p\u0159i ukon\u010dov\u00e1n\u00ed p\u0159ipojen\u00ed. Server nem\u016f\u017ee zpr\u00e1vu zpracovat.
+NETTY_READ_NO_CONNECTION_SICJ0087.useraction=Projd\u011bte si protokoly serveru a zkontrolujte, zda neobsahuj\u00ed souvisej\u00edc\u00ed chybov\u00e9 nebo varovn\u00e9 zpr\u00e1vy, kter\u00e9 by mohly vysv\u011btlit, pro\u010d objekt p\u0159ipojen\u00ed nebyl k dispozici. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, po\u0159i\u010fte z\u00e1znam o chodu serveru a obra\u0165te se na podporu slu\u017eby IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the JMS Connection object
+# {1} the IOReadCompletedCallback object
+# {2} the IOReadRequestContext object
+# {3} the NetworkConnection object
+NETTY_UNEXPECTED_CALLBACK_SICJ0088=CWSIJ0088W: P\u0159\u00edchoz\u00ed zpr\u00e1va nebo ud\u00e1lost typu \u201eheartbeat\u201c na kan\u00e1lu typu \u201e Netty \u201c nem\u016f\u017ee b\u00fdt zpracov\u00e1na, proto\u017ee jeden nebo v\u00edce souvisej\u00edc\u00edch objekt\u016f nem\u00e1 o\u010dek\u00e1van\u00fd typ \u201e Netty \u201c. Odkaz: {0} Zp\u011btn\u00e9 vol\u00e1n\u00ed: {1} ReadContext: {2} NetworkConnection: {3}
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.explanation=Kan\u00e1l typu \u201e Netty \u201c p\u0159ijal data nebo do\u0161lo k \u010dasov\u00e9mu limitu, ale p\u0159ipojen\u00ed, zp\u011btn\u00e9 vol\u00e1n\u00ed, kontext \u010dten\u00ed nebo objekt s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed, kter\u00e9 jsou k tomuto kan\u00e1lu p\u0159ipojeny, nemaj\u00ed o\u010dek\u00e1van\u00fd typ specifick\u00fd pro \u201e Netty \u201c. Server uzav\u0159e kan\u00e1l. Tento stav signalizuje intern\u00ed programovou chybu.
+NETTY_UNEXPECTED_CALLBACK_SICJ0088.useraction=Projd\u011bte protokoly serveru a p\u0159\u00edpadn\u00e9 z\u00e1znamy syst\u00e9mu First Failure Data Capture (FFDC) a vyhledejte v nich souvisej\u00edc\u00ed chybov\u00e9 zpr\u00e1vy, kter\u00e9 by mohly vysv\u011btlit, pro\u010d objekty p\u0159ipojen\u00ed nemaj\u00ed o\u010dek\u00e1van\u00e9 typy. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, po\u0159i\u010fte z\u00e1znam o chodu serveru a obra\u0165te se na podporu slu\u017eby IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the IdleStateEvent that was received
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089=CWSIJ0089W: Byla p\u0159ijata ud\u00e1lost typu \u201e Netty \u201c v klidov\u00e9m stavu, kter\u00e1 m\u00e1 neo\u010dek\u00e1van\u00fd typ, a je p\u0159ed\u00e1na d\u00e1le v potrub\u00ed. Ud\u00e1lost: {0}
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.explanation=Obslu\u017en\u00e1 rutina \u201eheartbeat\u201c slu\u017eby Java Message Service (JMS) v r\u00e1mci modulu Netty u p\u0159ijala ud\u00e1lost ne\u010dinnosti, kter\u00e1 nen\u00ed ud\u00e1lost\u00ed typu \u201ereader-idle\u201c (vypr\u0161en\u00ed \u010dasov\u00e9ho limitu \u010dten\u00ed). Obslu\u017en\u00e1 rutina heartbeat o\u010dek\u00e1v\u00e1 pouze ud\u00e1losti typu \u201ereader-idle\u201c. Server p\u0159ed\u00e1v\u00e1 ud\u00e1lost d\u00e1le v r\u00e1mci potrub\u00ed k dal\u0161\u00edmu zpracov\u00e1n\u00ed.
+NETTY_UNEXPECTED_IDLE_EVENT_SICJ0089.useraction=Pokud se tato zpr\u00e1va objevuje jen z\u0159\u00eddka, nen\u00ed t\u0159eba nic podnikat. Pokud se tato zpr\u00e1va opakovan\u011b zobrazuje, zkontrolujte protokoly serveru, zda neobsahuj\u00ed souvisej\u00edc\u00ed varov\u00e1n\u00ed nebo chyby, a obra\u0165te se na podporu slu\u017eby IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel on which the heartbeat timeout event occurred
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090=CWSIJ0090W: Ud\u00e1lost \u010dasov\u00e9ho limitu srde\u010dn\u00edho tepu na kan\u00e1lu \u201e {0} \u201c nelze p\u0159i\u0159adit k p\u0159ipojen\u00ed slu\u017eby Java Message Service (JMS). Server p\u0159ed\u00e1v\u00e1 ud\u00e1lost p\u0159es potrub\u00ed.
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.explanation=Do\u0161lo ke spu\u0161t\u011bn\u00ed ud\u00e1losti \u201eread-idle\u201c (vypr\u0161en\u00ed \u010dasov\u00e9ho limitu heartbeatu) na kan\u00e1lu typu \u201e Netty \u201c, kter\u00fd nem\u00e1 p\u0159i\u0159azen\u00fd \u017e\u00e1dn\u00fd objekt p\u0159ipojen\u00ed JMS. Tento stav m\u016f\u017ee nazna\u010dovat z\u00e1vodn\u00ed situaci p\u0159i ukon\u010dov\u00e1n\u00ed p\u0159ipojen\u00ed. Server nem\u016f\u017ee ud\u00e1lost zpracovat a p\u0159ed\u00e1v\u00e1 ji d\u00e1le po potrub\u00ed.
+NETTY_HEARTBEAT_NO_CONNECTION_SICJ0090.useraction=Projd\u011bte si protokoly serveru a zkontrolujte, zda neobsahuj\u00ed souvisej\u00edc\u00ed chybov\u00e9 nebo varovn\u00e9 zpr\u00e1vy, kter\u00e9 by mohly vysv\u011btlit, pro\u010d objekt p\u0159ipojen\u00ed nebyl k dispozici. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, po\u0159i\u010fte z\u00e1znam o chodu serveru a obra\u0165te se na podporu slu\u017eby IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the Netty channel (null) for which the SSL session was requested
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091=CWSIJ0091W: Byla po\u017eadov\u00e1na relace protokolu Secure Sockets Layer ( SSL ), ale u tohoto p\u0159ipojen\u00ed nen\u00ed zaregistrov\u00e1n \u017e\u00e1dn\u00fd kan\u00e1l Netty. Kan\u00e1l: {0}
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.explanation=Relaci SSL nelze na\u010d\u00edst, proto\u017ee kan\u00e1l Netty nen\u00ed p\u0159i\u0159azen k tomuto objektu p\u0159ipojen\u00ed. Tento stav m\u016f\u017ee nazna\u010dovat probl\u00e9m s na\u010dasov\u00e1n\u00edm p\u0159i navazov\u00e1n\u00ed spojen\u00ed.
+NETTY_SSL_SESSION_NO_CHANNEL_SICJ0091.useraction=Projd\u011bte si protokoly serveru a zkontrolujte, zda neobsahuj\u00ed souvisej\u00edc\u00ed chybov\u00e9 nebo varovn\u00e9 zpr\u00e1vy, kter\u00e9 by mohly vysv\u011btlit, pro\u010d se kan\u00e1l nepoda\u0159ilo zaregistrovat. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, po\u0159i\u010fte z\u00e1znam o chodu serveru a obra\u0165te se na podporu slu\u017eby IBM.
 
 # Emergency use
 # -------------------------------------------------------------------------------------------------

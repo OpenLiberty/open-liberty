@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.grpc.internal.servlet;
 
@@ -23,6 +20,8 @@ import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -43,7 +42,6 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -61,6 +59,7 @@ import io.grpc.ServerInterceptor;
 import io.grpc.servlet.GrpcServlet;
 import io.openliberty.grpc.internal.GrpcManagedObjectProvider;
 import io.openliberty.grpc.internal.GrpcMessages;
+import io.openliberty.grpc.internal.security.GrpcSecurityService;
 import io.openliberty.grpc.server.monitor.GrpcMonitoringServerInterceptorService;
 
 @Component(service = { ApplicationStateListener.class,
@@ -71,32 +70,28 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 
     private static Map<String, GrpcServletApplication> grpcApplications = new ConcurrentHashMap<String, GrpcServletApplication>();
 
-    private static boolean useSecurity = false;
-
-    private final String FEATUREPROVISIONER_REFERENCE_NAME = "featureProvisioner";
-
-    private final AtomicServiceReference<FeatureProvisioner> _featureProvisioner = new AtomicServiceReference<FeatureProvisioner>(
-            FEATUREPROVISIONER_REFERENCE_NAME);
-
     private static GrpcMonitoringServerInterceptorService monitorService = null;
 
+    private static volatile GrpcSecurityService securityService = null;
 
-    @Activate
-    protected void activate(ComponentContext cc) {
-        _featureProvisioner.activate(cc);
+    @Reference(name="GRPC_SECURTIY_SERVICE", service = GrpcSecurityService.class,
+            cardinality = ReferenceCardinality.OPTIONAL,
+            policy = ReferencePolicy.DYNAMIC,
+            policyOption = ReferencePolicyOption.GREEDY)
+    protected void setSecurityService(GrpcSecurityService service) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "setSecurityService");
+        }
+        securityService = service;
     }
-
-    @Deactivate
-    protected void deactivate(ComponentContext cc) {
-        _featureProvisioner.deactivate(cc);
-    }
-
-    @Reference(name = FEATUREPROVISIONER_REFERENCE_NAME, service = FeatureProvisioner.class, cardinality = ReferenceCardinality.MANDATORY)
-    protected void setFeatureProvisioner(ServiceReference<FeatureProvisioner> ref) {
-        _featureProvisioner.setReference(ref);
-    }
-
-    protected void unsetFeatureProvisioner(FeatureProvisioner featureProvisioner) {
+    
+    protected void unsetSecurityService(GrpcSecurityService service) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "unsetSecurityService");
+        }
+        if (securityService == service) {
+            securityService = null;
+        }
     }
 
     @Reference(name = "GRPC_MONITOR_NAME", service = GrpcMonitoringServerInterceptorService.class,
@@ -117,6 +112,12 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
         if (monitorService == service) {
             monitorService = null;
         }
+    }
+
+    public static final boolean doServletAuth(HttpServletRequest req, HttpServletResponse res, String requestPath) {
+    	GrpcSecurityService secService = securityService;
+    	// If security is not enabled, return true
+    	return secService == null ? true : secService.doServletAuth(req, res, requestPath);
     }
 
     /**
@@ -254,7 +255,6 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 
     @Override
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
-        setSecurityEnabled();
     }
 
     @Override
@@ -274,25 +274,6 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
 
     @Override
     public void applicationStopped(ApplicationInfo appInfo) {
-    }
-
-    /**
-     * Set useSecurity to true if any of the appSecurity features are enabled
-     */
-    private void setSecurityEnabled() {
-        Set<String> currentFeatureSet = _featureProvisioner.getService().getInstalledFeatures();
-        if (currentFeatureSet.contains("appSecurity-2.0") || currentFeatureSet.contains("appSecurity-1.0")
-                || currentFeatureSet.contains("appSecurity-3.0") || currentFeatureSet.contains("appSecurity-4.0")
-                || currentFeatureSet.contains("appSecurity-5.0") || currentFeatureSet.contains("appSecurity-6.0")
-                || currentFeatureSet.contains("mpJwt-2.1")) {
-            useSecurity = true;
-            return;
-        }
-        useSecurity = false;
-    }
-
-    public static boolean isSecurityEnabled() {
-        return useSecurity;
     }
 
     /**

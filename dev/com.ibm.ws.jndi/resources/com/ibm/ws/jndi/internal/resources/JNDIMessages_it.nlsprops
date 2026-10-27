@@ -79,3 +79,7 @@ jndi.url.create.exception.useraction=Specificare un valore valido per la stringa
 jndi.decode.failed=CWWKN0011E: Si \u00e8 verificato un errore durante la decodifica della password {0}. Verificare che la password sia codificata correttamente. L''eccezione era: {1}.
 jndi.decode.failed.explanation=La password non \u00e8 codificata correttamente.
 jndi.decode.failed.useraction=Verificare che la password sia codificata correttamente. Per i dettagli, consultare l'eccezione.
+
+jndi.decode.warning=CWWKN0012W: Non \u00e8 stato possibile decodificare il valore associato al nome JNDI {0} poich\u00e9 la password non \u00e8 codificata correttamente.
+jndi.decode.warning.explanation=La ricerca nell'ambiente JNDI non \u00e8 andata a buon fine perch\u00e9 il valore della password associato al nome JNDI non \u00e8 in un formato di codifica supportato. Il server non \u00e8 in grado di decodificare il valore e la ricerca non pu\u00f2 essere completata.
+jndi.decode.warning.useraction=Codificare la password per il nome JNDI utilizzando il comando di codifica di securityUtility e aggiornare la configurazione JNDI con il valore codificato. Controlla il messaggio di eccezione per ulteriori dettagli.

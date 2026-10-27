@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,3 +35,6 @@
 010.unknown.total=A contagem total de elementos n\u00e3o est\u00e1 dispon\u00edvel
 011.unknown.attr.type=A inst\u00e2ncia {0} foi obtida de uma forma que n\u00e3o identifica o tipo do atributo. Para classes de metamodelo est\u00e1tico, use um m\u00e9todo.of definido em um subtipo de atributo para fornecer a classe de entidade e o tipo de atributo de entidade.
 012.unknown.decl.type=A inst\u00e2ncia {0} foi obtida de uma forma que n\u00e3o identifica a classe de entidade que declara o atributo. Para classes de metamodelo est\u00e1tico, use um m\u00e9todo.of definido em um subtipo de atributo para fornecer a classe de entidade e o tipo de atributo de entidade.
+013.arg.invalid=O argumento ` {0} ` n\u00e3o pode ter o valor ` {1} `.
+014.mode.disallows.offset=Uma solicita\u00e7\u00e3o de p\u00e1gina n\u00e3o pode incluir simultaneamente um deslocamento e o modo \u201c {0} \u201d.
+015.cursor.uncomputable=A opera\u00e7\u00e3o solicitada n\u00e3o est\u00e1 dispon\u00edvel, pois n\u00e3o \u00e9 poss\u00edvel calcular um cursor a partir de crit\u00e9rios de classifica\u00e7\u00e3o que incluam uma express\u00e3o.

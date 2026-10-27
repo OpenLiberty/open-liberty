@@ -41,7 +41,14 @@ public class JsonBContainerTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true).forServers(SERVER_NAME).fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                    .setSkipTransformation(true)
+                                    .forServers(SERVER_NAME)
+                                    .fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE12_FEATURES()
+                                    .setSkipTransformation(true)
+                                    .forServers(SERVER_NAME)
+                                    .fullFATOnly());
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = JsonBContainerTestServlet.class, contextRoot = "jsonbcontainertestapp")
@@ -49,7 +56,7 @@ public class JsonBContainerTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        RemoteFile yasson = server.getFileFromLibertySharedDir("resources/yasson/3.0.4/yasson.jar");
+        RemoteFile yasson = server.getFileFromLibertySharedDir("resources/yasson/3.0.5/yasson.jar");
 
         JavaArchive fake_json_b = ShrinkWrap.create(ZipImporter.class, "fake-json-b.jar")
                         .importFrom(new File(yasson.getAbsolutePath()))

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -403,7 +403,21 @@ public class GenericUtils {
      * @throws NumberFormatException (if the data contains invalid digits)
      */
     static public long asLongValue(byte[] array) {
-        return asLongValue(array, 0, array.length);
+        return asLongValue(array, true);
+    }
+
+    /**
+     * Take an input byte[] and return the int translation. For example, the
+     * byte[] '0053' would return 53L. If allowSigned is false, then the
+     * input must be a positive number. Otherwise an exception is thrown.
+     * 
+     * @param array
+     * @param allowSigned
+     * @return long
+     * @throws NumberFormatException (if the data contains invalid digits)
+     */
+    static public long asLongValue(byte[] array, boolean allowSigned) {
+        return asLongValue(array, 0, array.length, allowSigned);
     }
 
     /**
@@ -417,7 +431,7 @@ public class GenericUtils {
      * @throws NumberFormatException (if the data contains invalid digits)
      */
 
-    static public long asLongValue(byte[] array, int offset, int length) {
+    static public long asLongValue(byte[] array, int offset, int length, boolean allowSigned) {
         if (null == array || array.length <= offset) {
             return -1L;
         }
@@ -437,7 +451,7 @@ public class GenericUtils {
             digit = array[i] - ZERO;
             if (0 > digit || 9 < digit) {
                 // stop on any nondigit, if it's not a DASH then throw an exc
-                if (DASH != array[i]) {
+                if (DASH != array[i] || !allowSigned) {
                     throw new NumberFormatException("Invalid digit: " + array[i]);
                 }
                 break;
