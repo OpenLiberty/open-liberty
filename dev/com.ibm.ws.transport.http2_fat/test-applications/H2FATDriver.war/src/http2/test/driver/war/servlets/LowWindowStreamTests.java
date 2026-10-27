@@ -50,7 +50,8 @@ public class LowWindowStreamTests extends H2FATDriverServlet {
 
         // Expect a GOAWAY frame with ENHANCE_YOUR_CALM error code after exceeding the limit
         byte[] debugData = "Too many streams with low initial window size have been opened; closing the connection".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 41, false);
+        int expectedLastStreamId = USING_NETTY ? Integer.MAX_VALUE : 41;
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, expectedLastStreamId, false);
         h2Client.addExpectedFrame(errorFrame);
 
         // Set initial window size to 1024 bytes
@@ -94,7 +95,11 @@ public class LowWindowStreamTests extends H2FATDriverServlet {
         expectedHeaders.add(new H2HeaderField(":status", "200"));
         // Expect responses from all streams
         for (int i = 3; i <= lastStreamId; i += 2) {
-            FrameHeadersClient frameHeaders = new FrameHeadersClient(i, null, 0, 0, 0, true, true, false, false, false, false);
+            FrameHeadersClient frameHeaders;
+            if (USING_NETTY)
+                frameHeaders = new FrameHeadersClient(i, null, 0, 0, 15, false, true, false, true, false, false);
+            else
+                frameHeaders = new FrameHeadersClient(i, null, 0, 0, 0, true, true, false, false, false, false);
             frameHeaders.setHeaderFields(expectedHeaders);
             h2Client.addExpectedFrame(frameHeaders);
         }
@@ -168,7 +173,8 @@ public class LowWindowStreamTests extends H2FATDriverServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] debugData = "Too many streams with low initial window size have been opened; closing the connection".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 43, false);
+        int expectedLastStreamId = USING_NETTY ? Integer.MAX_VALUE : 43;
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, expectedLastStreamId, false);
         h2Client.addExpectedFrame(errorFrame);
 
         // Start with low window size
@@ -303,7 +309,8 @@ public class LowWindowStreamTests extends H2FATDriverServlet {
 
         // Expect a GOAWAY frame with ENHANCE_YOUR_CALM error code
         byte[] debugData = "Too many streams with low initial window size have been opened; closing the connection".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 101, false);
+        int expectedLastStreamId = USING_NETTY ? Integer.MAX_VALUE : 101;
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, expectedLastStreamId, false);
         h2Client.addExpectedFrame(errorFrame);
 
         // Start with high window size
@@ -352,7 +359,8 @@ public class LowWindowStreamTests extends H2FATDriverServlet {
 
         // Expect a GOAWAY frame with ENHANCE_YOUR_CALM error code
         byte[] debugData = "Too many streams with low initial window size have been opened; closing the connection".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 41, false);
+        int expectedLastStreamId = USING_NETTY ? Integer.MAX_VALUE : 41;
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, expectedLastStreamId, false);
         h2Client.addExpectedFrame(errorFrame);
 
         // Set initial window size to exactly the threshold
@@ -398,7 +406,11 @@ public class LowWindowStreamTests extends H2FATDriverServlet {
         expectedHeaders.add(new H2HeaderField(":status", "200"));
         // Expect responses from all streams
         for (int i = 3; i <= lastStreamId; i += 2) {
-            FrameHeadersClient frameHeaders = new FrameHeadersClient(i, null, 0, 0, 0, true, true, false, false, false, false);
+            FrameHeadersClient frameHeaders;
+            if (USING_NETTY)
+                frameHeaders = new FrameHeadersClient(i, null, 0, 0, 15, false, true, false, true, false, false);
+            else
+                frameHeaders = new FrameHeadersClient(i, null, 0, 0, 0, true, true, false, false, false, false);
             frameHeaders.setHeaderFields(expectedHeaders);
             h2Client.addExpectedFrame(frameHeaders);
         }
