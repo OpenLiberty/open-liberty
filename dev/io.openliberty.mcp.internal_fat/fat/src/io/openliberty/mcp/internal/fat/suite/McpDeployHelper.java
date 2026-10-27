@@ -94,84 +94,73 @@ public final class McpDeployHelper {
     }
 
     /**
+     * Returns the file name for an application name, assuming {@code .war} if
+     * {@code appName} has no {@code .war} or {@code .ear} extension.
+     */
+    private static String fileName(String appName) {
+        return (appName.endsWith(".war") || appName.endsWith(".ear")) ? appName : appName + ".war";
+    }
+
+    /**
+     * Returns the application name, i.e. {@code appName} without any {@code .war} or {@code .ear} extension.
+     */
+    private static String baseName(String appName) {
+        return fileName(appName).replaceFirst("\\.(war|ear)$", "");
+    }
+
+    /**
      * Removes the {@code <application>} entry for {@code appName} from server.xml,
-     * waits for the app to stop, then deletes the WAR file.
+     * waits for the app to stop, then deletes the application file.
      *
      * <p>The config is removed <em>before</em> the file is deleted, which prevents
-     * Liberty from emitting {@code CWWKZ0059E} (app still configured when WAR
+     * Liberty from emitting {@code CWWKZ0059E} (app still configured when the file
      * is removed from disk).
      *
      * @param server the Liberty server to undeploy from
-     * @param appName the application name (without {@code .war} suffix) that was
-     *     previously deployed via {@link #deployWithConfiguration}
+     * @param appName the application name that was previously deployed via
+     *     {@link #deployWithConfiguration}. May include a {@code .war} or {@code .ear}
+     *     extension; {@code .war} is assumed if there is none.
      * @throws Exception if the app does not stop
      */
     public static void undeployWithConfiguration(LibertyServer server,
                                                  String appName)
                     throws Exception {
+        String fileName = fileName(appName);
+
         // 1. Remove from server.xml first — triggers graceful app stop.
         //    Loop until all entries are gone; a failed previous run may have left
         //    a duplicate <application> entry which removeBy (first-match only) misses.
         ServerConfiguration config = server.getServerConfiguration();
-        while (config.getApplications().removeBy("location", appName + ".war") != null) {
+        while (config.getApplications().removeBy("location", fileName) != null) {
             // keep removing until none remain
         }
         server.updateServerConfiguration(config);
 
         // 2. Deregister from the framework. removeInstalledAppForValidation will
         //    wait until the app is stopped.
-        server.removeInstalledAppForValidation(appName);
+        server.removeInstalledAppForValidation(baseName(appName));
 
-        // 3. Delete WAR only after the app has fully stopped.
-        server.deleteFileFromLibertyServerRoot("apps/" + appName + ".war");
+        // 3. Delete the application file only after the app has fully stopped.
+        server.deleteFileFromLibertyServerRoot("apps/" + fileName);
     }
 
     /**
-     * Undeploys an application from {@code apps}, deriving the app's name from
-     * an archive. Use {@link #undeployWithConfiguration(LibertyServer, String)}
-     * to undeploy by name if you don't still have the archive.
-     *
-     * @param server the Liberty server to undeploy from
-     * @param war the archive that was previously deployed via
-     *     {@link #deployWithConfiguration(LibertyServer, WebArchive, Consumer)}
-     * @throws Exception if the app does not stop
-     * @see #undeployWithConfiguration(LibertyServer, String)
-     */
-    public static void undeployWithConfiguration(LibertyServer server,
-                                                 WebArchive war)
-                    throws Exception {
-        undeployWithConfiguration(server, war.getName().replace(".war", ""));
-    }
-
-    /**
-     * Deploys {@code war} to the server's {@code dropins/} directory.
-     *
-     * The method waits for the app to start before returning.
-     *
-     * @param server the Liberty server to deploy to
-     * @param war the archive to deploy; its name is used as the file name
-     * @throws Exception if the app does not start
-     */
-    public static void deployDropinApp(LibertyServer server, WebArchive war) throws Exception {
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-    }
-
-    /**
-     * Removes a dropin WAR from the server's {@code dropins/} directory and
+     * Removes a dropin application (WAR or EAR) from the server's {@code dropins/} directory and
      * deregisters it from framework validation.
      *
-     * <p>The WAR file is deleted first — Liberty detects the removal, stops the
-     * app, and logs {@code CWWKZ0009I}. Then {@link LibertyServer#removeInstalledAppForValidation}
-     * Is called to wait for the app to stop.
+     * <p>The file is deleted first — Liberty detects the removal, stops the app, and logs
+     * {@code CWWKZ0009I}. Then {@link LibertyServer#removeInstalledAppForValidation} is called
+     * to wait for the app to stop.
      *
      * @param server the Liberty server to undeploy from
-     * @param appName the application name (without {@code .war} suffix)
+     * @param appName the application name. May include a {@code .war} or {@code .ear}
+     *     extension; {@code .war} is assumed if there is none.
      * @throws Exception if the app does not stop
      */
     public static void undeployDropinApp(LibertyServer server,
                                          String appName)
                     throws Exception {
-        server.deleteFileFromLibertyServerRoot("dropins/" + appName + ".war");
-        server.removeInstalledAppForValidation(appName);
+        server.deleteFileFromLibertyServerRoot("dropins/" + fileName(appName));
+        server.removeInstalledAppForValidation(baseName(appName));
     }
 }

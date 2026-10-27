@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpTelemetryServerSuite.serverLifecycle;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
@@ -18,6 +18,7 @@ import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
 import static org.skyscreamer.jsonassert.JSONCompareMode.STRICT;
 
 import java.time.Duration;
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -29,11 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.observability.telemetry.PullExporterAutoConfigurationCustomizerProvider;
@@ -43,13 +40,11 @@ import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvide
 @RunWith(FATRunner.class)
 public class TelemetryOperationsTest extends FATServletClient {
 
+    // Server is managed by McpTelemetryServerSuite — do NOT add @Server or copy the field here.
     private final static String APP_NAME = "telemetryTest";
 
-    @Server("mcp-server-telemetry")
-    public static LibertyServer server;
-
     @Rule
-    public McpClient client = McpClient.builder(server, "/" + APP_NAME).build();
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     private static final String BASIC_TOOL_REQUEST = """
                       {
@@ -99,19 +94,20 @@ public class TelemetryOperationsTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        serverLifecycle.getServer().setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(PullExporterAutoConfigurationCustomizerProvider.class.getPackage())
                                    .addAsResource(new StringAsset("otel.sdk.disabled=false"),
                                                   "META-INF/microprofile-config.properties")
                                    .addAsServiceProvider(AutoConfigurationCustomizerProvider.class,
                                                          PullExporterAutoConfigurationCustomizerProvider.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        server.startServer();
+        serverLifecycle.deployDropinApp(war);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWMCM0010E"); // Expected: Tool threw non-business exception
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E")); // Expected: Tool threw non-business exception
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     private static final String TOOLS_LIST_REQUEST = """
@@ -137,14 +133,15 @@ public class TelemetryOperationsTest extends FATServletClient {
         captureMetrics();
 
         // Create two new clients to cause the lifecycle methods to be called
-        try (McpClient clientA = McpClient.builder(server, APP_NAME).build()) {
+        // Create two new clients to cause the lifecycle methods to be called
+        try (McpClient clientA = McpClient.builder(serverLifecycle.getServer(), APP_NAME).build()) {
             clientA.initialize();
         }
-        try (McpClient clientB = McpClient.builder(server, APP_NAME).build()) {
+        try (McpClient clientB = McpClient.builder(serverLifecycle.getServer(), APP_NAME).build()) {
             clientB.initialize();
         }
 
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testInitializeAndInitializedMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testInitializeAndInitializedMetrics");
     }
 
     @Test
@@ -153,7 +150,7 @@ public class TelemetryOperationsTest extends FATServletClient {
         String response = client.callMCP(TOOLS_LIST_REQUEST);
         assertTrue("Tools list should succeed", response.contains("\"result\""));
 
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testToolsListMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testToolsListMetrics");
     }
 
     @Test
@@ -162,7 +159,7 @@ public class TelemetryOperationsTest extends FATServletClient {
         String response = client.callMCP(PING_REQUEST);
         assertTrue("Ping should succeed", response.contains("\"result\""));
 
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testPingMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testPingMetrics");
     }
 
     @Test
@@ -178,7 +175,7 @@ public class TelemetryOperationsTest extends FATServletClient {
         client.callMCP(ADVANCED_TOOL_REQUEST);
 
         // Run servlet tests to see if metrics are collected correctly
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testToolCallMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testToolCallMetrics");
     }
 
     @Test
@@ -217,7 +214,7 @@ public class TelemetryOperationsTest extends FATServletClient {
         client.callMCPNotification(cancelRequest);
 
         // Run servlet test to verify successful cancel metrics
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testCancelRequestSuccessMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testCancelRequestSuccessMetrics");
     }
 
     @Test
@@ -237,7 +234,7 @@ public class TelemetryOperationsTest extends FATServletClient {
         // the server may return 404 or similar, but the error metric should still be recorded.
         client.callMCPRaw(cancelRequestWithError).sessionId("fakeSessionId").anyStatus().run();
 
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testCancelRequestErrorMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testCancelRequestErrorMetrics");
     }
 
     @Test
@@ -263,7 +260,7 @@ public class TelemetryOperationsTest extends FATServletClient {
         JSONAssert.assertEquals(ERROR_RESPONSE, response, LENIENT);
 
         // Run servlet test to verify error metrics are recorded correctly
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testBusinessErrorToolMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testBusinessErrorToolMetrics");
     }
 
     @Test
@@ -289,7 +286,7 @@ public class TelemetryOperationsTest extends FATServletClient {
         JSONAssert.assertEquals(ERROR_RESPONSE, response, LENIENT);
 
         // Run servlet test to verify error metrics are recorded correctly
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testNonBusinessErrorToolMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testNonBusinessErrorToolMetrics");
     }
 
     @Test
@@ -315,7 +312,7 @@ public class TelemetryOperationsTest extends FATServletClient {
         JSONAssert.assertEquals(ERROR_RESPONSE, response, LENIENT);
 
         // Run servlet test to verify async error metrics are recorded correctly
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testAsyncBusinessErrorToolMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testAsyncBusinessErrorToolMetrics");
     }
 
     @Test
@@ -341,7 +338,7 @@ public class TelemetryOperationsTest extends FATServletClient {
         JSONAssert.assertEquals(ERROR_RESPONSE, response, LENIENT);
 
         // Run servlet test to verify async error metrics are recorded correctly
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testAsyncNonBusinessErrorToolMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testAsyncNonBusinessErrorToolMetrics");
     }
 
     @Test
@@ -367,14 +364,14 @@ public class TelemetryOperationsTest extends FATServletClient {
         JSONAssert.assertEquals(ERROR_RESPONSE, response, LENIENT);
 
         // Run servlet test to verify async failed stage error metrics are recorded correctly
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testAsyncFailedStageToolMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testAsyncFailedStageToolMetrics");
     }
 
     @Test
     public void testParseErrorMetrics() throws Exception {
         captureMetrics();
         client.callMCP("this is not json");
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testParseErrorMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testParseErrorMetrics");
     }
 
     @Test
@@ -387,7 +384,7 @@ public class TelemetryOperationsTest extends FATServletClient {
                           "method": "tools/list"
                         }
                         """);
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testInvalidRequestMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testInvalidRequestMetrics");
     }
 
     @Test
@@ -401,14 +398,14 @@ public class TelemetryOperationsTest extends FATServletClient {
                           "params": {}
                         }
                         """);
-        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testMethodNotFoundMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testMethodNotFoundMetrics");
     }
 
     /**
      * Call McpMetricDurationServlet and get the recorded total duration for executions of a tool
      */
     private Duration getDurationMetric(String toolName) throws Exception {
-        HttpRequest req = new HttpRequest(server, "/", APP_NAME, "/McpMetricDuration", "?toolName=", toolName);
+        HttpRequest req = new HttpRequest(serverLifecycle.getServer(), "/", APP_NAME, "/McpMetricDuration", "?toolName=", toolName);
         String response = req.run(String.class);
         double durationSeconds = Double.valueOf(response);
         return Duration.ofNanos((long) (durationSeconds * 1_000_000_000D));
@@ -418,7 +415,7 @@ public class TelemetryOperationsTest extends FATServletClient {
      * Capture the current state of the MCP Operation metrics, for later comparison
      */
     private void captureMetrics() throws Exception {
-        runTest(server, APP_NAME + "/McpOperationMetricServlet", "captureOperationDurationMetrics");
+        runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "captureOperationDurationMetrics");
     }
 
 }
