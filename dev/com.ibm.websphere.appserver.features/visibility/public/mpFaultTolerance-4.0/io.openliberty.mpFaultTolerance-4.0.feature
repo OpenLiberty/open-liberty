@@ -9,9 +9,9 @@ IBM-API-Package: org.eclipse.microprofile.faulttolerance.exceptions;  type="stab
 IBM-ShortName: mpFaultTolerance-4.0
 Subsystem-Name: MicroProfile Fault Tolerance 4.0
 # io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1" comes from io.openliberty.mpConfig features
--features=io.openliberty.mpConfig-3.0; ibm.tolerates:="3.1", \
+-features=io.openliberty.microprofile.internal.mpConfig-3.0; ibm.tolerates:="3.1", \
   io.openliberty.org.eclipse.microprofile.faulttolerance-4.0, \
-  io.openliberty.cdi-3.0; ibm.tolerates:="4.0"
+  io.openliberty.microprofile.internal.cdi-3.0; ibm.tolerates:="4.0"
 -bundles=com.ibm.ws.microprofile.faulttolerance; apiJar=false; location:="lib/", \
  com.ibm.ws.microprofile.faulttolerance.2.0; apiJar=false; location:="lib/", \
  com.ibm.ws.microprofile.faulttolerance.spi; apiJar=false; location:="lib/", \

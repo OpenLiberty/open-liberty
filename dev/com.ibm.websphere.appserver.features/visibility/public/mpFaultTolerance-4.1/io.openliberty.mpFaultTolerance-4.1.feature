@@ -11,7 +11,7 @@ Subsystem-Name: MicroProfile Fault Tolerance 4.1
 -features=io.openliberty.mpConfig-3.1, \
   io.openliberty.mpCompatible-7.0; ibm.tolerates:="7.1",\
   io.openliberty.org.eclipse.microprofile.faulttolerance-4.1, \
-  io.openliberty.cdi-4.0; ibm.tolerates:="4.1"
+  io.openliberty.microprofile.internal.cdi-4.0; ibm.tolerates:="4.1"
 -bundles=com.ibm.ws.microprofile.faulttolerance; apiJar=false; location:="lib/", \
  com.ibm.ws.microprofile.faulttolerance.2.0; apiJar=false; location:="lib/", \
  com.ibm.ws.microprofile.faulttolerance.spi; apiJar=false; location:="lib/", \
