@@ -5,7 +5,6 @@ visibility = private
 -features=\
   io.openliberty.webBundleSecurity.internal-1.0, \
   io.openliberty.servlet.internal-5.0, \
-  com.ibm.websphere.appserver.httptransport-1.0, \
   io.openliberty.xmlws.common-3.0; apiJar=false, \
   com.ibm.websphere.appserver.globalhandler-2.0
 -bundles=\

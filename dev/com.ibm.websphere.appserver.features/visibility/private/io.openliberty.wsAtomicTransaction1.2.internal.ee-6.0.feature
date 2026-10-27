@@ -2,6 +2,7 @@
 symbolicName=io.openliberty.wsAtomicTransaction1.2.internal.ee-6.0
 singleton=true
 visibility = private
+WLP-DisableAllFeatures-OnConflict: false
 -features=\
   io.openliberty.webBundleSecurity.internal-1.0, \
   io.openliberty.servlet.internal-3.0; ibm.tolerates:="3.1,4.0", \
