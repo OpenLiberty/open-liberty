@@ -7,6 +7,7 @@ package com.ibm.ws.policyattachments.client1.service2;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
@@ -14,7 +15,7 @@ import javax.xml.ws.WebServiceClient;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
 
-@WebServiceClient(name = "HelloService2", targetNamespace = "http://service2.policyattachments.ws.ibm.com/", wsdlLocation = "http://localhost:8091/policyAttachmentsService2/HelloService2?wsdl")
+@WebServiceClient(name = "HelloService2", targetNamespace = "http://service2.policyattachments.ws.ibm.com/", wsdlLocation = "http://localhost/policyAttachmentsService2/HelloService2?wsdl")
 public class HelloService2_Service
     extends Service
 {
@@ -27,8 +28,8 @@ public class HelloService2_Service
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://localhost:8091/policyAttachmentsService2/HelloService2?wsdl");
-        } catch (MalformedURLException ex) {
+            url = new URL("http://localhost:" + Objects.requireNonNull(System.getProperty("HTTP_secondary"), "System property HTTP_secondary is not set") + "/policyAttachmentsService2/HelloService2?wsdl");
+        } catch (MalformedURLException | NullPointerException ex) {
             e = new WebServiceException(ex);
         }
         HELLOSERVICE2_WSDL_LOCATION = url;

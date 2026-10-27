@@ -166,7 +166,7 @@
 	<wsdl:service name="HelloService3">
 		<wsdl:port binding="tns:HelloService3SoapBinding" name="HelloService3Port">
 			<soap:address
-				location="http://localhost:8091/policyAttachmentsService3/HelloService3" />
+					location="http://localhost/policyAttachmentsService3/HelloService3" />
 		</wsdl:port>
 	</wsdl:service>
 </wsdl:definitions>

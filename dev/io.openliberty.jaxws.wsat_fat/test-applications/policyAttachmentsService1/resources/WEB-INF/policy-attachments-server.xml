@@ -7,37 +7,19 @@
 	xmlns:wsat="http://docs.oasis-open.org/ws-tx/wsat/2006/06">
 	<wsp:PolicyAttachment>
 		<wsp:AppliesTo>
-			<!-- URI Service
-			<wsp:URI>http://server.test.ws.ibm.com/#wsdl11.service(HelloImplService)</wsp:URI>
-			 -->
-			
-			<!-- URI portTypeOperation --> 
+			<!-- URI portTypeOperation: require WS-AT for helloWithPolicy -->
 			<wsp:URI>http://service1.policyattachments.ws.ibm.com/#wsdl11.portTypeOperation(HelloService1/helloWithPolicy)</wsp:URI>
-
-			
-			<!-- URI bindingOperation --> 
+			<!-- URI bindingOperation: require WS-AT for helloWithYouWant -->
 			<wsp:URI>http://service1.policyattachments.ws.ibm.com/#wsdl11.bindingOperation(HelloService1SoapBinding/helloWithYouWant)</wsp:URI>
-			 
-			<!-- EndpointReference
-			<wsa:EndpointReference>
-       			<wsa:Address>http://localhost:8091/wsatApp/HelloImplService</wsa:Address>
-     		</wsa:EndpointReference>
-     		-->
 		</wsp:AppliesTo>
 		<wsp:Policy wsu:Id="TransactedPolicy" >
 			<wsat:ATAssertion />
 		</wsp:Policy>
 	</wsp:PolicyAttachment>
 	<wsp:PolicyAttachment>
-		<wsp:AppliesTo>			
-			<!-- URI bindingOperation --> 
+		<wsp:AppliesTo>
+			<!-- URI bindingOperation: optional WS-AT for helloWithOptionalPolicy -->
 			<wsp:URI>http://service1.policyattachments.ws.ibm.com/#wsdl11.bindingOperation(HelloService1SoapBinding/helloWithOptionalPolicy)</wsp:URI>
-			 
-			<!-- EndpointReference
-			<wsa:EndpointReference>
-       			<wsa:Address>http://localhost:8091/wsatApp/HelloImplService</wsa:Address>
-     		</wsa:EndpointReference>
-     		-->
 		</wsp:AppliesTo>
 		<wsp:Policy wsu:Id="TransactedPolicy2" >
 			<wsat:ATAssertion wsp:Optional="true" />
