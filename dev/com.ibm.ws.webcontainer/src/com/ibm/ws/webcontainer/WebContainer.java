@@ -57,10 +57,12 @@ import com.ibm.websphere.servlet.event.ServletErrorListener;
 import com.ibm.websphere.servlet.event.ServletInvocationListener;
 import com.ibm.websphere.servlet.event.ServletListener;
 import com.ibm.websphere.servlet.request.IRequest;
+import com.ibm.websphere.servlet.request.extended.IRequestExtended;
 import com.ibm.websphere.servlet.response.IResponse;
 import com.ibm.websphere.servlet.response.ResponseUtils;
 import com.ibm.ws.container.Container;
 import com.ibm.ws.container.DeployedModule;
+import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.javaee.dd.webext.WebExt;
 import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.ws.util.WSThreadLocal;
@@ -85,6 +87,8 @@ import com.ibm.ws.webcontainer.util.WSURLDecoder;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
+import com.ibm.wsspi.http.HttpInboundConnection;
+import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.webcontainer.IPlatformHelper;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
@@ -753,6 +757,22 @@ public abstract class WebContainer extends BaseContainer {
         return vhostKey.toString();
     }
 
+    private String getRoutingHost(IRequest req) {
+        if (req instanceof IRequestExtended) {
+            HttpInboundConnection conn = ((IRequestExtended) req).getHttpInboundConnection();
+            if (conn instanceof HttpInboundConnectionExtended) {
+                Object link = ((HttpInboundConnectionExtended) conn).getHttpDispatcherLink();
+                if (link instanceof HttpDispatcherLink) {
+                    return ((HttpDispatcherLink) link).getRequestedRoutingHost();
+                }
+            }
+        }
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "getRoutingHost", "getRoutingHost: no HttpDispatcherLink, falling back to getServerName()");
+        }
+        return req != null ? req.getServerName() : null;
+    }
+
     public void handleRequest(IRequest req, IResponse res, VirtualHost vhost, RequestProcessor processor) throws IOException {
         final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
         Object localSecObject = null;
@@ -762,7 +782,8 @@ public abstract class WebContainer extends BaseContainer {
         StringBuilder cacheKey = null;
         WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
 
-        String vhostKey = getHostAliasKey(req.getServerName(), req.getServerPort());
+        String routingHost = getRoutingHost(req);
+        String vhostKey = getHostAliasKey(routingHost != null ? routingHost : req.getServerName(), req.getServerPort());
 
         boolean ardRequest = false;
         if (reqState != null) {
