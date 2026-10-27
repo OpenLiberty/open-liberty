@@ -1,0 +1,40 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<server description="Private header FAT — vhost routing with allowedServerNames">
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>timedexit-1.0</feature>
+    </featureManager>
+
+    <!--
+        allowedServerNames contains "public.example.test".
+        When $WSSN: public.example.test is received, the routing key becomes
+        public.example.test:<port>, which matches the alias on publicVhost,
+        and vhostApp is served.  No Cache-Control: no-store is added because
+        the name is approved.
+    -->
+    <httpDispatcher allowedServerNames="public.example.test" />
+
+    <virtualHost id="publicVhost">
+        <hostAlias>public.example.test:${bvt.prop.HTTP_default}</hostAlias>
+    </virtualHost>
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+        <tcpOptions portOpenRetries="60"/>
+    </httpEndpoint>
+
+    <application location="privateHeaderApp.war" />
+    <application location="vhostApp.war" />
+
+</server>
