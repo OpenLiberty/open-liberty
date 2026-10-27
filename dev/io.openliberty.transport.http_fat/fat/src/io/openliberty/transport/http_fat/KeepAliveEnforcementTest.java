@@ -343,6 +343,62 @@ public class KeepAliveEnforcementTest {
     }
 
     /**
+     * Control for {@link #keepAliveDisabled_servletUpgrade_earlyBytesDelivered()}:
+     * with the default keep-alive configuration, bytes sent in the same write as
+     * the upgrade request must reach the upgraded handler.
+     */
+    @Test
+    public void defaultConfig_servletUpgrade_earlyBytesDelivered() throws Exception {
+        try (RawConnection connection = new RawConnection()) {
+            assertEarlyBytesDelivered(connection);
+        }
+    }
+
+    /**
+     * With {@code keepAliveEnabled=false} the handler rewrites the request's
+     * {@code Connection: Upgrade} header to {@code close}. The dispatcher reads
+     * that same header to recognise an upgrade request and to hold back bytes
+     * that arrive with it. This checks that bytes sent in the same write as the
+     * upgrade request are still delivered to the upgraded handler.
+     */
+    @Test
+    public void keepAliveDisabled_servletUpgrade_earlyBytesDelivered() throws Exception {
+        setKeepAliveOptions(false, null);
+
+        try (RawConnection connection = new RawConnection()) {
+            assertEarlyBytesDelivered(connection);
+        }
+    }
+
+    /** Same as above for {@code maxKeepAliveRequests=1}, where the upgrade is request 1. */
+    @Test
+    public void maxKeepAliveRequestsOne_servletUpgrade_earlyBytesDelivered() throws Exception {
+        setKeepAliveOptions(null, 1);
+
+        try (RawConnection connection = new RawConnection()) {
+            assertEarlyBytesDelivered(connection);
+        }
+    }
+
+    /**
+     * Sends the upgrade request with {@code EARLY} appended in the same write,
+     * expects {@code 101}, then expects the echo handler to return {@code EARLY}.
+     */
+    private void assertEarlyBytesDelivered(RawConnection connection) throws IOException {
+        String early = "EARLY";
+        connection.sendUpgradeRequest(false, early);
+        RawResponse response = connection.readResponseHead();
+        LOG.info("upgrade response:\n" + response);
+
+        assertEquals("The servlet upgrade must be accepted with 101 Switching Protocols",
+                     101, response.statusCode);
+        assertEquals("Bytes sent with the upgrade request must reach the upgraded handler",
+                     early, connection.readRaw(early.length()));
+        assertFalse("The server must not close an upgraded connection",
+                    connection.isClosedByServer(STAYS_OPEN_TIMEOUT_MS));
+    }
+
+    /**
      * Sends a servlet upgrade request, expects {@code 101 Switching Protocols}
      * with {@code Connection: Upgrade}, then checks the upgraded connection is
      * alive by echoing bytes through it and confirming the server did not close
@@ -485,11 +541,20 @@ public class KeepAliveEnforcementTest {
          * @param blocking true to select the blocking, listener-less handler with {@code ?mode=blocking}
          */
         void sendUpgradeRequest(boolean blocking) throws IOException {
+            sendUpgradeRequest(blocking, "");
+        }
+
+        /**
+         * Same as {@link #sendUpgradeRequest(boolean)} but appends {@code earlyBytes}
+         * in the same write, so they can arrive in the same TCP segment as the request.
+         */
+        void sendUpgradeRequest(boolean blocking, String earlyBytes) throws IOException {
             String request = "GET " + UPGRADE_SERVLET_PATH + (blocking ? "?mode=blocking" : "") + " HTTP/1.1\r\n"
                              + "Host: " + server.getHostname() + ':' + server.getHttpDefaultPort() + "\r\n"
                              + "Upgrade: KeepAliveEcho\r\n"
                              + "Connection: Upgrade\r\n"
-                             + "\r\n";
+                             + "\r\n"
+                             + earlyBytes;
             out.write(request.getBytes(StandardCharsets.ISO_8859_1));
             out.flush();
         }

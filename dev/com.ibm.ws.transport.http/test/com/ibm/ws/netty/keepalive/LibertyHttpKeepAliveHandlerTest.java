@@ -39,6 +39,7 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpVersion;
 
 /**
@@ -337,6 +338,28 @@ public class LibertyHttpKeepAliveHandlerTest {
         assertTrue("Upgrade headers on the request must not bypass keepAliveEnabled=false",
                    out.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true));
         assertFalse("The channel must be closed after a non-101 response", channel.isOpen());
+    }
+
+    /**
+     * {@code HttpDispatcherHandler} removes the keep-alive handler once a 101 is
+     * committed, using {@code pipeline.remove(HttpServerKeepAliveHandler.class)}.
+     * That code predates {@link LibertyHttpKeepAliveHandler}, so it only still
+     * works if Netty's class-based lookup and removal match subclasses.
+     *
+     * <p>This pins that assumption. If it fails, the keep-alive handler would stay
+     * in the pipeline after an upgrade and see post-101 traffic.
+     */
+    @Test
+    public void classBasedRemovalOfParentType_removesLibertySubclass() {
+        channel = newChannel(config(true, -1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
+
+        assertNotNull("get(parent type) must find the Liberty subclass",
+                      channel.pipeline().get(HttpServerKeepAliveHandler.class));
+
+        channel.pipeline().remove(HttpServerKeepAliveHandler.class);
+
+        assertNull("remove(parent type) must remove the Liberty subclass",
+                   channel.pipeline().get(LibertyHttpKeepAliveHandler.class));
     }
 
     // ---------------------------------------------------------------------
