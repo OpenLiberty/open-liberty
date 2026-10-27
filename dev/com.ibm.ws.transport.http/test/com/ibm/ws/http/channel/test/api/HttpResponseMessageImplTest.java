@@ -958,4 +958,100 @@ public class HttpResponseMessageImplTest {
             }
         }
     }
+
+    @Test
+    public void testCacheControlNoStoreMarshalHook() throws Exception {
+        // 1. Flag not set: Cache-Control is not modified / not added
+        getResponse().clear();
+        getResponse().setHeader("Cache-Control", "max-age=60");
+        WsByteBuffer[] mData = duplicateBuffers(getResponse().marshallMessage());
+        getResponse().clear();
+        for (WsByteBuffer buf : mData) {
+            getResponse().parseMessage(buf, true);
+        }
+        assertEquals("max-age=60", getResponse().getHeader(HttpHeaderKeys.HDR_CACHE_CONTROL).asString());
+
+        // 2. Flag set and no Cache-Control -> no-store (clear() resets the flag, so set it after clear())
+        getResponse().clear();
+        getResponse().setForceNoStore(true);
+        mData = duplicateBuffers(getResponse().marshallMessage());
+        getResponse().clear();
+        for (WsByteBuffer buf : mData) {
+            getResponse().parseMessage(buf, true);
+        }
+        assertEquals("no-store", getResponse().getHeader(HttpHeaderKeys.HDR_CACHE_CONTROL).asString());
+        assertEquals(1, getResponse().getNumberOfHeaderInstances(HttpHeaderKeys.HDR_CACHE_CONTROL));
+
+        // 3. Flag set and max-age=60 -> no-store (overwrites existing value)
+        getResponse().clear();
+        getResponse().setForceNoStore(true);
+        getResponse().setHeader("Cache-Control", "max-age=60");
+        mData = duplicateBuffers(getResponse().marshallMessage());
+        getResponse().clear();
+        for (WsByteBuffer buf : mData) {
+            getResponse().parseMessage(buf, true);
+        }
+        assertEquals("no-store", getResponse().getHeader(HttpHeaderKeys.HDR_CACHE_CONTROL).asString());
+        assertEquals(1, getResponse().getNumberOfHeaderInstances(HttpHeaderKeys.HDR_CACHE_CONTROL));
+
+        // 4. Already no-store -> no-store (unchanged, now by overwrite)
+        getResponse().clear();
+        getResponse().setForceNoStore(true);
+        getResponse().setHeader("Cache-Control", "no-store");
+        mData = duplicateBuffers(getResponse().marshallMessage());
+        getResponse().clear();
+        for (WsByteBuffer buf : mData) {
+            getResponse().parseMessage(buf, true);
+        }
+        assertEquals("no-store", getResponse().getHeader(HttpHeaderKeys.HDR_CACHE_CONTROL).asString());
+        assertEquals(1, getResponse().getNumberOfHeaderInstances(HttpHeaderKeys.HDR_CACHE_CONTROL));
+
+        // 5. no-store, max-age=0 -> no-store (overwrites existing value)
+        getResponse().clear();
+        getResponse().setForceNoStore(true);
+        getResponse().setHeader("Cache-Control", "no-store, max-age=0");
+        mData = duplicateBuffers(getResponse().marshallMessage());
+        getResponse().clear();
+        for (WsByteBuffer buf : mData) {
+            getResponse().parseMessage(buf, true);
+        }
+        assertEquals("no-store", getResponse().getHeader(HttpHeaderKeys.HDR_CACHE_CONTROL).asString());
+        assertEquals(1, getResponse().getNumberOfHeaderInstances(HttpHeaderKeys.HDR_CACHE_CONTROL));
+
+        // 6. Two Cache-Control instances -> no-store (overwrites all existing values)
+        getResponse().clear();
+        getResponse().setForceNoStore(true);
+        getResponse().setHeader("Cache-Control", "private");
+        getResponse().appendHeader("Cache-Control", "max-age=60");
+        mData = duplicateBuffers(getResponse().marshallMessage());
+        getResponse().clear();
+        for (WsByteBuffer buf : mData) {
+            getResponse().parseMessage(buf, true);
+        }
+        assertEquals("no-store", getResponse().getHeader(HttpHeaderKeys.HDR_CACHE_CONTROL).asString());
+        assertEquals(1, getResponse().getNumberOfHeaderInstances(HttpHeaderKeys.HDR_CACHE_CONTROL));
+
+        // 7. Configured SET / REMOVE of Cache-Control does not remove the no-store header
+        Map<Object, Object> cfgMap = this.cdi.getPropertyBag();
+        cfgMap.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS, "true");
+        cfgMap.put(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE_INTERNAL, new String[] { "Cache-Control" });
+        this.config.updateConfig(this.cdi);
+
+        getResponse().clear();
+        getResponse().setForceNoStore(true);
+        getResponse().setHeader("Cache-Control", "max-age=60");
+        mData = duplicateBuffers(getResponse().marshallMessage());
+        getResponse().clear();
+        for (WsByteBuffer buf : mData) {
+            getResponse().parseMessage(buf, true);
+        }
+        // Note: remove header removes the initial max-age=60, then the marshal hook adds no-store
+        assertEquals("no-store", getResponse().getHeader(HttpHeaderKeys.HDR_CACHE_CONTROL).asString());
+
+        // Clean up config and flag
+        cfgMap.remove(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS);
+        cfgMap.remove(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS_REMOVE_INTERNAL);
+        this.config.updateConfig(this.cdi);
+        getResponse().setForceNoStore(false);
+    }
 }
