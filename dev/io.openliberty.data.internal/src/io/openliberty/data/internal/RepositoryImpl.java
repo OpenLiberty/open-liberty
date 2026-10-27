@@ -137,7 +137,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         this.primaryEntityInfoFuture = primaryEntityClass == null //
                         ? null //
                         : factory.entityInfoMap.computeIfAbsent(primaryEntityClass,
-                                                                EntityInfo::newFuture);
+                                                                factory::newFuture);
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
         Object validation = provider.validationService;
@@ -146,9 +146,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         : EntityValidator.newInstance(validation, repositoryInterface);
 
         // reusable instance for supplying this instance to completion stages:
-        CompletableFuture<RepositoryImpl<?>> thisCF = queriesPerEntityClass.isEmpty() //
-                        ? null //
-                        : CompletableFuture.completedFuture(this);
+        CompletableFuture<RepositoryImpl<?>> thisCF = //
+                        queriesPerEntityClass.isEmpty() //
+                                        ? null //
+                                        : factory.newCompletedFuture(this);
 
         List<CompletableFuture<EntityInfo>> entityInfoFutures = new ArrayList<>();
         List<QueryInfo> entitylessQueryInfos = null;
@@ -159,9 +160,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (QueryInfo.ENTITY_TBD.equals(entityClass)) {
                 entitylessQueryInfos = entry.getValue();
             } else {
-                CompletableFuture<EntityInfo> entityInfoFuture = //
-                                factory.entityInfoMap.computeIfAbsent(entityClass,
-                                                                      EntityInfo::newFuture);
+                CompletableFuture<EntityInfo> entityInfoFuture = factory //
+                                .entityInfoMap.computeIfAbsent(entityClass,
+                                                               factory::newFuture);
                 entityInfoFutures.add(entityInfoFuture);
 
                 for (QueryInfo queryInfo : entry.getValue()) {
@@ -169,7 +170,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         queryInfo.validateParams = validator != null &&
                                                    validator.isValidatable(queryInfo.method)[1];
                         queries.put(queryInfo.method,
-                                    CompletableFuture.completedFuture(queryInfo));
+                                    factory.newCompletedFuture(queryInfo));
                     } else {
                         queries.put(queryInfo.method,
                                     entityInfoFuture.thenCombine(thisCF,
@@ -187,20 +188,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                              queryInfo.method,
                                              repositoryInterface.getName(),
                                              "DataRepository<EntityClass, EntityIdClass>");
-                    queries.put(queryInfo.method, CompletableFuture.failedFuture(x));
+                    queries.put(queryInfo.method, factory.newFailedFuture(x));
                 }
             }
 
             CompletableFuture<?>[] futures = entityInfoFutures //
                             .toArray(new CompletableFuture<?>[entityInfoFutures.size()]);
             CompletableFuture<Map<String, CompletableFuture<EntityInfo>>> allEntityInfo = //
-                            CompletableFuture.allOf(futures) //
-                                            .handle((VOID, x) -> x) //
-                                            .thenCombine(CompletableFuture.completedFuture(entityInfoFutures),
+                            factory.newCompletedFuture(entityInfoFutures) //
+                                            .thenCombine(CompletableFuture //
+                                                            .allOf(futures) //
+                                                            .handle((VOID, x) -> x),
                                                          this::allEntityInfoAsMap);
             for (QueryInfo queryInfo : entitylessQueryInfos) {
                 queries.put(queryInfo.method, allEntityInfo //
-                                .thenCombine(CompletableFuture.completedFuture(this),
+                                .thenCombine(factory.newCompletedFuture(this),
                                              queryInfo::init));
             }
         }
@@ -214,8 +216,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @return map of entity name to completed EntityInfo future.
      */
     private Map<String, CompletableFuture<EntityInfo>> //
-                    allEntityInfoAsMap(Throwable x,
-                                       List<CompletableFuture<EntityInfo>> futures) {
+                    allEntityInfoAsMap(List<CompletableFuture<EntityInfo>> futures,
+                                       Throwable x) {
         Map<String, CompletableFuture<EntityInfo>> entityInfos = new HashMap<>();
         for (CompletableFuture<EntityInfo> future : futures) {
             if (future.isCompletedExceptionally()) {
@@ -261,11 +263,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                         longerName);
                     }
                     entityInfos.putIfAbsent(EntityInfo.FAILED,
-                                            CompletableFuture.failedFuture(conflictX));
+                                            factory.newFailedFuture(conflictX));
                 }
             } else {
                 entityInfos.putIfAbsent(EntityInfo.FAILED,
-                                        CompletableFuture.failedFuture(x));
+                                        factory.newFailedFuture(x));
             }
         }
         return entityInfos;
