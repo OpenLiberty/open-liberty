@@ -1110,7 +1110,7 @@ public abstract class QueryInfo {
             returnValue = Optional.of(returnValue);
         } else if (CompletableFuture.class.equals(returnType) ||
                    CompletionStage.class.equals(returnType)) {
-            returnValue = CompletableFuture.completedFuture(returnValue);
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (multiType != null) {
             throw Fail.countConversion(this, count);
         }
@@ -1709,7 +1709,7 @@ public abstract class QueryInfo {
         Class<?> returnType = method.getReturnType();
         Object returnVal = CompletableFuture.class.equals(returnType) ||
                            CompletionStage.class.equals(returnType) //
-                                           ? CompletableFuture.completedFuture(found) //
+                                           ? entityInfo.factory.newCompletedFuture(found) //
                                            : found;
 
         // There is no need to check if the return value is compatible
@@ -1800,7 +1800,7 @@ public abstract class QueryInfo {
         Class<?> returnType = method.getReturnType();
         if (CompletableFuture.class.equals(returnType) ||
             CompletionStage.class.equals(returnType)) {
-            returnValue = CompletableFuture.completedFuture(returnValue);
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         }
 
         if (trace && tc.isEntryEnabled())
@@ -3559,7 +3559,8 @@ public abstract class QueryInfo {
     @Trivial
     QueryInfo init(EntityInfo entityInfo, RepositoryImpl<?> repository) {
         // This code path does not require the record name in the map because it is not used for @Query
-        return init(Map.of(entityInfo.name, CompletableFuture.completedFuture(entityInfo)),
+        return init(Map.of(entityInfo.name,
+                           entityInfo.factory.newCompletedFuture(entityInfo)),
                     repository);
     }
 
@@ -4292,7 +4293,7 @@ public abstract class QueryInfo {
         if (CompletableFuture.class.equals(returnType) ||
             CompletionStage.class.equals(returnType)) {
             // useful for @Asynchronous
-            returnValue = CompletableFuture.completedFuture(returnValue);
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
             throw Fail.returnTypeInvalid(this, "Insert",
                                          null, results.get(0).getClass());
@@ -4652,7 +4653,7 @@ public abstract class QueryInfo {
         if (CompletableFuture.class.equals(returnType) ||
             CompletionStage.class.equals(returnType)) {
             // useful for @Asynchronous
-            returnValue = CompletableFuture.completedFuture(returnValue);
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
             throw Fail.returnTypeInvalid(this, "Merge",
                                          null, results.get(0).getClass());
@@ -4764,7 +4765,7 @@ public abstract class QueryInfo {
         Class<?> returnType = method.getReturnType();
         if (CompletableFuture.class.equals(returnType) ||
             CompletionStage.class.equals(returnType)) {
-            returnValue = CompletableFuture.completedFuture(returnValue);
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         }
 
         if (trace && tc.isEntryEnabled())
@@ -5747,7 +5748,7 @@ public abstract class QueryInfo {
         if (CompletableFuture.class.equals(returnType) ||
             CompletionStage.class.equals(returnType)) {
             // useful for @Asynchronous
-            returnValue = CompletableFuture.completedFuture(returnValue);
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
             throw Fail.returnTypeInvalid(this, "Save",
                                          null, results.get(0).getClass());
@@ -6256,7 +6257,7 @@ public abstract class QueryInfo {
             result = null;
         else if (CompletableFuture.class.equals(returnType) ||
                  CompletionStage.class.equals(returnType))
-            result = CompletableFuture.completedFuture(toReturnValue(i, singleType));
+            result = entityInfo.factory.newCompletedFuture(toReturnValue(i, singleType));
         else
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1007.updel.rtrn.err",
@@ -6407,7 +6408,7 @@ public abstract class QueryInfo {
         } else if (CompletableFuture.class.equals(returnType) ||
                    CompletionStage.class.equals(returnType)) {
             // useful for @Asynchronous
-            returnValue = CompletableFuture.completedFuture(returnValue);
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (returnValue != null &&
                    !Util.wrapperClassIfPrimitive(returnType) //
                                    .isAssignableFrom(returnValue.getClass())) {

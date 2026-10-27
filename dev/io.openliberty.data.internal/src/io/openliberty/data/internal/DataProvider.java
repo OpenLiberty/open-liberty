@@ -72,6 +72,7 @@ import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.threading.CompletionStageFactory;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.persistence.DDLGenerationParticipant;
@@ -148,6 +149,12 @@ public class DataProvider implements //
      * Abstraction for code that pertains to a specific version of Jakarta Data.
      */
     public final DataVersionCompatibility compat;
+
+    /**
+     * Creates CompletionStage/CompletableFuture instances that run on
+     * Liberty's thread pool.
+     */
+    public final CompletionStageFactory completionStageFactory;
 
     /**
      * Map of JEE name to ComponentMetaData for modules.
@@ -282,6 +289,8 @@ public class DataProvider implements //
                         @Reference //
                         ClassLoaderIdentifierService classloaderIdSvc,
                         @Reference //
+                        CompletionStageFactory completionStageFactory,
+                        @Reference //
                         ConfigurationAdmin configAdmin,
                         @Reference(target = "(component.name=com.ibm.ws.threading)") //
                         ExecutorService executor,
@@ -295,6 +304,7 @@ public class DataProvider implements //
                         EmbeddableWebSphereTransactionManager tranMgr) {
         this.cdiService = cdiService;
         this.classloaderIdSvc = classloaderIdSvc;
+        this.completionStageFactory = completionStageFactory;
         this.configAdmin = configAdmin;
         this.executor = executor;
         this.localTranCurrent = localTranCurrent;
