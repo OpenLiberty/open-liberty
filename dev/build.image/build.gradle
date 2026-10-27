@@ -279,19 +279,19 @@ class PackageLibertyWithFeatures extends DefaultTask {
             }
         }
 
-        // Create server in order to minify an image that only includes kind=ga features
-        project.delete project.file('wlp/usr/servers/packageOpenLiberty')
-        execOperations.exec {
-            workingDir project.file('wlp/bin')
-            def args = ["create", "packageOpenLiberty"]
-            if (OperatingSystem.current().windows) {
-                commandLine = ["cmd", "/c", "server"] + args
-            } else {
-                commandLine = ["./server"] + args
-            }
-        }
-
         try {
+            // Create server in order to minify an image that only includes kind=ga features
+            project.delete project.file('wlp/usr/servers/packageOpenLiberty')
+            execOperations.exec {
+                workingDir project.file('wlp/bin')
+                def args = ["create", "packageOpenLiberty"]
+                if (OperatingSystem.current().windows) {
+                    commandLine = ["cmd", "/c", "server"] + args
+                } else {
+                    commandLine = ["./server"] + args
+                }
+            }
+
             def serverXml = project.file("wlp/usr/servers/packageOpenLiberty/server.xml")
             serverXml.text = """<?xml version="1.0" encoding="UTF-8"?>
 <server description="new server">
@@ -305,14 +305,32 @@ class PackageLibertyWithFeatures extends DefaultTask {
             execOperations.exec {
                 workingDir project.file('wlp/bin')
                 def args = ["package", "packageOpenLiberty", "--archive=${archive}", "--include=minify"]
-                if (completeFeatureList) { 
-                    args.add("-Dinternal.minify.feature.list.complete=true") 
+                if (completeFeatureList) {
+                    args.add("-Dinternal.minify.feature.list.complete=true")
                 }
                 if (OperatingSystem.current().windows) {
                     commandLine = ["cmd", "/c", "server"] + args
                 } else {
                     commandLine = ["./server"] + args
                 }
+            }
+
+            def messagesLog = project.file("wlp/usr/servers/packageOpenLiberty/logs/messages.log")
+            if (!messagesLog.exists()) {
+                throw new GradleException("Expected messages.log file does not exist at: " + messagesLog.absolutePath)
+            }
+
+            def errorPattern = ~/E\s+[A-Z]{5}\d{4}E:/
+            def errorLines = []
+            messagesLog.eachLine { String line ->
+                if (line =~ errorPattern) {
+                    errorLines << line
+                }
+            }
+            if (!errorLines.isEmpty()) {
+                println "-- ERROR MESSAGES DETECTED IN MESSAGES.LOG --"
+                errorLines.each { println it }
+                throw new GradleException("Error messages detected in messages.log:\n" + errorLines.join("\n"))
             }
 
             // Postprocess to remove unwanted files
@@ -362,6 +380,7 @@ class PackageLibertyWithFeatures extends DefaultTask {
                     println line
                 }
             }
+            throw new GradleException("Failed to package OpenLiberty: " + all.message, all)
         } finally {
             // If we excluded some features, put them back
             if (excludedFeatures != null) {
@@ -473,8 +492,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&webProfile8Features
-        excludedFeatures = excludedEE7Features
-        packageServerConflict = "true"
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,com.ibm.websphere.appserver.microProfile,com.ibm.websphere.appserver.mpConfig,com.ibm.websphere.appserver.mpHealth,com.ibm.websphere.appserver.mpJwt,com.ibm.websphere.appserver.mpRestClient,com.ibm.websphere.appserver.mpOpenTracing,com.ibm.websphere.appserver.opentracing,com.ibm.websphere.appserver.mpFaultTolerance,com.ibm.websphere.appserver.mpMetrics,com.ibm.websphere.appserver.mpOpenAPI,com.ibm.websphere.appserver.org.eclipse.microprofile.openapi,com.ibm.websphere.appserver.org.eclipse.microprofile.config,com.ibm.websphere.appserver.org.eclipse.microprofile.jwt,com.ibm.websphere.appserver.org.eclipse.microprofile.rest.client,com.ibm.websphere.appserver.org.eclipse.microprofile.faulttolerance,com.ibm.websphere.appserver.org.eclipse.microprofile.opentracing,com.ibm.websphere.appserver.org.eclipse.microprofile.health,com.ibm.websphere.appserver.org.eclipse.microprofile.metrics,io.openliberty.mpCompatible,io.openliberty.internal.mpVersion,io.openliberty.microprofile.internal.mpConfig"
         outputTo new File(packageDir, "webProfile8")
         doLast {
             copy {
@@ -493,8 +511,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&javaee8Features
-        excludedFeatures = excludedEE7Features
-        packageServerConflict = "true"
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,com.ibm.websphere.appserver.microProfile,com.ibm.websphere.appserver.mpConfig,com.ibm.websphere.appserver.mpHealth,com.ibm.websphere.appserver.mpJwt,com.ibm.websphere.appserver.mpRestClient,com.ibm.websphere.appserver.mpOpenTracing,com.ibm.websphere.appserver.opentracing,com.ibm.websphere.appserver.mpFaultTolerance,com.ibm.websphere.appserver.mpMetrics,com.ibm.websphere.appserver.mpOpenAPI,com.ibm.websphere.appserver.org.eclipse.microprofile.openapi,com.ibm.websphere.appserver.org.eclipse.microprofile.config,com.ibm.websphere.appserver.org.eclipse.microprofile.jwt,com.ibm.websphere.appserver.org.eclipse.microprofile.rest.client,com.ibm.websphere.appserver.org.eclipse.microprofile.faulttolerance,com.ibm.websphere.appserver.org.eclipse.microprofile.opentracing,com.ibm.websphere.appserver.org.eclipse.microprofile.health,com.ibm.websphere.appserver.org.eclipse.microprofile.metrics,io.openliberty.mpCompatible,io.openliberty.internal.mpVersion,io.openliberty.microprofile.internal.mpConfig"
         outputTo new File(packageDir, "javaee8")
         doLast {
             copy {
