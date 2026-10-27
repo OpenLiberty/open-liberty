@@ -1,0 +1,12 @@
+DROP TABLE ${schemaname}.EMDETACH_ENTAM2MLIST;
+DROP TABLE ${schemaname}.EMDETACH_ENTAM2MLIST_CA;
+DROP TABLE ${schemaname}.EMDETACH_ENTAM2MLIST_CD;
+DROP TABLE ${schemaname}.EMDETACH_ENTAO2MLIST;
+DROP TABLE ${schemaname}.EMDETACH_ENTAO2MLIST_CA;
+DROP TABLE ${schemaname}.EMDETACH_ENTAO2MLIST_CD;
+DROP TABLE ${schemaname}.JPA20EntityManagerDetachEntity;
+DROP TABLE ${schemaname}.JPA20EntityManagerEntityA;
+DROP TABLE ${schemaname}.JPA20EntityManagerEntityA_JPA20EntityManagerEntityB;
+DROP TABLE ${schemaname}.JPA20EntityManagerEntityB;
+DROP TABLE ${schemaname}.JPA20EntityManagerEntityC;
+DROP TABLE ${schemaname}.JPA20EntityManagerFindEntity;
