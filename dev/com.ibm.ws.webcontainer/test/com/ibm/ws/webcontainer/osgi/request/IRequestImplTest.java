@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import com.ibm.wsspi.http.HttpInboundConnection;
+import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.http.HttpRequest;
 import com.ibm.wsspi.http.SSLContext;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
@@ -459,5 +460,37 @@ public class IRequestImplTest {
         Boolean ssl = iRequestImpl.isSSL();
 
         assertTrue(ssl);
+    }
+
+    @Test
+    public void testGetServerNameCachesRequestedHost() {
+        mock.checking(new Expectations() {
+            {
+                allowing(conn).getRequest();
+                will(returnValue(request));
+                one(conn).getRequestedHost();
+                will(returnValue("host.example.com"));
+            }
+        });
+
+        IRequestImpl iRequest = new IRequestImpl(conn);
+        assertEquals("host.example.com", iRequest.getServerName());
+        // second call is served from the cache; conn.getRequestedHost() is expected only once
+        assertEquals("host.example.com", iRequest.getServerName());
+    }
+
+    @Test
+    public void testConstructorDoesNotTouchVirtualConnection() {
+        final HttpInboundConnectionExtended extConn = mock.mock(HttpInboundConnectionExtended.class, "extConn_noVC");
+
+        mock.checking(new Expectations() {
+            {
+                allowing(extConn).getRequest();
+                will(returnValue(request));
+                never(extConn).getVC();
+            }
+        });
+
+        new IRequestImpl(extConn);
     }
 }
