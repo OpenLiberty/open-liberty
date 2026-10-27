@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.config13.tck;
 
@@ -26,9 +23,9 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.tck.TCKResultsConstants;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
-import componenttest.topology.utils.tck.TCKResultsConstants;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -42,7 +39,7 @@ public class Config13TCKLauncher {
     public static LibertyServer server;
 
     @ClassRule //EE7 + EE8 repeats
-    public static RepeatTests r = MicroProfileActions.repeat("Config13TCKServer", MicroProfileActions.MP14, MicroProfileActions.MP32);
+    public static RepeatTests r = MicroProfileActions.repeat("Config13TCKServer", MicroProfileActions.MP14_EE7, MicroProfileActions.MP32);
 
     @BeforeClass
     public static void setUp() throws Exception {

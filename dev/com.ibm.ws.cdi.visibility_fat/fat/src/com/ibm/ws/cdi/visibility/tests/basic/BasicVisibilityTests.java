@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2025 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ public class BasicVisibilityTests extends FATServletClient {
     //and we want to ensure that doesn't break anything
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE11, MicroProfileActions.MP60, MicroProfileActions.MP50,
-                                                             MicroProfileActions.MP12);
+                                                             MicroProfileActions.MP12_EE7);
 
     public static final String CLASS_LOAD_APP_NAME = "classloadPrereq";
     public static final String ROOT_CLASSLOADER_APP_NAME = "rootClassLoader";
@@ -102,7 +102,7 @@ public class BasicVisibilityTests extends FATServletClient {
                                                     .addClass(ClassLoadPrereqLoggerServlet.class.getName());
             ShrinkHelper.exportDropinAppToServer(server, testClassLoadWAR, DeployOptions.SERVER_ONLY);
 
-            /////////////////
+            ////////////////
 
             JavaArchive multiModuleAppLib3 = ShrinkWrap.create(JavaArchive.class, "lib3.jar")
                                                        .addPackage(BasicBean3.class.getPackage())
@@ -143,7 +143,7 @@ public class BasicVisibilityTests extends FATServletClient {
             ShrinkHelper.exportDropinAppToServer(server, multiModuleAppOne, DeployOptions.SERVER_ONLY);
             ShrinkHelper.exportDropinAppToServer(server, multiModuleAppTwo, DeployOptions.SERVER_ONLY);
 
-            /////////////////
+            ////////////////
 
             JavaArchive dupJar = ShrinkWrap.create(JavaArchive.class, "dupJar.jar")
                                            .addPackage(DuplicateLibraryBean.class.getPackage());
@@ -179,7 +179,7 @@ public class BasicVisibilityTests extends FATServletClient {
 
         ShrinkHelper.exportDropinAppToServer(server, rootClassLoaderWAR, DeployOptions.SERVER_ONLY);
 
-        /////////////////
+        ////////////////
 
         WebArchive packageAccessWar = ShrinkWrap.create(WebArchive.class, "packageAccess.war")
                                                 .addPackages(true, PackageAccessTestServlet.class.getPackage())
@@ -187,7 +187,7 @@ public class BasicVisibilityTests extends FATServletClient {
 
         ShrinkHelper.exportDropinAppToServer(server, packageAccessWar, DeployOptions.SERVER_ONLY);
 
-        //////////////////
+        /////////////////
 
         //From WarLibsAccessWarBeansTest
 

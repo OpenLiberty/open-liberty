@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -171,7 +171,7 @@ public class ConfigRepeatActions {
                                             MicroProfileActions.MP30,
                                             MicroProfileActions.MP22,
                                             MicroProfileActions.MP20,
-                                            MicroProfileActions.MP13,
-                                            MicroProfileActions.MP12);
+                                            MicroProfileActions.MP13_EE7,
+                                            MicroProfileActions.MP12_EE7);
     }
 }
