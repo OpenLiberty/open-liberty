@@ -52,8 +52,16 @@ public class PrivateHeaderFilterTest {
     private static final String ALT_REMOTE_ADDR = "10.11.12.13";
     private static final int    SOCKET_TIMEOUT = 5000;
 
-    private static final String DEFAULT_CONFIG          = "privateHeader-default.xml";
-    private static final String TRUST_SENSITIVE_CONFIG  = "privateHeader-trustSensitive.xml";
+    private static final String DEFAULT_CONFIG               = "privateHeader-default.xml";
+    private static final String TRUST_SENSITIVE_CONFIG       = "privateHeader-trustSensitive.xml";
+    private static final String ALLOWED_SERVER_NAMES_CONFIG  = "privateHeader-allowedServerNames.xml";
+    private static final String ALLOWED_AND_SENSITIVE_CONFIG = "privateHeader-allowedAndSensitive.xml";
+    private static final String TRUSTED_FALSE_CONFIG         = "privateHeader-trustedFalse.xml";
+    private static final String VHOST_ALLOWED_CONFIG         = "privateHeader-vhost-allowed.xml";
+    private static final String VHOST_UNLISTED_CONFIG        = "privateHeader-vhost-unlisted.xml";
+    private static final String VHOST_SENSITIVE_CONFIG       = "privateHeader-vhost-sensitive.xml";
+    private static final String VHOST_APP_NAME               = "vhostApp";
+    private static final String VHOST_SERVLET_PATH           = "/vhostApp/VhostServlet";
 
     @Server("PrivateHeaderFilter")
     public static LibertyServer server;
@@ -62,6 +70,15 @@ public class PrivateHeaderFilterTest {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "io.openliberty.transport.http.privatehdr.servlet");
         server.addInstalledAppForValidation(APP_NAME);
+        // Build the vhost WAR and export it so it is available when vhost configs reference it.
+        // DISABLE_VALIDATION prevents ShrinkHelper from adding vhostApp to the startup
+        // verification list — the default server.xml has no <application location="vhostApp.war"/>
+        // so the server would never start it and validation would time out.
+        // Only configs that explicitly include vhostApp.war will deploy it; each vhost test
+        // waits for CWWKT0016I after reconfigure() before sending a request.
+        ShrinkHelper.defaultApp(server, VHOST_APP_NAME,
+                new ShrinkHelper.DeployOptions[] { ShrinkHelper.DeployOptions.DISABLE_VALIDATION },
+                "io.openliberty.transport.http.vhost.servlet");
         server.startServer();
         server.waitForStringInLog("CWWKT0016I:.*" + APP_NAME + ".*");
     }
@@ -78,6 +95,21 @@ public class PrivateHeaderFilterTest {
         server.setServerConfigurationFile(configFile);
         server.waitForStringInLogUsingMark("CWWKG0017I", 30000);
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+    }
+
+    /**
+     * Variant of {@link #reconfigure} for config files that deploy both
+     * {@code privateHeaderApp} and {@code vhostApp}. Uses
+     * {@code waitForConfigUpdateInLogUsingMark} with both app names so the
+     * test does not proceed until Liberty has confirmed both applications are
+     * live — the standard Liberty FAT mechanism for app-startup gating.
+     */
+    private void reconfigureWithVhost(String configFile) throws Exception {
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile(configFile);
+        server.waitForStringInLogUsingMark("CWWKG0017I", 30000);
+        server.waitForConfigUpdateInLogUsingMark(
+                new java.util.HashSet<>(java.util.Arrays.asList(APP_NAME, VHOST_APP_NAME)));
     }
 
     // -------------------------------------------------------------------------
@@ -159,7 +191,17 @@ public class PrivateHeaderFilterTest {
         String serverPort = extractResponseField(response, "SERVER_PORT");
         assertEquals("SERVER_PORT should equal the real server port",
                 String.valueOf(server.getHttpDefaultPort()), serverPort);
-        assertEquals("$WSSN should be present as a non-sensitive header", "testServerName", extractResponseField(response, "HDR_WSSN"));
+        assertEquals("$WSSN should be present as a non-sensitive header",
+                "testServerName", extractResponseField(response, "HDR_WSSN"));
+        // When $WSSN is not in allowedServerNames and the peer is not sensitive-trusted,
+        // the dispatcher takes the "unapproved" path: it still returns the $WSSN value
+        // as the API server name but marks the response to carry Cache-Control: no-store
+        // so that caches do not store a response whose server-name came from an
+        // unverified source.
+        assertEquals("SERVER_NAME should equal the unapproved $WSSN value",
+                "testServerName", extractResponseField(response, "SERVER_NAME"));
+        assertEquals("Cache-Control must be no-store when $WSSN is used from an unapproved source",
+                "no-store", extractHeader(response, "Cache-Control"));
     }
 
     
@@ -275,6 +317,228 @@ public class PrivateHeaderFilterTest {
     }
 
     // -------------------------------------------------------------------------
+    // Tests — allowedServerNames and Cache-Control: no-store behaviour
+    // -------------------------------------------------------------------------
+
+    /**
+     * Verifies that a {@code $WSSN} value explicitly listed in
+     * {@code httpDispatcher allowedServerNames} is treated as an approved name.
+     * {@code HttpServletRequest.getServerName()} must return the value from the
+     * header, {@code getRequestURL()} must contain it, and the response must not
+     * carry {@code Cache-Control: no-store} because the name came from a
+     * pre-approved list.
+     */
+    @Test
+    public void testWssnFromAllowedList() throws Exception {
+        server.saveServerConfiguration();
+        try {
+            reconfigure(ALLOWED_SERVER_NAMES_CONFIG);
+
+            String response = sendRawGet(SERVLET_PATH, "$WSSN: testServerName");
+            LOG.info("testWssnFromAllowedList response:\n" + response);
+
+            assertEquals("SERVER_NAME should equal the listed $WSSN value",
+                    "testServerName", extractResponseField(response, "SERVER_NAME"));
+            String requestUrl = extractResponseField(response, "REQUEST_URL");
+            assertTrue("REQUEST_URL should contain the approved $WSSN value",
+                    requestUrl != null && requestUrl.contains("testServerName"));
+            String cacheControl = extractHeader(response, "Cache-Control");
+            assertFalse("Cache-Control must not be no-store for an approved $WSSN",
+                    "no-store".equals(cacheControl));
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        }
+    }
+
+    /**
+     * Verifies that a {@code $WSSN} value that is <em>not</em> listed in
+     * {@code allowedServerNames} (and where the peer is not sensitive-trusted)
+     * triggers the unapproved path: the dispatcher still returns the {@code $WSSN}
+     * value as the API server name so that application routing can proceed, but
+     * it also sets {@code Cache-Control: no-store} on the response to prevent
+     * caches from storing a response whose server-name came from an unverified source.
+     */
+    @Test
+    public void testWssnNotInAllowedList() throws Exception {
+        server.saveServerConfiguration();
+        try {
+            reconfigure(ALLOWED_SERVER_NAMES_CONFIG);
+
+            String response = sendRawGet(SERVLET_PATH, "$WSSN: unlisted.other.com");
+            LOG.info("testWssnNotInAllowedList response:\n" + response);
+
+            assertEquals("SERVER_NAME should equal the unapproved $WSSN value",
+                    "unlisted.other.com", extractResponseField(response, "SERVER_NAME"));
+            assertEquals("Cache-Control must be no-store when $WSSN is not in allowedServerNames",
+                    "no-store", extractHeader(response, "Cache-Control"));
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        }
+    }
+
+    /**
+     * Verifies that a {@code $WSSN} value matching a wildcard entry in
+     * {@code allowedServerNames} (e.g. {@code *.example.test}) is treated as
+     * an approved name. {@code HttpServletRequest.getServerName()} must return
+     * the matched value and the response must not carry {@code Cache-Control: no-store}.
+     */
+    @Test
+    public void testWssnFromWildcardInAllowedList() throws Exception {
+        server.saveServerConfiguration();
+        try {
+            reconfigure(ALLOWED_SERVER_NAMES_CONFIG);
+
+            String response = sendRawGet(SERVLET_PATH, "$WSSN: sub.example.test");
+            LOG.info("testWssnFromWildcardInAllowedList response:\n" + response);
+
+            assertEquals("SERVER_NAME should equal the wildcard-matched $WSSN value",
+                    "sub.example.test", extractResponseField(response, "SERVER_NAME"));
+            String cacheControl = extractHeader(response, "Cache-Control");
+            assertFalse("Cache-Control must not be no-store for a wildcard-approved $WSSN",
+                    "no-store".equals(cacheControl));
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        }
+    }
+
+    /**
+     * Verifies that a {@code $WSSN} header from a peer that is trusted for sensitive
+     * headers ({@code trustedSensitiveHeaderOrigin="*"}) is unconditionally approved,
+     * regardless of whether the value is listed in {@code allowedServerNames}.
+     * {@code HttpServletRequest.getServerName()} must return the value and the
+     * response must not carry {@code Cache-Control: no-store}.
+     */
+    @Test
+    public void testWssnSensitiveTrustedPeer() throws Exception {
+        server.saveServerConfiguration();
+        try {
+            reconfigure(TRUST_SENSITIVE_CONFIG);
+
+            String response = sendRawGet(SERVLET_PATH, "$WSSN: sensitivetrusted.example.test");
+            LOG.info("testWssnSensitiveTrustedPeer response:\n" + response);
+
+            assertEquals("SERVER_NAME should equal the $WSSN value for a sensitive-trusted peer",
+                    "sensitivetrusted.example.test", extractResponseField(response, "SERVER_NAME"));
+            String cacheControl = extractHeader(response, "Cache-Control");
+            assertFalse("Cache-Control must not be no-store when $WSSN is approved via sensitive trust",
+                    "no-store".equals(cacheControl));
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        }
+    }
+
+    /**
+     * Verifies that when both {@code allowedServerNames} and
+     * {@code trustedSensitiveHeaderOrigin="*"} are configured, a {@code $WSSN}
+     * value matching the allowed list is approved via the sensitive-trust path
+     * (which takes precedence). The response must not carry {@code Cache-Control: no-store}.
+     */
+    @Test
+    public void testWssnAllowedAndSensitiveTrusted() throws Exception {
+        server.saveServerConfiguration();
+        try {
+            reconfigure(ALLOWED_AND_SENSITIVE_CONFIG);
+
+            String response = sendRawGet(SERVLET_PATH, "$WSSN: listed.example.test");
+            LOG.info("testWssnAllowedAndSensitiveTrusted response:\n" + response);
+
+            assertEquals("SERVER_NAME should equal the listed $WSSN value",
+                    "listed.example.test", extractResponseField(response, "SERVER_NAME"));
+            String cacheControl = extractHeader(response, "Cache-Control");
+            assertFalse("Cache-Control must not be no-store when $WSSN is in allowedServerNames and the peer is sensitive-trusted",
+                    "no-store".equals(cacheControl));
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        }
+    }
+
+    /**
+     * Directly exercises the {@code Cache-Control: no-store} response hook.
+     * When {@code $WSSN} is not listed in {@code allowedServerNames} and the
+     * peer is not sensitive-trusted, the dispatcher writes
+     * {@code Cache-Control: no-store} at response marshal time and still
+     * exposes the {@code $WSSN} value as the API server name.
+     */
+    @Test
+    public void testWssnNoStoreWhenUnapproved() throws Exception {
+        server.saveServerConfiguration();
+        try {
+            reconfigure(ALLOWED_SERVER_NAMES_CONFIG);
+
+            String response = sendRawGet(SERVLET_PATH, "$WSSN: unapproved.other.com");
+            LOG.info("testWssnNoStoreWhenUnapproved response:\n" + response);
+
+            assertEquals("Cache-Control must be no-store for an unapproved $WSSN",
+                    "no-store", extractHeader(response, "Cache-Control"));
+            assertEquals("SERVER_NAME should equal the unapproved $WSSN value",
+                    "unapproved.other.com", extractResponseField(response, "SERVER_NAME"));
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        }
+    }
+
+    /**
+     * Verifies that {@code webContainer trusted="false"} causes all WAS private
+     * headers to be stripped regardless of {@code trustedHeaderOrigin} settings.
+     * {@code HttpServletRequest.getServerName()} must return the Host-derived name
+     * (not the injected {@code $WSSN} value) and no {@code Cache-Control: no-store}
+     * must be added, because the header is discarded before the dispatcher logic runs.
+     */
+    @Test
+    public void testWssnIgnoredWhenTrustedFalse() throws Exception {
+        server.saveServerConfiguration();
+        try {
+            reconfigure(TRUSTED_FALSE_CONFIG);
+
+            String response = sendRawGet(SERVLET_PATH, "$WSSN: injected.example.test");
+            LOG.info("testWssnIgnoredWhenTrustedFalse response:\n" + response);
+
+            assertFalse("SERVER_NAME must not equal the injected $WSSN value when webContainer trusted=false",
+                    "injected.example.test".equals(extractResponseField(response, "SERVER_NAME")));
+            String cacheControl = extractHeader(response, "Cache-Control");
+            assertFalse("Cache-Control must not be no-store when $WSSN is stripped due to trusted=false",
+                    "no-store".equals(cacheControl));
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        }
+    }
+
+    /**
+     * Verifies that a {@code $WSSN} value that is syntactically invalid as a
+     * host name is silently ignored. The value {@code "bad_name"} is valid on
+     * the HTTP wire (no control characters or spaces) but contains an underscore,
+     * which is not a legal DNS label character and therefore fails the
+     * well-formedness check. The dispatcher must fall back to the Host-derived
+     * server name and must not add {@code Cache-Control: no-store}.
+     */
+    @Test
+    public void testWssnMalformed() throws Exception {
+        // Default server config — no reconfigure needed.
+        String response = sendRawGet(SERVLET_PATH, "$WSSN: bad_name");
+        LOG.info("testWssnMalformed response:\n" + response);
+
+        assertFalse("SERVER_NAME must not equal the malformed $WSSN value",
+                "bad_name".equals(extractResponseField(response, "SERVER_NAME")));
+        String cacheControl = extractHeader(response, "Cache-Control");
+        assertFalse("Cache-Control must not be no-store when $WSSN fails the well-formedness check",
+                "no-store".equals(cacheControl));
+    }
+
+    // -------------------------------------------------------------------------
     // Helpers
     // -------------------------------------------------------------------------
 
@@ -341,5 +605,164 @@ public class PrivateHeaderFilterTest {
             }
         }
         return null;
+    }
+
+    /**
+     * Sends a raw HTTP/1.1 GET request using a caller-supplied {@code Host:} header
+     * value instead of the default {@code server.getHostname():server.getHttpDefaultPort()}.
+     * This is required for virtual-host routing tests where the Host header must carry
+     * a back-end name (e.g. {@code internal-gw.example.test}) that differs from the
+     * actual server address.
+     * <p>
+     * A separate helper is needed because {@link #sendRawGet} always emits its own
+     * {@code Host:} line before the extra headers, which would produce two {@code Host:}
+     * lines — forbidden by HTTP/1.1 — if the caller also passed one as an extra header.
+     *
+     * @param path         request path (e.g. {@code /vhostApp/VhostServlet})
+     * @param hostHeader   the full value for the {@code Host:} header line
+     *                     (e.g. {@code "internal-gw.example.test:9080"})
+     * @param extraHeaders additional header lines to append (e.g. {@code "$WSSN: public.example.test"})
+     */
+    private static String sendRawGetWithHost(String path, String hostHeader,
+                                             String... extraHeaders) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GET ").append(path).append(" HTTP/1.1\r\n");
+        sb.append("Host: ").append(hostHeader).append("\r\n");
+        sb.append("Connection: close\r\n");
+        for (String header : extraHeaders) {
+            sb.append(header).append("\r\n");
+        }
+        sb.append("\r\n");
+
+        byte[] requestBytes = sb.toString().getBytes(StandardCharsets.ISO_8859_1);
+
+        try (Socket socket = new Socket(server.getHostname(), server.getHttpDefaultPort())) {
+            socket.setSoTimeout(SOCKET_TIMEOUT);
+            OutputStream out = socket.getOutputStream();
+            out.write(requestBytes);
+            out.flush();
+
+            InputStream in = socket.getInputStream();
+            ByteArrayOutputStream responseBytes = new ByteArrayOutputStream();
+            byte[] buf = new byte[4096];
+            while (true) {
+                try {
+                    int n = in.read(buf);
+                    if (n < 0) break;
+                    responseBytes.write(buf, 0, n);
+                } catch (SocketTimeoutException e) {
+                    break;
+                }
+            }
+            return responseBytes.toString(StandardCharsets.ISO_8859_1.name());
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Tests — virtual-host routing via $WSSN
+    // -------------------------------------------------------------------------
+
+    /**
+     * Verifies the core regression scenario: the IHS plug-in sends a back-end
+     * {@code Host} header ({@code internal-gw.example.test}) together with
+     * {@code $WSSN: public.example.test}. With {@code public.example.test} listed
+     * in {@code allowedServerNames}, the dispatcher uses it as the routing key,
+     * which matches the {@code publicVhost} alias, and the virtual-host application
+     * ({@code vhostApp}) is served.
+     * <p>
+     * Before the fix, the routing key would be the Host value and the request would
+     * miss the virtual host entirely.
+     */
+    @Test
+    public void testVhostRoutingWithAllowedServerNames() throws Exception {
+        server.saveServerConfiguration();
+        try {
+            reconfigureWithVhost(VHOST_ALLOWED_CONFIG);
+
+            String hostHeader = "internal-gw.example.test:" + server.getHttpDefaultPort();
+            String response = sendRawGetWithHost(VHOST_SERVLET_PATH, hostHeader,
+                    "$WSSN: public.example.test");
+            LOG.info("testVhostRoutingWithAllowedServerNames response:\n" + response);
+
+            assertTrue("Expected 200 OK — vhostApp should be served",
+                    response.contains("200"));
+            assertEquals("APP_ID must be vhost — vhostApp must have answered the request",
+                    "vhost", extractResponseField(response, "APP_ID"));
+            assertEquals("SERVER_NAME should equal the approved $WSSN value",
+                    "public.example.test", extractResponseField(response, "SERVER_NAME"));
+            String cacheControl = extractHeader(response, "Cache-Control");
+            assertFalse("Cache-Control must not be no-store for an approved $WSSN",
+                    "no-store".equals(cacheControl));
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        }
+    }
+
+    /**
+     * Verifies fail-closed behaviour: when {@code $WSSN} is not listed in
+     * {@code allowedServerNames} and the peer is not sensitive-trusted, the
+     * routing key stays as the Host header value ({@code internal-gw.example.test}).
+     * That key does not match the {@code publicVhost} alias, so the virtual-host
+     * application is not served — the presence of the alias alone is not enough
+     * to trust the {@code $WSSN} value.
+     */
+    @Test
+    public void testVhostRoutingFailClosedWhenNotListed() throws Exception {
+        server.saveServerConfiguration();
+        try {
+            reconfigureWithVhost(VHOST_UNLISTED_CONFIG);
+
+            String hostHeader = "internal-gw.example.test:" + server.getHttpDefaultPort();
+            String response = sendRawGetWithHost(VHOST_SERVLET_PATH, hostHeader,
+                    "$WSSN: public.example.test");
+            LOG.info("testVhostRoutingFailClosedWhenNotListed response:\n" + response);
+
+            // The routing key is the Host value, which has no matching virtual host.
+            // Liberty returns a 404 or dispatcher error page; either way APP_ID=vhost
+            // must not appear in the body.
+            assertFalse("vhostApp must not be served when $WSSN is not in allowedServerNames",
+                    "vhost".equals(extractResponseField(response, "APP_ID")));
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        }
+    }
+
+    /**
+     * Verifies the sensitive-trusted routing path end-to-end: with
+     * {@code trustedSensitiveHeaderOrigin="*"}, any well-formed {@code $WSSN}
+     * is approved without needing an {@code allowedServerNames} entry.
+     * The routing key becomes {@code public.example.test:<port>}, matching
+     * the {@code publicVhost} alias, and {@code vhostApp} is served without
+     * {@code Cache-Control: no-store} because the name is approved.
+     */
+    @Test
+    public void testVhostRoutingWithSensitiveTrustedPeer() throws Exception {
+        server.saveServerConfiguration();
+        try {
+            reconfigureWithVhost(VHOST_SENSITIVE_CONFIG);
+
+            String hostHeader = "internal-gw.example.test:" + server.getHttpDefaultPort();
+            String response = sendRawGetWithHost(VHOST_SERVLET_PATH, hostHeader,
+                    "$WSSN: public.example.test");
+            LOG.info("testVhostRoutingWithSensitiveTrustedPeer response:\n" + response);
+
+            assertTrue("Expected 200 OK — vhostApp should be served via sensitive trust",
+                    response.contains("200"));
+            assertEquals("APP_ID must be vhost — vhostApp must have answered the request",
+                    "vhost", extractResponseField(response, "APP_ID"));
+            assertEquals("SERVER_NAME should equal the $WSSN value approved via sensitive trust",
+                    "public.example.test", extractResponseField(response, "SERVER_NAME"));
+            String cacheControl = extractHeader(response, "Cache-Control");
+            assertFalse("Cache-Control must not be no-store when $WSSN is approved via sensitive trust",
+                    "no-store".equals(cacheControl));
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        }
     }
 }
