@@ -40,7 +40,7 @@ public class DefaultValueTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/defaultValueTest");
+    public McpClient client = McpClient.builder(server, "/defaultValueTest").build();
 
     @BeforeClass
     public static void setup() throws Exception {

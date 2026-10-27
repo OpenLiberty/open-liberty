@@ -36,7 +36,7 @@ public class NonRequiredArgsToolsTest {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/nonRequiredArgsToolsTest");
+    public McpClient client = McpClient.builder(server, "/nonRequiredArgsToolsTest").build();
 
     @BeforeClass
     public static void setup() throws Exception {

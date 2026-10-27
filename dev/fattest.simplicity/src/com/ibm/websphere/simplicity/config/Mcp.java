@@ -19,6 +19,7 @@ public class Mcp extends ConfigElement {
     private String stateless;
     private String moduleName;
     private String path;
+    private String asyncTimeout;
 
     /**
      * @return whether the MCP server is stateless
@@ -56,6 +57,18 @@ public class Mcp extends ConfigElement {
         this.path = path;
     }
 
+    /**
+     * @return the async timeout for MCP tool calls
+     */
+    public String getAsyncTimeout() {
+        return asyncTimeout;
+    }
+
+    @XmlAttribute
+    public void setAsyncTimeout(String asyncTimeout) {
+        this.asyncTimeout = asyncTimeout;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Mcp {");
@@ -65,6 +78,8 @@ public class Mcp extends ConfigElement {
             builder.append("moduleName=\"" + moduleName + "\" ");
         if (path != null)
             builder.append("path=\"" + path + "\" ");
+        if (asyncTimeout != null)
+            builder.append("asyncTimeout=\"" + asyncTimeout + "\" ");
         builder.append("}");
         return builder.toString();
     }

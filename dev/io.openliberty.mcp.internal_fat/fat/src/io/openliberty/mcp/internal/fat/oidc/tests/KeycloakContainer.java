@@ -94,15 +94,17 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
         withExposedPorts(8080, 8443);
         withStartupAttempts(3);
         withCopyToContainer(buildKeycloakKeystore(), "/keystore.p12");
-        withEnv("KEYCLOAK_ADMIN", "admin");
-        withEnv("KEYCLOAK_ADMIN_PASSWORD", "admin");
+        withEnv("KC_BOOTSTRAP_ADMIN_USERNAME", "admin");
+        withEnv("KC_BOOTSTRAP_ADMIN_PASSWORD", "admin");
+        withEnv("KC_SPI_ADMIN_REALM", "primary");
         withCommand("start-dev",
                     "--https-key-store-file=/keystore.p12",
                     "--https-key-store-password=password",
                     "--hostname-strict=false");
         withLogConsumer(new SimpleLogConsumer(KeycloakContainer.class, "keycloak-container"));
+        // Allow up to 5 minutes for busy or remote CI build machines.
         waitingFor(Wait.forLogMessage(".*Listening on:.*", 1)
-                       .withStartupTimeout(Duration.ofMinutes(2)));
+                       .withStartupTimeout(Duration.ofMinutes(5)));
     }
 
     // Public API
@@ -122,9 +124,9 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
      */
     public synchronized void setupRealm() throws Exception {
 
-        // Authenticate kcadm against the master realm
+        // Authenticate kcadm against the primary realm
         run("/opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:8080 " +
-            "--realm master --user admin --password admin");
+            "--realm primary --user admin --password admin");
 
         // Create application realm
         run("/opt/keycloak/bin/kcadm.sh create realms -s realm=" + REALM + " -s enabled=true");
@@ -306,10 +308,10 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
                                       "grant_type=password");
 
         java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
-                                         .uri(URI.create(tokenEndpoint))
-                                         .header("Content-Type", "application/x-www-form-urlencoded")
-                                         .POST(java.net.http.HttpRequest.BodyPublishers.ofString(formData))
-                                         .build();
+                                                                     .uri(URI.create(tokenEndpoint))
+                                                                     .header("Content-Type", "application/x-www-form-urlencoded")
+                                                                     .POST(java.net.http.HttpRequest.BodyPublishers.ofString(formData))
+                                                                     .build();
 
         java.net.http.HttpResponse<String> response = getHttpClient().send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
