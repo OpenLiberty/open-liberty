@@ -26,8 +26,6 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -53,7 +51,8 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * RestJwtTAI still validates the token with the jwtConsumer, but the RS256 public key is read from
- * the file named by the rest.jwt.verify.publickey.location system property.
+ * the file named by the jwkEndpointUrl of the defaultJwtConsumer in server.xml:
+ * jwkEndpointUrl="file:${server.config.dir}resources/security/jwtPublic.pem"
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
@@ -63,7 +62,6 @@ public class RestJwtKeyFileFATTest {
 
     private static final String ISSUER = "https://localhost:9443/jwt";
     private static final String MBEANS_ENDPOINT = "/IBMJMXConnectorREST/mbeans";
-    private static final String KEY_PROPERTY = "rest.jwt.verify.publickey.location";
 
     @Server("RestJwtKeyFileServer")
     public static LibertyServer server;
@@ -89,11 +87,7 @@ public class RestJwtKeyFileFATTest {
                      + "\n-----END PUBLIC KEY-----\n";
         Files.write(keyFile.toPath(), pem.getBytes(StandardCharsets.US_ASCII));
 
-        Map<String, String> jvmOptions = new LinkedHashMap<String, String>();
-        jvmOptions.put("-D" + KEY_PROPERTY, keyFile.getAbsolutePath());
-        server.setJvmOptions(jvmOptions);
-
-        Log.info(c, methodName, "Starting RestJwtKeyFileServer with " + KEY_PROPERTY + "=" + keyFile.getAbsolutePath());
+        Log.info(c, methodName, "Starting RestJwtKeyFileServer with the jwkEndpointUrl file " + keyFile.getAbsolutePath());
         server.startServer();
         assertNotNull("IBMJMXConnectorREST application was not ready",
                       server.waitForStringInLog("SRVE0242I.*IBMJMXConnectorREST"));

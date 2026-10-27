@@ -41,6 +41,7 @@ import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
+import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.wsspi.security.tai.TAIResult;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
@@ -262,56 +263,46 @@ public class RestJwtTAITest {
     }
 
     @Test
-    public void testKeyLocationProperties_NotSetReturnsNull() {
-        String old = System.clearProperty(RestJwtTAI.PROP_VERIFY_PUBLICKEY_LOCATION);
-        try {
-            assertNull("No MP properties expected when the system property is not set", tai.getKeyLocationProperties());
-        } finally {
-            restoreProperty(old);
-        }
+    public void testKeyLocationProperties_NoJwtConsumerConfigReturnsNull() {
+        assertNull("No MP properties expected without a jwtConsumer", tai.getKeyLocationProperties(null));
     }
 
     @Test
-    public void testKeyLocationProperties_BlankReturnsNull() {
-        String old = System.setProperty(RestJwtTAI.PROP_VERIFY_PUBLICKEY_LOCATION, "   ");
-        try {
-            assertNull("A blank system property must be ignored", tai.getKeyLocationProperties());
-        } finally {
-            restoreProperty(old);
-        }
+    public void testKeyLocationProperties_JwkEndpointUrlNotSetReturnsNull() {
+        final JwtConsumerConfig config = mockery.mock(JwtConsumerConfig.class);
+        mockery.checking(new Expectations() {
+            {
+                allowing(config).getJwkEndpointUrl();
+                will(returnValue(null));
+            }
+        });
+        assertNull("No MP properties expected when jwkEndpointUrl is not set", tai.getKeyLocationProperties(config));
     }
 
     @Test
-    public void testKeyLocationProperties_SetMapsToKeyLocation() {
-        String old = System.setProperty(RestJwtTAI.PROP_VERIFY_PUBLICKEY_LOCATION, " /tmp/jwtPublic.pem ");
-        try {
-            MpConfigProperties props = tai.getKeyLocationProperties();
-            assertNotNull(props);
-            assertEquals("/tmp/jwtPublic.pem", props.get(MpConfigProperties.KEY_LOCATION));
-            assertEquals("mp.jwt.verify.publickey.location", MpConfigProperties.KEY_LOCATION);
-            assertEquals("rest.jwt.verify.publickey.location", RestJwtTAI.PROP_VERIFY_PUBLICKEY_LOCATION);
-        } finally {
-            restoreProperty(old);
-        }
+    public void testKeyLocationProperties_BlankJwkEndpointUrlReturnsNull() {
+        final JwtConsumerConfig config = mockery.mock(JwtConsumerConfig.class);
+        mockery.checking(new Expectations() {
+            {
+                allowing(config).getJwkEndpointUrl();
+                will(returnValue("   "));
+            }
+        });
+        assertNull("A blank jwkEndpointUrl must be ignored", tai.getKeyLocationProperties(config));
     }
 
     @Test
-    public void testValidateJwt_KeyLocationSetButNoJwtConsumerConfig_Unauthorized() throws Exception {
-        String old = System.setProperty(RestJwtTAI.PROP_VERIFY_PUBLICKEY_LOCATION, "/tmp/jwtPublic.pem");
-        try {
-            TAIResult result = tai.validateJwtAndCreateResult("a.b.c");
-            assertEquals("A missing defaultJwtConsumer must result in 401", HttpServletResponse.SC_UNAUTHORIZED, result.getStatus());
-        } finally {
-            restoreProperty(old);
-        }
-    }
-
-    private static void restoreProperty(String old) {
-        if (old == null) {
-            System.clearProperty(RestJwtTAI.PROP_VERIFY_PUBLICKEY_LOCATION);
-        } else {
-            System.setProperty(RestJwtTAI.PROP_VERIFY_PUBLICKEY_LOCATION, old);
-        }
+    public void testKeyLocationProperties_FileUrlMapsToKeyLocation() {
+        final JwtConsumerConfig config = mockery.mock(JwtConsumerConfig.class);
+        mockery.checking(new Expectations() {
+            {
+                allowing(config).getJwkEndpointUrl();
+                will(returnValue(" file:///tmp/jwk.json "));
+            }
+        });
+        MpConfigProperties props = tai.getKeyLocationProperties(config);
+        assertNotNull(props);
+        assertEquals("file:///tmp/jwk.json", props.get(MpConfigProperties.KEY_LOCATION));
     }
 
     @Test

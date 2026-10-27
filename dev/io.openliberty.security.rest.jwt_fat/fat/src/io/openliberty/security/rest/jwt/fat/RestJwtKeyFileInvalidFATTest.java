@@ -25,8 +25,6 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -51,10 +49,11 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * rest.jwt.verify.publickey.location points at a file that is missing, unreadable or does not
- * hold a public key. The jwtConsumer cannot get a key, so RestJwtTAI must reject the request.
+ * The jwkEndpointUrl of the defaultJwtConsumer (file:${server.config.dir}resources/security/jwtPublic.pem
+ * in server.xml) points at a file that is missing, unreadable or does not hold a public key. The
+ * jwtConsumer cannot get a key, so RestJwtTAI must reject the request.
  *
- * The system property is fixed for the life of the server JVM, but RestJwtTAI reads the file on
+ * The file URL is fixed for the life of the server, but RestJwtTAI reads the file on
  * every request, so each test changes the state of the file instead of restarting the server. A
  * valid key is never served, so no key can be cached from an earlier request.
  */
@@ -66,7 +65,6 @@ public class RestJwtKeyFileInvalidFATTest {
 
     private static final String ISSUER = "https://localhost:9443/jwt";
     private static final String MBEANS_ENDPOINT = "/IBMJMXConnectorREST/mbeans";
-    private static final String KEY_PROPERTY = "rest.jwt.verify.publickey.location";
 
     @Server("RestJwtKeyFileServer")
     public static LibertyServer server;
@@ -83,15 +81,12 @@ public class RestJwtKeyFileInvalidFATTest {
         KeyPair pair = generator.generateKeyPair();
         token = createRs256Token(pair);
 
-        keyFile = new File(server.getServerRoot() + "/resources/security/jwtInvalid.pem");
+        // Must be the file named by jwkEndpointUrl in the RestJwtKeyFileServer server.xml
+        keyFile = new File(server.getServerRoot() + "/resources/security/jwtPublic.pem");
         keyFile.getParentFile().mkdirs();
         deleteKeyFile();
 
-        Map<String, String> jvmOptions = new LinkedHashMap<String, String>();
-        jvmOptions.put("-D" + KEY_PROPERTY, keyFile.getAbsolutePath());
-        server.setJvmOptions(jvmOptions);
-
-        Log.info(c, methodName, "Starting RestJwtKeyFileServer with " + KEY_PROPERTY + "=" + keyFile.getAbsolutePath());
+        Log.info(c, methodName, "Starting RestJwtKeyFileServer with the jwkEndpointUrl file " + keyFile.getAbsolutePath());
         server.startServer();
         assertNotNull("IBMJMXConnectorREST application was not ready",
                       server.waitForStringInLog("SRVE0242I.*IBMJMXConnectorREST"));

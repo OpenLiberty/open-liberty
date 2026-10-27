@@ -75,12 +75,6 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String LTPA_COOKIE_NAME = "LtpaToken2";
 
-    /**
-     * System property naming the file that holds the public key used to verify the JWT signature.
-     * When it is set, the key is read from that file (PEM or JWK, same as mp.jwt.verify.publickey.location)
-     * instead of from the jwtConsumer keystore configuration. Only used for RS and ES algorithms.
-     */
-    public static final String PROP_VERIFY_PUBLICKEY_LOCATION = "rest.jwt.verify.publickey.location";
     public static final String KEY_JWT_CONSUMER_CONFIG = "jwtConsumerConfig";
     public static final String DEFAULT_JWT_CONSUMER_ID = "defaultJwtConsumer";
 
@@ -308,26 +302,28 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
     }
 
     /**
-     * Validates the token with the jwtConsumer. If the system property rest.jwt.verify.publickey.location is set,
-     * the public key is read from that file; otherwise the key comes from the jwtConsumer configuration.
+     * Validates the token with the jwtConsumer. If the defaultJwtConsumer has a jwkEndpointUrl configured,
+     * for example jwkEndpointUrl="file:///path/to/jwk", the public key is read from that location;
+     * otherwise the key comes from the jwtConsumer keystore configuration.
      */
     protected JwtToken parseJwt(@Sensitive String token) throws Exception {
-        MpConfigProperties mpProps = getKeyLocationProperties();
+        JwtConsumerConfig config = jwtConsumerConfigRef.getService(DEFAULT_JWT_CONSUMER_ID);
+        MpConfigProperties mpProps = getKeyLocationProperties(config);
         if (mpProps == null) {
             return JwtConsumer.create().createJwt(token);
-        }
-        JwtConsumerConfig config = jwtConsumerConfigRef.getService(DEFAULT_JWT_CONSUMER_ID);
-        if (config == null) {
-            throw new IllegalStateException("The JWT consumer " + DEFAULT_JWT_CONSUMER_ID + " is not configured");
         }
         return config.getConsumerUtils().parseJwt(token, config, mpProps);
     }
 
     /**
-     * @return properties that point the jwtConsumer at the public key file, or null if the system property is not set
+     * @return properties that point the jwtConsumer at the key location given by its jwkEndpointUrl,
+     *         or null if the jwtConsumer or its jwkEndpointUrl is not configured
      */
-    protected MpConfigProperties getKeyLocationProperties() {
-        String location = System.getProperty(PROP_VERIFY_PUBLICKEY_LOCATION);
+    protected MpConfigProperties getKeyLocationProperties(JwtConsumerConfig config) {
+        if (config == null) {
+            return null;
+        }
+        String location = config.getJwkEndpointUrl();
         if (location == null || location.trim().isEmpty()) {
             return null;
         }
