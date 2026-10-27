@@ -9,10 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -24,11 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.defaultValueApp.DefaultValueApp;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -36,28 +33,40 @@ import io.openliberty.mcp.internal.fat.utils.TestConstants;
 
 @RunWith(FATRunner.class)
 public class DefaultValueTest extends FATServletClient {
-    @Server("mcp-server")
-    public static LibertyServer server;
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String APP_NAME = "defaultValueTest";
 
     @Rule
-    public McpClient client = McpClient.builder(server, "/defaultValueTest").build();
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "defaultValueTest.war")
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        serverLifecycle.getServer().addIgnoredErrors(List.of(
+                                                             "CWMCM0034W", // Converter implementation without type parameter
+                                                             "CWMCM0035W" // Converter implementation returns a generic type
+        ));
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(DefaultValueApp.class.getPackage());
+        serverLifecycle.deployDropinApp(war);
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        assertStartupMessages();
+    }
 
-        server.startServer();
+    private static void assertStartupMessages() {
+        assertNotNull("Expected CWMCM0034W for InvalidNoParameterTypeCustomConverter to be logged at deploy",
+                      serverLifecycle.getServer()
+                                     .waitForStringInLogUsingMark(Pattern.quote("CWMCM0034W: The class io.openliberty.mcp.internal.fat.tool.defaultValueApp.DefaultValueApp$InvalidNoParameterTypeCustomConverter DefaultValueConverter implementation must specify a type parameter.")));
+        assertNotNull("Expected CWMCM0035W for InvalidGenericConverter to be logged at deploy",
+                      serverLifecycle.getServer()
+                                     .waitForStringInLogUsingMark(Pattern.quote("CWMCM0035W: The class io.openliberty.mcp.internal.fat.tool.defaultValueApp.DefaultValueApp$InvalidGenericConverter DefaultValueConverter implementation converts to a generic type parameter instead of a concrete type.")));
+        assertNotNull("Expected CWMCM0008I message with full MCP URL to appear in the log",
+                      serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0008I: The MCP server endpoint: .*/defaultValueTest/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(
-                          "CWMCM0034W", // Converter implementation without type parameter
-                          "CWMCM0035W" // Converter implementation returns a generic type
-        );
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
@@ -116,6 +125,8 @@ public class DefaultValueTest extends FATServletClient {
                         }
                         """;
 
+        // Only look at log entries produced by this tool call
+        serverLifecycle.getServer().setMarkToEndOfLog();
         String response = client.callMCP(request);
         String expectedResponseString = """
                         {
@@ -133,8 +144,9 @@ public class DefaultValueTest extends FATServletClient {
                         }
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
-        assertNotNull((server.waitForStringInLog(Pattern.quote("[PriorityCityConverter] City converter with HIGHER priority used"))));
-        assertNull(server.waitForStringInLog(Pattern.quote("[CityConverter] City converter with LOWER priority used"), TestConstants.NEGATIVE_TIMEOUT_MS));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark(Pattern.quote("[PriorityCityConverter] City converter with HIGHER priority used")));
+        assertNull(serverLifecycle.getServer().waitForStringInLogUsingMark(Pattern.quote("[CityConverter] City converter with LOWER priority used"),
+                                                                           TestConstants.NEGATIVE_TIMEOUT_MS));
     }
 
     @Test
@@ -207,6 +219,8 @@ public class DefaultValueTest extends FATServletClient {
                         }
                         """;
 
+        // Only look at log entries produced by this tool call
+        serverLifecycle.getServer().setMarkToEndOfLog();
         String response = client.callMCP(request);
         String expectedResponseString = """
                         {
@@ -224,18 +238,7 @@ public class DefaultValueTest extends FATServletClient {
                         }
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
-        assertNull(server.waitForStringInLog(Pattern.quote("[PersonConverterDependentBean] PreDestroy called"), TestConstants.NEGATIVE_TIMEOUT_MS));
+        assertNull(serverLifecycle.getServer().waitForStringInLogUsingMark(Pattern.quote("[PersonConverterDependentBean] PreDestroy called"), TestConstants.NEGATIVE_TIMEOUT_MS));
     }
 
-    @Test
-    public void testWarningsForInvalidCustomConverters() throws Exception {
-        assertNotNull(server.waitForStringInLog(Pattern.quote("CWMCM0034W: The class io.openliberty.mcp.internal.fat.tool.defaultValueApp.DefaultValueApp$InvalidNoParameterTypeCustomConverter DefaultValueConverter implementation must specify a type parameter.")));
-        assertNotNull(server.waitForStringInLog(Pattern.quote("CWMCM0035W: The class io.openliberty.mcp.internal.fat.tool.defaultValueApp.DefaultValueApp$InvalidGenericConverter DefaultValueConverter implementation converts to a generic type parameter instead of a concrete type.")));
-    }
-
-    @Test
-    public void testMcpEndpointMessageCodeIsLogged() throws Exception {
-        assertNotNull("Expected CWMCM0008I message with full MCP URL to appear in the log",
-                      server.waitForStringInLog("CWMCM0008I: The MCP server endpoint: .*/defaultValueTest/mcp$"));
-    }
 }

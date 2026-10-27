@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.protocol;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
@@ -28,11 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -44,24 +40,22 @@ import io.openliberty.mcp.internal.fat.utils.TestConstants;
 @RunWith(FATRunner.class)
 public class ProtocolVersionTest {
 
-    @Rule
-    public McpClient client = McpClient.builder(server, "/protocolVersionTest").build();
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String APP_NAME = "protocolVersionTest";
 
-    @Server("mcp-server")
-    public static LibertyServer server;
+    @Rule
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "protocolVersionTest.war").addPackage(BasicTools.class.getPackage());
-
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addPackage(BasicTools.class.getPackage());
+        serverLifecycle.deployDropinApp(war);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
@@ -80,7 +74,7 @@ public class ProtocolVersionTest {
                         }
                         """;
 
-        HttpRequest httpRequest = new HttpRequest(server, "/protocolVersionTest/mcp")
+        HttpRequest httpRequest = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
                                                                                      .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                                      .requestProp(MCP_SESSION_ID, client.getSessionId())
                                                                                      .jsonBody(request)
@@ -127,7 +121,7 @@ public class ProtocolVersionTest {
                         }
                         """;
 
-        HttpRequest httpRequest = new HttpRequest(server, "/protocolVersionTest/mcp")
+        HttpRequest httpRequest = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
                                                                                      .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                                      .jsonBody(request)
                                                                                      .method("POST")
@@ -158,7 +152,7 @@ public class ProtocolVersionTest {
                         }
                         """;
 
-        String response = new HttpRequest(server, "/protocolVersionTest/mcp")
+        String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
                                                                              .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                              .requestProp(MCP_PROTOCOL_VERSION, "2022-02-02")
                                                                              .requestProp(MCP_SESSION_ID, client.getSessionId())
