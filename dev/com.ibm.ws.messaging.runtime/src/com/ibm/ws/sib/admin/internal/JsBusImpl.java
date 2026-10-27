@@ -133,7 +133,7 @@ public class JsBusImpl implements JsBus {
 	 */
 	public SIBUuid8 getUuid() {
 		if (_uuid == null) {
-			String s = "B0CEFAD4D3454A2E";
+			String s = "B0CEFAD4D3454A2E"; // pragma: allowlist secret
 			_uuid = new SIBUuid8(s);
 		}
 		return _uuid;

@@ -40,7 +40,7 @@ public class TestOLGH17373_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testQueryCoalesceLiterals1
     @Test
     public void jpa_spec10_query_olgh17373_testQueryCoalesceLiterals1_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh17373_testQueryCoalesceLiterals1_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa10_query_olgh17373_testQueryCoalesceLiterals1_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testQueryCoalesceLiterals1";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);

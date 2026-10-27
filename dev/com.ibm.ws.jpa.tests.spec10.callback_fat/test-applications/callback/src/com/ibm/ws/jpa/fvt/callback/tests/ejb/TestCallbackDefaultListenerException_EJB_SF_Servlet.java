@@ -76,7 +76,7 @@ public class TestCallbackDefaultListenerException_EJB_SF_Servlet extends EJBDBTe
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException002";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -102,7 +102,7 @@ public class TestCallbackDefaultListenerException_EJB_SF_Servlet extends EJBDBTe
 
     @Test
     public void jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_AMRL_EJB_SF() throws Exception {
-        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_AMRL_EJB_SF";
+        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_AMRL_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException002";
         final String testResource = "test-jpa-resource-amrl";
 
@@ -130,7 +130,7 @@ public class TestCallbackDefaultListenerException_EJB_SF_Servlet extends EJBDBTe
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_CMTS_EJB_SF() throws Exception {
-        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_CMTS_EJB_SF";
+        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PackageProtection_001_XML_CMTS_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException002";
         final String testResource = "test-jpa-resource-cmts";
 
@@ -160,7 +160,7 @@ public class TestCallbackDefaultListenerException_EJB_SF_Servlet extends EJBDBTe
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_CallbackDefaultListener_RuntimeException_PrivateProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PrivateProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PrivateProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException002";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -244,7 +244,7 @@ public class TestCallbackDefaultListenerException_EJB_SF_Servlet extends EJBDBTe
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_CallbackDefaultListener_RuntimeException_ProtectedProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_ProtectedProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_ProtectedProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException002";
         final String testResource = "test-jpa-resource-amjta";
 
@@ -328,7 +328,7 @@ public class TestCallbackDefaultListenerException_EJB_SF_Servlet extends EJBDBTe
     @Test
     @ExpectedFFDC("javax.transaction.RollbackException")
     public void jpa10_CallbackDefaultListener_RuntimeException_PublicProtection_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PublicProtection_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_CallbackDefaultListener_RuntimeException_PublicProtection_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testCallbackRuntimeException002";
         final String testResource = "test-jpa-resource-amjta";
 

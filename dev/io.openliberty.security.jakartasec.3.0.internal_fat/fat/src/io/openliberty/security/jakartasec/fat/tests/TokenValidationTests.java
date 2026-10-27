@@ -91,7 +91,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
     int Omit_expires_in = 9999;
     String Default_token_type = "Bearer";
     String Default_scope = "openid profile";
-    String Default_refresh_token = "21MhoIC95diaQo9tb5UpFBDFlHh45NixhcKkCwRipszH6WIzKz";
+    String Default_refresh_token = "21MhoIC95diaQo9tb5UpFBDFlHh45NixhcKkCwRipszH6WIzKz"; // pragma: allowlist secret
 
     Expectations tokenResponseExpectations = null;
 

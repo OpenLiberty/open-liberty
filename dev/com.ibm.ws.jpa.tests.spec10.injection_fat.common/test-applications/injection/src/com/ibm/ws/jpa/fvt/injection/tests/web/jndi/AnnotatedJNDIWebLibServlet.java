@@ -168,7 +168,7 @@ public class AnnotatedJNDIWebLibServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_Web_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_WEBLIB_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_Web_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_WEBLIB_AMJTA";
+        final String testName = "jpa10_Injection_Web_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_WEBLIB_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -191,7 +191,7 @@ public class AnnotatedJNDIWebLibServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_Web_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_WEBLIB_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_Web_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_WEBLIB_AMRL";
+        final String testName = "jpa10_Injection_Web_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_WEBLIB_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -214,7 +214,7 @@ public class AnnotatedJNDIWebLibServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_Web_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_WEBLIB_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_Web_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_WEBLIB_CMTS";
+        final String testName = "jpa10_Injection_Web_JNDI_testCommonPUNameSpecifiedPersistencePathLibJar_ANO_WEBLIB_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -263,7 +263,7 @@ public class AnnotatedJNDIWebLibServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_Web_JNDI_testUniquePUNameAppModule_ANO_WEBLIB_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_Web_JNDI_testUniquePUNameAppModule_ANO_WEBLIB_AMRL";
+        final String testName = "jpa10_Injection_Web_JNDI_testUniquePUNameAppModule_ANO_WEBLIB_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -286,7 +286,7 @@ public class AnnotatedJNDIWebLibServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_Web_JNDI_testUniquePUNameAppModule_ANO_WEBLIB_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_Web_JNDI_testUniquePUNameAppModule_ANO_WEBLIB_CMTS";
+        final String testName = "jpa10_Injection_Web_JNDI_testUniquePUNameAppModule_ANO_WEBLIB_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -358,7 +358,7 @@ public class AnnotatedJNDIWebLibServlet extends JPADBTestServlet {
 
     @Test
     public void jpa10_Injection_Web_JNDI_testUniquePUNameLibJar_ANO_WEBLIB_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_Web_JNDI_testUniquePUNameLibJar_ANO_WEBLIB_CMTS";
+        final String testName = "jpa10_Injection_Web_JNDI_testUniquePUNameLibJar_ANO_WEBLIB_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

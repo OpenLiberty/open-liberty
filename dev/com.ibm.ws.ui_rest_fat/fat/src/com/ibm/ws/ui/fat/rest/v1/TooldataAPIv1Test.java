@@ -50,8 +50,8 @@ public class TooldataAPIv1Test extends CommonRESTTest implements APIConstants {
     private final String tooldataExploreEntryURL = API_V1_TOOLDATA + "/com.ibm.websphere.appserver.adminCenter.tool.explore";
     private final String dataString = "{\"key\":\"value\"}";
     private final String dataString1 = "{\"key\":\"value1\"}";
-    private final String etagCheckSum1 = "0213f898602b6a489de25f20d8d32c3dbf3d6fee0fbe468f89ac803874ac846f8cd239294a78c2bddf3e0988acb8cd3d00e067a981c9c7933b43a42d3b273eae";
-    private final String etagCheckSum2 = "30a9c1549c94169bc284e21ea24d49084b1d661d01a8f6c194b7823bcad429da2aafae945b6a1573994234806fb6000ca092718e8b92c02b062223650e6817e1";
+    private final String etagCheckSum1 = "0213f898602b6a489de25f20d8d32c3dbf3d6fee0fbe468f89ac803874ac846f8cd239294a78c2bddf3e0988acb8cd3d00e067a981c9c7933b43a42d3b273eae"; // pragma: allowlist secret
+    private final String etagCheckSum2 = "30a9c1549c94169bc284e21ea24d49084b1d661d01a8f6c194b7823bcad429da2aafae945b6a1573994234806fb6000ca092718e8b92c02b062223650e6817e1"; // pragma: allowlist secret
 
     public TooldataAPIv1Test() {
         super(c);

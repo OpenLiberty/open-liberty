@@ -646,7 +646,7 @@ public class TestComparisonServlet extends JPADBTestServlet {
 
     @Test
     public void jpa_eclipselink_query_olgh17837_testInSubquery2_PartialBind_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_query_olgh17837_testInSubquery2_PartialBind_CMTS_Web";
+        final String testName = "jpa_eclipselink_query_olgh17837_testInSubquery2_PartialBind_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testInSubquery2_PartialBind";
         final String testResource = "test-jpa-resource-cmts-partial-bind";
 
@@ -1025,7 +1025,7 @@ public class TestComparisonServlet extends JPADBTestServlet {
 
     @Test
     public void jpa_eclipselink_query_olgh17837_testNotExists2_PartialBind_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_query_olgh17837_testNotExists2_PartialBind_CMTS_Web";
+        final String testName = "jpa_eclipselink_query_olgh17837_testNotExists2_PartialBind_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testNotExists2_PartialBind";
         final String testResource = "test-jpa-resource-cmts-partial-bind";
 
@@ -1112,7 +1112,7 @@ public class TestComparisonServlet extends JPADBTestServlet {
 
     @Test
     public void jpa_eclipselink_query_olgh17837_testNotInSubquery1_PartialBind_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_query_olgh17837_testNotInSubquery1_PartialBind_CMTS_Web";
+        final String testName = "jpa_eclipselink_query_olgh17837_testNotInSubquery1_PartialBind_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testNotInSubquery1_PartialBind";
         final String testResource = "test-jpa-resource-cmts-partial-bind";
 
@@ -1141,7 +1141,7 @@ public class TestComparisonServlet extends JPADBTestServlet {
 
     @Test
     public void jpa_eclipselink_query_olgh17837_testNotInSubquery2_PartialBind_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_query_olgh17837_testNotInSubquery2_PartialBind_CMTS_Web";
+        final String testName = "jpa_eclipselink_query_olgh17837_testNotInSubquery2_PartialBind_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testNotInSubquery2_PartialBind";
         final String testResource = "test-jpa-resource-cmts-partial-bind";
 
@@ -1150,7 +1150,7 @@ public class TestComparisonServlet extends JPADBTestServlet {
 
     @Test
     public void jpa_eclipselink_query_olgh17837_testNotInSubquery2_PartialBind_BindLiteral_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_query_olgh17837_testNotInSubquery2_PartialBind_BindLiteral_CMTS_Web";
+        final String testName = "jpa_eclipselink_query_olgh17837_testNotInSubquery2_PartialBind_BindLiteral_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testNotInSubquery2_PartialBind_BindLiteral";
         final String testResource = "test-jpa-resource-cmts-partial-bind-bind-literal";
 
@@ -1170,7 +1170,7 @@ public class TestComparisonServlet extends JPADBTestServlet {
 
     @Test
     public void jpa_eclipselink_query_olgh17837_testNotInSubquery3_PartialBind_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_query_olgh17837_testNotInSubquery3_PartialBind_CMTS_Web";
+        final String testName = "jpa_eclipselink_query_olgh17837_testNotInSubquery3_PartialBind_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testNotInSubquery3_PartialBind";
         final String testResource = "test-jpa-resource-cmts-partial-bind";
 
@@ -1228,7 +1228,7 @@ public class TestComparisonServlet extends JPADBTestServlet {
 
     @Test
     public void jpa_eclipselink_query_olgh17837_testNullIf1_PartialBind_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_query_olgh17837_testNullIf1_PartialBind_CMTS_Web";
+        final String testName = "jpa_eclipselink_query_olgh17837_testNullIf1_PartialBind_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testNullIf1_PartialBind";
         final String testResource = "test-jpa-resource-cmts-partial-bind";
 
@@ -1257,7 +1257,7 @@ public class TestComparisonServlet extends JPADBTestServlet {
 
     @Test
     public void jpa_eclipselink_query_olgh17837_testNullIf2_PartialBind_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_query_olgh17837_testNullIf2_PartialBind_CMTS_Web";
+        final String testName = "jpa_eclipselink_query_olgh17837_testNullIf2_PartialBind_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testNullIf2_PartialBind";
         final String testResource = "test-jpa-resource-cmts-partial-bind";
 
@@ -1286,7 +1286,7 @@ public class TestComparisonServlet extends JPADBTestServlet {
 
     @Test
     public void jpa_eclipselink_query_olgh17837_testNullIf3_PartialBind_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_query_olgh17837_testNullIf3_PartialBind_CMTS_Web";
+        final String testName = "jpa_eclipselink_query_olgh17837_testNullIf3_PartialBind_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testNullIf3_PartialBind";
         final String testResource = "test-jpa-resource-cmts-partial-bind";
 

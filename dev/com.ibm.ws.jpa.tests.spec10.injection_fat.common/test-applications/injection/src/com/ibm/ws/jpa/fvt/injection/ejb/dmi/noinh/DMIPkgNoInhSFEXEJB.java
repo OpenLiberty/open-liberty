@@ -153,7 +153,7 @@ public class DMIPkgNoInhSFEXEJB extends BMTEJBTestVehicle {
     }
 
     @PersistenceContext(unitName = "JPALIB_JTA", type = PersistenceContextType.EXTENDED,
-                        name = "jpa/DMIPkgNoInhTestEJB/ovdem_cmex_jpalib_earlib")
+                        name = "jpa/DMIPkgNoInhTestEJB/ovdem_cmex_jpalib_earlib") // pragma: allowlist secret
     void setOvdem_cmex_jpalib_earlib(EntityManager ovdemCmtsJpalibEarlib) {
         ovdem_cmex_jpalib_earlib = ovdemCmtsJpalibEarlib;
     }

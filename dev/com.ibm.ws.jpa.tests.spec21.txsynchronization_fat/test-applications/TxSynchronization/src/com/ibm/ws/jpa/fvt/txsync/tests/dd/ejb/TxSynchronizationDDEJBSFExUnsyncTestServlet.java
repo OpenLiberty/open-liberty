@@ -148,7 +148,7 @@ public class TxSynchronizationDDEJBSFExUnsyncTestServlet extends EJBDBTestVehicl
 
     @Test
     public void jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_003_Unsync_EJB_CMEX_SF() throws Exception {
-        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_003_Unsync_EJB_CMEX_SF";
+        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_003_Unsync_EJB_CMEX_SF"; // pragma: allowlist secret
         final String testMethod = "testFindWithLock003";
         final String testResource = "test-jpa-resource-txunsync";
         executeTest(testName, testMethod, testResource);
@@ -164,7 +164,7 @@ public class TxSynchronizationDDEJBSFExUnsyncTestServlet extends EJBDBTestVehicl
 
     @Test
     public void jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_004_Unsync_EJB_CMEX_SF() throws Exception {
-        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_004_Unsync_EJB_CMEX_SF";
+        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_004_Unsync_EJB_CMEX_SF"; // pragma: allowlist secret
         final String testMethod = "testFindWithLock004";
         final String testResource = "test-jpa-resource-txunsync";
         executeTest(testName, testMethod, testResource);
@@ -182,7 +182,7 @@ public class TxSynchronizationDDEJBSFExUnsyncTestServlet extends EJBDBTestVehicl
 
     @Test
     public void jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_005_Unsync_EJB_CMEX_SF() throws Exception {
-        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_005_Unsync_EJB_CMEX_SF";
+        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_005_Unsync_EJB_CMEX_SF"; // pragma: allowlist secret
         final String testMethod = "testFindWithLock005";
         final String testResource = "test-jpa-resource-txunsync";
         executeTest(testName, testMethod, testResource);
@@ -200,7 +200,7 @@ public class TxSynchronizationDDEJBSFExUnsyncTestServlet extends EJBDBTestVehicl
 
     @Test
     public void jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_006_Unsync_EJB_CMEX_SF() throws Exception {
-        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_006_Unsync_EJB_CMEX_SF";
+        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_006_Unsync_EJB_CMEX_SF"; // pragma: allowlist secret
         final String testMethod = "testFindWithLock006";
         final String testResource = "test-jpa-resource-txunsync";
         executeTest(testName, testMethod, testResource);
@@ -218,7 +218,7 @@ public class TxSynchronizationDDEJBSFExUnsyncTestServlet extends EJBDBTestVehicl
 
     @Test
     public void jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_007_Unsync_EJB_CMEX_SF() throws Exception {
-        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_007_Unsync_EJB_CMEX_SF";
+        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_007_Unsync_EJB_CMEX_SF"; // pragma: allowlist secret
         final String testMethod = "testFindWithLock007";
         final String testResource = "test-jpa-resource-txunsync";
         executeTest(testName, testMethod, testResource);
@@ -236,7 +236,7 @@ public class TxSynchronizationDDEJBSFExUnsyncTestServlet extends EJBDBTestVehicl
 
     @Test
     public void jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_008_Unsync_EJB_CMEX_SF() throws Exception {
-        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_008_Unsync_EJB_CMEX_SF";
+        final String testName = "jpa_jpa21_TxSynchronizationTest_DD_testFindWithLock_008_Unsync_EJB_CMEX_SF"; // pragma: allowlist secret
         final String testMethod = "testFindWithLock008";
         final String testResource = "test-jpa-resource-txunsync";
         executeTest(testName, testMethod, testResource);

@@ -41,7 +41,7 @@ public class TestOLGH23677_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh23677_testNonBreakingSpace_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh23677_testNonBreakingSpace_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa10_query_olgh23677_testNonBreakingSpace_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testNonBreakingSpace";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);

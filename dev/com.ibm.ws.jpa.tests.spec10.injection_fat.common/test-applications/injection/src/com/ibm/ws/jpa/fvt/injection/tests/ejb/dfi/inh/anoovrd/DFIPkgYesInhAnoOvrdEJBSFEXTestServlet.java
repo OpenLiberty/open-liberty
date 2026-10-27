@@ -58,7 +58,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFEXTestServlet extends EJBDBTestVehicleServl
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testCommonPUName_PKG_NOOVRD_EJB_SF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUName_PKG_NOOVRD_EJB_SF_CMEX";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUName_PKG_NOOVRD_EJB_SF_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -89,7 +89,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFEXTestServlet extends EJBDBTestVehicleServl
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVRD_EJB_SF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVRD_EJB_SF_CMEX";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PKG_NOOVRD_EJB_SF_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -116,7 +116,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFEXTestServlet extends EJBDBTestVehicleServl
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PKG_NOOVRD_EJB_SF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PKG_NOOVRD_EJB_SF_CMEX";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PKG_NOOVRD_EJB_SF_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -143,7 +143,7 @@ public class DFIPkgYesInhAnoOvrdEJBSFEXTestServlet extends EJBDBTestVehicleServl
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PKG_NOOVRD_EJB_SF_CMEX() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PKG_NOOVRD_EJB_SF_CMEX";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PKG_NOOVRD_EJB_SF_CMEX"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

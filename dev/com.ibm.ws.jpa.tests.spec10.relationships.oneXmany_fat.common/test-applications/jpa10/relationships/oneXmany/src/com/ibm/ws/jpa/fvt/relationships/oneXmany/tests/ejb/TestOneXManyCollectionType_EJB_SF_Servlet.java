@@ -919,7 +919,7 @@ public class TestOneXManyCollectionType_EJB_SF_Servlet extends EJBDBTestVehicleS
 
     @Test
     public void jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_Relationships_OneXMany_ListType_Ordered_NONGENERIC_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testOrderedListType";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

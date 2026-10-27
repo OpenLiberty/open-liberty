@@ -74,7 +74,7 @@ public class GenerateAesKeyTest {
     public void testKeySpecifiedConfigFileSpecified() throws Exception {
 
         String pass = "passw0rd";
-        String expectedKey = "lcJWjIt38ZjBBvYfNWLEgp/I0DQFTbFmA5zFl6zCU30=";
+        String expectedKey = "lcJWjIt38ZjBBvYfNWLEgp/I0DQFTbFmA5zFl6zCU30="; // pragma: allowlist secret
         String outFile = "/path/keys.xml";
         StringBuilder xml = new StringBuilder();
         xml.append("<server>\n");
@@ -92,7 +92,7 @@ public class GenerateAesKeyTest {
     public void testKeySpecifiedNoConfigFile() throws Exception {
 
         String pass = "passw0rd";
-        String expectedKey = "lcJWjIt38ZjBBvYfNWLEgp/I0DQFTbFmA5zFl6zCU30=";
+        String expectedKey = "lcJWjIt38ZjBBvYfNWLEgp/I0DQFTbFmA5zFl6zCU30="; // pragma: allowlist secret
         try (MockedStatic<PasswordEncryptionConfigBuilder> xmlBuilder = Mockito.mockStatic(PasswordEncryptionConfigBuilder.class, Mockito.CALLS_REAL_METHODS)) {
             generate.handleTask(stdin, stdout, stderr, new String[] { GenerateAesKeyTask.TASK_NAME, "--key=" + pass });
             xmlBuilder.verify(() -> PasswordEncryptionConfigBuilder.generateAes256KeyWithPBKDF2(pass), times(1));

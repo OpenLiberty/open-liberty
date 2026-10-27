@@ -43,7 +43,7 @@ public class TestOLGH8461_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_eclipselink_olgh8461_testSQLCastPropertyDetection_EJB_SF_AMJTA_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh8461_testSQLCastPropertyDetection_EJB_SF_AMJTA_Web";
+        final String testName = "jpa_eclipselink_olgh8461_testSQLCastPropertyDetection_EJB_SF_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testSQLCastPropertyDetection";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -51,7 +51,7 @@ public class TestOLGH8461_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_eclipselink_olgh8461_testSQLCastPropertyDetection_EJB_SF_AMRL_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh8461_testSQLCastPropertyDetection_EJB_SF_AMRL_Web";
+        final String testName = "jpa_eclipselink_olgh8461_testSQLCastPropertyDetection_EJB_SF_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testSQLCastPropertyDetection";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);

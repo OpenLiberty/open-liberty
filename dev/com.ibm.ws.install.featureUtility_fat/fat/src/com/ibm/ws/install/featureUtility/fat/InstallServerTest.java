@@ -278,7 +278,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	}
 
 	/**
-	 * Test installServerFeature when a feature is installed but its dependencies
+	 * Test installServerFeature when a feature is installed but its dependencies // pragma: allowlist secret
 	 * aren't. This can happen when a feature tolerates two versions of a
 	 * dependency, only one of which is installed, and the solution from the kernel
 	 * resolver uses the other one
@@ -356,7 +356,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 
 		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
 				mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
-		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa"); // pragma: allowlist secret
 
 		String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
 

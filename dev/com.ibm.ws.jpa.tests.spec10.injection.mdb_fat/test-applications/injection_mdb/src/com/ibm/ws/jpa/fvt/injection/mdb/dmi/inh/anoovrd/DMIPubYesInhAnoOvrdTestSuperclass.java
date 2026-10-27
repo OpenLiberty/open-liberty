@@ -190,7 +190,7 @@ public abstract class DMIPubYesInhAnoOvrdTestSuperclass extends AbstractParentMD
     }
 
     @PersistenceContext(unitName = "JPALIB_JTA", type = PersistenceContextType.TRANSACTION,
-                        name = "jpa/DMIPubYesInhAnoOvrdTestEJB/ovdem_cmts_jpalib_earlib")
+                        name = "jpa/DMIPubYesInhAnoOvrdTestEJB/ovdem_cmts_jpalib_earlib") // pragma: allowlist secret
     public void setOvdem_cmts_jpalib_earlib(EntityManager ovdemCmtsJpalibEarlib) {
         ovdem_cmts_jpalib_earlib = ovdemCmtsJpalibEarlib;
     }
@@ -221,7 +221,7 @@ public abstract class DMIPubYesInhAnoOvrdTestSuperclass extends AbstractParentMD
         return ovdemf_amjta_common_earlib;
     }
 
-    @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_JTA", name = "jpa/DMIPubYesInhAnoOvrdTestEJB/ovdemf_amjta_common_earlib")
+    @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_JTA", name = "jpa/DMIPubYesInhAnoOvrdTestEJB/ovdemf_amjta_common_earlib") // pragma: allowlist secret
     public void setOvdemf_amjta_common_earlib(
                                               EntityManagerFactory ovdemfAmjtaCommonEarlib) {
         ovdemf_amjta_common_earlib = ovdemfAmjtaCommonEarlib;
@@ -232,7 +232,7 @@ public abstract class DMIPubYesInhAnoOvrdTestSuperclass extends AbstractParentMD
         return ovdemf_amjta_jpalib_earlib;
     }
 
-    @PersistenceUnit(unitName = "JPALIB_JTA", name = "jpa/DMIPubYesInhAnoOvrdTestEJB/ovdemf_amjta_jpalib_earlib")
+    @PersistenceUnit(unitName = "JPALIB_JTA", name = "jpa/DMIPubYesInhAnoOvrdTestEJB/ovdemf_amjta_jpalib_earlib") // pragma: allowlist secret
     public void setOvdemf_amjta_jpalib_earlib(
                                               EntityManagerFactory ovdemfAmjtaJpalibEarlib) {
         ovdemf_amjta_jpalib_earlib = ovdemfAmjtaJpalibEarlib;
@@ -265,7 +265,7 @@ public abstract class DMIPubYesInhAnoOvrdTestSuperclass extends AbstractParentMD
         return ovdemf_amrl_common_earlib;
     }
 
-    @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_RL", name = "jpa/DMIPubYesInhAnoOvrdTestEJB/ovdemf_amrl_common_earlib")
+    @PersistenceUnit(unitName = "../lib/jpapulib.jar#COMMON_RL", name = "jpa/DMIPubYesInhAnoOvrdTestEJB/ovdemf_amrl_common_earlib") // pragma: allowlist secret
     public void setOvdemf_amrl_common_earlib(
                                              EntityManagerFactory ovdemfAmrlCommonEarlib) {
         ovdemf_amrl_common_earlib = ovdemfAmrlCommonEarlib;
@@ -276,7 +276,7 @@ public abstract class DMIPubYesInhAnoOvrdTestSuperclass extends AbstractParentMD
         return ovdemf_amrl_jpalib_earlib;
     }
 
-    @PersistenceUnit(unitName = "JPALIB_RL", name = "jpa/DMIPubYesInhAnoOvrdTestEJB/ovdemf_amrl_jpalib_earlib")
+    @PersistenceUnit(unitName = "JPALIB_RL", name = "jpa/DMIPubYesInhAnoOvrdTestEJB/ovdemf_amrl_jpalib_earlib") // pragma: allowlist secret
     public void setOvdemf_amrl_jpalib_earlib(
                                              EntityManagerFactory ovdemfAmrlJpalibEarlib) {
         ovdemf_amrl_jpalib_earlib = ovdemfAmrlJpalibEarlib;

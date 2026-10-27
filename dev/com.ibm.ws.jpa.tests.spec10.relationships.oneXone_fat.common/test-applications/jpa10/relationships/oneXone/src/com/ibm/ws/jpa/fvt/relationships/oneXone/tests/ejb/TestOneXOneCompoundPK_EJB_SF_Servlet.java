@@ -193,7 +193,7 @@ public class TestOneXOneCompoundPK_EJB_SF_Servlet extends EJBDBTestVehicleServle
 
     @Test
     public void jpa10_Relationships_OneXOne_CompoundPK_IDClass_001_XML_AMJTA_SF_EJB() throws Exception {
-        final String testName = "jpa10_Relationships_OneXOne_CompoundPK_IDClass_001_XML_AMJTA_SF_EJB";
+        final String testName = "jpa10_Relationships_OneXOne_CompoundPK_IDClass_001_XML_AMJTA_SF_EJB"; // pragma: allowlist secret
         final String testMethod = "testOneXOneCompoundPK001";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

@@ -275,7 +275,7 @@ public class DMIPriYesInhAnoOvrdTestServlet extends DMIPriYesInhAnoOvrdTestSuper
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_WebLib_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_WebLib_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_WebLib_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -348,7 +348,7 @@ public class DMIPriYesInhAnoOvrdTestServlet extends DMIPriYesInhAnoOvrdTestSuper
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PRI_NOOVRD_WebLib_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PRI_NOOVRD_WebLib_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PRI_NOOVRD_WebLib_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -394,7 +394,7 @@ public class DMIPriYesInhAnoOvrdTestServlet extends DMIPriYesInhAnoOvrdTestSuper
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PRI_NOOVRD_WebLib_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PRI_NOOVRD_WebLib_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_testUniquePUNameAppModule_PRI_NOOVRD_WebLib_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

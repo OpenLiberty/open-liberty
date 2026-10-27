@@ -76,10 +76,10 @@ public class ToolDataAPITest {
     private final ToolEntry toolEntry2 = new ToolEntry(tool2, ITool.TYPE_FEATURE_TOOL);
     private final ToolEntry toolEntry3 = new ToolEntry(tool3, ITool.TYPE_BOOKMARK);
     private final String message = "{\"key\":\"value\"}";
-    private final String messageSHA512 = "0213f898602b6a489de25f20d8d32c3dbf3d6fee0fbe468f89ac803874ac846f8cd239294a78c2bddf3e0988acb8cd3d00e067a981c9c7933b43a42d3b273eae";
+    private final String messageSHA512 = "0213f898602b6a489de25f20d8d32c3dbf3d6fee0fbe468f89ac803874ac846f8cd239294a78c2bddf3e0988acb8cd3d00e067a981c9c7933b43a42d3b273eae"; // pragma: allowlist secret
 
     private final String message2 = "{\"key\":\"value1\"}";
-    private final String message2SHA512 = "30a9c1549c94169bc284e21ea24d49084b1d661d01a8f6c194b7823bcad429da2aafae945b6a1573994234806fb6000ca092718e8b92c02b062223650e6817e1";
+    private final String message2SHA512 = "30a9c1549c94169bc284e21ea24d49084b1d661d01a8f6c194b7823bcad429da2aafae945b6a1573994234806fb6000ca092718e8b92c02b062223650e6817e1"; // pragma: allowlist secret
 
     private final String url = "ibm/api/adminCenter/v1/tooldata";
     private final String createdURL = url + "/tool1";

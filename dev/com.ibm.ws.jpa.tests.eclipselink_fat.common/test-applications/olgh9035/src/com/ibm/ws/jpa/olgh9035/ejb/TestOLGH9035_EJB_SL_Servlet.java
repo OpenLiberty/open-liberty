@@ -44,7 +44,7 @@ public class TestOLGH9035_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
     // DB2Z tests
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_EJB_SL_AMJTA_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_EJB_SL_AMJTA_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_EJB_SL_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_DB2ZOS";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -52,7 +52,7 @@ public class TestOLGH9035_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_EJB_SL_AMRL_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_EJB_SL_AMRL_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_EJB_SL_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_DB2ZOS";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -60,7 +60,7 @@ public class TestOLGH9035_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_EJB_SL_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_EJB_SL_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2ZOS_EJB_SL_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_DB2ZOS";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);
@@ -69,7 +69,7 @@ public class TestOLGH9035_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
     //DB2-i tests
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_DB2I_EJB_SL_AMJTA_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2I_EJB_SL_AMJTA_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2I_EJB_SL_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_DB2I";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -77,7 +77,7 @@ public class TestOLGH9035_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_DB2I_EJB_SL_AMRL_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2I_EJB_SL_AMRL_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2I_EJB_SL_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_DB2I";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -85,7 +85,7 @@ public class TestOLGH9035_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_DB2I_EJB_SL_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2I_EJB_SL_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_DB2I_EJB_SL_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_DB2I";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);
@@ -94,7 +94,7 @@ public class TestOLGH9035_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
     //MySQL tests
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_MySQL_EJB_SL_AMJTA_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_MySQL_EJB_SL_AMJTA_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_MySQL_EJB_SL_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_MySQL";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -102,7 +102,7 @@ public class TestOLGH9035_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_MySQL_EJB_SL_AMRL_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_MySQL_EJB_SL_AMRL_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_MySQL_EJB_SL_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_MySQL";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -110,7 +110,7 @@ public class TestOLGH9035_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_eclipselink_olgh9035_testPlatformDetection_MySQL_EJB_SL_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_MySQL_EJB_SL_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh9035_testPlatformDetection_MySQL_EJB_SL_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testPlatformDetection_MySQL";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);

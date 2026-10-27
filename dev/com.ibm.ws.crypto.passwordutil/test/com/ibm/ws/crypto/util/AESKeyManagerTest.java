@@ -71,13 +71,13 @@ public class AESKeyManagerTest {
 
     @Test
     public void testBase64KeyValidKey() throws InvalidKeySpecException {
-        KeyVersion.AES_V2.decodeAesBase64Key("pVB1v3IS07bsRBgbpoKJhB7OQZLVMFwIxBF5PrJctb0=".toCharArray());
+        KeyVersion.AES_V2.decodeAesBase64Key("pVB1v3IS07bsRBgbpoKJhB7OQZLVMFwIxBF5PrJctb0=".toCharArray()); // pragma: allowlist secret
     }
 
     @Test
     public void testPbkDf2() throws InvalidKeySpecException, NoSuchAlgorithmException {
         String key = new String(Base64.getEncoder().encode(KeyVersion.AES_V1.buildAesKeyWithPbkdf2("testString".toCharArray())));
-        assertEquals("PBKDF2 derived key invalid.", "eqZ+0lybrSgztOfXg8D3flMtykcH3M/wOtRKaQYcNMA=", key);
+        assertEquals("PBKDF2 derived key invalid.", "eqZ+0lybrSgztOfXg8D3flMtykcH3M/wOtRKaQYcNMA=", key); // pragma: allowlist secret
     }
 
 }

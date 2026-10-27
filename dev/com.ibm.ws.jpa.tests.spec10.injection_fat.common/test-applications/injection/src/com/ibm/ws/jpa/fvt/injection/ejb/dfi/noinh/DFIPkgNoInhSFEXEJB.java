@@ -74,7 +74,7 @@ public class DFIPkgNoInhSFEXEJB extends BMTEJBTestVehicle {
 
     // This EntityManager should refer to the JPALIB_JTA in the jar in the Application's Library directory
     @PersistenceContext(unitName = "JPALIB_JTA", type = PersistenceContextType.EXTENDED,
-                        name = "jpa/DFIPkgNoInhTestEJB/ovdem_cmex_jpalib_earlib")
+                        name = "jpa/DFIPkgNoInhTestEJB/ovdem_cmex_jpalib_earlib") // pragma: allowlist secret
     EntityManager ovdem_cmex_jpalib_earlib;
 
     @Override

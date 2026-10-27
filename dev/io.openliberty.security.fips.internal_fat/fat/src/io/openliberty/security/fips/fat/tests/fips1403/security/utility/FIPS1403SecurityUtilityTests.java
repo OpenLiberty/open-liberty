@@ -324,7 +324,7 @@ public class FIPS1403SecurityUtilityTests {
 
         // Verify the servlet response is using the SHA-1 message digest successfully
         String servletResponse = HttpUtils.readConnection(con);        
-        String expectedSHA1Hash = "0a4d55a8d778e5022fab701977c5d840bbc486d0";
+        String expectedSHA1Hash = "0a4d55a8d778e5022fab701977c5d840bbc486d0"; // pragma: allowlist secret
         assertTrue("Response should contain the SHA-1 hash of 'Hello World': " + expectedSHA1Hash + ". Actual response: " + servletResponse,
                    servletResponse.contains(expectedSHA1Hash));
     }

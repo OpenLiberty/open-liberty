@@ -28,7 +28,7 @@ public class HashUtilsTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("io.openliberty.security.common.*=all:com.ibm.ws.security.common.*=all");
 
-    private final String input = "abcdefghijklmnopqrstuvwxyz10123456789";
+    private final String input = "abcdefghijklmnopqrstuvwxyz10123456789"; // pragma: allowlist secret
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

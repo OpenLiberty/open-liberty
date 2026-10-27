@@ -25,7 +25,7 @@ import oidc.client.base.servlets.BaseServlet;
 @WebServlet("/TokenMinValidityNegative5sServlet")
 @OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1",
                                          clientId = "client_1",
-                                         clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
+                                         clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger", // pragma: allowlist secret
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
                                          redirectURI = "${baseURL}/Callback",
                                          jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}",

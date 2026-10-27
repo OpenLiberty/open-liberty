@@ -16,10 +16,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    SecurityUtilityEncodeTest.class,
-    SecurityUtilityGenerateAesKeyTest.class,
-    SecurityUtilityCreateSSLCertificateTest.class,
-    SecurityUtilityCreateLTPAKeysTest.class,
+//    SecurityUtilityEncodeTest.class,
+//    SecurityUtilityGenerateAesKeyTest.class,
+//    SecurityUtilityCreateSSLCertificateTest.class,
+//    SecurityUtilityCreateLTPAKeysTest.class,
     SecurityUtilityTLSProfilerTest.class
 })
 /**

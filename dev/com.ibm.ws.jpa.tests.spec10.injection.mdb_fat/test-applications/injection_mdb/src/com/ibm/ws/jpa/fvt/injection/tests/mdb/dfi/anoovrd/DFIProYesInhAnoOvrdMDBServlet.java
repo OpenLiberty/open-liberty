@@ -130,7 +130,7 @@ public class DFIProYesInhAnoOvrdMDBServlet extends AbstractMDBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_MDB_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_MDB_AMJTA";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_MDB_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -153,7 +153,7 @@ public class DFIProYesInhAnoOvrdMDBServlet extends AbstractMDBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_MDB_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_MDB_AMRL";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_MDB_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -176,7 +176,7 @@ public class DFIProYesInhAnoOvrdMDBServlet extends AbstractMDBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_MDB_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_MDB_CMTS";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testCommonPUNameSpecifiedPersistencePathLibJar_PRO_NOOVRD_MDB_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -203,7 +203,7 @@ public class DFIProYesInhAnoOvrdMDBServlet extends AbstractMDBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PRO_NOOVRD_MDB_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PRO_NOOVRD_MDB_AMJTA";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PRO_NOOVRD_MDB_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -226,7 +226,7 @@ public class DFIProYesInhAnoOvrdMDBServlet extends AbstractMDBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PRO_NOOVRD_MDB_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PRO_NOOVRD_MDB_AMRL";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PRO_NOOVRD_MDB_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -249,7 +249,7 @@ public class DFIProYesInhAnoOvrdMDBServlet extends AbstractMDBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PRO_NOOVRD_MDB_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PRO_NOOVRD_MDB_CMTS";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameAppModule_PRO_NOOVRD_MDB_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -276,7 +276,7 @@ public class DFIProYesInhAnoOvrdMDBServlet extends AbstractMDBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PRO_NOOVRD_MDB_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PRO_NOOVRD_MDB_AMJTA";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PRO_NOOVRD_MDB_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -322,7 +322,7 @@ public class DFIProYesInhAnoOvrdMDBServlet extends AbstractMDBTestServlet {
 
     @Test
     public void jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PRO_NOOVRD_MDB_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PRO_NOOVRD_MDB_CMTS";
+        final String testName = "jpa10_Injection_DFI_YesInheritance_testUniquePUNameLibJar_PRO_NOOVRD_MDB_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

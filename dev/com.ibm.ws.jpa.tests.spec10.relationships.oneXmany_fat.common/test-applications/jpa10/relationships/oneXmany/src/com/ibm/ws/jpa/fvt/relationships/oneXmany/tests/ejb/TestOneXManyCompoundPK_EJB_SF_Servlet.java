@@ -85,7 +85,7 @@ public class TestOneXManyCompoundPK_EJB_SF_Servlet extends EJBDBTestVehicleServl
 
     @Test
     public void jpa10_Relationships_OneXMany_CompoundPK_Embeddable_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_Relationships_OneXMany_CompoundPK_Embeddable_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_Relationships_OneXMany_CompoundPK_Embeddable_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testOneXManyCompoundPK001";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -193,7 +193,7 @@ public class TestOneXManyCompoundPK_EJB_SF_Servlet extends EJBDBTestVehicleServl
 
     @Test
     public void jpa10_Relationships_OneXMany_CompoundPK_IDClass_001_XML_AMJTA_EJB_SF() throws Exception {
-        final String testName = "jpa10_Relationships_OneXMany_CompoundPK_IDClass_001_XML_AMJTA_EJB_SF";
+        final String testName = "jpa10_Relationships_OneXMany_CompoundPK_IDClass_001_XML_AMJTA_EJB_SF"; // pragma: allowlist secret
         final String testMethod = "testOneXManyCompoundPK001";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

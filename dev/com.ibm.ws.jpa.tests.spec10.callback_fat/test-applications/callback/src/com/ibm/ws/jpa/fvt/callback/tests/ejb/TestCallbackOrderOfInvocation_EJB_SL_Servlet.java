@@ -354,7 +354,7 @@ public class TestCallbackOrderOfInvocation_EJB_SL_Servlet extends EJBDBTestVehic
 
     @Test
     public void jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMJTA_EJB_SL() throws Exception {
-        final String testName = "jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMJTA_EJB_SL";
+        final String testName = "jpa10_Callback_OrderOfInvocation_PublicProtection_001_XML_AMJTA_EJB_SL"; // pragma: allowlist secret
         final String testMethod = "testOrderOfInvocation001";
         final String testResource = "test-jpa-resource-amjta";
 

@@ -265,7 +265,7 @@ public class Base64CoderTest {
      */
     @Test
     public void base64Encode_longString() {
-        byte[] bytes = "4TUZR3aU8II+cWveDgIB7ffDQZaKxx1VKlUBW7KsLa2AQjiB6RWBoNuoH+OIUbtntMIsS2956ZvdzSshAuPNuk7y30BhN00WclWtMY6AD7je2aecQxsGNrV/ogCAOip9EobBue4N1zU8S7yD1jEajykfN8Eo2rIqnMK/DraTV65gmlE378VS3Wy6IFHmZm9BBlaSNqPLBkyJ1Xh98PACMr8f/bF290AD75nGrrB0oXODaeoA85/hpiHpvxSNCFx+P3QDvRly5Bb16SQRhHmUhX0uegAdURKAaeX3gmu8zXQ=".getBytes();
+        byte[] bytes = "4TUZR3aU8II+cWveDgIB7ffDQZaKxx1VKlUBW7KsLa2AQjiB6RWBoNuoH+OIUbtntMIsS2956ZvdzSshAuPNuk7y30BhN00WclWtMY6AD7je2aecQxsGNrV/ogCAOip9EobBue4N1zU8S7yD1jEajykfN8Eo2rIqnMK/DraTV65gmlE378VS3Wy6IFHmZm9BBlaSNqPLBkyJ1Xh98PACMr8f/bF290AD75nGrrB0oXODaeoA85/hpiHpvxSNCFx+P3QDvRly5Bb16SQRhHmUhX0uegAdURKAaeX3gmu8zXQ=".getBytes(); // pragma: allowlist secret
         assertTrue("The size of the encoding is always a multiple of 4 bytes",
                    (Base64Coder.base64Encode(bytes).length % 4) == 0);
     }
@@ -290,7 +290,7 @@ public class Base64CoderTest {
      */
     @Test
     public void base64EncodeToString_longString() {
-        byte[] bytes = "4TUZR3aU8II+cWveDgIB7ffDQZaKxx1VKlUBW7KsLa2AQjiB6RWBoNuoH+OIUbtntMIsS2956ZvdzSshAuPNuk7y30BhN00WclWtMY6AD7je2aecQxsGNrV/ogCAOip9EobBue4N1zU8S7yD1jEajykfN8Eo2rIqnMK/DraTV65gmlE378VS3Wy6IFHmZm9BBlaSNqPLBkyJ1Xh98PACMr8f/bF290AD75nGrrB0oXODaeoA85/hpiHpvxSNCFx+P3QDvRly5Bb16SQRhHmUhX0uegAdURKAaeX3gmu8zXQ=".getBytes();
+        byte[] bytes = "4TUZR3aU8II+cWveDgIB7ffDQZaKxx1VKlUBW7KsLa2AQjiB6RWBoNuoH+OIUbtntMIsS2956ZvdzSshAuPNuk7y30BhN00WclWtMY6AD7je2aecQxsGNrV/ogCAOip9EobBue4N1zU8S7yD1jEajykfN8Eo2rIqnMK/DraTV65gmlE378VS3Wy6IFHmZm9BBlaSNqPLBkyJ1Xh98PACMr8f/bF290AD75nGrrB0oXODaeoA85/hpiHpvxSNCFx+P3QDvRly5Bb16SQRhHmUhX0uegAdURKAaeX3gmu8zXQ=".getBytes(); // pragma: allowlist secret
         assertTrue("The size of the encoding is always a multiple of 4 bytes",
                    (Base64Coder.base64EncodeToString(bytes).length() % 4) == 0);
     }

@@ -134,7 +134,7 @@ public class TestOLGH10068Servlet extends JPADBTestServlet {
     //testJPQL_NOTIN_ClauseLimit tests
     @Test
     public void jpa_eclipselink_olgh10068_testJPQL_NOTIN_ClauseLimit_AMJTA_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh10068_testJPQL_NOTIN_ClauseLimit_AMJTA_Web";
+        final String testName = "jpa_eclipselink_olgh10068_testJPQL_NOTIN_ClauseLimit_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testJPQL_NOTIN_ClauseLimit";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -142,7 +142,7 @@ public class TestOLGH10068Servlet extends JPADBTestServlet {
 
     @Test
     public void jpa_eclipselink_olgh10068_testJPQL_NOTIN_ClauseLimit_AMRL_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh10068_testJPQL_NOTIN_ClauseLimit_AMRL_Web";
+        final String testName = "jpa_eclipselink_olgh10068_testJPQL_NOTIN_ClauseLimit_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testJPQL_NOTIN_ClauseLimit";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);

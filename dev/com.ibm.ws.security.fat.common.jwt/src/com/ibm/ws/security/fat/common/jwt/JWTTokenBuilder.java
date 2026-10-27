@@ -66,18 +66,10 @@ public class JWTTokenBuilder {
     JsonWebEncryption _jwe = null;
     RsaJsonWebKey _rsajwk = null;
     String _jwt = null;
-//    private final Key _signingKey = null;
     private static final String BEGIN_PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----";
     private static final String END_PUBLIC_KEY = "-----END PUBLIC KEY-----";
-    private static final String BEGIN_PRIV_KEY = "-----BEGIN PRIVATE KEY-----";
+    private static final String BEGIN_PRIV_KEY = "-----BEGIN PRIVATE KEY-----"; // pragma: allowlist secret
     private static final String END_PRIV_KEY = "-----END PRIVATE KEY-----";
-//    private static final String pubKey = "-----BEGIN PUBLIC KEY-----\n" +
-//                                         "<value>\n" +
-//                                         "-----END PUBLIC KEY-----";
-
-//    private static final String privKey = "-----BEGIN PRIVATE KEY-----\n" +
-//                                          "<value>\n" +
-//                                          "-----END PRIVATE KEY-----";
 
     public JWTTokenBuilder() {
         _claims = new JwtClaims();

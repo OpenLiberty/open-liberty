@@ -49,7 +49,7 @@ public class TestOLGH10068_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testCriteriaBuilder_NOTIN_ClauseLimit tests
     @Test
     public void jpa_eclipselink_olgh10068_testCriteriaBuilder_NOTIN_ClauseLimit_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh10068_testCriteriaBuilder_NOTIN_ClauseLimit_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh10068_testCriteriaBuilder_NOTIN_ClauseLimit_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testCriteriaBuilder_NOTIN_ClauseLimit";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -58,7 +58,7 @@ public class TestOLGH10068_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testJPQL_IN_ClauseLimit tests
     @Test
     public void jpa_eclipselink_olgh10068_testJPQL_IN_ClauseLimit_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh10068_testJPQL_IN_ClauseLimit_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh10068_testJPQL_IN_ClauseLimit_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testJPQL_IN_ClauseLimit";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);
@@ -67,7 +67,7 @@ public class TestOLGH10068_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
     // testJPQL_NOTIN_ClauseLimit tests
     @Test
     public void jpa_eclipselink_olgh10068_testJPQL_NOTIN_ClauseLimit_EJB_SFEx_CMTS_Web() throws Exception {
-        final String testName = "jpa_eclipselink_olgh10068_testJPQL_NOTIN_ClauseLimit_EJB_SFEx_CMTS_Web";
+        final String testName = "jpa_eclipselink_olgh10068_testJPQL_NOTIN_ClauseLimit_EJB_SFEx_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testJPQL_NOTIN_ClauseLimit";
         final String testResource = "test-jpa-resource-cmex";
         executeTest(testName, testMethod, testResource);

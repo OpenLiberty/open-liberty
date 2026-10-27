@@ -164,7 +164,7 @@ public class EncodeTaskTest {
                 one(stdout).println(with(aStringStartsWith("{aes}")));
             }
         });
-        String[] args = { "encode", "--encoding=aes", "--base64Key=pVB1v3IS07bsRBgbpoKJhB7OQZLVMFwIxBF5PrJctb0=", plaintext };
+        String[] args = { "encode", "--encoding=aes", "--base64Key=pVB1v3IS07bsRBgbpoKJhB7OQZLVMFwIxBF5PrJctb0=", plaintext }; // pragma: allowlist secret
         try {
             System.setProperty("com.ibm.ws.beta.edition", "true");
             encode.handleTask(stdin, stdout, stderr, args);

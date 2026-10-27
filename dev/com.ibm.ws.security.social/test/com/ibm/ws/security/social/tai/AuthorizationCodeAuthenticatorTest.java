@@ -50,11 +50,11 @@ public class AuthorizationCodeAuthenticatorTest extends CommonTestClass {
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.social.*=all");
 
     private static final String AUTHZ_CODE = "1234567890";
-    private static String ACCESS_TOKEN = "EAANQIE2J5nMBAErWBIFfkmu9r6yQeGoIMg39mHRJrZA7L0jbiD7GEpLSZBm96tgqvvlbQI3UIgQXSJaO6sRJGaFEZCwn5kolWgSjs5q71rrNg0GdbHk5yxrtsZAWsZBv3XV1xFmJ4reZBKA6sx5PqQJejg5RtTWKPg4jJoP0zk1AZDZD";
+    private static String ACCESS_TOKEN = "EAANQIE2J5nMBAErWBIFfkmu9r6yQeGoIMg39mHRJrZA7L0jbiD7GEpLSZBm96tgqvvlbQI3UIgQXSJaO6sRJGaFEZCwn5kolWgSjs5q71rrNg0GdbHk5yxrtsZAWsZBv3XV1xFmJ4reZBKA6sx5PqQJejg5RtTWKPg4jJoP0zk1AZDZD"; // pragma: allowlist secret
     private static String REFRESH_TOKEN = "67890";
     private static long EXPIRES_IN = 5177064;
     // IdToken with claims {"at_hash":"0HbzhW49bhEP2b3SVHfeGg","sub":"user1","realmName":"OpBasicRealm","uniqueSecurityName":"user1","iss":"https://localhost:8020/oidc/endpoint/OP","nonce":"v1zg5OZ9vXP5h0lEiYs1","aud":"rp","exp":1455909058,"iat":1455901858}
-    private static final String ID_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDIwL29pZGMvZW5kcG9pbnQvT1AiLCJub25jZSI6InYxemc1T1o5dlhQNWgwbEVpWXMxIiwiaWF0IjoxNDU1OTAxODU4LCJzdWIiOiJ1c2VyMSIsImV4cCI6MTQ1NTkwOTA1OCwiYXVkIjoicnAiLCJyZWFsbU5hbWUiOiJPcEJhc2ljUmVhbG0iLCJ1bmlxdWVTZWN1cml0eU5hbWUiOiJ1c2VyMSIsImF0X2hhc2giOiIwSGJ6aFc0OWJoRVAyYjNTVkhmZUdnIn0.VJNknPRe0BhzfMA4MpQIEeVczaHYiMzPiBYejp72zIs";
+    private static final String ID_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo4MDIwL29pZGMvZW5kcG9pbnQvT1AiLCJub25jZSI6InYxemc1T1o5dlhQNWgwbEVpWXMxIiwiaWF0IjoxNDU1OTAxODU4LCJzdWIiOiJ1c2VyMSIsImV4cCI6MTQ1NTkwOTA1OCwiYXVkIjoicnAiLCJyZWFsbU5hbWUiOiJPcEJhc2ljUmVhbG0iLCJ1bmlxdWVTZWN1cml0eU5hbWUiOiJ1c2VyMSIsImF0X2hhc2giOiIwSGJ6aFc0OWJoRVAyYjNTVkhmZUdnIn0.VJNknPRe0BhzfMA4MpQIEeVczaHYiMzPiBYejp72zIs"; // pragma: allowlist secret
 
     public interface MockInterface {
         void createSslSocketFactory() throws SocialLoginException;

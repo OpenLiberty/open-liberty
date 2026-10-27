@@ -407,7 +407,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_Web_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_Web_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_Web_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -430,7 +430,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_Web_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_Web_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_Web_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -453,7 +453,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_Web_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_Web_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_NOOVRD_Web_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -480,7 +480,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_NOOVRD_Web_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_NOOVRD_Web_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_NOOVRD_Web_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -503,7 +503,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_NOOVRD_Web_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_NOOVRD_Web_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_NOOVRD_Web_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -526,7 +526,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_NOOVRD_Web_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_NOOVRD_Web_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_NOOVRD_Web_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -553,7 +553,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_NOOVRD_Web_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_NOOVRD_Web_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_NOOVRD_Web_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -576,7 +576,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_NOOVRD_Web_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_NOOVRD_Web_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_NOOVRD_Web_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -599,7 +599,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_NOOVRD_Web_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_NOOVRD_Web_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_NOOVRD_Web_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -710,7 +710,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVRD_Web_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVRD_Web_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVRD_Web_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -756,7 +756,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVRD_Web_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVRD_Web_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testCommonPUNameSpecifiedPersistencePathLibJar_PRI_OVRD_Web_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -783,7 +783,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_OVRD_Web_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_OVRD_Web_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_OVRD_Web_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -806,7 +806,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_OVRD_Web_AMRL() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_OVRD_Web_AMRL";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_OVRD_Web_AMRL"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -829,7 +829,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_OVRD_Web_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_OVRD_Web_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameAppModule_PRI_OVRD_Web_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -856,7 +856,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_OVRD_Web_AMJTA() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_OVRD_Web_AMJTA";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_OVRD_Web_AMJTA"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);
@@ -902,7 +902,7 @@ public abstract class DMIPriYesInhDDOvrdTestSuperclass extends DMIInhCommonServl
 
     @Test
     public void jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_OVRD_Web_CMTS() throws Exception {
-        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_OVRD_Web_CMTS";
+        final String testName = "jpa10_Injection_DMI_YesInheritance_AnoOvrd_testUniquePUNameLibJar_PRI_OVRD_Web_CMTS"; // pragma: allowlist secret
         final String testMethod = "testInjectionTarget";
 
         final TestExecutionContext testExecCtx = new TestExecutionContext(testName, testLogicClassName, testMethod);

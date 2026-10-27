@@ -45,7 +45,7 @@ public class TestOLGH20890_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh20890_testNegFunction_EJB_SL_AMJTA_Web() throws Exception {
-        final String testName = "jpa10_query_olgh20890_testNegFunction_EJB_SL_AMJTA_Web";
+        final String testName = "jpa10_query_olgh20890_testNegFunction_EJB_SL_AMJTA_Web"; // pragma: allowlist secret
         final String testMethod = "testNegFunction";
         final String testResource = "test-jpa-resource-amjta";
         executeTest(testName, testMethod, testResource);
@@ -53,7 +53,7 @@ public class TestOLGH20890_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh20890_testNegFunction_EJB_SL_AMRL_Web() throws Exception {
-        final String testName = "jpa10_query_olgh20890_testNegFunction_EJB_SL_AMRL_Web";
+        final String testName = "jpa10_query_olgh20890_testNegFunction_EJB_SL_AMRL_Web"; // pragma: allowlist secret
         final String testMethod = "testNegFunction";
         final String testResource = "test-jpa-resource-amrl";
         executeTest(testName, testMethod, testResource);
@@ -61,7 +61,7 @@ public class TestOLGH20890_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @Test
     public void jpa_spec10_query_olgh20890_testNegFunction_EJB_SL_CMTS_Web() throws Exception {
-        final String testName = "jpa10_query_olgh20890_testNegFunction_EJB_SL_CMTS_Web";
+        final String testName = "jpa10_query_olgh20890_testNegFunction_EJB_SL_CMTS_Web"; // pragma: allowlist secret
         final String testMethod = "testNegFunction";
         final String testResource = "test-jpa-resource-cmts";
         executeTest(testName, testMethod, testResource);
