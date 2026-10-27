@@ -11,9 +11,9 @@ IBM-API-Package: io.opentracing;  type="third-party",\
                  io.opentracing.tag;  type="third-party",\
                  io.opentracing.propagation;  type="third-party"
 IBM-SPI-Package: com.ibm.ws.opentracing.tracer
--features=com.ibm.websphere.appserver.mpConfig-1.3; ibm.tolerates:="1.4", \
-  com.ibm.websphere.appserver.jaxrs-2.1, \
-  com.ibm.websphere.appserver.cdi-2.0, \
+-features=io.openliberty.microprofile.internal.mpConfig-1.3; ibm.tolerates:="1.4", \
+  io.openliberty.microprofile.internal.rest-2.1, \
+  io.openliberty.microprofile.internal.cdi-2.0, \
   io.openliberty.jandex.internal-2.0
 -bundles=com.ibm.ws.jaxrs.defaultexceptionmapper, \
          com.ibm.ws.jaxrs.2.x.defaultexceptionmapper, \

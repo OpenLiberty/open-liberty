@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -640,7 +640,7 @@ public class VisibilityTest {
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
             String featureName = entry.getKey();
             FeatureInfo featureInfo = entry.getValue();
-            if(featureName.equals("io.openliberty.internal.versionless.jsp-2.2")){
+            if (featureName.equals("io.openliberty.internal.versionless.jsp-2.2")) {
                 continue;
             }
             if (!featureInfo.isAutoFeature() && featureName.startsWith("io.openliberty.internal.versionless") && featureName.contains("-")) {
@@ -792,8 +792,8 @@ public class VisibilityTest {
     }
 
     /**
-     * This test validates that jakarta and value-add features do not have public or protected tolerated features so that versionless
-     * features and product extension / user features that have tolerates in their features for all ee levels can do so and avoid
+     * This test validates that public features do not have public or protected tolerated features so that versionless
+     * features and product extension / user features that have tolerates in their features for all ee or mp levels can do so and avoid
      * having to do an auto feature.
      */
     @Test
@@ -836,21 +836,6 @@ public class VisibilityTest {
 
             FeatureInfo featureInfo = entry.getValue();
             if (featureInfo.isAutoFeature()) {
-                continue;
-            }
-
-            // MicroProfile features do not currently follow this convention.  They may need to in the future.
-            // openapi features are stabilized and were not updated to support EE 9.
-            // opentracing is also now stabilized and does not support running with EE 10+
-            // MicroProfile 6.1 tolerates both MpTelemetry 1.1 and MpTelemetry 2.0
-            // MicroProfile 7.0 tolerates both EE10 and EE11
-            if (featureInfo.getVisibility().equals("public") && (featureName.startsWith("io.openliberty.mp")
-                                                                 || featureName.startsWith("com.ibm.websphere.appserver.mp")
-                                                                 || featureName.startsWith("com.ibm.websphere.appserver.opentracing")
-                                                                 || featureName.startsWith("com.ibm.websphere.appserver.openapi")
-                                                                 || featureName.startsWith("com.ibm.websphere.appserver.microProfile-1.")
-                                                                 || featureName.startsWith("io.openliberty.microProfile-6.1")
-                                                                 || featureName.startsWith("io.openliberty.microProfile-7."))) {
                 continue;
             }
 
@@ -1007,7 +992,7 @@ public class VisibilityTest {
             toleratedFeatures.put(feature.substring(0, feature.lastIndexOf('-') + 1), depFeatureWithTolerate);
             processedFeatures.add(feature);
         } else if (!hasToleratesAncestor && rootDepFeatures.contains(feature) && !feature.startsWith("com.ibm.websphere.appserver.eeCompatible-")
-                   && !feature.startsWith("io.openliberty.mpCompatible-") && !feature.startsWith("io.openliberty.servlet.internal-") 
+                   && !feature.startsWith("io.openliberty.mpCompatible-") && !feature.startsWith("io.openliberty.servlet.internal-")
                    && !feature.startsWith("io.openliberty.internal.mpVersion-")) {
             if (!isApiJarFalse) {
                 Set<String> errors = featureErrors.get(feature);

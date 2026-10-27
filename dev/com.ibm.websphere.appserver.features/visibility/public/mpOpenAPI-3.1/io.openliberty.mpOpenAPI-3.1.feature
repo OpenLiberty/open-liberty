@@ -34,7 +34,7 @@ IBM-API-Package: \
     org.eclipse.microprofile.openapi.models.servers; type="stable",\
     org.eclipse.microprofile.openapi.models.tags; type="stable",\
     org.eclipse.microprofile.openapi.spi; type="stable"
--features=io.openliberty.mpConfig-3.0; ibm.tolerates:="3.1", \
+-features=io.openliberty.microprofile.internal.mpConfig-3.0; ibm.tolerates:="3.1", \
   io.openliberty.webBundle.internal-1.0,\
   io.openliberty.restfulWS-3.1, \
   io.openliberty.mpCompatible-6.0; ibm.tolerates:="6.1", \

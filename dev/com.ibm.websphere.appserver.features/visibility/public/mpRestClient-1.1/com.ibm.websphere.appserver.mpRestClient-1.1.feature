@@ -13,11 +13,11 @@ IBM-API-Package: \
  org.eclipse.microprofile.rest.client.spi; type="stable"
 IBM-ShortName: mpRestClient-1.1
 Subsystem-Name: MicroProfile Rest Client 1.1
--features=com.ibm.websphere.appserver.jsonp-1.0; ibm.tolerates:="1.1", \
+-features=io.openliberty.microprofile.internal.jsonp-1.0; ibm.tolerates:="1.1", \
   io.openliberty.mpCompatible-0.0, \
   com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:="1.3", \
   com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:="2.0", \
-  com.ibm.websphere.appserver.jaxrsClient-2.0; ibm.tolerates:="2.1", \
+  io.openliberty.microprofile.internal.restClient-2.0; ibm.tolerates:="2.1", \
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.rest.client-1.1
 -bundles=\
