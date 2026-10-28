@@ -153,7 +153,7 @@ public class ExternalTestService {
      *
      * Only use this for services whose Consul service definition is tagged with the names of the networks they can be
      * accessed from (e.g. docker-engine). Consul is asked for just those instances tagged with the client's network location
-     * ({@value #PROP_NETWORK_LOCATION}). A service that is not tagged this way will never be found.
+     * ({@value #CLIENT_NETWORK_LOCATION}). A service that is not tagged this way will never be found.
      *
      * Otherwise this behaves as {@link #getService(String, ExternalTestServiceFilter)}.
      *
