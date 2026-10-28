@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -62,6 +63,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
+import com.ibm.websphere.jmx.connector.rest.RequestCredentialsSupport;
 import com.ibm.ws.jmx.connector.client.rest.ClientProvider;
 import com.ibm.ws.jmx.connector.client.rest.internal.ClientConstants.HttpMethod;
 import com.ibm.ws.jmx.connector.client.rest.internal.NotificationRegistry.ClientNotificationRegistration;
@@ -78,7 +80,7 @@ import com.ibm.ws.jmx.connector.datatypes.ObjectInstanceWrapper;
 /**
  * This class is implemented such that it should be thread-safe.
  */
-class RESTMBeanServerConnection implements MBeanServerConnection {
+class RESTMBeanServerConnection implements MBeanServerConnection, RequestCredentialsSupport {
 
     private static final Logger logger = Logger.getLogger(RESTMBeanServerConnection.class.getName());
 
@@ -1328,21 +1330,39 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
     @Override
     public void addNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback) throws InstanceNotFoundException, IOException {
         checkConnection();
-        getNotificationRegistry().addNotificationListener(name, listener, filter, handback);
+        // Notification area and registration calls always use the connect-time identity.
+        final RequestIdentity savedIdentity = RequestIdentity.unbind();
+        try {
+            getNotificationRegistry().addNotificationListener(name, listener, filter, handback);
+        } finally {
+            RequestIdentity.restore(savedIdentity);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void addNotificationListener(ObjectName name, ObjectName listener, NotificationFilter filter, Object handback) throws InstanceNotFoundException, IOException {
         checkConnection();
-        getNotificationRegistry().addNotificationListener(name, listener, filter, handback);
+        // Notification area and registration calls always use the connect-time identity.
+        final RequestIdentity savedIdentity = RequestIdentity.unbind();
+        try {
+            getNotificationRegistry().addNotificationListener(name, listener, filter, handback);
+        } finally {
+            RequestIdentity.restore(savedIdentity);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeNotificationListener(ObjectName name, ObjectName listener) throws InstanceNotFoundException, ListenerNotFoundException, IOException {
         checkConnection();
-        getNotificationRegistry().removeNotificationListener(name, listener);
+        // Notification area and registration calls always use the connect-time identity.
+        final RequestIdentity savedIdentity = RequestIdentity.unbind();
+        try {
+            getNotificationRegistry().removeNotificationListener(name, listener);
+        } finally {
+            RequestIdentity.restore(savedIdentity);
+        }
     }
 
     /** {@inheritDoc} */
@@ -1350,14 +1370,26 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
     public void removeNotificationListener(ObjectName name, ObjectName listener, NotificationFilter filter,
                                            Object handback) throws InstanceNotFoundException, ListenerNotFoundException, IOException {
         checkConnection();
-        getNotificationRegistry().removeNotificationListener(name, listener, filter, handback);
+        // Notification area and registration calls always use the connect-time identity.
+        final RequestIdentity savedIdentity = RequestIdentity.unbind();
+        try {
+            getNotificationRegistry().removeNotificationListener(name, listener, filter, handback);
+        } finally {
+            RequestIdentity.restore(savedIdentity);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeNotificationListener(ObjectName name, NotificationListener listener) throws InstanceNotFoundException, ListenerNotFoundException, IOException {
         checkConnection();
-        getNotificationRegistry().removeNotificationListener(name, listener);
+        // Notification area and registration calls always use the connect-time identity.
+        final RequestIdentity savedIdentity = RequestIdentity.unbind();
+        try {
+            getNotificationRegistry().removeNotificationListener(name, listener);
+        } finally {
+            RequestIdentity.restore(savedIdentity);
+        }
     }
 
     /** {@inheritDoc} */
@@ -1365,7 +1397,13 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
     public void removeNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter,
                                            Object handback) throws InstanceNotFoundException, ListenerNotFoundException, IOException {
         checkConnection();
-        getNotificationRegistry().removeNotificationListener(name, listener, filter, handback);
+        // Notification area and registration calls always use the connect-time identity.
+        final RequestIdentity savedIdentity = RequestIdentity.unbind();
+        try {
+            getNotificationRegistry().removeNotificationListener(name, listener, filter, handback);
+        } finally {
+            RequestIdentity.restore(savedIdentity);
+        }
     }
 
     /** {@inheritDoc} */
@@ -1779,6 +1817,16 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
     // When the connection normally closes, we disconnect after we have finished closing everything, to give everyone a chance to
     //do the proper cleaning procedures.
     void close() {
+        // Closing sends the DELETE for the notification area, which always uses the connect-time identity.
+        final RequestIdentity savedIdentity = RequestIdentity.unbind();
+        try {
+            closeInternal();
+        } finally {
+            RequestIdentity.restore(savedIdentity);
+        }
+    }
+
+    private void closeInternal() {
         if (logger.isLoggable(Level.FINER)) {
             logger.logp(Level.FINER, logger.getName(), "close", "Close called for " + RESTClientMessagesUtil.getObjID(this) + " within connection: "
                                                                 + connector.getConnectionId());
@@ -1863,8 +1911,9 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
         // Only add the Authorization header if we have one to add. It may
         // not be present in certain flows, such as the certificate-based
         // authentication.
-        if (connector.getBasicAuthHeader() != null) {
-            connection.setRequestProperty("Authorization", connector.getBasicAuthHeader());
+        final String authHeader = getAuthorizationHeader();
+        if (authHeader != null) {
+            connection.setRequestProperty("Authorization", authHeader);
         }
         if (connector.isHostnameVerificationDisabled())
             connection.setHostnameVerifier(hostnameVerificationDisabler);
@@ -1879,6 +1928,33 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
 
     Connector getConnector() {
         return connector;
+    }
+
+    /**
+     * The Authorization header for a request made now on the calling thread: the per-request token if the thread is
+     * inside runWithBearerToken for this connection, otherwise the connect-time header.
+     */
+    String getAuthorizationHeader() {
+        return RequestIdentity.resolve(this, connector.getBasicAuthHeader());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public <T> T runWithBearerToken(String token, Callable<T> action) throws Exception {
+        final String header = RequestIdentity.bearerHeader(token);
+        if (action == null) {
+            throw new IllegalArgumentException("The action must not be null.");
+        }
+        if (connector.getBasicAuthHeader() == null) {
+            throw new IllegalStateException("Per-request tokens are not supported on a connection that uses certificate authentication.");
+        }
+        return RequestIdentity.runAs(this, header, action);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateConnectionToken(String token) {
+        connector.updateBearerToken(token);
     }
 
     protected boolean isServerLevelRouting() {
@@ -1988,6 +2064,9 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
             //another thread is currently trying to recover the connection, so we can exit.
             return;
         }
+
+        //Recovery always uses the connect-time identity, even when it runs on a thread inside runWithBearerToken.
+        final RequestIdentity savedIdentity = RequestIdentity.unbind();
 
         //We wrap the entire code below in a try{} so that we're sure to reset the isRecoveringConnection value.
         try {
@@ -2131,6 +2210,7 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
         } finally {
             //we're done with the recovery (either by return or by runtime exceptions), so restore atomic state
             isRecoveringConnection.set(false);
+            RequestIdentity.restore(savedIdentity);
         }
     }
 

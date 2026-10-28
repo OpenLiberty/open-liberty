@@ -57,7 +57,7 @@ public class Connector implements JMXConnector {
     private int notificationDeliveryInterval, notificationFetchInterval, notificationInboxExpiry, readTimeout, notificationReadTimeout, serverFailoverInterval, maxServerWaitTime,
                     serverStatusPollingInterval;
     private String user;
-    private String basicAuthHeader = null;
+    private volatile String basicAuthHeader = null;
 
     private RESTMBeanServerConnection connection = null;
     private boolean closed = false;
@@ -593,6 +593,21 @@ public class Connector implements JMXConnector {
 
     String getBasicAuthHeader() {
         return basicAuthHeader;
+    }
+
+    /**
+     * Replaces the connect-time bearer token. Used by the polling thread, connection recovery, close and any request
+     * made outside RequestCredentialsSupport.runWithBearerToken.
+     *
+     * @throws IllegalArgumentException if the token is null, empty or contains whitespace
+     * @throws IllegalStateException    if the connection uses certificate authentication
+     */
+    void updateBearerToken(String token) {
+        String header = RequestIdentity.bearerHeader(token);
+        if (basicAuthHeader == null) {
+            throw new IllegalStateException("The connection token cannot be updated on a connection that uses certificate authentication.");
+        }
+        basicAuthHeader = header;
     }
 
     String getCurrentEndpoint() {

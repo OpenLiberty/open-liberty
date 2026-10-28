@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -129,8 +129,9 @@ class FileTransferClient {
         connection.setReadTimeout(restConnection.connector.getReadTimeout());
 
         // fix 'Invalid CRLF found in header name' error
-        if (restConnection.connector.getBasicAuthHeader() != null) {
-            connection.setRequestProperty("Authorization", restConnection.connector.getBasicAuthHeader());
+        final String authHeader = restConnection.getAuthorizationHeader();
+        if (authHeader != null) {
+            connection.setRequestProperty("Authorization", authHeader);
         }
         if (restConnection.connector.isHostnameVerificationDisabled()) {
             connection.setHostnameVerifier(restConnection.hostnameVerificationDisabler);
