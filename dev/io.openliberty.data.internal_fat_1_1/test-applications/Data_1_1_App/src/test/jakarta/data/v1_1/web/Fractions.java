@@ -70,6 +70,22 @@ public interface Fractions {
     List<String> alphabetized(@Param("isReduced") boolean reduced,
                               Limit limit);
 
+    @Query("""
+                      FROM Fraction
+                     WHERE name = ?1
+                    """)
+    @Select(_Fraction.NUMERATOR)
+    @Select(_Fraction.DENOMINATOR)
+    Optional<Ratio> asRatioOfNumeratorToDenominator(String name);
+
+    @Query("""
+                      FROM Fraction
+                     WHERE name LIKE ?1 AND reduced = ?2
+                    """)
+    @OrderBy(value =_Fraction.DENOMINATOR, descending = true)
+    @OrderBy(value =_Fraction.NUMERATOR)
+    List<Slope> asSlopesIfReduced(String namePattern, boolean isReduced);
+
     @Find
     @First(10)
     @Select(_Fraction.NUMERATOR)
@@ -325,6 +341,18 @@ public interface Fractions {
 
     @Insert
     void supply(Collection<Fraction> list);
+
+    @JakartaQuery("""
+                     FROM Fraction
+                    WHERE name LIKE ?1 AND reduced = ?2
+                    ORDER BY numerator DESC, denominator DESC
+                    """)
+    @Select(_Fraction.NUMERATOR)
+    @Select(_Fraction.DENOMINATOR)
+    Ratio[] toRatiosIfReduced(String namePattern, boolean isReduced);
+
+    @JakartaQuery("FROM Fraction WHERE name = ?1")
+    Slope toSlope(String name);
 
     @Find
     @OrderBy(_Fraction.DENOMINATOR)
