@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package test.jakarta.data;
+
+import java.util.Optional;
 
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.spi.Extension;
@@ -31,6 +33,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.H2Database;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -58,8 +61,11 @@ public class DataTest extends FATServletClient {
                                    "CWWKD1119E.*minNumberOfEachNameLength" // cannot infer count for GROUP BY
                     };
 
+    private static final H2Database h2Database = H2Database.create("dbuser1", "dbpwd1")
+                    .withDatabaseName("testdb");
+
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatest();
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatestH2(Optional.of(h2Database));
 
     @Server("io.openliberty.data.internal.fat")
     @TestServlets({ @TestServlet(servlet = DataTestServlet.class,
