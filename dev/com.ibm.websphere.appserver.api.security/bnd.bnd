@@ -14,7 +14,7 @@
 
 -sub: *.bnd
 
-bVersion: 1.3
+bVersion: 1.4
 
 Import-Package: com.ibm.websphere.security.auth.callback,com.ibm.wsspi.security.auth.callback,com.ibm.wsspi.security.common.auth.module,com.ibm.wsspi.security.tai,com.ibm.wsspi.security.token
 
