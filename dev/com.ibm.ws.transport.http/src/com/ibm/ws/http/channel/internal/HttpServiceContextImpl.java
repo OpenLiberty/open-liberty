@@ -26,7 +26,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.zip.DataFormatException;
@@ -58,6 +57,7 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
 import com.ibm.ws.http.netty.inbound.NettyTCPWriteRequestContext;
+import com.ibm.ws.http.netty.inbound.Upgrade101WriteCompletion;
 import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.ws.http.netty.pipeline.ResponseCompressionHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
@@ -2360,7 +2360,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * to share between calls in different places. This method assumes that the headers
      * will be sent as is and therefore sets the headers sent flag to avoid changes to them.
      */
-    private void prepareNettyHeadersToSend() {
+    final protected void prepareNettyHeadersToSend() {
         NettyResponseMessage responseMessage = (NettyResponseMessage) getResponse();
         HttpResponse response = responseMessage.getResponse();
 
@@ -2421,23 +2421,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(getResponse().getContentLength());
         }
         this.setHeadersSent();
-    }
-
-    final protected void sendHeaders(HttpResponse response) throws IOException {
-        if (headersSent()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Invalid call to sendHeaders after already sent");
-            }
-            return;
-        }
-
-        if (getResponse() instanceof NettyResponseMessage) {
-            response = ((NettyResponseMessage) getResponse()).getResponse();
-            prepareNettyHeadersToSend();
-        }
-        
-        this.nettyContext.channel().writeAndFlush(response);
-
     }
 
     /**
@@ -3139,7 +3122,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                                            && ProtocolState.current(nettyContext.channel()) != NettyHttpConstants.ProtocolName.HTTP2;
         // On upgrade but haven't written headers
         if(shouldSkipWriteOnUpgrade && sendHeaders) {
-            sendNettyHeaders();
+            scheduleNettyResponseWrite();
         }
         else if (!isHeadRequest && !shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
 
@@ -3156,7 +3139,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             nettyWrite(sendHeaders, false);
         } else if (isHeadRequest && sendHeaders) {
             // If a HEAD request is found, the response is self-contained
-            sendNettyHeaders();
+            scheduleNettyResponseWrite();
         }
     }
 
@@ -3462,7 +3445,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                                            && ProtocolState.current(nettyContext.channel()) != NettyHttpConstants.ProtocolName.HTTP2;
         // On upgrade but haven't written headers
         if(shouldSkipWriteOnUpgrade && sendHeaders) {
-            sendNettyHeaders();
+            scheduleNettyResponseWrite();
         }
         else if (!complete && !shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
 
@@ -3480,7 +3463,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         } else if (this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             // Skip writing data and send headers and last http content only
             if(sendHeaders){
-                sendNettyHeaders();
+                scheduleNettyResponseWrite();
             }
             // A HEAD request (or any response where complete=true) must not emit a
             // trailing LastHttpContent. The DefaultFullHttpResponse promotion above
@@ -3889,7 +3872,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             return;
         }
         else if (sendHeaders) {
-            sendNettyHeaders();
+            scheduleNettyResponseWrite();
         }
         else{
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -3931,69 +3914,45 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         });
     }
 
-    /**
-     * Writes on the channel the Netty HttpResponse headers for this HttpServiceContextImpl.
-     *
-     */
-    private void sendNettyHeaders() {
-        this.nettyContext.channel().eventLoop().execute(() -> {
-            ChannelFuture future = nettyContext.channel().writeAndFlush(nettyResponse);
-            boolean websocketIntent = Boolean.TRUE.equals(nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).get());
-            boolean isSwitching = nettyResponse.status().code() == HttpResponseStatus.SWITCHING_PROTOCOLS.code();
-            boolean isUpgrade = isSwitching
-                            && nettyResponse.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE, true)
-                            && nettyResponse.headers().get(HttpHeaderNames.UPGRADE) != null;
-            boolean isWebSocketUpgrade = isUpgrade
-                            && HttpHeaderValues.WEBSOCKET.contentEqualsIgnoreCase(nettyResponse.headers().get(HttpHeaderNames.UPGRADE));
-            if (!websocketIntent && isWebSocketUpgrade && getVC() != null
-                            && getVC().getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT) != null) {
-                // HTTP/1 WebSocket servlet upgrades have no LibertyUpgradeCodec hint.
-                nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(Boolean.TRUE);
-            } else if (websocketIntent && !isWebSocketUpgrade) {
-                nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
+    /** Schedule the response object, which may include a complete body, on the channel event loop. */
+    private void scheduleNettyResponseWrite() {
+        this.nettyContext.channel().eventLoop().execute(() -> writeNettyResponse(nettyResponse));
+    }
+
+    final protected void writeNettyResponse(HttpResponse response) {
+        boolean isSwitching = response.status().code() == HttpResponseStatus.SWITCHING_PROTOCOLS.code();
+        boolean isUpgrade = Upgrade101WriteCompletion.isUpgrade101(response);
+        String upgrade = response.headers().get(HttpHeaderNames.UPGRADE);
+        boolean websocketIntent = Boolean.TRUE.equals(nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).get());
+        boolean isWebSocketUpgrade = isUpgrade && HttpHeaderValues.WEBSOCKET.contentEqualsIgnoreCase(upgrade);
+        if (!websocketIntent && isWebSocketUpgrade && getVC() != null
+                        && getVC().getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT) != null) {
+            // HTTP/1 WebSocket servlet upgrades have no LibertyUpgradeCodec hint.
+            nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(Boolean.TRUE);
+        } else if (websocketIntent && !isWebSocketUpgrade) {
+            nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
+        }
+        if (isUpgrade) {
+            Upgrade101WriteCompletion.ensureReadinessPromise(nettyContext.channel());
+        }
+
+        ChannelFuture future = nettyContext.channel().writeAndFlush(response);
+        if (!isUpgrade) {
+            if (isSwitching && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "status 101 but missing headers: Connection=" + response.headers().get(HttpHeaderNames.CONNECTION)
+                             + " Upgrade=" + upgrade);
             }
-            if (isSwitching) {
-                String connection = nettyResponse.headers().get(HttpHeaderNames.CONNECTION);
-                String upgrade = nettyResponse.headers().get(HttpHeaderNames.UPGRADE);
-                        
-                if(isUpgrade) {
-                    Object upgPromise = nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
-                    if(!(upgPromise instanceof CompletableFuture<?>)) {
-                        CompletableFuture<Void> promise = new CompletableFuture<>();
-                        nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
-                    }
+            return;
+        }
 
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc,"sendNettyHeaders detected 101, attaching event to listener");
-                    }
-
-                    future.addListener(f -> {
-                        if(f.isSuccess()){
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc,"101 writeAndFlush success, firing event. Autoread = "
-                                    + nettyContext.channel().config().isAutoRead() + ", pipeline = " + nettyContext.pipeline().names() );
-                            }
-                            
-                            nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
-                        } else {
-                            if (isWebSocketUpgrade) {
-                                nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
-                            }
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc,"101 writeAndFlush failed: " + String.valueOf(f.cause()));
-                            }
-                        }
-                        
-                    });
-                
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc,"status 101 but missing headers: Connection=" + connection + " Upgrade = " +upgrade);
-                    }
+        Upgrade101WriteCompletion.observe(nettyContext.channel(), future);
+        if (isWebSocketUpgrade) {
+            future.addListener(f -> {
+                if (!f.isSuccess()) {
+                    nettyContext.channel().attr(NettyHttpConstants.WEBSOCKET_UPGRADE_REQUEST).set(null);
                 }
-            }
-        });
-
+            });
+        }
     }
 
     /**
