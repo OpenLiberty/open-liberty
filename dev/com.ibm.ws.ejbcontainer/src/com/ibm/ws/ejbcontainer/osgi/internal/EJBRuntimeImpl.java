@@ -117,7 +117,6 @@ import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.ejbcontainer.EJBComponentMetaData;
 import com.ibm.ws.ejbcontainer.EJBPMICollaboratorFactory;
-import com.ibm.ws.ejbcontainer.EJBRequestTimingCollaborator;
 import com.ibm.ws.ejbcontainer.EJBSecurityCollaborator;
 import com.ibm.ws.ejbcontainer.InternalConstants;
 import com.ibm.ws.ejbcontainer.JCDIHelper;
@@ -155,7 +154,6 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.DeploymentDescriptor;
 import com.ibm.ws.kernel.feature.ServerStarted;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectService;
@@ -224,7 +222,6 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private final ClassDefiner classDefiner = new ClassDefiner();
     private final AtomicServiceReference<InjectionEngine> injectionEngineSRRef = new AtomicServiceReference<InjectionEngine>(REFERENCE_INJECTION_ENGINE);
     private EJBSecurityCollaborator<?> securityCollaborator;
-    private EJBRequestTimingCollaborator<?> timingCollaborator;
     private EJBJavaColonNamingHelper javaColonHelper;
     private EJBLocalNamingHelper<EJBBinding> ejbLocalNamingHelper;
     private LocalColonEJBNamingHelper<EJBBinding> localColonNamingHelper;
@@ -419,9 +416,6 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             if (securityCollaborator != null) {
                 container.setSecurityCollaborator(securityCollaborator);
             }
-            if (timingCollaborator != null) {
-                container.setTimingCollaborator(timingCollaborator);
-            }
             if (ejbPMICollaboratorFactory != null) {
                 container.setPMICollaboratorFactory(ejbPMICollaboratorFactory);
             }
@@ -609,34 +603,6 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     protected synchronized void unsetSecurityCollaborator(EJBSecurityCollaborator<?> ref) {
         securityCollaborator = null;
         container.setSecurityCollaborator(null);
-    }
-
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
-    protected synchronized void setTimingCollaborator(EJBRequestTimingCollaborator<?> ref) {
-        if (!ProductInfo.getBetaEdition()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "EJB request timing collaborator is beta-only; ignoring");
-            }
-            return;
-        }
-        // Temporary: to be replaced by an EJB Container configuration attribute
-        if (!Boolean.getBoolean("io.openliberty.ejb.enableRequestEvents")) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "EJB request events are not enabled; ignoring timing collaborator");
-            }
-            return;
-        }
-        timingCollaborator = ref;
-        if (container != null) {
-            container.setTimingCollaborator(ref);
-        }
-    }
-
-    protected synchronized void unsetTimingCollaborator(EJBRequestTimingCollaborator<?> ref) {
-        timingCollaborator = null;
-        if (container != null) {
-            container.setTimingCollaborator(null);
-        }
     }
 
     @Override

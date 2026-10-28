@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2026 IBM Corporation and others.
+ * Copyright (c) 1998, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.csi.DispatchEventListenerCookie;
 import com.ibm.ws.ejbcontainer.EJBMethodMetaData;
 import com.ibm.ws.ejbcontainer.EJBRequestData;
-import com.ibm.ws.ejbcontainer.EJBRequestTimingCollaborator;
 import com.ibm.ws.ejbcontainer.EJBSecurityCollaborator;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -161,21 +160,6 @@ public class EJSDeployedSupport implements EJBRequestData, InvocationToken {
      * .postInvoke method.
      */
     Object securityCookie;
-
-    /**
-     * The request timing collaborator on which preInvoke was called, or null if
-     * either request timing is not enabled or preInvoke has not yet been called.
-     * It is held on to so that the same collaborator can be used during
-     * postInvoke, even if it has since been removed or replaced.
-     */
-    EJBRequestTimingCollaborator<?> ivTimingCollaborator;
-
-    /**
-     * Request timing collaborator context returned by the timing collaborator
-     * preInvoke method. This context is passed to the timing collaborator
-     * postInvoke method.
-     */
-    Object timingCookie;
 
     /**
      * The ContainerTx instance for the transaction on which the

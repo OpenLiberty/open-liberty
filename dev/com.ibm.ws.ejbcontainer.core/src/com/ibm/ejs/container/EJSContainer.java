@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2026 IBM Corporation and others.
+ * Copyright (c) 1997, 2018 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,6 +47,7 @@ import com.ibm.ejs.container.activator.ActivationStrategy;
 import com.ibm.ejs.container.activator.Activator;
 import com.ibm.ejs.container.interceptors.InvocationContextImpl;
 import com.ibm.ejs.container.lock.LockManager;
+import com.ibm.ejs.container.MessageEndpointCollaborator;
 import com.ibm.ejs.container.passivator.StatefulPassivator;
 import com.ibm.ejs.container.util.EJSPlatformHelper;
 import com.ibm.ejs.container.util.ExceptionUtil;
@@ -79,7 +80,6 @@ import com.ibm.ws.ejbcontainer.EJBPMICollaborator;
 import com.ibm.ws.ejbcontainer.EJBPMICollaboratorFactory;
 import com.ibm.ws.ejbcontainer.EJBRequestCollaborator;
 import com.ibm.ws.ejbcontainer.EJBRequestData;
-import com.ibm.ws.ejbcontainer.EJBRequestTimingCollaborator;
 import com.ibm.ws.ejbcontainer.EJBSecurityCollaborator;
 import com.ibm.ws.ejbcontainer.InternalConstants;
 import com.ibm.ws.ejbcontainer.diagnostics.IncidentStreamWriter;
@@ -140,7 +140,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     public static final int MID_MANDATORY_REMOTE_HOME_INDEX = -5; // 199625
 
     /**
-     * Special method id that provides a NotSupported attribute for an internal
+     * Special method id that provides a NotSupported attribue for an internal
      * remove method for business interfaces. Allows Stateful beans to be
      * removed without actually calling a real business remove method.
      */
@@ -179,7 +179,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     protected EntityHelper ivEntityHelper;
 
     /**
-     * The activator is responsible for activation, passivation and caching
+     * The activator is responsible for activaton, passivation and caching
      * for all EJB instances.
      */
     protected Activator activator;
@@ -264,11 +264,6 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * has been disabled.
      */
     protected volatile EJBSecurityCollaborator<?> ivSecurityCollaborator;
-
-    /**
-     * Request timing collaborator, or null if request timing is not enabled.
-     */
-    protected volatile EJBRequestTimingCollaborator<?> ivTimingCollaborator;
 
     /**
      * The Collaborators to be executed after the the bean is activated
@@ -530,10 +525,6 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
 
     public void setSecurityCollaborator(EJBSecurityCollaborator<?> securityCollaborator) {
         ivSecurityCollaborator = securityCollaborator;
-    }
-
-    public void setTimingCollaborator(EJBRequestTimingCollaborator<?> timingCollaborator) {
-        ivTimingCollaborator = timingCollaborator;
     }
 
     public void setPMICollaboratorFactory(EJBPMICollaboratorFactory factory) {
@@ -1346,7 +1337,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      *            if the activitySession has been marked for
      *            reset only.
      *
-     * @exception CSIActivitySessionResetException raised if an activitySession
+     * @exception CSIActivitySessionResetException rasied if an activitySession
      *                exists on the current thread, but has been marked for
      *                resetOnly. <p>
      */
@@ -2599,7 +2590,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Invoking MECollaborator " + meCollaborator + " for preInvoke processing with the following context data: " + contextData);
             }
-
+            
             s.messageEndpointContext = meCollaborator.preInvoke(contextData);
         }
 
@@ -2628,7 +2619,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * of an EJB method invocation. This method always throws either
      * RemoteException or EJBException (for local interface and MDB case).
      *
-     * @param t is the Throwable that occurred during preinvoke.
+     * @param t is the Throwable that occured during preinvoke.
      * @param wrapper is the EJSWrapperBase passed to preinvoke.
      * @param methodId is the method ID passed to preinvoke.
      * @param s is the EJSDeployedSupport object used by preinvoke.
@@ -2811,15 +2802,6 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         if (pmiBean != null) {
             s.pmiCookie = pmiBean.methodPreInvoke(wrapper.beanId, methodInfo);
             s.pmiPreInvoked = true;
-        }
-
-        // Request timing instrumentation for methods in beans
-        EJBRequestTimingCollaborator<?> timingCollaborator = ivTimingCollaborator;
-        if (timingCollaborator != null) {
-            s.timingCookie = notifyRequestTimingPreInvoke(timingCollaborator, s);
-            if (s.timingCookie != null) {
-                s.ivTimingCollaborator = timingCollaborator;
-            }
         }
 
         BeanMetaData bmd = wrapper.bmd;
@@ -3864,11 +3846,6 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
                         }
                     }
 
-                    // Request timing instrumentation for methods in beans
-                    if (s.ivTimingCollaborator != null) {
-                        notifyRequestTimingPostInvoke(s.ivTimingCollaborator, s, s.timingCookie);
-                    }
-
                     // Inform EJB method callback that method has completed. This must be
                     // called after the transaction has completed.
                     if (s.ivEJBMethodCallback != null) {
@@ -3972,43 +3949,6 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
             throw ex;
         } catch (Exception ex) {
             throw new CSIException("", ex);
-        }
-    }
-
-    /**
-     * Notify the request timing collaborator for pre-invoke. Failures in request
-     * timing must never affect the application's EJB method call, so any
-     * exception is logged (FFDC and trace) and absorbed, and no cookie is returned,
-     * which means postInvoke will not be called for this request.
-     *
-     * @return the collaborator's cookie, or null if the request is not being timed
-     *         or the collaborator failed
-     */
-    private static Object notifyRequestTimingPreInvoke(EJBRequestTimingCollaborator<?> collaborator, EJBRequestData request) {
-        try {
-            return collaborator.preInvoke(request);
-        } catch (Throwable t) {
-            FFDCFilter.processException(t, CLASS_NAME + ".notifyRequestTimingPreInvoke", "3991", collaborator);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "request timing collaborator preInvoke failed : " + t);
-            return null;
-        }
-    }
-
-    /**
-     * Notify the request timing collaborator for post-invoke. Handles generics
-     * casting. Any exception is logged (FFDC and trace) and absorbed so that the
-     * remaining postInvoke processing is not affected.
-     */
-    private static <T> void notifyRequestTimingPostInvoke(EJBRequestTimingCollaborator<T> collaborator, EJBRequestData request, Object preInvokeData) {
-        try {
-            @SuppressWarnings("unchecked")
-            T uncheckedCookie = (T) preInvokeData;
-            collaborator.postInvoke(request, uncheckedCookie);
-        } catch (Throwable t) {
-            FFDCFilter.processException(t, CLASS_NAME + ".notifyRequestTimingPostInvoke", "4009", collaborator);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "request timing collaborator postInvoke failed : " + t);
         }
     }
 
@@ -4496,7 +4436,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     /**
      * This method is driven when dispatch is called upon a server request.
      * It should return a 'cookie' Object which uniquely identifies this preinvoke.
-     * This 'cookie' should be passed as a parameter when the corresponding
+     * This 'cookie' should be passed as a paramater when the corresponding
      * postinvoke is called.
      *
      * @param object the IDL Servant or RMI Tie
@@ -4551,7 +4491,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
      * This method is driven just before the server side interceptors are
      * driven for a server response.
      *
-     * @param object a 'cookie' object which uniquely identified the preceding
+     * @param object a 'cookie' object which uniquley identified the preceeding
      *            preinvoke(Object, String)
      */
     @Override
