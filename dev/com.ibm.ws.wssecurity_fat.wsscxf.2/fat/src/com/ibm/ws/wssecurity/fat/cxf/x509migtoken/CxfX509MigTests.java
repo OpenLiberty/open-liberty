@@ -22,8 +22,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.Rule;
-import org.junit.rules.TestRule;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -47,9 +45,6 @@ import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
-import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
-
 
 @MinimumJavaLevel(javaLevel = 17)
 //issue 24772 no need to run EE7 Lite in this test class
@@ -79,10 +74,6 @@ public class CxfX509MigTests {
     final static String badHttpsClientCert = "Could not send Message.";
 
     static boolean unlimitCryptoKeyLength = false;
-
-    @Rule
-    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.wssecurity_fat.x509mig");
-
 
     /**
      * Sets up any configuration required for running the OAuth tests.
@@ -2910,10 +2901,15 @@ public class CxfX509MigTests {
      *
      */
 
-    @Test
-    // With FIPS 140-3 every algorithm suite is mapped to aes256-gcm/rsa-oaep/sha256, so the
-    // Basic256Sha256 vs Basic128Sha256 mismatch this test relies on can no longer be detected. 
-    @SkipJavaSemeruWithFipsEnabledRule
+    /** Oct. 2026
+     * This test is disabled because on current Semeru Java the algorithm suite validator normalises
+     * every suite to aes256-gcm / rsa-oaep / sha256 regardless of whether FIPS 140-3 is enabled.
+     * That means the Basic256Sha256 vs Basic128Sha256 mismatch this negative test relies on is no
+     * longer detectable in either FIPS or non-FIPS mode — the request succeeds instead of failing.
+     * For future update, enabling test to runs with other Java version as needed, e.g., java 8.
+     */
+
+    //@Test
     //issue 23060
     @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" },
                  repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })

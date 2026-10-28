@@ -142,8 +142,22 @@ public class AlgorithmSuiteValidator {
         String keyWrapAlgorithm
     ) throws WSSecurityException {
         Set<String> keyWrapAlgorithms = algorithmSuite.getKeyWrapAlgorithms();
-        if (!keyWrapAlgorithms.isEmpty()
-            && !keyWrapAlgorithms.contains(keyWrapAlgorithm)) {
+
+        // Liberty Change Start: FIPS 140-3 support - accept RSA-OAEP variants when FIPS Java build is active
+        // When running on a FIPS-capable Java build (OpenJCEPlus), the provider may upgrade the key-wrap
+        // algorithm to RSA-OAEP even if the policy specifies RSA 1.5. This applies in non-FIPS mode too.
+        boolean keyWrapValid = keyWrapAlgorithms.isEmpty()
+            || keyWrapAlgorithms.contains(keyWrapAlgorithm);
+
+        if (!keyWrapValid && CryptoUtils.isOpenJCEPlusAvailable()) {
+            String rsaOaepMgf1p = "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
+            String rsaOaep = "http://www.w3.org/2009/xmlenc11#rsa-oaep";
+            keyWrapValid = rsaOaepMgf1p.equals(keyWrapAlgorithm)
+                || rsaOaep.equals(keyWrapAlgorithm);
+        }
+
+        if (!keyWrapValid) {
+        // Liberty Change End
             LOG.warn(
                 "The Key transport method does not match the requirement"
             );

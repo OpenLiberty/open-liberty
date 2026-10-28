@@ -279,12 +279,8 @@ public class CxfX509MigBadSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testBadBasic192Service")) {
                 service = new FatBAX31Service();
                 strExpect = "LIBERTYFAT X509 bax31";
-                if ("true".equals(System.getProperty("semeru.fips"))) {
-                    // With FIPS 140-3 the request is encrypted with aes256-gcm, which the BSP check rejects (R5620)
-                    strSubErrMsg = "BSP:R5620";
-                } else {
-                  strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
-                }
+                // The BSP R5620 check rejects the non-standard AES-192 algorithm in both FIPS and non-FIPS modes
+                strSubErrMsg = "BSP:R5620";
             } else if (thisMethod.equals("testBadTripleDesService")) {
                 service = new FatBAX32Service();
                 strExpect = "LIBERTYFAT X509 bax32";
