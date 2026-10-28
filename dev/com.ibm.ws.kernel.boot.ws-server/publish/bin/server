@@ -311,12 +311,37 @@ checkServer()
   return $rc
 }
 
+##
+##
+## addZosNativeAccessFlag: Add --enable-native-access flag for z/OS Java 24+
+##
+addZosNativeAccessFlag()
+{
+  # Determine Java version and add z/OS native access flag for Java 24+ to avoid warnings
+  if [ "${uname}" = OS/390 ]; then
+    # Try to determine Java version if JAVA_HOME is set
+    if [ -n "${JAVA_HOME}" ] && [ -f "${JAVA_HOME}/release" ]; then
+      JAVA_VERSION_MAJOR=$(readNativeFile "${JAVA_HOME}/release" '[A-Za-z0-9]' | LC_ALL=C tr -d '\r' | grep ^JAVA_VERSION\s*= | tr -d '"' | awk -F= '{print $2}' | awk -F. '{if ($1 > 1) {print $1} else {print $2}}')
+      # Only add flag if version was successfully detected and is >= 24
+      if [ -n "${JAVA_VERSION_MAJOR}" ] && [ "${JAVA_VERSION_MAJOR}" -ge 24 ] 2>/dev/null; then
+        case "${JVM_OPTIONS_QUOTED}" in
+          *--enable-native-access=ALL-UNNAMED*) ;;
+          *)
+            JVM_OPTIONS_QUOTED="${JVM_OPTIONS_QUOTED} '--enable-native-access=ALL-UNNAMED'"
+            ;;
+        esac
+      fi
+    fi
+  fi
+}
+
 ## installEnv: Set variables for a non-server or nonexistent server command.
 installEnv()
 {
   readServerEnv "${WLP_INSTALL_DIR}/etc/server.env"
   installEnvDefaults
   serverEnvDefaults
+  addZosNativeAccessFlag
 }
 
 ##
@@ -492,6 +517,7 @@ serverEnv()
   readServerEnv "${WLP_USER_DIR}/shared/server.env"
   readServerEnv "${SERVER_CONFIG_DIR}/server.env"
   serverEnvDefaults
+  addZosNativeAccessFlag
 }
 
 ## Initialize base JVM options that are always needed
@@ -600,39 +626,29 @@ detectJavaHome()
     fi  # if JAVA_HOME is not set and java is not in the PATH, then we cannot find Java.
 }
 
-## Detect the major Java version from ${JAVA_HOME}/release and set
-## JAVA_VERSION_MAJOR and JPMS_MODULE_FILE_LOCATION.
-## Called by loadJavaVersionSpecificOptions (server path) and directly by
-## initializeClientJVMOptions (client path, which does not load options files).
-##
-detectJavaVersionMajor()
-{
-  [ -z "${JAVA_HOME}" ] && return 0
-
-  JPMS_MODULE_FILE_LOCATION=${JAVA_HOME}/lib/modules
-
-  # If there is a 'release' file under JAVA_HOME, examine it to see if JAVA_VERSION is set.  If so, determine which version of Java we will be using.
-  if [ -f "${JAVA_HOME}/release" ]; then
-    JAVA_VERSION_MAJOR=$(readNativeFile "${JAVA_HOME}/release" '[A-Za-z0-9]' | LC_ALL=C tr -d '\r' | grep ^JAVA_VERSION[ ]*= | tr -d '"' | awk -F= '{print $2}' | awk -F. '{if ($1 > 1) {print $1} else {print $2}}')
-  fi
-}
-
 ## Load Java version-specific options (java9.options, java24.options)
 ##
 loadJavaVersionSpecificOptions()
 {
-  detectJavaVersionMajor
-
+  [ -z "${JAVA_HOME}" ] && return 0
+  
+  JPMS_MODULE_FILE_LOCATION=${JAVA_HOME}/lib/modules
+  
+  # If there is a 'release' file under JAVA_HOME, examine it to see if JAVA_VERSION is set.  If so, determine which version of Java we will be using.
+  if [ -f "${JAVA_HOME}/release" ]; then
+      JAVA_VERSION_MAJOR=$(readNativeFile "${JAVA_HOME}/release" '[A-Za-z0-9]' | LC_ALL=C tr -d '\r' | grep ^JAVA_VERSION\s*= | tr -d '"' | awk -F= '{print $2}' | awk -F. '{if ($1 > 1) {print $1} else {print $2}}')
+  fi
+  
   if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
-    if [ -n "${JAVA_VERSION_MAJOR}" ]; then
-      if [ ${JAVA_VERSION_MAJOR} -ge 24 ] 2>/dev/null; then
-        mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java24.options"
+      if [ -n "${JAVA_VERSION_MAJOR}" ]; then
+          if [ ${JAVA_VERSION_MAJOR} -ge 24 ] 2>/dev/null; then
+              mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java24.options"
+          else
+              mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
+          fi
       else
-        mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
+          mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
       fi
-    else
-      mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
-    fi
   fi
 }
 
@@ -692,29 +708,6 @@ serverEnvAndJVMOptions()
   addPlatformSpecificJvmFlags
   enableFIPS140_3
   return 0
-}
-
-## initializeClientJVMOptions: Set the minimum JVM options needed for client
-##   commands (stop, status, dump, javadump, create, pause, resume).
-##   Sets JVM_OPTIONS_QUOTED with baseline flags and z/OS native access flag.
-##   Loads jvm.options only to extract java.net.preferIPv4Stack into
-##   SERVER_PREFER_IPV4 -- customer heap/GC options are not passed to the
-##   short-lived client JVM.
-##   Does NOT load java9.options/java24.options (--add-exports, --add-opens
-##   intended for the server JVM).
-initializeClientJVMOptions()
-{
-  initializeBaseJVMOptions
-  detectJavaHome
-  detectJavaVersionMajor
-  addPlatformSpecificJvmFlags
-  # Load jvm.options files only to extract preferIPv4Stack into SERVER_PREFER_IPV4.
-  # Customer jvm.options content (heap, GC, etc.) is intentionally not passed
-  # to the short-lived client JVM.
-  loadJVMOptionsFiles
-  if [ -z "$SERVER_PREFER_IPV4" ]; then
-    extractPreferIPv4Stack
-  fi
 }
 
 # Resolve symbolic links in a path iteratively
@@ -1089,15 +1082,22 @@ javaCmd()
 
   # Set all the parameters for the java command.  We use eval so that each line
   # in jvm.options is treated as a distinct argument.
-  # This branch covers foreground invocations: client commands (stop, status, dump etc.)
-  # and foreground server launch (run, debug, checkpoint). Background server launch
-  # (start) sets JAVA_CMD_LOG and takes the else branch below.
+  # For client JVMs (not server launch), add IPv4 preference if set, in order to match server's IP stack
   if [ -z "${JAVA_CMD_LOG}" ]; then
-
+  
+    # This is a client JVM invocation - load server options and extract IPv4 preference if not already done
+    if [ -z "$SERVER_JVM_OPTIONS_QUOTED" ]; then
+      loadJVMOptionsFiles
+    fi
+    
+    if [ -z "$SERVER_PREFER_IPV4" ]; then
+      extractPreferIPv4Stack
+    fi
+    
     # Build the complete Java command line arguments and store them in the shell's positional parameters ($1, $2, $3, etc.).
     # Add IPv4 preference. SERVER_PREFER_IPV4 should either be empty or set to something containing no spaces.
     eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} $SERVER_PREFER_IPV4 -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar ""$REMAINING_ARGS"
-
+    
   else
     # Build the complete Java command line arguments and store them in the shell's positional parameters ($1, $2, $3, etc.).
     # This is for a server JVM invocation.
@@ -1976,7 +1976,12 @@ case "$ACTION" in
   # Start the server in the foreground
   run | debug | checkpoint)
 
-    serverEnvAndJVMOptions || exit $?
+    if serverEnvAndJVMOptions
+    then
+      :
+    else
+      exit $?
+    fi
 
     if [ -d "${SERVER_OUTPUT_DIR}/workarea/checkpoint/image" ] && [ ${ACTION} != "checkpoint" ]; then
       # Avoid call to restoreServer below if server already running.
@@ -2052,7 +2057,12 @@ case "$ACTION" in
   # Start the server in the background
   start)
 
-    serverEnvAndJVMOptions || exit $?
+    if serverEnvAndJVMOptions
+    then
+      :
+    else
+      exit $?
+    fi
 
     if checkServer true
     then
@@ -2114,7 +2124,6 @@ case "$ACTION" in
 
   create)
     installEnv
-    initializeClientJVMOptions
     createServer "$@"
     exit $rc
   ;;
@@ -2122,7 +2131,6 @@ case "$ACTION" in
   # Stop the server.
   stop)
     serverEnv
-    initializeClientJVMOptions
     if checkServer true
     then
       PID=
@@ -2151,7 +2159,6 @@ case "$ACTION" in
   # Check if server is running
   status)
     serverEnv
-    initializeClientJVMOptions
     if checkServer true
     then
       serverPIDStatus
@@ -2170,10 +2177,6 @@ case "$ACTION" in
 
   status:fast)
     serverEnv
-    # initializeClientJVMOptions is called here for the rare edge cases where
-    # checkServer invokes javaCmd (ambiguous workarea state), which would otherwise
-    # trigger JEP 472 warnings on z/OS Java 24+ without --enable-native-access=ALL-UNNAMED.
-    initializeClientJVMOptions
     if checkServer false
     then
       serverStatus true --status
@@ -2185,7 +2188,12 @@ case "$ACTION" in
 
   # Package up the runtime and target server configuration
   package)
-    serverEnvAndJVMOptions || exit $?
+    if serverEnvAndJVMOptions
+    then
+      :
+    else
+     exit $?
+    fi
 
     # Check to see if the server exists
     if checkServer true
@@ -2203,7 +2211,6 @@ case "$ACTION" in
   # dump the server's configs/logs/status to a zip file
   dump)
     serverEnv
-    initializeClientJVMOptions
     # Check to see if the server exists
     if checkServer true
     then
@@ -2217,7 +2224,6 @@ case "$ACTION" in
   # dump JVM status
   javadump)
     serverEnv
-    initializeClientJVMOptions
     if checkServer true
     then
       javaCmd '' "${SERVER_NAME}" --javadump "$@"
@@ -2230,7 +2236,6 @@ case "$ACTION" in
   # pause the server
   pause)
     serverEnv
-    initializeClientJVMOptions
     # Check to see if the server exists
     if checkServer true
     then
@@ -2244,7 +2249,6 @@ case "$ACTION" in
   # resume the server
   resume)
     serverEnv
-    initializeClientJVMOptions
     # Check to see if the server exists
     if checkServer true
     then
