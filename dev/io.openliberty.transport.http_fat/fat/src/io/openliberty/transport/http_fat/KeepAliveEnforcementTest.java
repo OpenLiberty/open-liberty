@@ -89,6 +89,21 @@ public class KeepAliveEnforcementTest {
      */
     private static final int STAYS_OPEN_TIMEOUT_MS = 1500;
 
+    /** HTTP/2 client connection preface (RFC 7540 section 3.5). */
+    private static final String H2_PREFACE = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
+
+    /** An empty HTTP/2 SETTINGS frame: length 0, type 4, no flags, stream 0. */
+    private static final String H2_EMPTY_SETTINGS = "\0\0\0\4\0\0\0\0\0";
+
+    /** A SETTINGS acknowledgement: length 0, type 4, ACK flag, stream 0. */
+    private static final String H2_SETTINGS_ACK = "\0\0\0\4\1\0\0\0\0";
+
+    /**
+     * Base64url of a valid SETTINGS payload (MAX_CONCURRENT_STREAMS=100,
+     * INITIAL_WINDOW_SIZE=1 GiB, ENABLE_PUSH=0), for the HTTP2-Settings header.
+     */
+    private static final String H2_SETTINGS_HEADER = "AAMAAABkAARAAAAAAAIAAAAA";
+
     @Server("KeepAlive")
     public static LibertyServer server;
 
@@ -342,6 +357,145 @@ public class KeepAliveEnforcementTest {
         }
     }
 
+    // ---------------------------------------------------------------------
+    // h2c (HTTP/2 enabled on the cleartext endpoint)
+    // ---------------------------------------------------------------------
+
+    /**
+     * On an h2c endpoint a plain HTTP/1.1 request that does not upgrade takes a
+     * separate path: the pipeline starts without the keep-alive handler and
+     * installs it only after it sees the request is not HTTP/2. This checks that
+     * path still enforces {@code keepAliveEnabled=false}.
+     */
+    @Test
+    public void h2cEndpoint_http1Request_keepAliveDisabled_closes() throws Exception {
+        setEndpointOptions(false, null, "http/2");
+
+        try (RawConnection connection = new RawConnection()) {
+            connection.sendGet(1);
+            RawResponse response = connection.readResponse();
+            LOG.info("h2c endpoint, HTTP/1.1 response:\n" + response);
+
+            assertEquals("The request itself should still succeed", 200, response.statusCode);
+            assertTrue("keepAliveEnabled=false must add Connection: close on an h2c endpoint",
+                       response.isConnectionClose());
+            assertTrue("The server must close the connection after the response",
+                       connection.isClosedByServer(RESPONSE_TIMEOUT_MS));
+        }
+    }
+
+    /** Same path as above for {@code maxKeepAliveRequests=2}. */
+    @Test
+    public void h2cEndpoint_http1Request_maxKeepAliveRequests_closesOnNthResponse() throws Exception {
+        setEndpointOptions(null, 2, "http/2");
+
+        try (RawConnection connection = new RawConnection()) {
+            connection.sendGet(1);
+            RawResponse first = connection.readResponse();
+            LOG.info("h2c endpoint, response 1:\n" + first);
+            assertEquals("Request 1 should succeed", 200, first.statusCode);
+            assertFalse("Response 1 of 2 must not close the connection", first.isConnectionClose());
+            assertFalse("The connection must still be open after request 1 of 2",
+                        connection.isClosedByServer(STAYS_OPEN_TIMEOUT_MS));
+
+            connection.sendGet(2);
+            RawResponse second = connection.readResponse();
+            LOG.info("h2c endpoint, response 2:\n" + second);
+            assertEquals("Request 2 should succeed", 200, second.statusCode);
+            assertTrue("Response 2 of 2 must carry Connection: close", second.isConnectionClose());
+            assertTrue("The server must close the connection after the limit is reached",
+                       connection.isClosedByServer(RESPONSE_TIMEOUT_MS));
+        }
+    }
+
+    /**
+     * Control for the two h2c upgrade tests below. With the default keep-alive
+     * configuration, an {@code Upgrade: h2c} request must be accepted and
+     * answered over HTTP/2. This proves the raw HTTP/2 exchange in
+     * {@link #assertH2cUpgradeStaysOpen} works at all.
+     */
+    @Test
+    public void h2cEndpoint_h2cUpgrade_defaultConfig_staysOpen() throws Exception {
+        // keepAliveEnabled=true is the default. It is set explicitly so the config update
+        // carries an httpOptions change like the other tests, which the wait below relies on.
+        setEndpointOptions(true, null, "http/2");
+
+        try (RawConnection connection = new RawConnection()) {
+            assertH2cUpgradeStaysOpen(connection);
+        }
+    }
+
+    /**
+     * An h2c upgrade is HTTP/2 from then on, and keep-alive is an HTTP/1
+     * concept. With both options set to their most aggressive values
+     * ({@code keepAliveEnabled=false}, {@code maxKeepAliveRequests=1}) the
+     * upgrade must still succeed and the connection must stay open.
+     */
+    @Test
+    public void h2cEndpoint_h2cUpgrade_keepAliveOptionsSet_staysOpen() throws Exception {
+        setEndpointOptions(false, 1, "http/2");
+
+        try (RawConnection connection = new RawConnection()) {
+            assertH2cUpgradeStaysOpen(connection);
+        }
+    }
+
+    /**
+     * Same as above for an h2c connection that starts as HTTP/2 with prior
+     * knowledge: the client sends the HTTP/2 preface instead of an HTTP/1
+     * request, so the keep-alive handler is never involved.
+     */
+    @Test
+    public void h2cEndpoint_priorKnowledge_keepAliveOptionsSet_staysOpen() throws Exception {
+        setEndpointOptions(false, 1, "http/2");
+
+        try (RawConnection connection = new RawConnection()) {
+            connection.writeRaw(H2_PREFACE + H2_EMPTY_SETTINGS);
+            H2Frame frame = connection.readH2Frame();
+            LOG.info("prior knowledge, first server " + frame);
+
+            assertEquals("The server must answer the HTTP/2 preface with a SETTINGS frame",
+                         H2Frame.TYPE_SETTINGS, frame.type);
+            assertFalse("The server must not close an HTTP/2 connection",
+                        connection.isClosedByServer(STAYS_OPEN_TIMEOUT_MS));
+        }
+    }
+
+    /**
+     * Sends an h2c upgrade request, expects {@code 101} with {@code Upgrade: h2c},
+     * completes the HTTP/2 handshake, and expects the response to the upgrade
+     * request on stream 1. Then checks that the server neither sent GOAWAY nor
+     * closed the socket.
+     */
+    private void assertH2cUpgradeStaysOpen(RawConnection connection) throws IOException {
+        connection.sendH2cUpgradeRequest();
+        RawResponse response = connection.readResponseHead();
+        LOG.info("h2c upgrade response:\n" + response);
+
+        assertEquals("The h2c upgrade must be accepted with 101 Switching Protocols",
+                     101, response.statusCode);
+        assertEquals("The 101 must name the h2c protocol", "h2c", response.headers.get("upgrade"));
+
+        connection.writeRaw(H2_PREFACE + H2_EMPTY_SETTINGS);
+
+        // The response to the upgrade request arrives as HEADERS on stream 1.
+        boolean sawResponse = false;
+        for (int i = 0; i < 10 && !sawResponse; i++) {
+            H2Frame frame = connection.readH2Frame();
+            LOG.info("h2c upgrade, server " + frame);
+            assertTrue("The server must not send GOAWAY: " + frame, frame.type != H2Frame.TYPE_GOAWAY);
+            if (frame.isSettingsNeedingAck()) {
+                // A compliant client acknowledges the server's SETTINGS. Without the ACK the
+                // channel framework never sent the stream 1 response (the read timed out).
+                connection.writeRaw(H2_SETTINGS_ACK);
+            }
+            sawResponse = frame.type == H2Frame.TYPE_HEADERS && frame.streamId == 1;
+        }
+        assertTrue("The server must answer the upgrade request on HTTP/2 stream 1", sawResponse);
+        assertFalse("The server must not close an HTTP/2 connection",
+                    connection.isClosedByServer(STAYS_OPEN_TIMEOUT_MS));
+    }
+
     /**
      * Control for {@link #keepAliveDisabled_servletUpgrade_earlyBytesDelivered()}:
      * with the default keep-alive configuration, bytes sent in the same write as
@@ -441,8 +595,22 @@ public class KeepAliveEnforcementTest {
      * @param maxRequests      value for {@code maxKeepAliveRequests}, or null for the default
      */
     private void setKeepAliveOptions(Boolean keepAliveEnabled, Integer maxRequests) throws Exception {
+        setEndpointOptions(keepAliveEnabled, maxRequests, null);
+    }
+
+    /**
+     * Same as {@link #setKeepAliveOptions(Boolean, Integer)} and optionally sets
+     * {@code protocolVersion} on the endpoint, for example {@code http/2} to
+     * enable h2c on the cleartext port.
+     *
+     * @param protocolVersion value for {@code protocolVersion}, or null to leave it unset
+     */
+    private void setEndpointOptions(Boolean keepAliveEnabled, Integer maxRequests, String protocolVersion) throws Exception {
         ServerConfiguration configuration = server.getServerConfiguration();
         HttpEndpoint endpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
+        if (protocolVersion != null) {
+            endpoint.setProtocolVersion(protocolVersion);
+        }
         if (keepAliveEnabled != null) {
             endpoint.getHttpOptions().setKeepAliveEnabled(keepAliveEnabled);
         }
@@ -461,6 +629,36 @@ public class KeepAliveEnforcementTest {
     // ---------------------------------------------------------------------
     // Raw HTTP/1.1 client
     // ---------------------------------------------------------------------
+
+    /** One HTTP/2 frame header. The payload is read and discarded. */
+    private static class H2Frame {
+        static final int TYPE_HEADERS = 0x1;
+        static final int TYPE_SETTINGS = 0x4;
+        static final int TYPE_GOAWAY = 0x7;
+        static final int FLAG_ACK = 0x1;
+
+        final int type;
+        final int flags;
+        final int streamId;
+        final int length;
+
+        H2Frame(int type, int flags, int streamId, int length) {
+            this.type = type;
+            this.flags = flags;
+            this.streamId = streamId;
+            this.length = length;
+        }
+
+        /** True for a SETTINGS frame that is not itself an acknowledgement. */
+        boolean isSettingsNeedingAck() {
+            return type == TYPE_SETTINGS && (flags & FLAG_ACK) == 0;
+        }
+
+        @Override
+        public String toString() {
+            return "frame type=" + type + " flags=" + flags + " stream=" + streamId + " length=" + length;
+        }
+    }
 
     /** A parsed HTTP response: status code, lower-cased header names, and body. */
     private static class RawResponse {
@@ -557,6 +755,37 @@ public class KeepAliveEnforcementTest {
                              + earlyBytes;
             out.write(request.getBytes(StandardCharsets.ISO_8859_1));
             out.flush();
+        }
+
+        /**
+         * Sends an h2c upgrade request: {@code Upgrade: h2c} plus the
+         * {@code HTTP2-Settings} header, as defined by RFC 7540 section 3.2.
+         */
+        void sendH2cUpgradeRequest() throws IOException {
+            String request = "GET " + SERVLET_PATH + "?req=1 HTTP/1.1\r\n"
+                             + "Host: " + server.getHostname() + ':' + server.getHttpDefaultPort() + "\r\n"
+                             + "Connection: Upgrade, HTTP2-Settings\r\n"
+                             + "Upgrade: h2c\r\n"
+                             + "HTTP2-Settings: " + H2_SETTINGS_HEADER + "\r\n"
+                             + "\r\n";
+            out.write(request.getBytes(StandardCharsets.ISO_8859_1));
+            out.flush();
+        }
+
+        /**
+         * Reads one HTTP/2 frame and discards its payload. Fails the test if the
+         * server closed the connection before a whole frame header arrived.
+         */
+        H2Frame readH2Frame() throws IOException {
+            String header = readRaw(9);
+            assertEquals("The server closed the connection before sending an HTTP/2 frame", 9, header.length());
+            int length = (header.charAt(0) << 16) | (header.charAt(1) << 8) | header.charAt(2);
+            int type = header.charAt(3);
+            int flags = header.charAt(4);
+            int streamId = ((header.charAt(5) & 0x7f) << 24) | (header.charAt(6) << 16)
+                           | (header.charAt(7) << 8) | header.charAt(8);
+            readRaw(length);
+            return new H2Frame(type, flags, streamId, length);
         }
 
         /** Writes raw bytes on the connection, for use after an upgrade. */
