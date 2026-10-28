@@ -190,7 +190,7 @@ public class DataTestServlet extends FATServlet {
      * OrderByForUpdate is not supported on Derby or Eclipselink+H2
      */
     public static boolean supportsOrderByForUpdate() {
-        return !isDerby() && !(!isHibernate() && isH2());
+        return !isDerby() && (isHibernate() || !isH2());
     }
 
     /**
