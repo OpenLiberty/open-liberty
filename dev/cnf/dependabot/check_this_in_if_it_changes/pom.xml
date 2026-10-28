@@ -3877,6 +3877,16 @@
       <version>2.1.12</version>
     </dependency>
     <dependency>
+      <groupId>org.hibernate.accessor</groupId>
+      <artifactId>hibernate-accessor-bytebuddy</artifactId>
+      <version>0.1.0.Alpha3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.accessor</groupId>
+      <artifactId>hibernate-accessor</artifactId>
+      <version>0.1.0.Alpha3</version>
+    </dependency>
+    <dependency>
       <groupId>org.hibernate.common</groupId>
       <artifactId>hibernate-commons-annotations</artifactId>
       <version>5.1.0.Final</version>
@@ -3894,7 +3904,7 @@
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-community-dialects</artifactId>
-      <version>8.0.0.Beta1</version>
+      <version>8.0.0.Beta3</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.orm</groupId>
@@ -3904,7 +3914,7 @@
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>8.0.0.Beta1</version>
+      <version>8.0.0.Beta3</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
