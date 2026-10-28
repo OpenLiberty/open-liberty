@@ -19,6 +19,7 @@ import java.util.Optional;
 import jakarta.data.constraint.In;
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.First;
 import jakarta.data.repository.Insert;
@@ -27,6 +28,7 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Select;
 import jakarta.data.repository.Update;
+import jakarta.data.restrict.Restriction;
 
 /**
  * Repository for Inheritance, where the root entity is abstract,
@@ -44,6 +46,10 @@ public interface Advertisements extends DataRepository<Advertisement, Integer> {
     // Only valid for subtype Commercial, which has a showAt attribute
     @Query("UPDATE Commercial SET showAt = ?2 WHERE id = ?1")
     boolean changeTimeShown(int id, LocalDateTime newTime);
+
+    @Delete
+    List<Billboard> dismantle(@By(_Billboard.LOCATION) String position,
+                              Restriction<? super Billboard> filter);
 
     @Update
     void redeploy(Billboard billboard);

@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite.serverLifecycle;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -27,13 +27,11 @@ import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONParser;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Mcp;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -43,41 +41,48 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 @RunWith(FATRunner.class)
 public class AsyncToolsTest extends FATServletClient {
 
-    private static final String EXPECTED_ERROR = "Method call caused runtime exception. This is expected if the input was 'throw error'";
-    @Server("mcp-server-async-tools")
-    public static LibertyServer server;
+    // Server is managed by McpAsyncServerSuite — do NOT add @Server or copy the field here.
+
+    private static final String APP_NAME = "asyncToolsTest";
+    private static final String SHORT_TIMEOUT_APP_NAME = "asyncToolsTestShortTimeout";
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncToolsTest");
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     @Rule
-    public McpClient shortTimeoutClient = new McpClient(server, "/asyncToolsTestShortTimeout");
+    public McpClient shortTimeoutClient = McpClient.builder(serverLifecycle.getServer(), "/" + SHORT_TIMEOUT_APP_NAME).build();
 
     @Rule
-    public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolsTest");
+    public ToolStatusClient toolStatus = new ToolStatusClient(serverLifecycle.getServer(), "/" + APP_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolsTest.war")
+        serverLifecycle.getServer().addIgnoredErrors(List.of("Method call caused runtime exception. This is expected if the input was 'throw error'"));
+        serverLifecycle.getServer().setMarkToEndOfLog();
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(AsyncTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
+        serverLifecycle.deployDropinApp(war);
 
-        // Same app deployed a second time, but has different config in server.xml
-        WebArchive shortTimeoutWar = ShrinkWrap.create(WebArchive.class, "asyncToolsTestShortTimeout.war")
+        WebArchive shortTimeoutWar = ShrinkWrap.create(WebArchive.class, SHORT_TIMEOUT_APP_NAME + ".war")
                                                .addPackage(AsyncTools.class.getPackage())
                                                .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportAppToServer(server, shortTimeoutWar, SERVER_ONLY);
+        serverLifecycle.deployWithConfiguration(shortTimeoutWar, app -> {
+            Mcp mcp = new Mcp();
+            mcp.setAsyncTimeout("1s");
+            app.getMcps().add(mcp);
+        });
 
-        server.startServer();
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("MCP server endpoint: .*/asyncToolsTest/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(EXPECTED_ERROR);
+        serverLifecycle.undeployWithConfiguration(SHORT_TIMEOUT_APP_NAME);
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
@@ -153,7 +158,7 @@ public class AsyncToolsTest extends FATServletClient {
                         """;
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
-        assertNotNull(server.waitForStringInLogUsingMark("Method call caused runtime exception", server.getDefaultLogFile()));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("Method call caused runtime exception", serverLifecycle.getServer().getDefaultLogFile()));
     }
 
     @Test
@@ -179,7 +184,7 @@ public class AsyncToolsTest extends FATServletClient {
                         """;
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
-        assertNotNull(server.waitForStringInLogUsingMark("Method call caused runtime exception", server.getDefaultLogFile()));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("Method call caused runtime exception", serverLifecycle.getServer().getDefaultLogFile()));
     }
 
     @Test

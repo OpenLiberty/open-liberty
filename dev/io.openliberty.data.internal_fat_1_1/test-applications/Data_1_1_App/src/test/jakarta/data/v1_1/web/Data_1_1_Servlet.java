@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.v1_1.web;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -571,6 +572,33 @@ public class Data_1_1_Servlet extends FATServlet {
         // Ensure we did not delete a non-matching entity:
         assertEquals(true,
                      statefulFractions.fetch(3, 20).isPresent());
+    }
+
+    /**
+     * A repository method can declare a Constraint on a supertype of an
+     * entity attribute that is convertible to the attribute type. This
+     * behavior works without being explicitly required by Jakarta Data.
+     * This test guards against regression.
+     */
+    @Test
+    public void testConstraintOnSupertypeOfAttribute() {
+        assertEquals(List.of(BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3500, 4),
+                             BigDecimal.valueOf(3529, 4),
+                             BigDecimal.valueOf(3571, 4),
+                             BigDecimal.valueOf(3636, 4),
+                             BigDecimal.valueOf(3684, 4),
+                             BigDecimal.valueOf(3750, 4),
+                             BigDecimal.valueOf(3750, 4)),
+                     fractions.whereTruncated(Between.bounds(0.333, 0.377))
+                                     .stream()
+                                     .map(f -> f.decimal.truncated())
+                                     .toList());
     }
 
     /**
@@ -1303,6 +1331,11 @@ public class Data_1_1_Servlet extends FATServlet {
                                                   reverseAlphabetized));
     }
 
+    /**
+     * Tests interoperability with Jakarta Persistence's Inheritance
+     * and DiscriminatorColumn by defining entities that inherit from
+     * a common abstract ancestor entity, for which a repository is defined.
+     */
     @Test
     public void testInheritanceFromAbstractEntity() {
         ads.removeBySponsorIn(List.of("Open Liberty",
@@ -1617,6 +1650,43 @@ public class Data_1_1_Servlet extends FATServlet {
         assertEquals(1L, page4.numberOfElements());
         assertEquals(true, page4.hasPrevious());
         assertEquals(false, page4.hasNext());
+    }
+
+    /**
+     * A repository method is annotated JakartaQuery and Select and returns
+     * a Java record. The Select annotations on the method determine the
+     * order of and which entity attributes are chosen to construct an
+     * instance of the Java record.
+     */
+    @Test
+    public void testJakartaQueryAndSelectAnnosOnMethod() {
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
+
+        assertArrayEquals(new Ratio[] { new Ratio(7, 8),
+                                        new Ratio(5, 8),
+                                        new Ratio(3, 8) },
+                          fractions.toRatiosIfReduced("% Eighths", true));
+    }
+
+    /**
+     * A repository method is annotated JakartaQuery and returns a
+     * Java record with record components that are annotated Select.
+     * The Select annotations on the record components determine the
+     * order of and which entity attributes are chosen to construct
+     * instances of the Java record.
+     */
+    @Test
+    public void testJakartaQueryAnnoOnMethodAndSelectOnRecordComponent() {
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
+
+        Slope slope = fractions.toSlope("Four Sevenths");
+
+        assertEquals(4,
+                     slope.rise());
+        assertEquals(7,
+                     slope.run());
     }
 
     /**
@@ -2908,6 +2978,48 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * A repository method is annotated by Query and Select and returns
+     * a Java record. The Select annotations on the method determine the
+     * order of and which entity attributes are chosen to construct an
+     * instance of the Java record.
+     */
+    @Test
+    public void testQueryAndSelectAnnosOnMethod() {
+        Ratio ratio = fractions.asRatioOfNumeratorToDenominator("Five Twelfths")
+                        .orElseThrow();
+        assertEquals(5,
+                     ratio.term1());
+        assertEquals(12,
+                     ratio.term2());
+
+        assertEquals(false,
+                     fractions.asRatioOfNumeratorToDenominator("none")
+                                     .isPresent());
+    }
+
+    /**
+     * A repository method is annotated Query and returns a Java record
+     * with record components that are annotated Select. The Select
+     * annotations on the record components determine the order of and
+     * which entity attributes are chosen to construct instances of the
+     * Java record.
+     */
+    @Test
+    public void testQueryAnnoOnMethodAndSelectOnRecordComponents() {
+        assertEquals(List.of(new Slope(2, 15),
+                             new Slope(4, 15),
+                             new Slope(7, 15),
+                             new Slope(8, 15),
+                             new Slope(11, 15),
+                             new Slope(13, 15),
+                             new Slope(14, 15),
+                             new Slope(2, 5),
+                             new Slope(3, 5),
+                             new Slope(4, 5)),
+                     fractions.asSlopesIfReduced("% Fif%ths", true));
+    }
+
+    /**
      * Request offset pagination from a query by method name that accepts a
      * Restriction parameter, and specify a restriction.
      * Verify the total count of elements and pages is computed correctly.
@@ -3394,6 +3506,54 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that imposes restrictions and constraints on
+     * a find-and-delete operation.
+     */
+    @Test
+    public void testRestrictedFindAndDelete() {
+        ads.removeBySponsorIn(List.of("IBM", "Open Liberty"));
+
+        ads.add(Billboard.create(7,
+                                 "Open Liberty",
+                                 LocalDate.now().minusDays(5),
+                                 LocalDate.now(),
+                                 "3222 40th Avenue NW, Rochester, MN 55901"));
+
+        ads.add(Billboard.create(8,
+                                 "IBM",
+                                 LocalDate.now().minusDays(8),
+                                 LocalDate.now(),
+                                 "3222 40th Avenue NW, Rochester, MN 55901"));
+
+        ads.add(Billboard.create(9,
+                                 "Open Liberty",
+                                 LocalDate.now().minusDays(9),
+                                 LocalDate.now().minusDays(1),
+                                 "3222 40th Avenue NW, Rochester, MN 55901"));
+
+        ads.add(Billboard.create(10,
+                                 "Open Liberty",
+                                 LocalDate.now().minusDays(5),
+                                 LocalDate.now(),
+                                 "2800 37th Street NW, Rochester, MN 55901"));
+
+        List<Billboard> removed = ads //
+                        .dismantle("3222 40th Avenue NW, Rochester, MN 55901",
+                                   _Advertisement.sponsor //
+                                                   .upper()
+                                                   .equalTo("OPEN LIBERTY"));
+
+        assertEquals(List.of(7, 9),
+                     removed.stream()
+                                     .map(b -> b.id)
+                                     .sorted()
+                                     .toList());
+
+        assertEquals(2L,
+                     ads.removeBySponsorIn(List.of("IBM", "Open Liberty")));
+    }
+
+    /**
      * Use a repository method that includes a Restriction and also has
      * sorting by expressions.
      */
@@ -3814,12 +3974,6 @@ public class Data_1_1_Servlet extends FATServlet {
                                   AtMost.max(Integer.MAX_VALUE),
                                   Restrict.unrestricted());
         }
-    }
-
-    @Test
-    public void testBooleanRestriction() {
-        fractions.where(Restrict.all(_Fraction.name.contains("Four"),
-                                     _Fraction.reduced.isTrue()));
     }
 
 }

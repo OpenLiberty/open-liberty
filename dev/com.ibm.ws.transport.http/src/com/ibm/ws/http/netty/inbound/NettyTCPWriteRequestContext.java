@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +27,6 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
-import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
@@ -45,14 +43,9 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpResponse;
-import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http2.StreamSpecificHttpContent;
 import io.netty.handler.timeout.WriteTimeoutHandler;
-import io.netty.util.AsciiString;
-import io.netty.util.AttributeKey;
 
 /**
  *
@@ -79,10 +72,12 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     private int streamID = -1;
     private boolean http10Request;
 
-    private static final AttributeKey<Boolean> UPGRADE_COMMIT_EVENT_FIRED = 
-                AttributeKey.valueOf("upgradeCommitFired");
-
     private LastHttpContent finalWrite;
+    // PI57542 - optional per-write promise supplied by the caller before invoking write();
+    // when set, the write method resolves this promise instead of its own so the caller
+    // can attach a ChannelFutureListener without an extra thread-pool hop.
+    // Cleared immediately after it is captured inside write() to avoid bleed-over.
+    private ChannelPromise externalWritePromise = null;
 
     public NettyTCPWriteRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel) {
 
@@ -115,6 +110,19 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     public void setHttp10Request(boolean http10Request) {
         this.http10Request = http10Request;
+    }
+
+    /**
+     * PI57542 - Set a promise that the next call to
+     * {@link #write(long, TCPWriteCompletedCallback, boolean, int)} will resolve
+     * instead of creating its own. The caller must attach listeners before calling
+     * {@code write()}. The field is cleared inside {@code write()} after being captured,
+     * so it never affects subsequent write calls.
+     *
+     * @param promise the promise to resolve on flush completion, or {@code null} to clear
+     */
+    public void setWriteCompletionPromise(ChannelPromise promise) {
+        this.externalWritePromise = promise;
     }
 
     @Override
@@ -246,7 +254,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         long timeoutNanos = TimeUnit.MILLISECONDS.toNanos(timeout);
         WriteTimeoutHandler timeoutHandler = nettyChannel.pipeline().get(WriteTimeoutHandler.class);
         if (Objects.isNull(timeoutHandler)) {
-            nettyChannel.pipeline().addLast("writeTimeoutHandler", new WriteTimeoutHandler(timeout, TimeUnit.MILLISECONDS));
+            nettyChannel.pipeline().addLast(HttpPipelineInitializer.WRITE_TIMEOUT_HANDER_NAME, new WriteTimeoutHandler(timeout, TimeUnit.MILLISECONDS));
         } else if(timeoutHandler.getTimeout() != timeoutNanos) {
             // Updated timeout so need to do so here as well
             timeoutHandler.setTimeout(timeout, TimeUnit.MILLISECONDS);
@@ -282,15 +290,10 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             writeQueue.add(prefixQueue.poll());
         }
 
-        //auto read design changes
         final boolean upgrade101 = writeQueueContainsUpgrade(writeQueue);
-        if(upgrade101){
-            ensureUpgradePromise();
-            writePromise.addListener((ChannelFutureListener) future -> {
-                if(future.isSuccess()){
-                    fireUpgradeCommitted();
-                }
-            });
+        if (upgrade101) {
+            Upgrade101WriteCompletion.ensureReadinessPromise(nettyChannel);
+            Upgrade101WriteCompletion.observe(nettyChannel, writePromise);
         }
 
         try {
@@ -379,9 +382,16 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         // Maybe we should see if this writequeue should belong to the class to improve performance?
         // See https://github.com/OpenLiberty/open-liberty/issues/31555
         final Queue<Object> writeQueue = new LinkedList<Object>();
-        final ChannelPromise writePromise = nettyChannel.newPromise();
         //check if wsoc
         final ProtocolName protocol = ProtocolState.current(nettyChannel);
+
+        // PI57542 - use the caller-supplied promise when present so that listeners
+        // attached before this write() call observe the actual flush outcome.
+        // Capture and clear immediately so it cannot bleed into later write calls.
+        final ChannelPromise resolvedWritePromise = (this.externalWritePromise != null)
+            ? this.externalWritePromise
+            : nettyChannel.newPromise();
+        this.externalWritePromise = null;
 
         final boolean isHttp10 = http10Request;
 
@@ -401,15 +411,10 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             writeQueue.add(prefixQueue.poll());
         }
 
-        //auto read design changes
         final boolean upgrade101 = writeQueueContainsUpgrade(writeQueue);
-        if(upgrade101){
-            ensureUpgradePromise();
-            writePromise.addListener((ChannelFutureListener) future -> {
-                if(future.isSuccess()){
-                    fireUpgradeCommitted();
-                }
-            });
+        if (upgrade101) {
+            Upgrade101WriteCompletion.ensureReadinessPromise(nettyChannel);
+            Upgrade101WriteCompletion.observe(nettyChannel, resolvedWritePromise);
         }
 
         try {
@@ -442,13 +447,14 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             // value that was current when it was queued — not a later mutation of
             // the shared instance field (e.g. from a subsequent setLastWrite call).
             final LastHttpContent capturedFinalWrite = this.finalWrite;
+
             // Run all channel operations in the event loop
             nettyChannel.eventLoop().execute(new Runnable() {
                 @Override
                 public void run() {
                     if (writeQueue.isEmpty()) {
                         // Nothing to write; complete the promise immediately and flush
-                        writePromise.setSuccess();
+                        resolvedWritePromise.setSuccess();
                         nettyChannel.flush();
                         return;
                     }
@@ -457,13 +463,13 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                     for (Object writeBuffer : writeQueue) {
                         i++;
                         if (capturedFinalWrite == null && i == size) {
-                            nettyChannel.write(writeBuffer, writePromise);
+                            nettyChannel.write(writeBuffer, resolvedWritePromise);
                         } else {
                             nettyChannel.write(writeBuffer);
                         }
                     }
                     if (capturedFinalWrite != null){
-                        nettyChannel.write(capturedFinalWrite, writePromise);
+                        nettyChannel.write(capturedFinalWrite, resolvedWritePromise);
                     }
                     nettyChannel.flush();
                 }
@@ -476,10 +482,10 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                 return null;
             }
 
-            if (writePromise == null && wasWritable && stillWritable && totalWrittenBytes >= numBytes) {
+            if (resolvedWritePromise == null && wasWritable && stillWritable && totalWrittenBytes >= numBytes) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Found writePromise to be null or unable to keep writing on channel: " + nettyChannel);
-                    Tr.debug(this, tc, "writePromise: " + writePromise + " wasWritable: " + wasWritable + " stillWritable: " + stillWritable + " totalWrittenBytes: "
+                    Tr.debug(this, tc, "Found resolvedWritePromise to be null or unable to keep writing on channel: " + nettyChannel);
+                    Tr.debug(this, tc, "resolvedWritePromise: " + resolvedWritePromise + " wasWritable: " + wasWritable + " stillWritable: " + stillWritable + " totalWrittenBytes: "
                                        + totalWrittenBytes + " numBytes: " + numBytes);
                 }
                 // Every thing was written here. Do callback in another thread
@@ -502,23 +508,23 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
             } else {
 
-                if (writePromise != null) {
+                if (resolvedWritePromise != null) {
                     // We don't have to do the callback if everything wrote properly
-                    if (writePromise.isDone()) {
+                    if (resolvedWritePromise.isDone()) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "Found writePromise to be finished on channel: " + nettyChannel);
                         }
                         // Everything was written, if forceQueue need to do callback on another thread
                         if (forceQueue) {
-                            HttpDispatcher.getExecutorService().submit(() -> completeWriteCallback(writePromise, callback));
+                            HttpDispatcher.getExecutorService().submit(() -> completeWriteCallback(resolvedWritePromise, callback));
                             return null;
                         }
                         return vc;
                     }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Went async, found writePromise to be running on channel: " + nettyChannel);
+                        Tr.debug(this, tc, "Went async, found resolvedWritePromise to be running on channel: " + nettyChannel);
                     }
-                    writePromise.addListener((ChannelFutureListener) future -> {
+                    resolvedWritePromise.addListener((ChannelFutureListener) future -> {
                         HttpDispatcher.getExecutorService().submit(() -> completeWriteCallback(future, callback));
                     });
                 } else {
@@ -581,48 +587,12 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         return new IOException(cause);
     }
 
-    private static boolean isUpgrade101(Object object){
-        if(!(object instanceof HttpResponse)){
-            return false;
-        }
-        HttpResponse response = (HttpResponse) object;
-        if(!response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)){
-            return false;
-        }
-
-        CharSequence connection = response.headers().get(HttpHeaderNames.CONNECTION);
-        CharSequence upgrade = response.headers().get(HttpHeaderNames.UPGRADE);
-        if(connection == null || upgrade == null || upgrade.length() == 0){
-            return false;
-        }
-        return AsciiString.containsIgnoreCase(connection, "upgrade");
-    }
-
     private boolean writeQueueContainsUpgrade(Queue<Object> writeQueue){
         for(Object obj: writeQueue){
-            if(isUpgrade101(obj)){
+            if(Upgrade101WriteCompletion.isUpgrade101(obj)){
                 return true;
             }
         }
         return false;
-    }
-
-    private void ensureUpgradePromise(){
-        CompletableFuture<Void> promise = nettyChannel.attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
-        if(promise == null){
-            nettyChannel.attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(new CompletableFuture<>());
-        }
-    }
-
-    private void fireUpgradeCommitted(){
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc,"Firing upgrade committed event");
-        }
-        Boolean fired = nettyChannel.attr(UPGRADE_COMMIT_EVENT_FIRED).get();
-        if(Boolean.TRUE.equals(fired)){
-            return;
-        }
-        nettyChannel.attr(UPGRADE_COMMIT_EVENT_FIRED).set(Boolean.TRUE);
-        nettyChannel.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
     }
 }

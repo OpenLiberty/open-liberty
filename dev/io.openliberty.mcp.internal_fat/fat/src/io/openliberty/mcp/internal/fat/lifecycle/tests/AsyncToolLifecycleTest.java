@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.lifecycle.tests;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite.serverLifecycle;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertFalse;
@@ -29,11 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncLifecycleTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
@@ -42,36 +38,42 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 @SuppressWarnings("unchecked")
 @RunWith(FATRunner.class)
 public class AsyncToolLifecycleTest {
-    private static final String EXPECTED_ERROR = "Method call caused runtime exception. This is expected if the input was 'throw error'";
 
-    @Server("mcp-server-async")
-    public static LibertyServer server;
+    // Server is managed by McpAsyncServerSuite — do NOT add @Server here.
+    // Do NOT copy McpAsyncServerSuite.server into a static field here:
+    // the suite's @BeforeClass runs after test-class static initializers,
+    // so a static copy would capture null.
+
+    private static final String APP_NAME = "asyncToolLifecycleTest";
 
     @Rule
-    public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolLifecycleTest");
+    public ToolStatusClient toolStatus = new ToolStatusClient(serverLifecycle.getServer(), "/" + APP_NAME);
 
     @Rule
-    public McpClient client = new McpClient(server, "/asyncToolLifecycleTest");
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "asyncToolLifecycleTest.war")
+        serverLifecycle.getServer().addIgnoredErrors(List.of("Method call caused runtime exception. This is expected if the input was 'throw error'"));
+        serverLifecycle.getServer().setMarkToEndOfLog();
+
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(AsyncLifecycleTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        serverLifecycle.deployDropinApp(war);
 
-        server.startServer();
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(EXPECTED_ERROR);
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
     public void testAsyncDependentBeanLifecycleForCompleteCompletionStage() throws Exception {
-        server.setMarkToEndOfLog();
+        serverLifecycle.getServer().setMarkToEndOfLog();
         String request = """
                         {
                           "jsonrpc": "2.0",
@@ -104,10 +106,10 @@ public class AsyncToolLifecycleTest {
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
 
-        assertNotNull(server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
         // Fetch all lifecycle-related log messages
-        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        List<String> lifecycleMessages = serverLifecycle.getServer().findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", serverLifecycle.getServer().getDefaultLogFile());
         assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());
 
         assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages),
@@ -119,7 +121,7 @@ public class AsyncToolLifecycleTest {
 
     @Test
     public void testAsyncDependentBeanLifecycleForAsyncStage() throws Exception {
-        server.setMarkToEndOfLog();
+        serverLifecycle.getServer().setMarkToEndOfLog();
         String request = """
                         {
                           "jsonrpc": "2.0",
@@ -152,10 +154,10 @@ public class AsyncToolLifecycleTest {
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
 
-        assertNotNull(server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
         // Fetch all lifecycle-related log messages
-        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        List<String> lifecycleMessages = serverLifecycle.getServer().findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", serverLifecycle.getServer().getDefaultLogFile());
         assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());
 
         assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages),
@@ -168,8 +170,7 @@ public class AsyncToolLifecycleTest {
 
     @Test
     public void testAsyncDependentBeanLifecycleWhenToolThrowsException() throws Exception {
-        server.setMarkToEndOfLog();
-        // asyncLifecycleCompleteCompletionStage - exception path
+        serverLifecycle.getServer().setMarkToEndOfLog();
         String request = """
                         {
                           "jsonrpc": "2.0",
@@ -193,9 +194,9 @@ public class AsyncToolLifecycleTest {
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
 
-        assertNotNull(server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
-        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        List<String> lifecycleMessages = serverLifecycle.getServer().findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", serverLifecycle.getServer().getDefaultLogFile());
         assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());
 
         assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages),
@@ -207,7 +208,7 @@ public class AsyncToolLifecycleTest {
 
         // asyncLifecycleAsyncStage - exception thrown synchronously before returning a stage;
         // @PreDestroy must still fire (CDI-dependent lifecycle must be honoured on the error path)
-        server.setMarkToEndOfLog();
+        serverLifecycle.getServer().setMarkToEndOfLog();
         String request2 = """
                         {
                           "jsonrpc": "2.0",
@@ -230,9 +231,9 @@ public class AsyncToolLifecycleTest {
                         """;
         JSONAssert.assertEquals(expectedResponseString2, response2, true);
 
-        assertNotNull(server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
-        List<String> lifecycleMessages2 = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        List<String> lifecycleMessages2 = serverLifecycle.getServer().findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", serverLifecycle.getServer().getDefaultLogFile());
         assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages2.isEmpty());
 
         assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages2),
@@ -252,7 +253,7 @@ public class AsyncToolLifecycleTest {
      */
     @Test
     public void testAsyncDependentBeanIsNotReusedAcrossSuccessiveCalls() throws Exception {
-        server.setMarkToEndOfLog();
+        serverLifecycle.getServer().setMarkToEndOfLog();
 
         String request = """
                         {
@@ -290,7 +291,8 @@ public class AsyncToolLifecycleTest {
         long startTime = System.nanoTime();
         boolean found = false;
         while (System.nanoTime() - startTime < Duration.ofSeconds(30).toNanos()) {
-            List<String> predestroyMessages = server.findStringsInLogsUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools", server.getDefaultLogFile());
+            List<String> predestroyMessages = serverLifecycle.getServer().findStringsInLogsUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools",
+                                                                                                     serverLifecycle.getServer().getDefaultLogFile());
 
             if (predestroyMessages.size() >= 2) {
                 found = true;
@@ -303,7 +305,7 @@ public class AsyncToolLifecycleTest {
             fail("Not found two PreDestroy messages");
         }
 
-        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        List<String> lifecycleMessages = serverLifecycle.getServer().findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", serverLifecycle.getServer().getDefaultLogFile());
         assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());
 
         assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages),

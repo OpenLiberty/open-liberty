@@ -72,6 +72,9 @@
     <!-- Derby-only JDBC driver with no config changes -->
     <jdbcDriver id="Derby1" libraryRef="DerbyLib"/>
 
+    <!-- H2 JDBC driver -->
+    <jdbcDriver id="H2Driver" libraryRef="H2Lib"/>
+
 <!-- ### Authentication ### -->
 	<!-- Auth for any database -->
     <authData id="auth1" user="${env.DB_USER}" password="${env.DB_PASSWORD}"/>
@@ -168,26 +171,25 @@
       <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/> 
     </dataSource>
 
-    <!-- This Derby-only datasource contains some configuration errors -->
-    <dataSource id="dsfat11derby" jndiName="jdbc/dsfat11" jdbcDriverRef="Derby" connectionManagerRef="conMgr5" badProperty="badValue1" isolationLevel="TRANSACTION_READ_UNCOMMITTED" queryTimeout="11s" syncQueryTimeoutWithTransactionTimeout="false">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create" badVendorProperty="badValue2" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    <!-- This datasource contains some configuration errors -->
+    <dataSource id="dsfat11h2" jndiName="jdbc/dsfat11" jdbcDriverRef="H2Driver" connectionManagerRef="conMgr5" badProperty="badValue1" isolationLevel="TRANSACTION_READ_UNCOMMITTED" queryTimeout="11s" syncQueryTimeoutWithTransactionTimeout="false">
+      <properties.h2 url="${env.DB_URL}" badVendorProperty="badValue2" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
  
-    <!-- This is a Derby-only data source -->
-    <dataSource id="dsfat12derby" jndiName="jdbc/dsfat12" containerAuthDataRef="derbyAuth2" jdbcDriverRef="Derby" >
+    <dataSource id="dsfat12h2" jndiName="jdbc/dsfat12" containerAuthDataRef="derbyAuth2" jdbcDriverRef="H2Driver">
       <connectionManager enableContainerAuthForDirectLookups="true"/>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser2" password="{xor}Oz0vKDtt"/>
     </dataSource>
 
     <!-- The following two datasources test that you can define two data sources with nested child
          libraries that do not define an ID -->
-    <dataSource id="derbyWithNestedList" jndiName="jdbc/derbyWithNestedList">
+    <dataSource id="h2WithNestedList" jndiName="jdbc/h2WithNestedList">
 		<jdbcDriver>
 			<library>
-				<fileset dir="${shared.resource.dir}/derby"/>
+				<fileset dir="${shared.resource.dir}/h2Java8"/>
 			</library>
 		</jdbcDriver>
-		<properties.derby.embedded createDatabase="create" />
+		<properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
 	</dataSource>
 	<dataSource id="db2WithNestedList" jndiName="jdbc/db2WithNestedList">
 		<jdbcDriver>
@@ -217,8 +219,8 @@
       <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
-    <dataSource id="dsfatmca" jndiName="jdbc/dsfatmca" jdbcDriverRef="Derby1" connectionManagerRef="conMgr5mca" jaasLoginContextEntryRef="myJAASLoginEntry" type="javax.sql.DataSource" connectionSharing="MatchOriginalRequest">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/derbyfat" createDatabase="create"/> 
+    <dataSource id="dsfatmca" jndiName="jdbc/dsfatmca" jdbcDriverRef="H2Driver" connectionManagerRef="conMgr5mca" jaasLoginContextEntryRef="myJAASLoginEntry" type="javax.sql.DataSource" connectionSharing="MatchOriginalRequest">
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
 <!-- ### jaas login module ### -->

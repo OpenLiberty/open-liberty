@@ -47,10 +47,10 @@ public class MultiAppIsolationTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient alphaClient = new McpClient(server, "/alphaApp");
+    public McpClient alphaClient = McpClient.builder(server, "/alphaApp").build();
 
     @Rule
-    public McpClient betaClient = new McpClient(server, "/betaApp");
+    public McpClient betaClient = McpClient.builder(server, "/betaApp").build();
 
     @BeforeClass
     public static void setup() throws Exception {

@@ -18,8 +18,7 @@ Subsystem-Name: Messaging Server 3.0
  com.ibm.ws.messaging.security.common, \
  com.ibm.ws.messaging.runtime, \
  com.ibm.ws.messaging.comms.client, \
- com.ibm.websphere.security, \
- io.openliberty.transport.config.internal
+ com.ibm.websphere.security
 -jars=com.ibm.websphere.appserver.api.messaging; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.messaging_1.0-javadoc.zip
 kind=ga

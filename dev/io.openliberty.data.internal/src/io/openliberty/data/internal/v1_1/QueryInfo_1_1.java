@@ -992,7 +992,7 @@ public class QueryInfo_1_1 extends QueryInfo {
             List<?> rr = r.restrictions();
             int count = rr.size();
             if (count == 0)
-                q.append(all ? "TRUE = TRUE" : "FALSE <> FALSE");
+                q.append(all ? "1 = 1" : "1 = 0");
             else // one or more
                 for (int i = 0; i < count; i++) {
                     if (i > 0)

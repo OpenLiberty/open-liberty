@@ -810,7 +810,7 @@ public class InactivityTimeoutTests {
         // Verify the timeout warning appeared in the server log.
         if (runningNetty) {
             assertNotNull("ReadTimeoutException was not found in logs!",
-                          server.waitForStringInTraceUsingMark("io.openliberty.http.netty.timeout.exception.ReadTimeoutException: Timeout after 5 seconds", 30000));
+                          server.waitForStringInTraceUsingMark("io.openliberty.http.netty.timeout.exception.ReadTimeoutException: Timeout after 5000 milliseconds", 30000));
         } else {
             assertNotNull("HttpErrorException was not found in trace!",
                        server.waitForStringInTraceUsingMark("com.ibm.wsspi.http.channel.exception.HttpErrorException: Request Timeout", 30000));

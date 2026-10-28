@@ -31,6 +31,8 @@ import jakarta.data.repository.stateful.Persist;
  * Repository for an entity with multiple levels of embeddables and a
  * collection attribute on the embeddables that can be used to test the
  * Fetching annotation.
+ * TODO switch to stateless repository once Hibernate bug 20997 is fixed
+ * https://hibernate.atlassian.net/browse/HHH-20997
  */
 @Repository(dataStore = "MyDataStore")
 public interface Mailbox extends DataRepository<Mail, Long> {

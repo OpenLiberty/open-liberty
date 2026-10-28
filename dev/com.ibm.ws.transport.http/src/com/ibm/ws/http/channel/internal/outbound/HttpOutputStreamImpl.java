@@ -14,8 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.ExecutionException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -30,7 +29,6 @@ import com.ibm.ws.http.channel.outstream.HttpOutputStreamConnectWeb;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.NettyHttpConstants;
-import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -511,6 +509,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                 Tr.debug(tc, "flushHeaders -> isNettyUpgrade101: " + isNettyUpgrade101() );
             }
 
+            CompletableFuture<Void> upgradeReady = is101 ? upgradeReadyPromise() : null;
             this.isc.sendResponseHeaders();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "HttpOutputStreamImpl, checking isNettyUpgrade101: " + is101);
@@ -519,8 +518,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc,"is101 true; calling awaitUpgradedPipelineInstalled");
                 }
-                // Now tell the dispatcher to flip and wait briefly so the upgrade handler is in place.
-                awaitUpgradePipelineInstalled(); // fires UPGRADE_101_COMMITTED_EVENT and waits up to ~750ms
+                awaitUpgradePipelineInstalled(upgradeReady);
             }
 
         } catch (MessageSentException mse) {
@@ -601,8 +599,10 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                         Tr.debug(tc,"HttpOutputStreamImpl flushBuffers(); is 101: " + is101);
                     }
                     if (is101) {
+                        CompletableFuture<Void> upgradeReady = upgradeReadyPromise();
                         this.isc.finishResponseMessage(null); // <— CHANGED: don’t skip for 101
-                        awaitUpgradePipelineInstalled();
+                        this.hasFinished = true;
+                        awaitUpgradePipelineInstalled(upgradeReady);
                     } else {
                         this.isc.finishResponseMessage(content);
                     }
@@ -932,38 +932,40 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                && upg != null && !upg.isEmpty();
     }
 
-    private void awaitUpgradePipelineInstalled() {
-        if (!(isc instanceof HttpInboundServiceContextImpl)) return;
-
+    private CompletableFuture<Void> upgradeReadyPromise() throws IOException {
+        if (!(isc instanceof HttpInboundServiceContextImpl)) {
+            throw new IOException("Netty upgrade has no inbound HTTP context");
+        }
         ChannelHandlerContext ctx = ((HttpInboundServiceContextImpl) isc).getNettyContext();
-        if (ctx == null) return;
+        if (ctx == null) {
+            throw new IOException("Netty upgrade has no channel context");
+        }
 
         CompletableFuture<Void> promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
         if (promise == null) {
             promise = new CompletableFuture<>();
             ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
         }
+        return promise;
+    }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc,"awaitUpgradePipelineInstalled() should fire 101 event now");
+    private void awaitUpgradePipelineInstalled(CompletableFuture<Void> promise) throws IOException {
+        ChannelHandlerContext ctx = ((HttpInboundServiceContextImpl) isc).getNettyContext();
+        if (!promise.isDone() && ctx.executor().inEventLoop()) {
+            throw new IOException("Cannot wait for the 101 upgrade handoff on the Netty event loop");
         }
-
-        //TODO -> find a way to make it thrown upon writeAndFlush of 101
-        ctx.executor().execute(() ->
-            ctx.pipeline().fireUserEventTriggered(
-                HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));
-
         try {
-            promise.get(750, TimeUnit.MILLISECONDS); 
-        } catch (TimeoutException te) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "awaitUpgradePipelineInstalled: timed out waiting for pipeline switch; proceeding");
-            }
-        } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "awaitUpgradePipelineInstalled: interrupted/failure; proceeding " + e);
-            }
+            promise.get();
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            throw new IOException("Interrupted while waiting for the 101 upgrade handoff", e);
+        } catch (ExecutionException e) {
+            // Legacy still initializes the upgrade handler after the peer closes.
+            // Let the webcontainer finish its normal stream-close and init sequence.
+            if (!ctx.channel().isActive()) {
+                return;
+            }
+            throw new IOException("101 upgrade handoff failed", e.getCause());
         }
     }
     
