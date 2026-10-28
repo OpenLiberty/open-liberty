@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package test.jakarta.data;
+
+import java.util.Optional;
 
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.spi.Extension;
@@ -32,6 +34,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.H2Database;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
@@ -77,12 +80,11 @@ public class DataPersistenceTest extends FATServletClient {
                                    "CWWJP9991W.*Receipt"
                     };
 
-    //TODO enable database rotation
-//    @ClassRule
-//    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatest();
+    private static final H2Database h2Database = H2Database.create("dbuser1", "dbpwd1")
+                    .withDatabaseName("testdb");
 
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createType(DatabaseContainerType.DerbyJava17Plus);
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatestH2(Optional.of(h2Database));
 
     @Server("io.openliberty.data.internal.fat.persistence")
     @TestServlets({ @TestServlet(servlet = DataTestServlet.class,
