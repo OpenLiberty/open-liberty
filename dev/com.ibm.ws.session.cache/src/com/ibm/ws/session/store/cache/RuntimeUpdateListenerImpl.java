@@ -168,7 +168,7 @@ public class RuntimeUpdateListenerImpl implements RuntimeUpdateListener {
                                 libraryRegistration = DefaultCachingProviderSupport.registerLibrary(componentContext.getBundleContext(), "global");
                                 Tr.debug(tc, "Registered the global library under service registration: " + libraryRegistration);
                             } else {
-                                Tr.debug(tc, "The global library service is not available yet; skipping the fallback library registration.");
+                                Tr.info(tc, "FALLBACK_LIBRARY_NOT_REGISTERED", "global");
                             }
                         }
                     }
