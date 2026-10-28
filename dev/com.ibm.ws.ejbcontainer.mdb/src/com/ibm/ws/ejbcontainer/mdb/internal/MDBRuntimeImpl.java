@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -895,11 +895,14 @@ public class MDBRuntimeImpl implements MDBRuntime, ApplicationStateListener, App
         for (MessageEndpointFactoryImpl mef : mefs) {
             if (!mef.runtimeActivated) {
                 try {
+                    // This condition can only be true during a dynamic configuration update where
+                    // autoStart has changed from true to false after the MEF was already registered.
+                    // Use continue rather than return so all MEFs in the set are processed.
                     if (mef.endpointActivationServiceInfo.getAutoStart() == false && mef.shouldActivate == false) {
                         Tr.info(tc, "MDB_ENDPOINT_NOT_ACTIVATED_AUTOSTART_CNTR4116I", mef.getJ2EEName().getComponent(), mef.getJ2EEName().getModule(),
                                 mef.getJ2EEName().getApplication(),
                                 mef.endpointActivationServiceInfo.id);
-                        return;
+                        continue;
                     }
                     activateEndpointInternal(mef, false);
                 } catch (Throwable ex) {
