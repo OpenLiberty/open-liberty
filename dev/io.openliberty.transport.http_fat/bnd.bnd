@@ -20,7 +20,8 @@ src: \
     test-applications/ConfigTest.war/src,\
     test-applications/HeaderCasing.war/src,\
     test-applications/privateHeaderApp/src,\
-    test-applications/keepAliveApp/src
+    test-applications/keepAliveApp/src,\
+    test-applications/keepAliveWebSocketApp/src
 
 fat.project: true
 
@@ -31,13 +32,18 @@ tested.features:\
     servlet-4.0, \
     servlet-5.0, \
     servlet-6.0, \
-    servlet-6.1
+    servlet-6.1, \
+    websocket-1.1, \
+    websocket-2.0, \
+    websocket-2.1, \
+    websocket-2.2
 
 -buildpath:\
     io.openliberty.org.apache.commons.logging;version=latest, \
     io.openliberty.org.apache.commons.codec;version=latest, \
     com.ibm.websphere.appserver.spi.servlet;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest, \
+    com.ibm.websphere.javaee.websocket.1.1;version=latest, \
     com.ibm.ws.transport.http;version=latest, \
     com.ibm.ws.channelfw;version=latest, \
     com.ibm.ws.webcontainer;version=latest, \
