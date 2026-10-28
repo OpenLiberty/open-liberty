@@ -14,7 +14,8 @@
 bVersion=1.0
 
 # Hibernate version info
-hibernateVersion=8.0.0.Beta1
+hibernateVersion=8.0.0.Beta3
+hibernateAccessorVersion=0.1.0.Alpha3
 
 Bundle-SymbolicName: io.openliberty.persistence.4.0.thirdparty
 Bundle-Description: Hibernate JPA
@@ -152,7 +153,9 @@ DynamicImport-Package: \
  jakarta.xml.bind.util
 
 Include-Resource: \
-  @${repo;org.hibernate.orm:hibernate-core;${hibernateVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class)
+  @${repo;org.hibernate.orm:hibernate-core;${hibernateVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class),\
+  @${repo;org.hibernate.accessor:hibernate-accessor;${hibernateAccessorVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class),\
+  @${repo;org.hibernate.accessor:hibernate-accessor-bytebuddy;${hibernateAccessorVersion}}!/!(META-INF/MANIFEST.MF|OSGI-INF/*|module-info.class)
 
 Private-Package: io.openliberty.persistence.internal.helper
 

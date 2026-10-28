@@ -7,7 +7,7 @@ IBM-Process-Types: server, \
   com.ibm.websphere.appserver.eeCompatible-12.0, \
   io.openliberty.jsonpInternal-2.2, \
   io.openliberty.noShip-1.0
--bundles=io.openliberty.persistence.4.0.thirdparty; apiJar=false; location:=dev/api/third-party/; mavenCoordinates="org.hibernate.orm:hibernate-core:8.0.0.Beta1"
+-bundles=io.openliberty.persistence.4.0.thirdparty; apiJar=false; location:=dev/api/third-party/; mavenCoordinates="org.hibernate.orm:hibernate-core:8.0.0.Beta3"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

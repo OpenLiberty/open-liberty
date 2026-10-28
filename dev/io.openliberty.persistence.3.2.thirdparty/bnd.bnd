@@ -64,7 +64,7 @@ Import-Package: \
             javax.imageio;resolution:=optional, \
             javax.imageio.stream;resolution:=optional, \
             jakarta.jms;resolution:=optional, \
-            jakarta.json, \
+            jakarta.json;resolution:=optional, \
             jakarta.json.stream;resolution:=optional, \
             javax.management;resolution:=optional, \
             javax.management.openmbean;resolution:=optional, \
