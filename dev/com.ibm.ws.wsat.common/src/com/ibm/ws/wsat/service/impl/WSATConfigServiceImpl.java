@@ -45,10 +45,14 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 /**
  * The WS-AT configuration service.
  *
- * <p>This component is immutable: all of its state is established by the constructor.
- * Dynamic configuration updates are handled by {@link #modified(Map)}, which emits an
- * informational message indicating that a server restart is required and keeps the active
- * configuration intact without deactivating or recreating the component.
+ * <p>Transport, security, and endpoint configuration properties ({@code sslEnabled}, {@code sslRef},
+ * {@code externalURLPrefix}, {@code clientAuth}, {@code virtualHostRef}) are established at
+ * activation time and remain active for the component's lifecycle. Dynamic changes to these
+ * properties require a server restart and cause {@link #modified(Map)} to emit an informational
+ * message ({@code CWLIB0212I}) without recycling the component.
+ *
+ * <p>Dynamic updates to {@code propagation} and {@code asyncResponseTimeout} are applied
+ * immediately by {@link #modified(Map)} without requiring a server restart.
  */
 @Component(name = "com.ibm.ws.wsat.service.wsatconfigservice",
            immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
@@ -89,9 +93,11 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     private final boolean enabled;
     private final String sslId;
     private final String proxy;
-    private final long asyncResponseTimeout;
     private final boolean clientAuth;
-    private final boolean checkWsdlMode;
+    private final String virtualHostRef;
+
+    private volatile long asyncResponseTimeout;
+    private volatile boolean checkWsdlMode;
 
     // The actual VirtualHost service instance for the configured non-default virtual host.
     // Obtained via BundleContext.getService() (not injected) because the virtual host to use is
@@ -119,6 +125,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         if (virtualHostRef == null || virtualHostRef.isEmpty()) {
             virtualHostRef = DEFAULT_HOST;  // Use default if not configured
         }
+        this.virtualHostRef = virtualHostRef;
 
         if (TC.isDebugEnabled()) {
             Tr.debug(TC, "Configured virtual host: {0}", virtualHostRef);
@@ -237,7 +244,62 @@ public class WSATConfigServiceImpl implements WSATConfigService {
 
     @Modified
     protected void modified(Map<String, Object> properties) {
-        Tr.info(TC, "WSAT_CONFIG_RESTART_REQUIRED_CWLIB0212");
+        // Update dynamic properties: propagation
+        String propagationValue = ProductInfo.getBetaEdition() ? (String) properties.get(PROPAGATION) : null;
+        this.checkWsdlMode = PROPAGATION_CHECK_WSDL.equals(propagationValue);
+
+        // Update dynamic properties: asyncResponseTimeout (if not overridden by system property)
+        if (ASYNC_RESPONSE_TIMEOUT != null) {
+            if (TC.isDebugEnabled()) {
+                Tr.debug(TC, "asyncResponseTimeout setting overridden to " + ASYNC_RESPONSE_TIMEOUT + " by " + ASYNC_RESPONSE_TIMEOUT_PROPERTY + " system property");
+            }
+            this.asyncResponseTimeout = ASYNC_RESPONSE_TIMEOUT;
+        } else {
+            Long newTimeout = (Long) properties.get(asyncResponseTimeoutRef);
+            if (newTimeout != null) {
+                this.asyncResponseTimeout = newTimeout;
+            }
+        }
+
+        // Check if any restart-requiring properties were modified
+        boolean restartRequired = false;
+
+        Boolean newEnabled = (Boolean) properties.get(SSLEnabled);
+        if (newEnabled != null && newEnabled.booleanValue() != this.enabled) {
+            restartRequired = true;
+        }
+
+        String newSslId = (String) properties.get(SSLRef);
+        if (!java.util.Objects.equals(newSslId, this.sslId)) {
+            restartRequired = true;
+        }
+
+        String newProxy = (String) properties.get(proxyRef);
+        if (!java.util.Objects.equals(newProxy, this.proxy)) {
+            restartRequired = true;
+        }
+
+        Boolean newClientAuth = (Boolean) properties.get(clientAuthRef);
+        if (newClientAuth != null && newClientAuth.booleanValue() != this.clientAuth) {
+            restartRequired = true;
+        }
+
+        String newVirtualHostRef = (String) properties.get("virtualHostRef");
+        if (newVirtualHostRef == null || newVirtualHostRef.isEmpty()) {
+            newVirtualHostRef = DEFAULT_HOST;
+        }
+        if (!java.util.Objects.equals(newVirtualHostRef, this.virtualHostRef)) {
+            restartRequired = true;
+        }
+
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "modified: propagation = [{0}], asyncResponseTimeout = [{1}], restartRequired = [{2}]",
+                     propagationValue, this.asyncResponseTimeout, restartRequired);
+        }
+
+        if (restartRequired) {
+            Tr.info(TC, "WSAT_CONFIG_RESTART_REQUIRED_CWLIB0212");
+        }
     }
 
     @Deactivate

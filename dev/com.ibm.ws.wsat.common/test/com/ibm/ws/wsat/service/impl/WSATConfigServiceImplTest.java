@@ -417,34 +417,103 @@ public class WSATConfigServiceImplTest {
     }
 
     // -----------------------------------------------------------------------
-    // UT-8: modified() preserves active configuration
+    // UT-8: modified() preserves active configuration for transport/security properties
     // -----------------------------------------------------------------------
 
     @Test
-    public void testModifiedPreservesActiveConfiguration() throws Exception {
+    public void testModifiedPreservesActiveConfigurationForImmutableProperties() throws Exception {
         System.setProperty(BETA_PROPERTY, "true");
 
         Map<String, Object> props = baseProperties();
         props.put("virtualHostRef", "default_host");
         props.put("sslEnabled", false);
-        props.put("propagation", "always");
+        props.put("sslRef", "defaultSSLConfig");
+        props.put("clientAuth", false);
+        props.put("externalURLPrefix", "");
 
         WSATConfigServiceImpl impl = activate(props);
         assertEquals("http://host:9080/ibm/wsatservice", impl.getWSATUrl());
         assertFalse(impl.isSSLEnabled());
-        assertFalse(impl.isCheckWsdlMode());
+        assertEquals("defaultSSLConfig", impl.getSSLReferenceId());
+        assertFalse(impl.isClientAuthEnabled());
 
-        // Invoke modified with changed properties
+        // Invoke modified with changed transport & security properties
         Map<String, Object> updatedProps = baseProperties();
         updatedProps.put("virtualHostRef", "wsatHost");
         updatedProps.put("sslEnabled", true);
-        updatedProps.put("propagation", "check_wsdl");
+        updatedProps.put("sslRef", "customSSLConfig");
+        updatedProps.put("clientAuth", true);
+        updatedProps.put("externalURLPrefix", "https://proxy.example.com");
 
         impl.modified(updatedProps);
 
-        // Active instance must continue returning original configuration (deferred to restart)
+        // Active instance must continue returning original transport/security configuration (deferred to restart)
         assertEquals("http://host:9080/ibm/wsatservice", impl.getWSATUrl());
         assertFalse(impl.isSSLEnabled());
+        assertEquals("defaultSSLConfig", impl.getSSLReferenceId());
+        assertFalse(impl.isClientAuthEnabled());
+    }
+
+    // -----------------------------------------------------------------------
+    // UT-9: modified() applies propagation dynamically
+    // -----------------------------------------------------------------------
+
+    @Test
+    public void testModifiedAppliesPropagationDynamicallyInBeta() throws Exception {
+        System.setProperty(BETA_PROPERTY, "true");
+
+        Map<String, Object> props = baseProperties();
+        props.put("propagation", "always");
+
+        WSATConfigServiceImpl impl = activate(props);
         assertFalse(impl.isCheckWsdlMode());
+
+        // Dynamically switch to check_wsdl
+        Map<String, Object> updatedProps = baseProperties();
+        updatedProps.put("propagation", "check_wsdl");
+        impl.modified(updatedProps);
+        assertTrue("propagation change to check_wsdl should take effect immediately in beta", impl.isCheckWsdlMode());
+
+        // Dynamically switch back to always
+        Map<String, Object> revertProps = baseProperties();
+        revertProps.put("propagation", "always");
+        impl.modified(revertProps);
+        assertFalse("propagation change back to always should take effect immediately", impl.isCheckWsdlMode());
+    }
+
+    @Test
+    public void testModifiedIgnoresPropagationOutsideBeta() throws Exception {
+        System.clearProperty(BETA_PROPERTY);
+
+        Map<String, Object> props = baseProperties();
+        props.put("propagation", "always");
+
+        WSATConfigServiceImpl impl = activate(props);
+        assertFalse(impl.isCheckWsdlMode());
+
+        // Attempt dynamic switch to check_wsdl outside beta
+        Map<String, Object> updatedProps = baseProperties();
+        updatedProps.put("propagation", "check_wsdl");
+        impl.modified(updatedProps);
+        assertFalse("propagation attribute must be ignored outside beta", impl.isCheckWsdlMode());
+    }
+
+    // -----------------------------------------------------------------------
+    // UT-10: modified() applies asyncResponseTimeout dynamically
+    // -----------------------------------------------------------------------
+
+    @Test
+    public void testModifiedAppliesAsyncResponseTimeoutDynamically() throws Exception {
+        Map<String, Object> props = baseProperties();
+        props.put("asyncResponseTimeout", 30000L);
+
+        WSATConfigServiceImpl impl = activate(props);
+        assertEquals(30000L, impl.getAsyncResponseTimeout());
+
+        // Dynamically update asyncResponseTimeout
+        Map<String, Object> updatedProps = baseProperties();
+        updatedProps.put("asyncResponseTimeout", 60000L);
+        impl.modified(updatedProps);
+        assertEquals(60000L, impl.getAsyncResponseTimeout());
     }
 }
