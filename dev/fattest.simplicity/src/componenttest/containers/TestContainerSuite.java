@@ -207,7 +207,7 @@ public class TestContainerSuite {
         //If using remote docker then setup strategy
         if (TestContainerHelper.useRemoteDocker()) {
             try {
-                ExternalTestService.getService("docker-engine", ExternalDockerClientFilter.instance());
+                ExternalTestService.getServiceOnNetwork("docker-engine", ExternalDockerClientFilter.instance());
             } catch (Exception e) {
                 Log.error(c, m, e);
                 throw new RuntimeException(e);
