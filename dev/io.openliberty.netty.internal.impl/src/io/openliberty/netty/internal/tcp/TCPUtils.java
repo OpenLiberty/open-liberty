@@ -11,6 +11,7 @@ package io.openliberty.netty.internal.tcp;
 
 import java.io.IOException;
 import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
@@ -257,6 +258,12 @@ public class TCPUtils {
         String resolvedHost = inetHost.equals("*") ? NettyConstants.INADDR_ANY : inetHost;
         int retriesLeft = retryCount;
 
+        // Traced once, before the loop, so it is not part of any individual bind attempt.
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "open starting for " + config.getExternalName() + " on " + resolvedHost + ":" + inetPort
+                         + ", inbound=" + config.isInbound() + ", portOpenRetries=" + retryCount);
+        }
+
         while (true) {
             // Always start with SO_REUSEADDR=false so the OS rejects a real conflict
             // (e.g. specific-host:port when a wildcard is already listening).
@@ -317,17 +324,23 @@ public class TCPUtils {
                 && channel.isOpen()) {
 
                 boolean activeListenerDetected = false;
-                String probeHost = config.getHostname();
-                if (probeHost == null || probeHost.equals("*")) {
-                    probeHost = "localhost";
+                // Probe the same address the bind targeted. For the wildcard address, probe loopback.
+                String probeHost = resolvedHost;
+                if (NettyConstants.INADDR_ANY.equals(probeHost)) {
+                    probeHost = InetAddress.getLoopbackAddress().getHostAddress();
                 }
                 InetSocketAddress probeAddr = new InetSocketAddress(probeHost, inetPort);
                 if (!probeAddr.isUnresolved()) {
+                    // The probe connect has no timeout (matches CHFW); trace first so a hang here is visible.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Probing " + probeHost + ":" + inetPort + " for an active listener for "
+                                     + config.getExternalName());
+                    }
                     try {
                         SocketChannel probe = SocketChannel.open(probeAddr);
                         // Connection succeeded — someone is actively listening.
-                        probe.close();
                         activeListenerDetected = true;
+                        probe.close();
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Probe connection to " + probeHost + ":" + inetPort
                                      + " succeeded — real port conflict for " + config.getExternalName());
@@ -346,6 +359,12 @@ public class TCPUtils {
                 // blocked waiting on a connect here, so the silent "return null" exits below
                 // intentionally do not call notifyOutboundFailure().
                 if (!activeListenerDetected) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "No active listener detected on " + resolvedHost + ":" + inetPort
+                                     + ", retrying bind with SO_REUSEADDR=" + config.getSoReuseAddress()
+                                     + " for " + config.getExternalName());
+                    }
+
                     try {
                         future = bindOrConnect(framework, channel, config, resolvedHost, inetPort, config.getSoReuseAddress());
                     } catch (InterruptedException ie) {
@@ -385,9 +404,15 @@ public class TCPUtils {
             }
 
             if (retriesLeft > 0 && channel.isOpen()) {
-                Tr.debug(tc, "attempt " + retriesLeft + " of " + (retryCount + 1)
-                         + " failed to open the port, will try again after wait interval for "
-                         + config.getExternalName());
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    // retryCount is the number of retries after the first attempt, so the total
+                    // number of attempts is retryCount + 1.
+                    int failedAttemptNumber = retryCount - retriesLeft + 1;
+                    int totalAttempts = retryCount + 1;
+                    Tr.debug(tc, "attempt " + failedAttemptNumber + " of " + totalAttempts
+                                 + " failed to open the port, will try again after wait interval for "
+                                 + config.getExternalName());
+                }
                 try {
                     Thread.sleep(timeBetweenRetriesMsec);
                 } catch (InterruptedException x) {
@@ -533,6 +558,9 @@ public class TCPUtils {
                     framework.runWhenServerStarted(new Callable<ChannelFuture>() {
                         @Override
                         public ChannelFuture call() {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Deferred bind task running for " + config.getExternalName());
+                            }
                             // Running on the Liberty executor thread — safe to block with await().
                             // open() drives the full retry loop synchronously here, so this
                             // Callable does not return until the terminal bind outcome (success
