@@ -16,11 +16,13 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_APPLICATION_JSON;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -165,6 +167,73 @@ public class ProtocolVersionTest {
                    response, containsString("An unsupported MCP-Protocol-Version header was provided."));
         assertThat("Expected error message to contain expected version",
                    response, containsString("Supported values: 2025-11-25, 2025-06-18, 2025-03-26"));
+    }
+
+    /**
+     * 2026-07-28 is only available on a beta runtime. This server is not beta, so the header must be
+     * rejected and the version must not be advertised in the supported values.
+     */
+    @Test
+    public void testRejectsBetaProtocolVersionOnNonBeta() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "echo",
+                            "arguments": {
+                              "input": "Hello"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
+                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                             .requestProp(MCP_PROTOCOL_VERSION, "2026-07-28")
+                                                                             .requestProp(MCP_SESSION_ID, client.getSessionId())
+                                                                             .jsonBody(request)
+                                                                             .method("POST")
+                                                                             .expectCode(400)
+                                                                             .run(String.class);
+
+        assertThat("Expected error message about invalid protocol version",
+                   response, containsString("An unsupported MCP-Protocol-Version header was provided."));
+        assertThat("Expected the beta version not to be listed as supported",
+                   response, containsString("Supported values: 2025-11-25, 2025-06-18, 2025-03-26"));
+    }
+
+    /**
+     * A client requesting the beta version in {@code initialize} on a non-beta server is treated like
+     * any other unsupported version: the server responds with its preferred version.
+     */
+    @Test
+    public void testInitializeWithBetaProtocolVersionFallsBackOnNonBeta() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "initialize",
+                          "params": {
+                            "protocolVersion": "2026-07-28",
+                            "clientInfo": {
+                              "name": "test-client",
+                              "version": "0.1"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
+                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                             .jsonBody(request)
+                                                                             .method("POST")
+                                                                             .expectCode(200)
+                                                                             .run(String.class);
+
+        String negotiated = new JSONObject(response).getJSONObject("result").getString("protocolVersion");
+        assertEquals("Expected server to respond with its preferred GA version, not the beta version", "2025-11-25", negotiated);
     }
 
 }

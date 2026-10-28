@@ -19,6 +19,7 @@ import io.openliberty.mcp.internal.fat.isolation.MultiAppIsolationTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.BeanLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.LifecycleTest;
 import io.openliberty.mcp.internal.fat.protocol.HttpTest;
+import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionBetaTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionSchemaTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatefulModeTest;
@@ -56,6 +57,11 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
  * between repeat runs. It runs as a standalone flat entry in {@code FATSuite} after
  * this suite completes.
  *
+ * <p>Test classes must not restart the server, with one exception:
+ * {@link io.openliberty.mcp.internal.fat.protocol.ProtocolVersionBetaTest} restarts it with
+ * {@code -Dcom.ibm.ws.beta.edition=true} to test beta-only behaviour. It restores the original
+ * JVM options and restarts the server again in {@code @AfterClass}, so later tests see a non-beta server.
+ *
  * <p>{@link io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest} and
  * {@link io.openliberty.mcp.internal.fat.tool.NoParamNameTest} are also excluded.
  * They deploy apps that are meant to fail and need many error codes to be allowed,
@@ -80,6 +86,7 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 MultiAppIsolationTest.class,
                 MultiModuleToolTestToolManager.class,
                 NonRequiredArgsToolsTest.class,
+                ProtocolVersionBetaTest.class,
                 ProtocolVersionTest.class,
                 ProtocolVersionSchemaTest.class,
                 StatefulModeTest.class,
