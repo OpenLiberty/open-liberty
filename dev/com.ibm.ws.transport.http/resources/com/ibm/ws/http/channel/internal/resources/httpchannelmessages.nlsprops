@@ -263,21 +263,21 @@ write.to.closed.connection.explanation=The remote client closed the connection b
 write.to.closed.connection.useraction=No action is required. The server stops processing this request.
 
 netty.content.length.exceeded=CWWKT0059E: The request chunk size exceeded the maximum limit of {0} bytes.
-netty.content.length.exceeded.explanation=The incoming HTTP request body exceeded the configured maximum message size limit.
-netty.content.length.exceeded.useraction=Increase the maximum message size limit in the server configuration or reduce the request payload size.
+netty.content.length.exceeded.explanation=The incoming HTTP request body exceeded the configured maximum chunk size limit. The request was rejected.
+netty.content.length.exceeded.useraction=Increase the maximum message size limit in the server configuration, or reduce the request payload size.
 
-netty.read.failed.end.of.stream=CWWKT0060E: The connection between the {0} local address and the {1} remote address closed unexpectedly during a read operation because an end-of-stream condition occurred.
-netty.read.failed.end.of.stream.explanation=The remote endpoint closed the connection, reset the socket, or reached the end of the data stream before the server finished reading the expected request data.
-netty.read.failed.end.of.stream.useraction=Verify network connectivity between the client and server. Ensure that the client application does not close connections prematurely and check client and server timeout configurations.
+netty.read.failed.end.of.stream=CWWKT0060E: The connection between the {0} local address and the {1} remote address closed unexpectedly during a read operation before the server finished reading the request data.
+netty.read.failed.end.of.stream.explanation=The remote endpoint closed the connection or reset the connection before the server finished reading the expected request data. Alternatively, the data stream ended earlier than expected.
+netty.read.failed.end.of.stream.useraction=Verify network connectivity between the client and server. Ensure that the client application does not close the connection before the request is complete, and review the timeout configurations for both the client and the server.
 
 netty.request.before.protocol.established=CWWKT0061E: A request was received before the connection protocol was established: {0}
-netty.request.before.protocol.established.explanation=The client sent request data before completing the required protocol negotiation, TLS handshake, or connection upgrade sequence. The server cannot process requests on an uninitialized protocol channel.
-netty.request.before.protocol.established.useraction=Verify that the client adheres to the supported connection and protocol handshake sequence. Ensure that the client waits for protocol negotiation and handshake completion before transmitting request data.
+netty.request.before.protocol.established.explanation=The client sent request data before the required protocol negotiation, Transport Layer Security (TLS) handshake, or connection upgrade sequence completed. The server cannot process requests on a connection that is not fully initialized.
+netty.request.before.protocol.established.useraction=Verify that the client completes the required protocol negotiation and handshake before sending request data. If the problem persists, check the client application for code that transmits data before the connection is fully established.
 
-netty.request.metadata.already.initialized=CWWKT0062E: Netty request metadata is already initialized.
-netty.request.metadata.already.initialized.explanation=An attempt was made to initialize the request metadata on a request context where it had already been set.
-netty.request.metadata.already.initialized.useraction=This indicates an internal server state error. If the error persists, contact IBM Support.
+netty.request.metadata.already.initialized=CWWKT0062E: The request metadata was already initialized when an initialization attempt was made.
+netty.request.metadata.already.initialized.explanation=The server attempted to initialize the request metadata on a request context that was already initialized. This is an internal error that indicates an unexpected server state.
+netty.request.metadata.already.initialized.useraction=No immediate action is required.  If the problem persists, collect diagnostic information and contact IBM Support.
 
-netty.blocking.read.on.event.loop=CWWKT0063E: A blocking read operation cannot be invoked on the Netty event loop thread.
-netty.blocking.read.on.event.loop.explanation=Performing a blocking read operation on the Netty event loop thread causes a deadlock.
-netty.blocking.read.on.event.loop.useraction=Ensure that blocking read operations are dispatched to a separate thread and are not called from within a Netty event loop handler.
+netty.blocking.read.on.event.loop=CWWKT0063E: A blocking read operation cannot be invoked on the event loop thread.
+netty.blocking.read.on.event.loop.explanation=Performing a blocking read operation on the event loop thread causes a deadlock condition. The server cannot recover from this state without intervention.
+netty.blocking.read.on.event.loop.useraction=Ensure that blocking read operations are dispatched to a separate thread and are not called from within an event loop handler. If this error occurs in a custom application component, review the component code for blocking calls that run on the event loop thread.
