@@ -87,9 +87,11 @@ public class JandexWebInfClassesNoReadWebInfTest extends JandexAppTest {
      * Verify that the Jandex index at WEB-INF/classes/META-INF/jandex.idx is NOT
      * used when readWebInfJandex is absent from the server.xml application element.
      * No CWWKC009x messages should appear in the server log.
+     *
+     * The jandex index in the jar file is under META-INF so it should be used
      */
     @Test
     public void webInfClassesNoReadWebInf_testJandexIndexIsNotRead() throws Exception {
-        super.testJandex(JandexAppTest.JandexExpectation.DO_NOT_EXPECT_JANDEX);
+        super.testJandex(JandexAppTest.JandexExpectation.DO_EXPECT_JANDEX_IN_ONE_LOCATION);
     }
 }
