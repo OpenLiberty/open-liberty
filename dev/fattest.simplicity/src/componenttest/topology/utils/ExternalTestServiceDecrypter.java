@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,8 @@ public class ExternalTestServiceDecrypter {
         ExternalTestService instance = null;
         while (instance == null) {
             try {
-                instance = ExternalTestService.getService("liberty-properties-decrypter");
+                // The decrypter has no properties, so skip the Consul key/value query
+                instance = ExternalTestService.getServiceWithoutProperties("liberty-properties-decrypter");
             } catch (Exception e) {
                 if (DECRYPTER_SERVICE_RETRY.retryable("INITALIZER", e.getMessage())) { // Wait and continue
                     continue;
@@ -75,7 +76,8 @@ public class ExternalTestServiceDecrypter {
         ExternalTestService instance = null;
         while (instance == null) {
             try {
-                instance = ExternalTestService.getService("liberty-properties-decrypter");
+                // The decrypter has no properties, so skip the Consul key/value query
+                instance = ExternalTestService.getServiceWithoutProperties("liberty-properties-decrypter");
             } catch (Exception e) {
                 if (DECRYPTER_SERVICE_RETRY.retryable("RE_INITALIZER", e.getMessage())) { // Wait and continue
                     continue;

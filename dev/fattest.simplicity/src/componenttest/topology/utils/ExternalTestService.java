@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2025 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,11 +15,13 @@ package componenttest.topology.utils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -29,7 +31,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 
 import javax.json.JsonArray;
@@ -147,6 +148,25 @@ public class ExternalTestService {
     }
 
     /**
+     * Returns an ExternalTestService that matches the given service name, and that the client is allowed to connect to
+     * from its network location.
+     *
+     * Only use this for services whose Consul service definition is tagged with the names of the networks they can be
+     * accessed from (e.g. docker-engine). Consul is asked for just those instances tagged with the client's network location
+     * ({@value #CLIENT_NETWORK_LOCATION}). A service that is not tagged this way will never be found.
+     *
+     * Otherwise this behaves as {@link #getService(String, ExternalTestServiceFilter)}.
+     *
+     * @param  serviceName the name of the service type in the central registry e.g. docker-engine
+     * @param  filter      a filter that will allow only matched Services to be returned or null for no filter
+     * @return             the ExternalTestService selected at random
+     * @throws Exception   If either no healthy services could be found or no consul server could be contacted.
+     */
+    public static ExternalTestService getServiceOnNetwork(String serviceName, ExternalTestServiceFilter filter) throws Exception {
+        return getServices(1, serviceName, filter, CLIENT_NETWORK_LOCATION, true).iterator().next();
+    }
+
+    /**
      * Returns an Collection of ExternalTestServices that matches the given service name.
      * The services returned are randomized so that load is distributed across all healthy instances.
      * This method considers the health of the service both in the central registry and locally.
@@ -183,6 +203,32 @@ public class ExternalTestService {
      * @throws Exception   If either not enough healthy services could be found or no consul server could be contacted.
      */
     public static Collection<ExternalTestService> getServices(int count, String serviceName, ExternalTestServiceFilter filter) throws Exception {
+        return getServices(count, serviceName, filter, null, true);
+    }
+
+    /**
+     * Returns a single ExternalTestService that matches the given service name, without querying the
+     * central registry for the service's properties. This saves a Consul request, and is only suitable
+     * for services that have no properties (e.g. liberty-properties-decrypter). Any properties
+     * defined for the service in the central registry will be ignored.
+     *
+     * This is package-private as the properties of a service are normally required and the decrypter
+     * is the only intended caller.
+     *
+     * @param  serviceName the name of the service type in the central registry e.g. liberty-properties-decrypter
+     * @return             the ExternalTestService selected at random, with no properties
+     * @throws Exception   If either no healthy services could be found or no consul server could be contacted.
+     */
+    static ExternalTestService getServiceWithoutProperties(String serviceName) throws Exception {
+        return getServices(1, serviceName, null, null, false).iterator().next();
+    }
+
+    /**
+     * @param tag             only consider service instances that have this Consul tag, or null for all instances
+     * @param fetchProperties whether to also query the central registry for the service's properties
+     */
+    private static Collection<ExternalTestService> getServices(int count, String serviceName, ExternalTestServiceFilter filter, String tag,
+                                                               boolean fetchProperties) throws Exception {
         final String m = "getServices";
 
         if (filter == null) {
@@ -191,7 +237,8 @@ public class ExternalTestService {
 
         Collection<String> unhealthyReadOnly = ExternalTestServiceReporter.getUnhealthyReport(serviceName);
 
-        Log.info(c, m, "Getting " + count + " external test service(s) named '" + serviceName + "' with a " + filter.getClass().getName());
+        Log.info(c, m, "Getting " + count + " external test service(s) named '" + serviceName + "' with a " + filter.getClass().getName()
+                       + (tag == null ? "" : " and tag '" + tag + "'"));
         if (!unhealthyReadOnly.isEmpty()) {
             Log.info(c, m, "\tExisting unhealthy instances: " + unhealthyReadOnly.toString());
         }
@@ -200,7 +247,8 @@ public class ExternalTestService {
         for (String consulServer : getConsulServers()) {
             JsonArray instances;
             try {
-                HttpsRequest instancesRequest = new HttpsRequest(consulServer + "/v1/health/service/" + serviceName + "?passing=true&stale")
+                HttpsRequest instancesRequest = new HttpsRequest(consulServer + "/v1/health/service/" + serviceName + "?passing=true&stale"
+                                                                 + (tag == null ? "" : "&tag=" + URLEncoder.encode(tag, StandardCharsets.UTF_8.name())))
                                 .timeout(30000)
                                 .allowInsecure();
                 instances = instancesRequest.run(JsonArray.class);
@@ -211,78 +259,37 @@ public class ExternalTestService {
 
             //fail if no instances available
             if (instances.isEmpty()) {
-                throw new Exception("There are no healthy services available for " + serviceName);
+                throw new Exception("There are no healthy services available for " + serviceName
+                                    + (tag == null ? "" : " that are tagged with '" + tag + "'"));
             }
 
-            JsonArray propertiesJson;
+            // The properties of a service's instances can be large (they include certificates and keys), so rather than
+            // fetching them all up front they are fetched one instance at a time, only for the instances we examine.
+            InstanceLoader loader = instanceJson -> {
+                Map<String, ServiceProperty> instanceProps = new HashMap<String, ServiceProperty>();
+                if (fetchProperties) {
+                    String nodeName = instanceJson.getJsonObject("Node").getString("Node");
+                    instanceProps = getInstanceProperties(consulServer, serviceName, nodeName);
+                }
+                return new ExternalTestService(instanceJson, instanceProps);
+            };
+
+            List<JsonObject> candidates = new ArrayList<JsonObject>();
+            for (int index = 0; index < instances.size(); index++) {
+                candidates.add(instances.getJsonObject(index));
+            }
+
+            Log.info(c, m, "Found " + candidates.size() + " potential " + serviceName + " services, attempting to find a matching service.");
+
+            //pick random healthy instance
+            Collection<ExternalTestService> matchedServices;
             try {
-                HttpsRequest propsRequest = new HttpsRequest(consulServer + "/v1/kv/service/" + serviceName + "/?recurse=true&stale");
-                propsRequest.allowInsecure();
-                propsRequest.timeout(10000);
-                propsRequest.expectCode(HttpsURLConnection.HTTP_OK).expectCode(HttpsURLConnection.HTTP_NOT_FOUND);
-                propertiesJson = propsRequest.run(JsonArray.class);
-            } catch (Exception e) {
+                matchedServices = getMatchedServices(count, candidates, loader, unhealthyReadOnly, filter);
+            } catch (PropertyFetchException e) {
+                // Consul could not supply the properties, try the next Consul server
                 finalError = e;
                 continue;
             }
-
-            // Extract properties for each service instance
-            // propMap maps NodeName -> Collection<ServiceProperty>
-            Map<String, Collection<ServiceProperty>> propMap = new HashMap<String, Collection<ServiceProperty>>();
-            if (propertiesJson != null) {
-                for (int index = 0; index < propertiesJson.size(); index++) {
-                    ServiceProperty property = parseServiceProperty(propertiesJson.getJsonObject(index));
-                    if (property == null) {
-                        continue;
-                    } else {
-                        Collection<ServiceProperty> propList = propMap.get(property.getNodeName());
-                        if (propList == null) {
-                            propList = new ArrayList<ServiceProperty>();
-                            propMap.put(property.getNodeName(), propList);
-                        }
-
-                        propList.add(property);
-                    }
-                }
-            }
-
-            //convert to list of external test services
-            List<ExternalTestService> healthyTestServices = new ArrayList<ExternalTestService>();
-            List<ExternalTestService> unhealthyTestServices = new ArrayList<ExternalTestService>();
-            for (int index = 0; index < instances.size(); index++) {
-                JsonObject instanceJson = instances.getJsonObject(index);
-                String nodeName = instanceJson.getJsonObject("Node").getString("Node");
-
-                Map<String, ServiceProperty> instancePropMap = new HashMap<String, ServiceProperty>();
-
-                Collection<ServiceProperty> commonProps = propMap.get("common");
-                if (commonProps != null) {
-                    for (ServiceProperty prop : commonProps) {
-                        instancePropMap.put(prop.key, prop);
-                    }
-                }
-                Collection<ServiceProperty> serviceProps = propMap.get(nodeName);
-                if (serviceProps != null) {
-                    for (ServiceProperty prop : serviceProps) {
-                        instancePropMap.put(prop.key, prop);
-                    }
-                }
-
-                ExternalTestService instance = new ExternalTestService(instanceJson, instancePropMap);
-
-                boolean unhealthy = unhealthyReadOnly.contains(instance.getAddress());
-                if (!unhealthy) {
-                    //Add to possible list
-                    healthyTestServices.add(instance);
-                } else {
-                    unhealthyTestServices.add(instance);
-                }
-            }
-
-            Log.info(c, m, "Found " + healthyTestServices.size() + " potential " + serviceName + " services, attempting to find a matching service.");
-
-            //pick random healthy instance
-            Collection<ExternalTestService> matchedServices = getMatchedServices(count, healthyTestServices, filter);
             if (matchedServices != null && matchedServices.size() == count) {
                 Log.info(c, m, "Found " + matchedServices.size() + " service(s): " + matchedServices);
                 return matchedServices;
@@ -381,6 +388,62 @@ public class ExternalTestService {
     }
 
     /**
+     * Thrown when the properties of a service instance could not be retrieved from a Consul server.
+     */
+    private static class PropertyFetchException extends Exception {
+        private static final long serialVersionUID = 1L;
+
+        private PropertyFetchException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
+
+    /**
+     * Creates an {@link ExternalTestService} from the Consul health data for a service instance,
+     * retrieving the instance's properties if required.
+     */
+    @FunctionalInterface
+    private interface InstanceLoader {
+        ExternalTestService load(JsonObject instanceJson) throws PropertyFetchException;
+    }
+
+    /**
+     * Retrieves the properties of a single service instance from Consul.
+     *
+     * Only the properties of the one instance are requested, as the properties of all of a service's
+     * instances together can be very large. Properties shared between instances are not supported.
+     *
+     * @param  consulServer           the Consul server to query
+     * @param  serviceName            the name of the service type in the central registry e.g. docker-engine
+     * @param  nodeName               the name of the node on which the service instance is running
+     * @return                        a map of property key to property, which is empty if the instance has no properties
+     * @throws PropertyFetchException if the Consul server could not be queried
+     */
+    private static Map<String, ServiceProperty> getInstanceProperties(String consulServer, String serviceName, String nodeName) throws PropertyFetchException {
+        JsonArray propertiesJson;
+        try {
+            HttpsRequest propsRequest = new HttpsRequest(consulServer + "/v1/kv/service/" + serviceName + "/" + nodeName + "/?recurse=true&stale");
+            propsRequest.allowInsecure();
+            propsRequest.timeout(10000);
+            propsRequest.expectCode(HttpsURLConnection.HTTP_OK).expectCode(HttpsURLConnection.HTTP_NOT_FOUND);
+            propertiesJson = propsRequest.run(JsonArray.class);
+        } catch (Exception e) {
+            throw new PropertyFetchException("Unable to get the properties of " + serviceName + " on " + nodeName + " from " + consulServer, e);
+        }
+
+        Map<String, ServiceProperty> properties = new HashMap<String, ServiceProperty>();
+        if (propertiesJson != null) {
+            for (int index = 0; index < propertiesJson.size(); index++) {
+                ServiceProperty property = parseServiceProperty(propertiesJson.getJsonObject(index));
+                if (property != null) {
+                    properties.put(property.key, property);
+                }
+            }
+        }
+        return properties;
+    }
+
+    /**
      * Parses a json object from a consul http response to a service property object
      *
      * @param  json a json object
@@ -418,50 +481,45 @@ public class ExternalTestService {
     }
 
     /**
-     * Iterates through a list of services and returns a collection of desired size of services that match various criteria
-     * as described below:
+     * Iterates through a randomly ordered list of service instances and returns a collection of desired size of services
+     * that match various criteria as described below:
      *
      * <ol>
-     * <li>Network location filtering: Service must allow connections from the client network location</li>
+     * <li>Not locally unhealthy: Service must not have been reported as unhealthy</li>
      * <li>Property decryption: Property decrypter service must be able to decrypt service properties (if applicable)</li>
      * <li>Test Service Filter: Service must pass the supplied filter's test method</li>
      * </ol>
      *
-     * If the service fails any of these criteria it will be reported as unhealthy and we will continue onto the next service
+     * Each instance is only loaded (which may require a request to Consul for its properties) when it is reached,
+     * so instances beyond the ones needed to satisfy the request are never loaded.
+     *
+     * If the service fails any of these criteria we will continue onto the next service
      * until we have collected the requested under.
      *
-     * @param  count        number of services to locate
-     * @param  testServices the list of all test services
-     * @param  filter       a client supplied filter with additional criteria
-     * @return              collection of test services that match all criteria, or null if no service could be located.
-     * @throws Exception    if we have exhausted the list of services and we encountered an exception along the way.
+     * @param  count                  number of services to locate
+     * @param  candidates             the Consul health data of all candidate service instances
+     * @param  loader                 creates a service from its Consul health data
+     * @param  unhealthy              the addresses of services that have been reported as unhealthy
+     * @param  filter                 a client supplied filter with additional criteria
+     * @return                        collection of test services that match all criteria, or null if no service could be located.
+     * @throws PropertyFetchException if the properties of an instance could not be retrieved from Consul
+     * @throws Exception              if we have exhausted the list of services and we encountered an exception along the way.
      */
-    private static Collection<ExternalTestService> getMatchedServices(int count, List<ExternalTestService> testServices, ExternalTestServiceFilter filter) throws Exception {
-        String m = "getMatchedServices";
-        Collections.shuffle(testServices, rand);
+    private static Collection<ExternalTestService> getMatchedServices(int count, List<JsonObject> candidates, InstanceLoader loader, Collection<String> unhealthy,
+                                                                      ExternalTestServiceFilter filter) throws Exception {
+        Collections.shuffle(candidates, rand);
         Exception exception = null;
         Collection<ExternalTestService> matchedServices = new ArrayList<ExternalTestService>();
 
-        for (ExternalTestService externalTestService : testServices) {
-            String serviceName = externalTestService.serviceName;
+        for (JsonObject candidate : candidates) {
+            ExternalTestService externalTestService = loader.load(candidate);
 
-            //Do Network Location Filtering
+            // Skip services that have already been reported as unhealthy
+            if (unhealthy.contains(externalTestService.getAddress())) {
+                continue;
+            }
+
             try {
-                String locationString = externalTestService.getProperties().get("allowed.networks");
-                if (Objects.nonNull(locationString)) { // If null assume the service supports all networks
-                    List<String> allowedNetworks = Arrays.asList(locationString.split(","));
-                    if (!allowedNetworks.contains(CLIENT_NETWORK_LOCATION)) {
-                        String reason = "Build Machine cannot use instance of " + serviceName + " as its networks location ("
-                                        + CLIENT_NETWORK_LOCATION + ") is not in allowed.networks (" + locationString + ")";
-                        ExternalTestServiceReporter.reportUnhealthy(externalTestService, reason);
-                        continue;
-                    }
-                }
-
-                Log.info(c, m, "Matched " + serviceName + " service based on network location (" + CLIENT_NETWORK_LOCATION + //
-                               ") is in allowed.networks (" + (Objects.isNull(locationString) ? "ALL" : locationString) + //
-                               ") continue to match service based on user defined filters.");
-
                 // Do decryption - fail fast if no decryption service is available
                 externalTestService.decryptProperties();
 

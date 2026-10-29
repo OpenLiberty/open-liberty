@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,6 @@ import javax.json.JsonStructure;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.DeleteMethod;
@@ -151,7 +150,7 @@ public class HttpRequest {
         /*
          * Set timeouts for the request and then create the HTTP client.
          */
-        HttpConnectionManager cm = new MultiThreadedHttpConnectionManager();
+        MultiThreadedHttpConnectionManager cm = new MultiThreadedHttpConnectionManager();
         if (timeout != null) {
             cm.getParams().setConnectionTimeout(timeout);
             cm.getParams().setSoTimeout(timeout);
@@ -273,6 +272,9 @@ public class HttpRequest {
             }
         } finally {
             request.releaseConnection();
+            // The connection manager is local to this call, so shut it down to close its idle
+            // pooled connections rather than leaving them open until garbage collection.
+            cm.shutdown();
         }
     }
 
