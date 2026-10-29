@@ -648,7 +648,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getUsers_multipleResultUnderBound() throws Exception {
-        SearchResult result = fullBasicRegistry().getUsers("user.*", 1);
+        SearchResult result = fullBasicRegistry().getUsers("user*", 1);
         assertNotNull("SearchResult must never be NULL", result);
         assertEquals(1, result.getList().size());
         assertTrue(result.hasMore());
@@ -659,7 +659,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getUsers_multipleResultOverBound() throws Exception {
-        SearchResult result = fullBasicRegistry().getUsers("user.*", 3);
+        SearchResult result = fullBasicRegistry().getUsers("user*", 3);
         assertNotNull("SearchResult must never be NULL", result);
         assertEquals(2, result.getList().size());
         assertFalse(result.hasMore());
@@ -670,7 +670,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getUsers_multipleResultBounded() throws Exception {
-        SearchResult result = fullBasicRegistry().getUsers("user.*", 2);
+        SearchResult result = fullBasicRegistry().getUsers("user*", 2);
         assertNotNull("SearchResult must never be NULL", result);
         assertEquals(2, result.getList().size());
         assertFalse(result.hasMore());
@@ -681,7 +681,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getUsers_multipleResultUnbounded() throws Exception {
-        SearchResult result = fullBasicRegistry().getUsers("user.*", 0);
+        SearchResult result = fullBasicRegistry().getUsers("user*", 0);
         assertNotNull("SearchResult must never be NULL", result);
         assertEquals(2, result.getList().size());
         assertFalse(result.hasMore());
@@ -692,7 +692,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getUsers_allEntiresUnderBound() throws Exception {
-        SearchResult result = fullBasicRegistry().getUsers(".*", 1);
+        SearchResult result = fullBasicRegistry().getUsers("*", 1);
         assertNotNull("SearchResult must never be NULL", result);
         assertEquals(1, result.getList().size());
         assertTrue(result.hasMore());
@@ -703,7 +703,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getUsers_allEntiresOverBound() throws Exception {
-        SearchResult result = fullBasicRegistry().getUsers(".*", 5);
+        SearchResult result = fullBasicRegistry().getUsers("*", 5);
         assertNotNull("SearchResult must never be NULL", result);
         assertEquals(4, result.getList().size());
         assertFalse(result.hasMore());
@@ -714,7 +714,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getUsers_allEntiresBounded() throws Exception {
-        SearchResult result = fullBasicRegistry().getUsers(".*", 4);
+        SearchResult result = fullBasicRegistry().getUsers("*", 4);
         assertNotNull("SearchResult must never be NULL", result);
         assertEquals("Should only be 4 entries", 4, result.getList().size());
         assertFalse("Should not think there are more results", result.hasMore());
@@ -729,7 +729,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getUsers_allEntiresUnbounded() throws Exception {
-        SearchResult result = fullBasicRegistry().getUsers(".*", 0);
+        SearchResult result = fullBasicRegistry().getUsers("*", 0);
         assertNotNull("SearchResult must never be NULL", result);
         assertEquals("Should only be 4 entries", 4, result.getList().size());
         assertFalse("Should not think there are more results", result.hasMore());
@@ -744,7 +744,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getUsers_noResultCaseMismatch() throws Exception {
-        SearchResult result = fullBasicRegistry().getUsers("USER.*", 3);
+        SearchResult result = fullBasicRegistry().getUsers("USER*", 3);
         assertNotNull("SearchResult must not be NULL", result);
         assertEquals(0, result.getList().size());
     }
@@ -754,7 +754,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getUsers_ignoreCaseUnbounded() throws Exception {
-        SearchResult result = ignoreCaseBasicRegistry().getUsers("user.*", 0);
+        SearchResult result = ignoreCaseBasicRegistry().getUsers("user*", 0);
         assertNotNull("SearchResult must never be NULL", result);
         assertEquals("Should be 2 entries", 2, result.getList().size());
         assertFalse("Should not think there are more results", result.hasMore());
@@ -906,7 +906,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getGroups_multipleResultUnderBounded() throws Exception {
-        SearchResult result = fullBasicRegistry().getGroups("group.*", 1);
+        SearchResult result = fullBasicRegistry().getGroups("group*", 1);
         assertNotNull("SearchResult must never be NULL", result);
         assertEquals(1, result.getList().size());
         assertTrue(result.hasMore());
@@ -917,7 +917,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getGroups_multipleResultBonded() throws Exception {
-        SearchResult result = fullBasicRegistry().getGroups("group.*", 3);
+        SearchResult result = fullBasicRegistry().getGroups("group*", 3);
         assertNotNull("SearchResult must never be NULL", result);
         assertEquals(2, result.getList().size());
         assertFalse(result.hasMore());
@@ -928,7 +928,7 @@ public class BasicRegistryTest {
      */
     @Test
     public void getGroups_allEntiresBounded() throws Exception {
-        SearchResult result = fullBasicRegistry().getGroups(".*", 4);
+        SearchResult result = fullBasicRegistry().getGroups("*", 4);
         assertNotNull("SearchResult must never be NULL", result);
         assertEquals("Should only be 4 entries", 4, result.getList().size());
         assertFalse("Should not think there are more results", result.hasMore());
@@ -1114,9 +1114,8 @@ public class BasicRegistryTest {
     }
 
     // ------------------------------------------------------------------
-    // Regular expression metacharacters other than '.' must be treated as literals.
-    // '*' is the glob wildcard and '.' is intentionally left as the regex any-character
-    // wildcard because existing callers use patterns such as "user.*" and ".*".
+    // Regular expression metacharacters, including '.', must be treated as literals.
+    // '*' is the only wildcard.
     // ------------------------------------------------------------------
 
     private static void assertUsers(BasicRegistry reg, String pattern, String... expected) throws Exception {
@@ -1184,15 +1183,16 @@ public class BasicRegistryTest {
     }
 
     /**
-     * Existing behavior that callers rely on: '.' is the regex any-character wildcard.
+     * '.' is a literal, not the regex any-character wildcard (CVE-533: "ad.in" must not match "admin").
      */
     @Test
-    public void getUsers_dotRemainsRegexWildcard() throws Exception {
+    public void getUsers_dotIsLiteral() throws Exception {
         BasicRegistry reg = metacharBasicRegistry(false);
-        assertUsers(reg, "ad.in", "admin");
+        assertUsers(reg, "ad.in");
         assertUsers(reg, "jo.hn", "jo.hn");
-        assertUsers(reg, "admin.*", "adminx"); // "*" becomes ".*", so "admin.*" needs at least one more character
-        assertUsers(reg, ".*", "admin", "adminx", "reader", "jo.hn", "[x", "a+b");
+        assertUsers(reg, "jo.*", "jo.hn");
+        assertUsers(reg, "admin.*");
+        assertUsers(reg, ".*");
     }
 
     @Test
