@@ -49,8 +49,8 @@ import componenttest.topology.impl.LibertyServer;
  * httpOptions attributes.
  *
  * <p>Both attributes are enforced by {@code LibertyHttpKeepAliveHandler}, which
- * marks the inbound request {@code Connection: close} so that the response
- * carries {@code Connection: close} and the server then closes the socket.
+ * sets {@code Connection: close} on the outgoing response and then lets Netty's
+ * parent handler close the socket. The handler never modifies the request.
  *
  * <p>Every test talks to the server over a single raw {@link Socket}, because
  * the behavior under test is what happens to a <em>persistent</em> connection:
@@ -509,11 +509,11 @@ public class KeepAliveEnforcementTest {
     }
 
     /**
-     * With {@code keepAliveEnabled=false} the handler rewrites the request's
-     * {@code Connection: Upgrade} header to {@code close}. The dispatcher reads
-     * that same header to recognise an upgrade request and to hold back bytes
-     * that arrive with it. This checks that bytes sent in the same write as the
-     * upgrade request are still delivered to the upgraded handler.
+     * With {@code keepAliveEnabled=false} the handler leaves the request's
+     * {@code Connection: Upgrade} header alone. The dispatcher reads that header
+     * to recognise an upgrade request and to hold back bytes that arrive with it.
+     * This checks that bytes sent in the same write as the upgrade request are
+     * still delivered to the upgraded handler.
      */
     @Test
     public void keepAliveDisabled_servletUpgrade_earlyBytesDelivered() throws Exception {
