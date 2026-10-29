@@ -445,6 +445,10 @@ public class LibertyServer implements LogMonitorClient {
 
     private final Map<String, String> envVars = new HashMap<>();
 
+    // A copy of the env vars (see addEnvVar) that were consumed by the most recent server start.
+    // envVars is cleared on every start, so this allows a caller to restart the server with the same environment.
+    private final Map<String, String> lastStartEnvVars = new HashMap<>();
+
     protected String relativeLogsRoot = "/logs/"; // this will be appended to logsRoot in setUp
     protected String consoleFileName = DEFAULT_CONSOLE_FILE; // Console log file name
     protected String messageFileName = DEFAULT_MSG_FILE; // Messages log file name (optionally changed by the FAT)
@@ -2084,6 +2088,8 @@ public class LibertyServer implements LogMonitorClient {
         useEnvVars.putAll(envVars);
         if (!useEnvVars.isEmpty())
             Log.info(c, methodName, "Adding env vars: " + useEnvVars);
+        lastStartEnvVars.clear();
+        lastStartEnvVars.putAll(envVars);
         envVars.clear();
 
         if (additionalSystemProperties != null && additionalSystemProperties.size() > 0) {
@@ -8617,6 +8623,16 @@ public class LibertyServer implements LogMonitorClient {
 
     public String getEnvVar(String var) {
         return envVars.get(var);
+    }
+
+    /**
+     * Env vars that were added with {@link #addEnvVar(String, String)} and consumed by the most recent server start.
+     * Env vars are cleared on each start, so this can be used to re-add them before restarting the server.
+     *
+     * @return an unmodifiable copy of the env vars used by the most recent start
+     */
+    public Map<String, String> getLastStartEnvVars() {
+        return Collections.unmodifiableMap(new HashMap<>(lastStartEnvVars));
     }
 
     public void configureLTPAKeys(JavaInfo info) throws Exception {
