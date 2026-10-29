@@ -12,6 +12,7 @@ package io.openliberty.transport.http_fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -50,10 +51,13 @@ import componenttest.topology.impl.LibertyServer;
  * and {@code maxKeepAliveRequests=1}.
  *
  * <p>A WebSocket handshake is an HTTP/1.1 request, so {@code LibertyHttpKeepAliveHandler}
- * sees it and, with those options, marks it {@code Connection: close}. A WebSocket
- * connection must still stay open after the {@code 101 Switching Protocols}. These
- * tests complete a raw WebSocket handshake, send a text frame, and expect the echo
- * back on the same socket.
+ * sees it. With those options the handler sets {@code Connection: close} on the
+ * outgoing response, but it leaves a {@code 101 Switching Protocols} alone and never
+ * modifies the request. The WebSocket handshake rejects a request whose
+ * {@code Connection} header no longer contains {@code Upgrade}, so a handler that
+ * rewrote the request would make the handshake fail with a {@code 400}. These
+ * tests complete a raw WebSocket handshake, expect the {@code 101}, send a text
+ * frame, and expect the echo back on the same socket.
  *
  * <p>Two orderings are covered, because the handler sees the request before the
  * upgrade is committed:
@@ -61,6 +65,31 @@ import componenttest.topology.impl.LibertyServer;
  * <li>the first frame is sent after the {@code 101} has been read</li>
  * <li>the first frame is sent in the same write as the handshake request</li>
  * </ul>
+ *
+ * <p>The two "first frame with the handshake" tests run on the Netty transport only. On the
+ * Channel Framework (CFW) transport the client times out waiting for the first echo.
+ * CFW does not use {@code LibertyHttpKeepAliveHandler}, so the failure is not in the
+ * code under test. A CFW run with trace enabled for {@code com.ibm.ws.tcpchannel},
+ * {@code com.ibm.ws.http.channel}, {@code com.ibm.ws.http.dispatcher} and
+ * {@code com.ibm.ws.wsoc} showed:
+ * <ul>
+ * <li>When the handshake is sent alone, the server's first TCP read is 179 bytes. The two
+ * frames then arrive as separate reads of 11 and 12 bytes, and those tests pass.</li>
+ * <li>When the first frame is sent in the same write as the handshake, the first TCP read
+ * is 190 bytes (179 + the 11 byte frame).</li>
+ * <li>After the HTTP channel parses the headers and the upgrade runs,
+ * {@code WsocConnLink.startReading} starts a new TCP read. No {@code processRead} or
+ * {@code WsocReadCallback.complete} follows, and the next read result is {@code -1}
+ * when the client gives up.</li>
+ * </ul>
+ * In the source, {@code WsocUpgradeHandler.init} calls {@code SessionImpl.signalAppOnOpen()}
+ * with no leftover buffer, so {@code startReading} is used. Only the client-side
+ * {@code ClientConnector} passes leftover bytes to {@code processDataThenStartRead}.
+ * The trace does not dump the HTTP buffer after the parse, so that the 11 bytes are still
+ * held there is inferred from the read sizes, not observed.
+ *
+ * <p>Netty passes these tests. They stay as coverage for the new handler on Netty, and are
+ * skipped on CFW.
  *
  * <p>This is a separate class and server from {@link KeepAliveEnforcementTest} because
  * it needs a {@code websocket-*} feature, which the repeat actions replace per EE level.
@@ -71,6 +100,11 @@ import componenttest.topology.impl.LibertyServer;
 public class KeepAliveWebSocketTest {
 
     private static final Logger LOG = Logger.getLogger(KeepAliveWebSocketTest.class.getName());
+
+    /** Present in the "TCP Channel started" message only when the Netty transport is used. */
+    private static final String NETTY_TCP_CLASS_NAME = "io.openliberty.netty.internal.tcp.TCPUtils";
+
+    private static boolean runningNetty = false;
 
     private static final String APP_NAME = "keepAliveWebSocketApp";
     private static final String ENDPOINT_PATH = "/" + APP_NAME + "/echo";
@@ -99,6 +133,12 @@ public class KeepAliveWebSocketTest {
         server.addInstalledAppForValidation(APP_NAME);
         server.startServer();
         server.waitForStringInLog("CWWKT0016I:.*" + APP_NAME + ".*");
+
+        // The TCP channel started message names the transport in use.
+        String tcpChannelMessage = server.waitForDefaultHTTPEndpointStart();
+        LOG.info("Endpoint: " + tcpChannelMessage);
+        runningNetty = tcpChannelMessage != null && tcpChannelMessage.contains(NETTY_TCP_CLASS_NAME);
+        LOG.info("Running Netty? " + runningNetty);
     }
 
     @AfterClass
@@ -147,18 +187,39 @@ public class KeepAliveWebSocketTest {
         assertWebSocketStaysOpen(false);
     }
 
-    /** {@code keepAliveEnabled=false} with the first frame in the same write as the handshake. */
+    /**
+     * {@code keepAliveEnabled=false} with the first frame in the same write as the handshake.
+     * Netty only. See the class Javadoc for why CFW is skipped.
+     */
     @Test
     public void keepAliveDisabled_firstFrameWithHandshake_webSocketStaysOpen() throws Exception {
+        assumeNettyForEarlyFrame();
         setKeepAliveOptions(false, null);
         assertWebSocketStaysOpen(true);
     }
 
-    /** {@code maxKeepAliveRequests=1} with the first frame in the same write as the handshake. */
+    /**
+     * {@code maxKeepAliveRequests=1} with the first frame in the same write as the handshake.
+     * Netty only. See the class Javadoc for why CFW is skipped.
+     */
     @Test
     public void maxKeepAliveRequestsOne_firstFrameWithHandshake_webSocketStaysOpen() throws Exception {
+        assumeNettyForEarlyFrame();
         setKeepAliveOptions(null, 1);
         assertWebSocketStaysOpen(true);
+    }
+
+    /**
+     * Skips the calling test on the Channel Framework transport, where a WebSocket frame
+     * that arrives in the same TCP read as the handshake is never processed. See the class
+     * Javadoc for the trace evidence.
+     */
+    private static void assumeNettyForEarlyFrame() {
+        if (!runningNetty) {
+            LOG.info("Skipping: the Channel Framework transport does not process a WebSocket frame "
+                     + "that arrives in the same read as the handshake");
+        }
+        assumeTrue(runningNetty);
     }
 
     /**
