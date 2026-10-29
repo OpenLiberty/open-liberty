@@ -22,7 +22,9 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
+import io.netty.handler.codec.http.HttpStatusClass;
 
 /**
  * Extends Netty's {@link HttpServerKeepAliveHandler} to enforce Liberty-specific
@@ -30,11 +32,18 @@ import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
  *
  * <p>This handler consolidates all keep-alive logic in one place:
  * <ul>
- *   <li>Tracks the number of HTTP requests on the channel.</li>
- *   <li>Sets {@code Connection: close} on incoming requests when keep-alive is
- *       disabled or the maximum number of persistent requests has been reached.</li>
- *   <li>Delegates remaining keep-alive header management to the parent handler.</li>
+ *   <li>Counts the HTTP/1.x requests on the channel.</li>
+ *   <li>Sets {@code Connection: close} on the <em>response</em> when keep-alive is
+ *       disabled or the maximum number of persistent requests has been reached.
+ *       Request headers are never modified.</li>
+ *   <li>Delegates the rest of the keep-alive handling, including closing the
+ *       channel after a response that says {@code Connection: close}, to the
+ *       parent handler.</li>
  * </ul>
+ *
+ * <p>Enforcing on the response matches how the channel framework and the earlier
+ * Netty implementation behave. Handlers further down the pipeline, such as the
+ * WebSocket handshake, therefore see the request exactly as the client sent it.
  */
 public class LibertyHttpKeepAliveHandler extends HttpServerKeepAliveHandler {
 
@@ -49,59 +58,62 @@ public class LibertyHttpKeepAliveHandler extends HttpServerKeepAliveHandler {
     }
 
     /**
-     * Intercepts each incoming {@link HttpRequest} to:
-     * <ol>
-     *   <li>Skip keep-alive enforcement for HTTP/2 connections — identified by the
-     *       connection's established {@link ProtocolState}, never by a request
-     *       header, because a client can spoof headers such as
-     *       {@code x-http2-stream-id} on an HTTP/1.x connection. Keep-alive is an
-     *       HTTP/1.1 concept and the H2 codec manages its own connection
-     *       lifecycle.</li>
-     *   <li>Increment the per-channel HTTP/1.x request counter.</li>
-     *   <li>Set {@code Connection: close} if keep-alive is disabled or the
-     *       maximum number of persistent requests has been reached, so that
-     *       the parent handler will subsequently close the connection after
-     *       the response is written.</li>
-     * </ol>
+     * Counts each incoming {@link HttpRequest} on an HTTP/1.x connection. The
+     * request is passed on unchanged.
+     *
+     * <p>HTTP/2 connections are skipped. They are identified by the connection's
+     * established {@link ProtocolState}, never by a request header, because a
+     * client can spoof headers such as {@code x-http2-stream-id} on an HTTP/1.x
+     * connection. Keep-alive is an HTTP/1.1 concept and the H2 codec manages its
+     * own connection lifecycle.
      */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof HttpRequest) {
-            HttpRequest request = (HttpRequest) msg;
-
-            // Keep-alive is an HTTP/1.x concept only. Use the connection's established
-            // protocol rather than a client-supplied header, which can be spoofed.
-            boolean isHttp2 = ProtocolState.current(ctx.channel()) == ProtocolName.HTTP2;
-
-            if (!isHttp2) {
-                // Increment request counter
-                Integer count = ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
-                if (count == null) {
-                    count = 0;
-                }
-                ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(count + 1);
-
-                int maxRequests = config.getMaximumPersistentRequests();
-                boolean maxReached = maxRequests != -1 && count + 1 >= maxRequests;
-
-                if (!config.isKeepAliveEnabled() || maxReached) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "channelRead: setting Connection: close — keepAliveEnabled=" + config.isKeepAliveEnabled()
-                                     + ", requestCount=" + (count + 1) + ", maxRequests=" + maxRequests);
-                    }
-                    request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-                }
-            }
+        if (msg instanceof HttpRequest && !isHttp2(ctx)) {
+            Integer count = ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
+            ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(count == null ? 1 : count + 1);
         }
         super.channelRead(ctx, msg);
     }
 
     /**
-     * Passes the response write through to the parent, which handles the full
-     * keep-alive response header and connection-close lifecycle.
+     * Sets {@code Connection: close} on the outgoing response when keep-alive is
+     * disabled or the maximum number of persistent requests has been reached, then
+     * lets the parent handler close the connection after the response is written.
+     *
+     * <p>Informational responses ({@code 1xx}) are left alone. That keeps the
+     * {@code Connection: Upgrade} of a {@code 101 Switching Protocols}, and lets a
+     * {@code 100 Continue} pass through; the final response carries the
+     * {@code close}.
      */
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+        if (msg instanceof HttpResponse && !isHttp2(ctx)) {
+            HttpResponse response = (HttpResponse) msg;
+            if (response.status().codeClass() != HttpStatusClass.INFORMATIONAL && shouldClose(ctx)) {
+                response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+            }
+        }
         super.write(ctx, msg, promise);
+    }
+
+    /** True when keep-alive is disabled or the request limit has been reached. */
+    private boolean shouldClose(ChannelHandlerContext ctx) {
+        Integer count = ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
+        int requests = count == null ? 0 : count;
+        int maxRequests = config.getMaximumPersistentRequests();
+        boolean maxReached = maxRequests != -1 && requests >= maxRequests;
+
+        boolean close = !config.isKeepAliveEnabled() || maxReached;
+        if (close && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "write: setting Connection: close on the response — keepAliveEnabled=" + config.isKeepAliveEnabled()
+                         + ", requestCount=" + requests + ", maxRequests=" + maxRequests);
+        }
+        return close;
+    }
+
+    /** Keep-alive is an HTTP/1.x concept; the connection's established protocol decides, not a header. */
+    private static boolean isHttp2(ChannelHandlerContext ctx) {
+        return ProtocolState.current(ctx.channel()) == ProtocolName.HTTP2;
     }
 }

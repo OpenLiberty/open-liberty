@@ -38,6 +38,7 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpVersion;
@@ -48,13 +49,13 @@ import io.netty.handler.codec.http.HttpVersion;
  * <p>The handler is the single place where Liberty enforces the
  * {@code keepAliveEnabled} and {@code maxKeepAliveRequests} httpOptions on the
  * Netty HTTP/1.x path. It does so by setting {@code Connection: close} on the
- * <em>inbound</em> request, which Netty's parent {@code HttpServerKeepAliveHandler}
- * then honors when the response is written.
+ * outgoing <em>response</em>, which Netty's parent {@code HttpServerKeepAliveHandler}
+ * then honors by closing the channel. It never modifies the request.
  *
- * <p>Each test drives the handler inside an {@link EmbeddedChannel}, writes one
- * or more inbound requests, and inspects the {@code Connection} header on the
- * request that comes out the other side. The config is a Mockito mock, so no
- * server is needed.
+ * <p>Each test drives the handler inside an {@link EmbeddedChannel}: it writes an
+ * inbound request, then writes a response outbound and inspects the
+ * {@code Connection} header on the response that reaches the wire. The config is
+ * a Mockito mock, so no server is needed.
  *
  * <p>The connection's protocol is established through {@link ProtocolState}
  * exactly as the real pipeline initializers do. This matters because the
@@ -87,16 +88,18 @@ public class LibertyHttpKeepAliveHandlerTest {
     // ---------------------------------------------------------------------
 
     /**
-     * With {@code keepAliveEnabled=false} the very first request must be marked
-     * {@code Connection: close}, even though no request limit is configured.
+     * With {@code keepAliveEnabled=false} the very first response must carry
+     * {@code Connection: close}, even though no request limit is configured, and
+     * the channel must be closed after it.
      */
     @Test
     public void keepAliveDisabled_setsConnectionClose() {
         channel = newChannel(config(false, -1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
 
-        HttpRequest request = sendRequest(HttpVersion.HTTP_1_1);
+        HttpResponse response = exchange(newRequest(HttpVersion.HTTP_1_1));
 
-        assertTrue("keepAliveEnabled=false must set Connection: close", isConnectionClose(request));
+        assertTrue("keepAliveEnabled=false must set Connection: close", isConnectionClose(response));
+        assertFalse("The channel must be closed after the response", channel.isOpen());
     }
 
     /**
@@ -109,37 +112,65 @@ public class LibertyHttpKeepAliveHandlerTest {
         channel = newChannel(config(true, -1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
 
         for (int i = 1; i <= 5; i++) {
-            HttpRequest request = sendRequest(HttpVersion.HTTP_1_1);
-            assertFalse("Request " + i + " must not be closed when max is unlimited",
-                        isConnectionClose(request));
+            HttpResponse response = exchange(newRequest(HttpVersion.HTTP_1_1));
+            assertFalse("Response " + i + " must not be closed when max is unlimited",
+                        isConnectionClose(response));
         }
         assertEquals("All five requests should be counted", Integer.valueOf(5), requestCount());
+        assertTrue("The channel must stay open", channel.isOpen());
     }
 
     /**
-     * With {@code maxKeepAliveRequests=3}, requests 1 and 2 are left alone and
-     * request 3 (the limit) is marked {@code Connection: close} so the
-     * connection is closed after its response.
+     * With {@code maxKeepAliveRequests=3}, responses 1 and 2 are left alone and
+     * response 3 (the limit) carries {@code Connection: close} so the
+     * connection is closed after it.
      */
     @Test
     public void maxRequests_closesOnlyOnNthRequest() {
         channel = newChannel(config(true, 3), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
 
-        assertFalse("Request 1 of 3 must stay open", isConnectionClose(sendRequest(HttpVersion.HTTP_1_1)));
-        assertFalse("Request 2 of 3 must stay open", isConnectionClose(sendRequest(HttpVersion.HTTP_1_1)));
-        assertTrue("Request 3 of 3 must be closed", isConnectionClose(sendRequest(HttpVersion.HTTP_1_1)));
+        assertFalse("Response 1 of 3 must stay open", isConnectionClose(exchange(newRequest(HttpVersion.HTTP_1_1))));
+        assertFalse("Response 2 of 3 must stay open", isConnectionClose(exchange(newRequest(HttpVersion.HTTP_1_1))));
+        assertTrue("The channel must still be open before the last response", channel.isOpen());
+        assertTrue("Response 3 of 3 must be closed", isConnectionClose(exchange(newRequest(HttpVersion.HTTP_1_1))));
+        assertFalse("The channel must be closed after the last response", channel.isOpen());
     }
 
     /**
      * Boundary case: {@code maxKeepAliveRequests=1} means the first request is
-     * already the last one. The handler compares {@code count + 1 >= max}, so a
+     * already the last one. The handler checks {@code count >= max}, so a
      * strict {@code >} would break this case specifically.
      */
     @Test
     public void maxOne_closesFirstRequest() {
         channel = newChannel(config(true, 1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
 
-        assertTrue("max=1 must close the first request", isConnectionClose(sendRequest(HttpVersion.HTTP_1_1)));
+        assertTrue("max=1 must close the first response", isConnectionClose(exchange(newRequest(HttpVersion.HTTP_1_1))));
+    }
+
+    /**
+     * The handler must never modify the request. This matters most for
+     * {@code Connection: Upgrade}: the WebSocket handshake rejects any request
+     * whose {@code Connection} header no longer contains {@code Upgrade}.
+     */
+    @Test
+    public void requestHeaders_areNeverModified() {
+        channel = newChannel(config(false, 1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
+
+        HttpRequest plain = writeAndRead(newRequest(HttpVersion.HTTP_1_1));
+        assertNull("A request with no Connection header must stay that way",
+                   plain.headers().get(HttpHeaderNames.CONNECTION));
+
+        EmbeddedChannel upgradeChannel = newChannel(config(false, 1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
+        try {
+            upgradeChannel.writeInbound(newUpgradeRequest());
+            HttpRequest upgrade = upgradeChannel.readInbound();
+            assertNotNull(upgrade);
+            assertEquals("Connection: Upgrade must reach the next handler unchanged",
+                         HttpHeaderValues.UPGRADE.toString(), upgrade.headers().get(HttpHeaderNames.CONNECTION));
+        } finally {
+            upgradeChannel.finishAndReleaseAll();
+        }
     }
 
     // ---------------------------------------------------------------------
@@ -155,7 +186,7 @@ public class LibertyHttpKeepAliveHandlerTest {
      * client could defeat {@code keepAliveEnabled=false} and
      * {@code maxKeepAliveRequests}. The handler must instead rely on
      * {@link ProtocolState}, which says this connection is HTTP/1.1, so the
-     * request is still counted and still closed.
+     * request is still counted and its response is still closed.
      */
     @Test
     public void http1_spoofedStreamIdHeader_stillEnforced() {
@@ -163,10 +194,10 @@ public class LibertyHttpKeepAliveHandlerTest {
 
         HttpRequest request = newRequest(HttpVersion.HTTP_1_1);
         request.headers().set(STREAM_ID_HEADER, "3"); // spoofed by the client
-        HttpRequest out = writeAndRead(request);
+        HttpResponse response = exchange(request);
 
         assertTrue("A spoofed x-http2-stream-id header must not bypass keepAliveEnabled=false",
-                   isConnectionClose(out));
+                   isConnectionClose(response));
         assertEquals("The spoofed request must still be counted", Integer.valueOf(1), requestCount());
     }
 
@@ -181,12 +212,12 @@ public class LibertyHttpKeepAliveHandlerTest {
 
         HttpRequest first = newRequest(HttpVersion.HTTP_1_1);
         first.headers().set(STREAM_ID_HEADER, "3");
-        assertFalse("Request 1 of 2 must stay open", isConnectionClose(writeAndRead(first)));
+        assertFalse("Response 1 of 2 must stay open", isConnectionClose(exchange(first)));
 
         HttpRequest second = newRequest(HttpVersion.HTTP_1_1);
         second.headers().set(STREAM_ID_HEADER, "5");
-        assertTrue("Request 2 of 2 must be closed despite the spoofed header",
-                   isConnectionClose(writeAndRead(second)));
+        assertTrue("Response 2 of 2 must be closed despite the spoofed header",
+                   isConnectionClose(exchange(second)));
     }
 
     /**
@@ -202,23 +233,30 @@ public class LibertyHttpKeepAliveHandlerTest {
     public void http2Connection_isNotCountedOrClosed() {
         channel = newChannel(config(false, 1), ProtocolName.HTTP2, ProtocolSource.ALPN_HTTP2);
 
-        HttpRequest request = sendRequest(HttpVersion.HTTP_1_1);
+        HttpResponse response = exchange(newRequest(HttpVersion.HTTP_1_1));
 
-        assertFalse("HTTP/2 connections must not get Connection: close", isConnectionClose(request));
+        assertFalse("HTTP/2 connections must not get Connection: close", isConnectionClose(response));
         assertNull("HTTP/2 requests must not be counted", requestCount());
+        assertTrue("The channel must stay open", channel.isOpen());
     }
 
     /**
      * HTTP/1.0 connections are HTTP/1.x, so they must be counted and enforced
      * just like HTTP/1.1.
+     *
+     * <p>The request asks for {@code Connection: keep-alive}. Without it, Netty's
+     * parent handler would close an HTTP/1.0 connection on its own and this test
+     * could not tell the two apart.
      */
     @Test
     public void http10Connection_isCounted() {
         channel = newChannel(config(true, 1), ProtocolName.HTTP10, ProtocolSource.CLEARTEXT_HTTP10);
 
-        HttpRequest request = sendRequest(HttpVersion.HTTP_1_0);
+        HttpRequest request = newRequest(HttpVersion.HTTP_1_0);
+        request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+        HttpResponse response = exchange(request);
 
-        assertTrue("HTTP/1.0 connections must be enforced", isConnectionClose(request));
+        assertTrue("HTTP/1.0 connections must be enforced", isConnectionClose(response));
         assertEquals("The HTTP/1.0 request must be counted", Integer.valueOf(1), requestCount());
     }
 
@@ -233,9 +271,9 @@ public class LibertyHttpKeepAliveHandlerTest {
         channel = newChannel(config(false, -1), null, null);
         assertEquals(ProtocolName.UNKNOWN, ProtocolState.current(channel));
 
-        HttpRequest request = sendRequest(HttpVersion.HTTP_1_1);
+        HttpResponse response = exchange(newRequest(HttpVersion.HTTP_1_1));
 
-        assertTrue("An unknown protocol must still be enforced", isConnectionClose(request));
+        assertTrue("An unknown protocol must still be enforced", isConnectionClose(response));
         assertEquals("The request must be counted", Integer.valueOf(1), requestCount());
     }
 
@@ -268,42 +306,25 @@ public class LibertyHttpKeepAliveHandlerTest {
     // ---------------------------------------------------------------------
 
     /**
-     * Control for the upgrade tests below: an ordinary request with
-     * {@code keepAliveEnabled=false} and an ordinary {@code 200} response must
-     * close the connection after the response. This proves the harness drives
-     * Netty's parent {@code HttpServerKeepAliveHandler} the way production does.
-     */
-    @Test
-    public void nonUpgrade_keepAliveDisabled_200Response_closesChannel() {
-        channel = newChannel(config(false, -1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
-        sendRequest(HttpVersion.HTTP_1_1);
-
-        FullHttpResponse out = writeResponse(newResponse(HttpResponseStatus.OK));
-
-        assertTrue("The response must tell the client the connection is closing",
-                   out.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true));
-        assertFalse("The channel must be closed after the response", channel.isOpen());
-    }
-
-    /**
      * A client asks for a protocol upgrade (WebSocket, Servlet {@code HttpUpgradeHandler})
      * and the server agrees with {@code 101 Switching Protocols}. Even with
-     * {@code keepAliveEnabled=false} the 101 must still say
-     * {@code Connection: Upgrade} and the channel must stay open, because the
-     * upgraded protocol now owns the socket.
+     * {@code keepAliveEnabled=false} and {@code maxKeepAliveRequests=1} the 101
+     * must keep {@code Connection: Upgrade} and the channel must stay open,
+     * because the upgraded protocol now owns the socket.
      *
-     * <p>The handler marks this request {@code Connection: close}, so this test
-     * pins down what Netty's parent {@code HttpServerKeepAliveHandler} does with
-     * a 101 in that situation: it leaves the response alone and does not close
-     * the channel. It guards against a Netty upgrade or a change to this
-     * handler altering that. The end-to-end behavior, including the server's own
-     * upgrade handling, is covered by the servlet upgrade tests in
+     * <p>This is the WebSocket regression test. The WebSocket handshake rejects a
+     * request whose {@code Connection} header is not {@code Upgrade}, and RFC 6455
+     * requires the 101 to carry {@code Connection: Upgrade}. The end-to-end
+     * behavior, including the server's own upgrade handling, is covered by
+     * {@code KeepAliveWebSocketTest} and the servlet upgrade tests in
      * {@code KeepAliveEnforcementTest}.
      */
     @Test
     public void upgrade_keepAliveDisabled_101Response_staysUpgradeAndOpen() {
-        channel = newChannel(config(false, -1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
-        writeAndRead(newUpgradeRequest());
+        channel = newChannel(config(false, 1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
+        HttpRequest request = writeAndRead(newUpgradeRequest());
+        assertEquals("The upgrade request must reach the handshake unchanged",
+                     HttpHeaderValues.UPGRADE.toString(), request.headers().get(HttpHeaderNames.CONNECTION));
 
         FullHttpResponse switching = newResponse(HttpResponseStatus.SWITCHING_PROTOCOLS);
         switching.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE);
@@ -315,6 +336,26 @@ public class LibertyHttpKeepAliveHandlerTest {
         assertFalse("A 101 response must not become Connection: close",
                     out.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true));
         assertTrue("The channel must stay open for the upgraded protocol", channel.isOpen());
+    }
+
+    /**
+     * Informational responses other than 101 are also left alone. A
+     * {@code 100 Continue} is followed by the real response, and that final
+     * response is the one that carries {@code Connection: close} and ends the
+     * connection.
+     */
+    @Test
+    public void continue100_isLeftAlone_finalResponseCloses() {
+        channel = newChannel(config(false, -1), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
+        writeAndRead(newRequest(HttpVersion.HTTP_1_1));
+
+        FullHttpResponse interim = writeResponse(newResponse(HttpResponseStatus.CONTINUE));
+        assertFalse("A 100 Continue must not get Connection: close", isConnectionClose(interim));
+        assertTrue("The channel must stay open after a 100 Continue", channel.isOpen());
+
+        FullHttpResponse last = writeResponse(newResponse(HttpResponseStatus.OK));
+        assertTrue("The final response must get Connection: close", isConnectionClose(last));
+        assertFalse("The channel must be closed after the final response", channel.isOpen());
     }
 
     /**
@@ -336,7 +377,7 @@ public class LibertyHttpKeepAliveHandlerTest {
         FullHttpResponse out = writeResponse(newResponse(HttpResponseStatus.OK));
 
         assertTrue("Upgrade headers on the request must not bypass keepAliveEnabled=false",
-                   out.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true));
+                   isConnectionClose(out));
         assertFalse("The channel must be closed after a non-101 response", channel.isOpen());
     }
 
@@ -422,9 +463,13 @@ public class LibertyHttpKeepAliveHandlerTest {
         return out;
     }
 
-    /** Writes a new GET request through the handler and returns what comes out. */
-    private HttpRequest sendRequest(HttpVersion version) {
-        return writeAndRead(newRequest(version));
+    /**
+     * One full exchange: writes the request inbound, then writes an ordinary
+     * {@code 200} response outbound, and returns the response that reaches the wire.
+     */
+    private HttpResponse exchange(HttpRequest request) {
+        writeAndRead(request);
+        return writeResponse(newResponse(HttpResponseStatus.OK));
     }
 
     /** Writes the request inbound and reads it back after the handler has processed it. */
@@ -435,10 +480,9 @@ public class LibertyHttpKeepAliveHandlerTest {
         return out;
     }
 
-    /** True when the request carries {@code Connection: close}. */
-    private static boolean isConnectionClose(HttpRequest request) {
-        String connection = request.headers().get(HttpHeaderNames.CONNECTION);
-        return connection != null && HttpHeaderValues.CLOSE.toString().equalsIgnoreCase(connection);
+    /** True when the response carries {@code Connection: close}. */
+    private static boolean isConnectionClose(HttpResponse response) {
+        return response.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true);
     }
 
     /** The handler's per-channel request count, or null if it never counted. */
