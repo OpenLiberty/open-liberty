@@ -80,6 +80,21 @@ public class JandexWebInfClassesTest extends JandexAppTest {
      * WEB-INF/classes/META-INF/jandex.idx rather than the WAR-root META-INF/.
      */
     public static void setUpWebInfClasses(Logger logger, SharedServer sharedServer) throws Exception {
+        setUpWebInfClasses(logger, sharedServer, null, null);
+    }
+
+    public static void setUpWebInfClasses(
+        Logger logger,
+        SharedServer sharedServer,
+        String serverConfigName, String jvmOptionsName) throws Exception {
+
+        if (serverConfigName != null) {
+            install(logger, sharedServer, serverConfigName, "server.xml");
+        }
+
+        if (jvmOptionsName != null) {
+            install(logger, sharedServer, jvmOptionsName, "jvm.options");
+        }
 
         logger.info("setUpWebInfClasses: Add TestServlet40 (WEB-INF/classes jandex) to the server applications folder");
 
