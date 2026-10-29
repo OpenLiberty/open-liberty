@@ -82,7 +82,7 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
     public static final String REST_ISSUER = "IBMJMXConnectorRESTIssuer";
 
     public static final String KEY_JWT_CONSUMER_CONFIG = "jwtConsumerConfig";
-    public static final String DEFAULT_JWT_CONSUMER_ID = "defaultJwtConsumer";
+    public static final String DEFAULT_JWT_CONSUMER_ID = "JMXConnectorRESTConsumer";
 
     //public static final String ADMIN_REST_ENDPOINT_PREFIX = "/IBMJMXConnectorREST/adminEndpoint"; //UTLE: TODO - USE: ADMIN_REST_ENDPOINT
     public static final String ADMIN_REST_ENDPOINT_PREFIX = "/IBMJMXConnectorREST"; 
@@ -325,7 +325,7 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
     }
 
     /**
-     * Validates the token with the jwtConsumer. If the defaultJwtConsumer has a jwkEndpointUrl configured,
+     * Validates the token with the jwtConsumer. If the JMXConnectorRESTConsumer has a jwkEndpointUrl configured,
      * for example jwkEndpointUrl="file:///path/to/jwk", the public key is read from that location;
      * otherwise the key comes from the jwtConsumer keystore configuration.
      */

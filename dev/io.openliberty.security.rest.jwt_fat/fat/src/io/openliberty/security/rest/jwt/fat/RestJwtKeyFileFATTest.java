@@ -51,7 +51,7 @@ import componenttest.topology.impl.LibertyServer;
 
 /**
  * RestJwtTAI still validates the token with the jwtConsumer, but the RS256 public key is read from
- * the file named by the jwkEndpointUrl of the defaultJwtConsumer in server.xml:
+ * the file named by the jwkEndpointUrl of the JMXConnectorRESTConsumer in server.xml:
  * jwkEndpointUrl="file:${server.config.dir}resources/security/jwtPublic.pem"
  */
 @RunWith(FATRunner.class)

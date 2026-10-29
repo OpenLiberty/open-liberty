@@ -11,7 +11,7 @@
     <keyStore id="defaultKeyStore" password="Liberty" />
     <ltpa keysPassword="password" />
 
-    <jwtConsumer id="defaultJwtConsumer"
+    <jwtConsumer id="JMXConnectorRESTConsumer"
                  issuer="IBMJMXConnectorRESTIssuer"
                  audiences="IBMJMXConnectorREST"
                  sharedKey="superSecretSharedKeyForRestJwtTesting123456"

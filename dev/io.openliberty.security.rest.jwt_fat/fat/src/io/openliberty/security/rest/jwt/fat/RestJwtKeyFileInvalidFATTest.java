@@ -49,7 +49,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * The jwkEndpointUrl of the defaultJwtConsumer (file:${server.config.dir}resources/security/jwtPublic.pem
+ * The jwkEndpointUrl of the JMXConnectorRESTConsumer (file:${server.config.dir}resources/security/jwtPublic.pem
  * in server.xml) points at a file that is missing, unreadable or does not hold a public key. The
  * jwtConsumer cannot get a key, so RestJwtTAI must reject the request.
  *

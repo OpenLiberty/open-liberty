@@ -11,7 +11,7 @@
     <keyStore id="defaultKeyStore" password="Liberty" />
     <ltpa keysPassword="password" />
 
-    <jwtConsumer id="defaultJwtConsumer"
+    <jwtConsumer id="JMXConnectorRESTConsumer"
                  issuer="https://localhost:9443/jwt"
                  sharedKey="superSecretSharedKeyForRestJwtTesting123456"
                  signatureAlgorithm="HS256"
