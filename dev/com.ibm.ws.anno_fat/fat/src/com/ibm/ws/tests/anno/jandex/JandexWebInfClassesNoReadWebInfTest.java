@@ -26,6 +26,8 @@ import com.ibm.ws.tests.anno.JandexIndexV13RepeatAction;
 import com.ibm.ws.tests.anno.JandexV1RepeatAction;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -38,6 +40,7 @@ import componenttest.rules.repeater.RepeatTests;
  * ignored and no CWWKC009x messages are emitted.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class JandexWebInfClassesNoReadWebInfTest extends JandexAppTest {
 
     private static final Logger LOG = Logger.getLogger(JandexWebInfClassesNoReadWebInfTest.class.getName());
