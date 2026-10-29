@@ -177,17 +177,7 @@ public class NettyHeaderUtils {
         // $WSSP: drop only the untrusted values, keeping any trusted ones
         // Only reached when at least one occurrence was untrusted.
         if (wsspNeedsPrune) {
-            // The $WSSP value comes from a peer that is not trusted, so it is deliberately not logged.
-            // Runs once per request (not per value); warn only for the first request, but trace every request.
-            int remotePort = (remoteSocket != null) ? remoteSocket.getPort() : -1;
-            if (wsspWarningIssued.compareAndSet(false, true)) {
-                Tr.warning(tc, "wssp.header.non.sensitive.address", remoteAddr, remotePort);
-            }
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "filterPrivateHeaders: $WSSP header received from non-sensitive address: clientAddress=" + remoteAddr
-                             + ", clientPort=" + remotePort);
-            }
-            pruneUntrustedWssp(headers, desensitizePrivatePortHeader, trustNonSensitive, trustSensitive, remoteAddr);
+            pruneUntrustedWssp(headers, desensitizePrivatePortHeader, trustNonSensitive, trustSensitive, remoteSocket);
         }
     }
 
@@ -198,7 +188,15 @@ public class NettyHeaderUtils {
      */
     private static void pruneUntrustedWssp(HttpHeaders headers, boolean desensitizePrivatePortHeader,
                                            boolean trustNonSensitive, boolean trustSensitive,
-                                           InetAddress remoteAddr) {
+                                           InetSocketAddress remoteSocket) {
+        // Only called when at least one untrusted $WSSP value was seen. Warn only for the first such request.
+        // The $WSSP value comes from a peer that is not trusted, so it is deliberately not logged.
+        if (wsspWarningIssued.compareAndSet(false, true)) {
+            Tr.warning(tc, "wssp.header.non.sensitive.address",
+                       (remoteSocket != null) ? remoteSocket.getAddress() : null,
+                       (remoteSocket != null) ? remoteSocket.getPort() : -1);
+        }
+
         Iterator<? extends CharSequence> values =
                 headers.valueCharSequenceIterator(HttpHeaderKeys.HDR_$WSSP.getName());
         while (values.hasNext()) {
@@ -208,8 +206,7 @@ public class NettyHeaderUtils {
                                                        desensitizePrivatePortHeader)) {
                 values.remove();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "filterPrivateHeaders: removed untrusted $WSSP value from ["
-                            + remoteAddr + "]");
+                    Tr.debug(tc, "filterPrivateHeaders: removed untrusted $WSSP value from [" + remoteSocket + "]");
                 }
             }
         }
