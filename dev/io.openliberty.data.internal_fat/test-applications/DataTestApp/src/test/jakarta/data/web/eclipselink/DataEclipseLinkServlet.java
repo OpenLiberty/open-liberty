@@ -62,8 +62,8 @@ import test.jakarta.data.web.eclipselink.Animal.ScientificName;
 @DataSourceDefinition(name = "java:app/jdbc/H2DataSource",
                       className = "org.h2.jdbcx.JdbcDataSource",
                       url = "${env.DB_URL}",
-                      user = "dbuser1",
-                      password = "dbpwd1")
+                      user = "${env.DB_USER}",
+                      password = "${env.DB_PASSWORD}")
 @Resource(name = "java:module/env/jdbc/H2DataSourceRef",
           lookup = "java:app/jdbc/H2DataSource")
 @Resource(name = "java:module/env/data/DataStoreRef",
