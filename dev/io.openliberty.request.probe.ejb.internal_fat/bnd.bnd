@@ -1,0 +1,34 @@
+#*******************************************************************************
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+    fat/src
+
+fat.project: true
+
+# Features installed dynamically by tests that are NOT present in any server.xml in this bucket.
+# (Features in server.xml, such as eventLogging-1.0, are detected automatically.)
+tested.features: \
+    ejb-3.2,\
+    ejbHome-3.2,\
+    ejbLite-3.2,\
+    ejbPersistentTimer-3.2,\
+    ejbRemote-3.2,\
+    enterpriseBeans-4.0,\
+    enterpriseBeansHome-4.0,\
+    enterpriseBeansLite-4.0,\
+    enterpriseBeansPersistentTimer-4.0,\
+    enterpriseBeansRemote-4.0,\
+    mdb-3.2,\
+    mdb-4.0,\
+    requestTiming-1.0
+
