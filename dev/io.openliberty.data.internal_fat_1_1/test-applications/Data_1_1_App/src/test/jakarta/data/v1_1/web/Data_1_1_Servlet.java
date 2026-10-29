@@ -64,6 +64,7 @@ import jakarta.data.restrict.Restrict;
 import jakarta.data.restrict.Restriction;
 import jakarta.data.spi.expression.literal.NumericLiteral;
 import jakarta.inject.Inject;
+import jakarta.persistence.LockTimeoutException;
 import jakarta.persistence.PersistenceException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -494,10 +495,18 @@ public class Data_1_1_Servlet extends FATServlet {
                         fractions.futureWriteLock("Twelve Eighteenths");
 
         try {
-            Optional<Fraction> found = futureWriteLock.get(2, TimeUnit.SECONDS);
+            Optional<Fraction> found = futureWriteLock.get(1, TimeUnit.SECONDS);
             fail("Should not be able to lock this entity: " + found);
         } catch (TimeoutException x) {
             // expected because the entity is locked
+        } catch (ExecutionException x) {
+            // can happen if the database times out the lock first
+            boolean lockTimedOut = false;
+            for (Throwable cause = x; cause != null; cause = cause.getCause())
+                if (cause instanceof LockTimeoutException)
+                    lockTimedOut = true;
+            if (!lockTimedOut)
+                throw x;
         }
 
         readyToRollBack.countDown();
@@ -564,10 +573,18 @@ public class Data_1_1_Servlet extends FATServlet {
         try {
             Fraction fraction = pessimisticReadStage
                             .toCompletableFuture()
-                            .get(2, TimeUnit.SECONDS);
+                            .get(1, TimeUnit.SECONDS);
             fail("Should not be able to lock this entity: " + fraction);
         } catch (TimeoutException x) {
             // expected because the entity is locked
+        } catch (ExecutionException x) {
+            // can happen if the database times out the lock first
+            boolean lockTimedOut = false;
+            for (Throwable cause = x; cause != null; cause = cause.getCause())
+                if (cause instanceof LockTimeoutException)
+                    lockTimedOut = true;
+            if (!lockTimedOut)
+                throw x;
         }
 
         readyToRollBack.countDown();
