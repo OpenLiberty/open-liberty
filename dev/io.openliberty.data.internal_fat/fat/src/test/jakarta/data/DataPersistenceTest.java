@@ -83,7 +83,9 @@ public class DataPersistenceTest extends FATServletClient {
                     .withDatabaseName("testdb");
 
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatestH2(Optional.of(h2Database));
+    // TODO enable database rotation
+    // createLatestH2(Optional.of(h2Database));
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createType(DatabaseContainerType.H2Java11Plus, Optional.of(h2Database));
 
     @Server("io.openliberty.data.internal.fat.persistence")
     @TestServlets({ @TestServlet(servlet = DataTestServlet.class,

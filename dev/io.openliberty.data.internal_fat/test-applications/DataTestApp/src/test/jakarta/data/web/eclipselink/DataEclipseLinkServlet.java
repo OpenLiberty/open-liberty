@@ -61,7 +61,7 @@ import test.jakarta.data.web.eclipselink.Animal.ScientificName;
  */
 @DataSourceDefinition(name = "java:app/jdbc/H2DataSource",
                       className = "org.h2.jdbcx.JdbcDataSource",
-                      url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
+                      url = "${env.DB_URL}",
                       user = "dbuser1",
                       password = "dbpwd1")
 @Resource(name = "java:module/env/jdbc/H2DataSourceRef",
