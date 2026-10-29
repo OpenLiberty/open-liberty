@@ -13,6 +13,7 @@
 package com.ibm.ws.transport.iiop.transaction;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -76,6 +77,33 @@ public class TransactionIORConstantsTest {
         UUID reconstructed = new UUID(buf.getLong(), buf.getLong());
         assertEquals("UUID reconstructed from SERVER_INSTANCE_UUID_BYTES must equal SERVER_INSTANCE_UUID",
                      TransactionIORConstants.SERVER_INSTANCE_UUID, reconstructed);
+    }
+
+    /**
+     * regenerateServerInstanceUUID() must generate a new UUID and update both
+     * SERVER_INSTANCE_UUID and SERVER_INSTANCE_UUID_BYTES consistently.
+     * This ensures InstantOn restore produces a unique identity for each restored instance.
+     */
+    @Test
+    public void testRegenerateServerInstanceUUID() {
+        UUID beforeUUID = TransactionIORConstants.SERVER_INSTANCE_UUID;
+        byte[] beforeBytes = TransactionIORConstants.SERVER_INSTANCE_UUID_BYTES.clone();
+
+        TransactionIORConstants.regenerateServerInstanceUUID();
+
+        UUID afterUUID = TransactionIORConstants.SERVER_INSTANCE_UUID;
+        byte[] afterBytes = TransactionIORConstants.SERVER_INSTANCE_UUID_BYTES;
+
+        assertNotNull("Regenerated SERVER_INSTANCE_UUID must not be null", afterUUID);
+        assertFalse("Regenerated SERVER_INSTANCE_UUID must differ from previous UUID",
+                    afterUUID.equals(beforeUUID));
+        assertEquals("Regenerated SERVER_INSTANCE_UUID_BYTES must be 16 bytes",
+                     16, afterBytes.length);
+
+        ByteBuffer buf = ByteBuffer.wrap(afterBytes);
+        UUID reconstructed = new UUID(buf.getLong(), buf.getLong());
+        assertEquals("Reconstructed UUID must match regenerated SERVER_INSTANCE_UUID",
+                     afterUUID, reconstructed);
     }
 
     /**
