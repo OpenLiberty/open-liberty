@@ -31,8 +31,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,11 +64,14 @@ import jakarta.data.restrict.Restrict;
 import jakarta.data.restrict.Restriction;
 import jakarta.data.spi.expression.literal.NumericLiteral;
 import jakarta.inject.Inject;
+import jakarta.persistence.LockTimeoutException;
 import jakarta.persistence.PersistenceException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.Status;
+import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -440,6 +446,163 @@ public class Data_1_1_Servlet extends FATServlet {
                      fractions.where(within22to34Hundreths)
                                      .map(f -> f.numerator + "/" + f.denominator)
                                      .toList());
+    }
+
+    /**
+     * A repository method that returns CompletableFuture runs asynchronously,
+     * even if not annotated Asynchronous, because as of Data 1.1, the Data
+     * provider is required to do so for CompletionStage and Liberty's Data
+     * provider chooses to also apply this to CompletableFuture, which inherits
+     * from CompletionStage.
+     */
+    @Test
+    public void testCompletableFutureWithoutAsyncAnno() //
+                    throws ExecutionException, InterruptedException, //
+                    TimeoutException {
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
+
+        CountDownLatch fractionUpdated = new CountDownLatch(1);
+        CountDownLatch readyToRollBack = new CountDownLatch(1);
+
+        CompletableFuture<Boolean> thread2 = CompletableFuture.supplyAsync(() -> {
+            boolean reduced;
+            try {
+                tx.begin();
+                reduced = fractions.reduce("Twelve Eighteenths", 2, 3);
+                fractionUpdated.countDown();
+
+                if (!readyToRollBack.await(TIMEOUT_S, TimeUnit.SECONDS))
+                    throw new CompletionException(new TimeoutException());
+            } catch (InterruptedException | //
+                            NotSupportedException | //
+                            SystemException x) {
+                throw new CompletionException(x);
+            } finally {
+                try {
+                    tx.rollback();
+                } catch (SystemException x) {
+                    throw new CompletionException(x);
+                }
+            }
+            return reduced;
+        });
+
+        assertEquals(true,
+                     fractionUpdated.await(TIMEOUT_S, TimeUnit.SECONDS));
+
+        CompletableFuture<Optional<Fraction>> futureWriteLock = //
+                        fractions.futureWriteLock("Twelve Eighteenths");
+
+        try {
+            Optional<Fraction> found = futureWriteLock.get(1, TimeUnit.SECONDS);
+            fail("Should not be able to lock this entity: " + found);
+        } catch (TimeoutException x) {
+            // expected because the entity is locked
+        } catch (ExecutionException x) {
+            // can happen if the database times out the lock first
+            boolean lockTimedOut = false;
+            for (Throwable cause = x; cause != null; cause = cause.getCause())
+                if (cause instanceof LockTimeoutException)
+                    lockTimedOut = true;
+            if (!lockTimedOut)
+                throw x;
+        }
+
+        readyToRollBack.countDown();
+
+        Fraction fraction = futureWriteLock.get(TIMEOUT_S, TimeUnit.SECONDS)
+                        .orElseThrow();
+        assertEquals("Twelve Eighteenths",
+                     fraction.name);
+        assertEquals(12,
+                     fraction.numerator);
+        assertEquals(18,
+                     fraction.denominator);
+        assertEquals(false,
+                     fraction.reduced);
+
+        assertEquals(true,
+                     thread2.get(TIMEOUT_S, TimeUnit.SECONDS));
+    }
+
+    /**
+     * A repository method that returns CompletionStage runs asynchronously,
+     * even when not annotated Asynchronous, because as of Data 1.1, the Data
+     * provider is required to do so for CompletionStage.
+     */
+    @Test
+    public void testCompletionStageWithoutAsyncAnno() //
+                    throws ExecutionException, InterruptedException, //
+                    TimeoutException {
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
+
+        CountDownLatch fractionUpdated = new CountDownLatch(1);
+        CountDownLatch readyToRollBack = new CountDownLatch(1);
+
+        CompletableFuture<Boolean> thread2 = CompletableFuture.supplyAsync(() -> {
+            boolean reduced;
+            try {
+                tx.begin();
+                reduced = fractions.reduce("Two Eighteenths", 1, 9);
+                fractionUpdated.countDown();
+
+                if (!readyToRollBack.await(TIMEOUT_S, TimeUnit.SECONDS))
+                    throw new CompletionException(new TimeoutException());
+            } catch (InterruptedException | //
+                            NotSupportedException | //
+                            SystemException x) {
+                throw new CompletionException(x);
+            } finally {
+                try {
+                    tx.rollback();
+                } catch (SystemException x) {
+                    throw new CompletionException(x);
+                }
+            }
+            return reduced;
+        });
+
+        assertEquals(true,
+                     fractionUpdated.await(TIMEOUT_S, TimeUnit.SECONDS));
+
+        CompletionStage<Fraction> pessimisticReadStage = //
+                        fractions.futurePessimisticRead("Two Eighteenths");
+
+        try {
+            Fraction fraction = pessimisticReadStage
+                            .toCompletableFuture()
+                            .get(1, TimeUnit.SECONDS);
+            fail("Should not be able to lock this entity: " + fraction);
+        } catch (TimeoutException x) {
+            // expected because the entity is locked
+        } catch (ExecutionException x) {
+            // can happen if the database times out the lock first
+            boolean lockTimedOut = false;
+            for (Throwable cause = x; cause != null; cause = cause.getCause())
+                if (cause instanceof LockTimeoutException)
+                    lockTimedOut = true;
+            if (!lockTimedOut)
+                throw x;
+        }
+
+        readyToRollBack.countDown();
+
+        Fraction fraction = pessimisticReadStage
+                        .toCompletableFuture()
+                        .get(TIMEOUT_S, TimeUnit.SECONDS);
+        assertEquals("Two Eighteenths",
+                     fraction.name);
+        assertEquals(2,
+                     fraction.numerator);
+        assertEquals(18,
+                     fraction.denominator);
+        assertEquals(false,
+                     fraction.reduced);
+
+        assertEquals(true,
+                     thread2.get(TIMEOUT_S, TimeUnit.SECONDS));
     }
 
     /**

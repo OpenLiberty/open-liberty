@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
-import java.util.concurrent.CompletableFuture;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -265,18 +264,6 @@ public class EntityInfo {
                 writer.println(indent + "    " + relationClass.getName() + ": " + relAttrNames);
             });
         }
-    }
-
-    /**
-     * Creates a CompletableFuture to represent an EntityInfo in PersistenceDataProvider's entityInfoMap.
-     *
-     * @param entityClass
-     * @return new CompletableFuture.
-     */
-    @Trivial
-    public static CompletableFuture<EntityInfo> newFuture(Class<?> entityClass) {
-        // It's okay to use Java SE's CompletableFuture here given that *Async methods are never invoked on it
-        return new CompletableFuture<>();
     }
 
     /**

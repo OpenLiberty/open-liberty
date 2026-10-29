@@ -23,6 +23,7 @@ import static io.openliberty.data.internal.QueryType.LC_UPDATE;
 import static io.openliberty.data.internal.QueryType.NATIVE;
 import static io.openliberty.data.internal.QueryType.QM_DELETE;
 import static io.openliberty.data.internal.QueryType.QM_UPDATE;
+import static io.openliberty.data.internal.Util.ASYNC_STAGE_RETURN_TYPES;
 import static io.openliberty.data.internal.Util.SORT_PARAM_TYPES;
 import static io.openliberty.data.internal.cdi.DataExtension.exc;
 import static jakarta.data.repository.By.ID;
@@ -58,7 +59,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.function.BiFunction;
 import java.util.stream.BaseStream;
 import java.util.stream.Collectors;
@@ -1108,9 +1108,8 @@ public abstract class QueryInfo {
         Class<?> returnType = method.getReturnType();
         if (isOptional) {
             returnValue = Optional.of(returnValue);
-        } else if (CompletableFuture.class.equals(returnType) ||
-                   CompletionStage.class.equals(returnType)) {
-            returnValue = CompletableFuture.completedFuture(returnValue);
+        } else if (ASYNC_STAGE_RETURN_TYPES.contains(returnType)) {
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (multiType != null) {
             throw Fail.countConversion(this, count);
         }
@@ -1707,10 +1706,9 @@ public abstract class QueryInfo {
         boolean found = !results.isEmpty();
 
         Class<?> returnType = method.getReturnType();
-        Object returnVal = CompletableFuture.class.equals(returnType) ||
-                           CompletionStage.class.equals(returnType) //
-                                           ? CompletableFuture.completedFuture(found) //
-                                           : found;
+        Object returnVal = ASYNC_STAGE_RETURN_TYPES.contains(returnType) //
+                        ? entityInfo.factory.newCompletedFuture(found) //
+                        : found;
 
         // There is no need to check if the return value is compatible
         // because that was done when initializing the query info for EXISTS
@@ -1787,7 +1785,7 @@ public abstract class QueryInfo {
                                             requiredJPQLParams,
                                             orderJPQLParams);
 
-        if (isOptional) {
+        if (isOptional)
             returnValue = returnValue == null
                           || returnValue instanceof Collection &&
                              ((Collection<?>) returnValue).isEmpty()
@@ -1795,13 +1793,9 @@ public abstract class QueryInfo {
                              && !((Page<?>) returnValue).hasContent() //
                                              ? Optional.empty() //
                                              : Optional.of(returnValue);
-        }
 
-        Class<?> returnType = method.getReturnType();
-        if (CompletableFuture.class.equals(returnType) ||
-            CompletionStage.class.equals(returnType)) {
-            returnValue = CompletableFuture.completedFuture(returnValue);
-        }
+        if (ASYNC_STAGE_RETURN_TYPES.contains(method.getReturnType()))
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "find", loggable(returnValue));
@@ -3559,7 +3553,8 @@ public abstract class QueryInfo {
     @Trivial
     QueryInfo init(EntityInfo entityInfo, RepositoryImpl<?> repository) {
         // This code path does not require the record name in the map because it is not used for @Query
-        return init(Map.of(entityInfo.name, CompletableFuture.completedFuture(entityInfo)),
+        return init(Map.of(entityInfo.name,
+                           entityInfo.factory.newCompletedFuture(entityInfo)),
                     repository);
     }
 
@@ -4289,10 +4284,8 @@ public abstract class QueryInfo {
                                              null, results.get(0).getClass());
         }
 
-        if (CompletableFuture.class.equals(returnType) ||
-            CompletionStage.class.equals(returnType)) {
-            // useful for @Asynchronous
-            returnValue = CompletableFuture.completedFuture(returnValue);
+        if (ASYNC_STAGE_RETURN_TYPES.contains(returnType)) {
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
             throw Fail.returnTypeInvalid(this, "Insert",
                                          null, results.get(0).getClass());
@@ -4649,10 +4642,8 @@ public abstract class QueryInfo {
             }
         }
 
-        if (CompletableFuture.class.equals(returnType) ||
-            CompletionStage.class.equals(returnType)) {
-            // useful for @Asynchronous
-            returnValue = CompletableFuture.completedFuture(returnValue);
+        if (ASYNC_STAGE_RETURN_TYPES.contains(returnType)) {
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
             throw Fail.returnTypeInvalid(this, "Merge",
                                          null, results.get(0).getClass());
@@ -4761,11 +4752,8 @@ public abstract class QueryInfo {
                                              : Optional.of(returnValue);
         }
 
-        Class<?> returnType = method.getReturnType();
-        if (CompletableFuture.class.equals(returnType) ||
-            CompletionStage.class.equals(returnType)) {
-            returnValue = CompletableFuture.completedFuture(returnValue);
-        }
+        if (ASYNC_STAGE_RETURN_TYPES.contains(method.getReturnType()))
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "nativeQuery", loggable(returnValue));
@@ -5744,10 +5732,8 @@ public abstract class QueryInfo {
                                              null, results.get(0).getClass());
         }
 
-        if (CompletableFuture.class.equals(returnType) ||
-            CompletionStage.class.equals(returnType)) {
-            // useful for @Asynchronous
-            returnValue = CompletableFuture.completedFuture(returnValue);
+        if (ASYNC_STAGE_RETURN_TYPES.contains(returnType)) {
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
             throw Fail.returnTypeInvalid(this, "Save",
                                          null, results.get(0).getClass());
@@ -6254,9 +6240,9 @@ public abstract class QueryInfo {
             result = i != 0;
         else if (void.class.equals(returnType) || Void.class.equals(returnType))
             result = null;
-        else if (CompletableFuture.class.equals(returnType) ||
-                 CompletionStage.class.equals(returnType))
-            result = CompletableFuture.completedFuture(toReturnValue(i, singleType));
+        else if (ASYNC_STAGE_RETURN_TYPES.contains(returnType))
+            result = entityInfo.factory //
+                            .newCompletedFuture(toReturnValue(i, singleType));
         else
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1007.updel.rtrn.err",
@@ -6404,10 +6390,8 @@ public abstract class QueryInfo {
             returnValue = returnValue == null //
                             ? Optional.empty() //
                             : Optional.of(returnValue);
-        } else if (CompletableFuture.class.equals(returnType) ||
-                   CompletionStage.class.equals(returnType)) {
-            // useful for @Asynchronous
-            returnValue = CompletableFuture.completedFuture(returnValue);
+        } else if (ASYNC_STAGE_RETURN_TYPES.contains(returnType)) {
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (returnValue != null &&
                    !Util.wrapperClassIfPrimitive(returnType) //
                                    .isAssignableFrom(returnValue.getClass())) {
@@ -6491,8 +6475,7 @@ public abstract class QueryInfo {
              !Boolean.class.equals(singleType))
             ||
             (multiType != null &&
-             !CompletableFuture.class.equals(multiType) &&
-             !CompletionStage.class.equals(multiType)))
+             !ASYNC_STAGE_RETURN_TYPES.contains((multiType))))
 
             throw Fail.returnTypeInvalid(this, "exists", "boolean, Boolean", null);
     }
