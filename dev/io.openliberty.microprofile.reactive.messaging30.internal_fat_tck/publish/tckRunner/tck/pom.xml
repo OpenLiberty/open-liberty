@@ -28,7 +28,7 @@
     <properties>
         <microprofile.reactive.messaging.version>3.0.1</microprofile.reactive.messaging.version>
         <microprofile.reactive.streams.version>3.0</microprofile.reactive.streams.version>
-        <arquillian.version>1.10.0.Final</arquillian.version>
+        <arquillian.version>1.10.2.Final</arquillian.version>
         <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
         <slf4j.version>2.0.6</slf4j.version>
 
