@@ -18,7 +18,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -65,8 +67,15 @@ public class RestJwtTAITest {
         claims = mockery.mock(Claims.class);
     }
 
-    @Test
-    public void testIsTargetInterceptor_MatchesAdminEndpointWithBearerToken() throws Exception {
+    /** Builds an unsigned-looking JWT; the TAI only reads the claims in isTargetInterceptor. */
+    private static String createToken(String payloadJson) {
+        Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
+        String header = encoder.encodeToString("{\"alg\":\"HS256\"}".getBytes(StandardCharsets.UTF_8));
+        String payload = encoder.encodeToString(payloadJson.getBytes(StandardCharsets.UTF_8));
+        return header + "." + payload + ".signature";
+    }
+
+    private void expectAdminEndpointRequestWithBearer(final String token) {
         mockery.checking(new Expectations() {
             {
                 allowing(request).getRequestURI();
@@ -78,11 +87,51 @@ public class RestJwtTAITest {
                 allowing(request).getContextPath();
                 will(returnValue("/IBMJMXConnectorREST"));
                 allowing(request).getHeader("Authorization");
-                will(returnValue("Bearer valid.jwt.token"));
+                will(returnValue("Bearer " + token));
             }
         });
+    }
 
-        assertTrue("Should target request to admin endpoint with Bearer token", tai.isTargetInterceptor(request));
+    @Test
+    public void testIsTargetInterceptor_MatchesAdminEndpointWithBearerToken() throws Exception {
+        expectAdminEndpointRequestWithBearer(createToken("{\"iss\":\"IBMJMXConnectorRESTIssuer\",\"aud\":\"IBMJMXConnectorREST\",\"sub\":\"adminUser\"}"));
+
+        assertTrue("Should target request to admin endpoint with Bearer token from the REST issuer for the REST audience", tai.isTargetInterceptor(request));
+    }
+
+    @Test
+    public void testIsTargetInterceptor_MatchesRestAudienceInAudienceArray() throws Exception {
+        expectAdminEndpointRequestWithBearer(createToken("{\"iss\":\"IBMJMXConnectorRESTIssuer\",\"aud\":[\"other\",\"IBMJMXConnectorREST\"],\"sub\":\"adminUser\"}"));
+
+        assertTrue("Should target a token whose audience array contains the REST audience", tai.isTargetInterceptor(request));
+    }
+
+    @Test
+    public void testIsTargetInterceptor_RejectsBearerTokenFromOtherIssuer() throws Exception {
+        expectAdminEndpointRequestWithBearer(createToken("{\"iss\":\"https://other.issuer\",\"aud\":\"IBMJMXConnectorREST\",\"sub\":\"adminUser\"}"));
+
+        assertFalse("Should not target a token from another issuer", tai.isTargetInterceptor(request));
+    }
+
+    @Test
+    public void testIsTargetInterceptor_RejectsBearerTokenForOtherAudience() throws Exception {
+        expectAdminEndpointRequestWithBearer(createToken("{\"iss\":\"IBMJMXConnectorRESTIssuer\",\"aud\":\"someOtherAudience\",\"sub\":\"adminUser\"}"));
+
+        assertFalse("Should not target a token for another audience", tai.isTargetInterceptor(request));
+    }
+
+    @Test
+    public void testIsTargetInterceptor_RejectsBearerTokenWithoutAudience() throws Exception {
+        expectAdminEndpointRequestWithBearer(createToken("{\"iss\":\"IBMJMXConnectorRESTIssuer\",\"sub\":\"adminUser\"}"));
+
+        assertFalse("Should not target a token without an audience", tai.isTargetInterceptor(request));
+    }
+
+    @Test
+    public void testIsTargetInterceptor_RejectsMalformedBearerToken() throws Exception {
+        expectAdminEndpointRequestWithBearer("not-a-jwt");
+
+        assertFalse("Should not target a malformed token", tai.isTargetInterceptor(request));
     }
 
     @Test

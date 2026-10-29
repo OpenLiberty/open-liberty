@@ -60,7 +60,8 @@ public class RestJwtKeyFileFATTest {
 
     private static final Class<?> c = RestJwtKeyFileFATTest.class;
 
-    private static final String ISSUER = "https://localhost:9443/jwt";
+    private static final String ISSUER = "IBMJMXConnectorRESTIssuer";
+    private static final String AUDIENCE = "IBMJMXConnectorREST";
     private static final String MBEANS_ENDPOINT = "/IBMJMXConnectorREST/mbeans";
 
     @Server("RestJwtKeyFileServer")
@@ -117,6 +118,7 @@ public class RestJwtKeyFileFATTest {
     private static String createRs256Token(String user, String group, PrivateKey key) throws Exception {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(ISSUER);
+        claims.setAudience(AUDIENCE);
         claims.setSubject(user);
         claims.setStringListClaim("groups", Collections.singletonList(group));
         claims.setExpirationTimeMinutesInTheFuture(10);

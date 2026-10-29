@@ -12,7 +12,8 @@
     <ltpa keysPassword="password" />
 
     <jwtConsumer id="defaultJwtConsumer"
-                 issuer="https://localhost:9443/jwt"
+                 issuer="IBMJMXConnectorRESTIssuer"
+                 audiences="IBMJMXConnectorREST"
                  sharedKey="superSecretSharedKeyForRestJwtTesting123456"
                  signatureAlgorithm="HS256"
                  clockSkew="1m" />

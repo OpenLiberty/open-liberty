@@ -60,6 +60,7 @@ Include-Resource: \
 	com.ibm.ws.security.authentication.filter;version=latest, \
 	com.ibm.ws.security.jwt;version=latest, \
 	com.ibm.ws.security.common;version=latest, \
+	com.ibm.ws.org.jose4j;version=latest, \
 	com.ibm.ws.security.common.jsonwebkey;version=latest, \
 	com.ibm.ws.webcontainer.security;version=latest, \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
@@ -67,6 +68,7 @@ Include-Resource: \
 	com.ibm.ws.security.token;version=latest
 
 -testpath: \
+	io.openliberty.org.apache.commons.codec;version=latest, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	com.ibm.ws.junit.extensions;version=latest, \
 	org.jmock:jmock-legacy;version=2.5.0, \

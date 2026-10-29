@@ -14,7 +14,8 @@
     <!-- RS256 with no trustedAlias: the public key comes from the file named by jwkEndpointUrl.
          The tests write the key to resources/security/jwtPublic.pem under the server directory. -->
     <jwtConsumer id="defaultJwtConsumer"
-                 issuer="https://localhost:9443/jwt"
+                 issuer="IBMJMXConnectorRESTIssuer"
+                 audiences="IBMJMXConnectorREST"
                  jwkEndpointUrl="file:${server.config.dir}resources/security/jwtPublic.pem"
                  signatureAlgorithm="RS256"
                  clockSkew="1m" />

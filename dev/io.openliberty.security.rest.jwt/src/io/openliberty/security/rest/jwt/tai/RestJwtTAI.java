@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.security.rest.jwt.tai;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -45,6 +46,7 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.config.MpConfigProperties;
+import com.ibm.ws.security.common.jwk.utils.JsonUtils;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.ws.webcontainer.security.internal.TAIAuthenticator;
@@ -74,6 +76,10 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
     public static final String HEADER_AUTHORIZATION = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String LTPA_COOKIE_NAME = "LtpaToken2";
+    private static final String ISSUER_CLAIM = "iss";
+    private static final String AUDIENCE_CLAIM = "aud";
+    public static final String REST_AUDIENCES = "IBMJMXConnectorREST";
+    public static final String REST_ISSUER = "IBMJMXConnectorRESTIssuer";
 
     public static final String KEY_JWT_CONSUMER_CONFIG = "jwtConsumerConfig";
     public static final String DEFAULT_JWT_CONSUMER_ID = "defaultJwtConsumer";
@@ -84,7 +90,17 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
     static final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
     static protected final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_FILTER);
     static protected final ConcurrentServiceReferenceMap<String, JwtConsumerConfig> jwtConsumerConfigRef = new ConcurrentServiceReferenceMap<String, JwtConsumerConfig>(KEY_JWT_CONSUMER_CONFIG);
-
+    /*
+ 	<jwtConsumer id="JMXConnectorRESTConsumer" 
+   		signatureAlgorithm="RS256"
+   		issuer="IBMJMXConnectorRESTIssuer" 
+   		audiences="IBMJMXConnectorREST"
+   		jwkEnabled="true"
+   		jwkEndpointUrl="file:///<profileRoot>/etc/node.jwks"
+	</jwtConsumer>
+    */
+    
+    
     @Reference(service = JwtConsumerConfig.class, name = KEY_JWT_CONSUMER_CONFIG, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
     protected void setJwtConsumerConfig(ServiceReference<JwtConsumerConfig> ref) {
         String id = (String) ref.getProperty("id");
@@ -205,11 +221,18 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
             return false;
         }
 
-        // 3. Verify that the request carries a Bearer JWT token in the Authorization header.
+        // 3. Verify that the request carries a Bearer JWT token in the Authorization header, and that the
+        //    token was issued for the REST admin endpoint (REST issuer and REST audience). A Bearer token
+        //    from any other issuer or for any other audience is not processed by this TAI.
         //    A request that carries an LTPA cookie instead is also claimed, so that it is rejected
         //    rather than authenticated by LTPA SSO: the REST admin endpoint only accepts JWT.
         String token = getBearerToken(request);
-        boolean isTarget = (token != null && !token.isEmpty()) || hasLtpaCookie(request);
+        boolean isTarget;
+        if (token != null && !token.isEmpty()) {
+            isTarget = isRestJwt(token);
+        } else {
+            isTarget = hasLtpaCookie(request);
+        }
 
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, isTarget);
@@ -402,6 +425,41 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
 
         // If no auth filter service is available yet, default to allowing admin requests
         return true;
+    }
+
+    /**
+     * Reads the claims of the token without validating it and checks that the issuer is the REST issuer and
+     * that the audience contains the REST audience. The signature and the rest of the claims are validated
+     * later by the jwtConsumer.
+     *
+     * @return true if the token is issued by the REST issuer for the REST audience, false otherwise
+     */
+    @FFDCIgnore({ Exception.class })
+    protected boolean isRestJwt(@Sensitive String token) {
+        try {
+            String payload = JsonUtils.getPayload(token);
+            if (payload == null) {
+                return false;
+            }
+            Map<String, Object> claims = JsonUtils.claimsFromJsonObject(JsonUtils.decodeFromBase64String(payload));
+            if (!REST_ISSUER.equals(claims.get(ISSUER_CLAIM))) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The token was not issued by " + REST_ISSUER);
+                }
+                return false;
+            }
+            Object audience = claims.get(AUDIENCE_CLAIM);
+            boolean hasRestAudience = REST_AUDIENCES.equals(audience) || (audience instanceof Collection && ((Collection<?>) audience).contains(REST_AUDIENCES));
+            if (!hasRestAudience && tc.isDebugEnabled()) {
+                Tr.debug(tc, "The token is not for the audience " + REST_AUDIENCES);
+            }
+            return hasRestAudience;
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Unable to read the token claims: " + e.getMessage());
+            }
+            return false;
+        }
     }
 
     protected boolean hasLtpaCookie(HttpServletRequest request) {

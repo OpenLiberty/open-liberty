@@ -59,7 +59,8 @@ public class RestJwtFATTest {
 
     private static final Class<?> c = RestJwtFATTest.class;
 
-    private static final String ISSUER = "https://localhost:9443/jwt";
+    private static final String ISSUER = "IBMJMXConnectorRESTIssuer";
+    private static final String AUDIENCE = "IBMJMXConnectorREST";
     private static final String SHARED_KEY = "superSecretSharedKeyForRestJwtTesting123456";
     private static final String WRONG_KEY = "wrongSecretSharedKeyThatWillFailValidation1";
 
@@ -163,22 +164,45 @@ public class RestJwtFATTest {
     }
 
     /**
-     * An LTPA token is not a JWT. When it is sent as the Bearer token, RestJwtTAI must fail to
-     * parse it (the JWT consumer throws), reject the request with 401 and not authenticate the user.
+     * An LTPA token is not a JWT. When it is sent as the Bearer token, it has no REST issuer or REST
+     * audience, so RestJwtTAI does not process the request and the user is not authenticated.
      */
     @Test
     public void testLtpaTokenAsBearerToken_Unauthorized() throws Exception {
         String ltpaToken = getLtpaTokenViaBasicAuth("adminUser", "password");
         assertNotNull("Could not obtain an LtpaToken2 cookie using basic auth", ltpaToken);
 
-        server.setMarkToEndOfLog();
         HttpURLConnection conn = sendRequest(MBEANS_ENDPOINT, "GET", ltpaToken);
         assertEquals("Expected 401 Unauthorized when an LTPA token is sent as the Bearer token",
                      HttpURLConnection.HTTP_UNAUTHORIZED, conn.getResponseCode());
+    }
 
-        // The JWT consumer threw while parsing the LTPA token; RestJwtTAI caught it and logged it.
-        assertNotNull("RestJwtTAI did not report an error validating the LTPA token",
-                      server.waitForStringInTraceUsingMark("Error validating JWT token"));
+    /**
+     * A valid, signed JWT from an issuer other than the REST issuer is not processed by RestJwtTAI.
+     */
+    @Test
+    public void testJwtFromOtherIssuer_Unauthorized() throws Exception {
+        String token = createJwtToken("adminUser", Collections.singletonList("liberty-admin"), "https://other.issuer", SHARED_KEY, 10);
+        HttpURLConnection conn = sendRequest(MBEANS_ENDPOINT, "GET", token);
+        assertEquals("Expected 401 Unauthorized for a JWT from another issuer", HttpURLConnection.HTTP_UNAUTHORIZED, conn.getResponseCode());
+    }
+
+    /**
+     * A valid, signed JWT from the REST issuer but for another audience is not processed by RestJwtTAI.
+     */
+    @Test
+    public void testJwtForOtherAudience_Unauthorized() throws Exception {
+        JwtClaims claims = new JwtClaims();
+        claims.setIssuer(ISSUER);
+        claims.setAudience("someOtherAudience");
+        claims.setSubject("adminUser");
+        claims.setStringListClaim("groups", Collections.singletonList("liberty-admin"));
+        claims.setExpirationTimeMinutesInTheFuture(10);
+        claims.setIssuedAtToNow();
+        claims.setGeneratedJwtId();
+
+        HttpURLConnection conn = sendRequest(MBEANS_ENDPOINT, "GET", signClaims(claims, SHARED_KEY));
+        assertEquals("Expected 401 Unauthorized for a JWT for another audience", HttpURLConnection.HTTP_UNAUTHORIZED, conn.getResponseCode());
     }
 
     /**
@@ -199,6 +223,7 @@ public class RestJwtFATTest {
     public void testUsernameExtraction_UpnClaim() throws Exception {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(ISSUER);
+        claims.setAudience(AUDIENCE);
         claims.setClaim("upn", "adminUser");
         claims.setStringListClaim("groups", Collections.singletonList("liberty-admin"));
         claims.setExpirationTimeMinutesInTheFuture(10);
@@ -214,6 +239,7 @@ public class RestJwtFATTest {
     public void testUsernameExtraction_PreferredUsernameClaim() throws Exception {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(ISSUER);
+        claims.setAudience(AUDIENCE);
         claims.setClaim("preferred_username", "adminUser");
         claims.setStringListClaim("groups", Collections.singletonList("liberty-admin"));
         claims.setExpirationTimeMinutesInTheFuture(10);
@@ -229,6 +255,7 @@ public class RestJwtFATTest {
     public void testUsernameExtraction_UsernameClaim() throws Exception {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(ISSUER);
+        claims.setAudience(AUDIENCE);
         claims.setClaim("username", "adminUser");
         claims.setStringListClaim("groups", Collections.singletonList("liberty-admin"));
         claims.setExpirationTimeMinutesInTheFuture(10);
@@ -244,6 +271,7 @@ public class RestJwtFATTest {
     public void testGroupMapping_CommaSeparatedString() throws Exception {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(ISSUER);
+        claims.setAudience(AUDIENCE);
         claims.setSubject("adminUser");
         claims.setClaim("groups", "liberty-admin, otherGroup");
         claims.setExpirationTimeMinutesInTheFuture(10);
@@ -259,6 +287,7 @@ public class RestJwtFATTest {
     public void testGroupMapping_RolesClaim() throws Exception {
         JwtClaims claims = new JwtClaims();
         claims.setIssuer(ISSUER);
+        claims.setAudience(AUDIENCE);
         claims.setSubject("adminUser");
         claims.setStringListClaim("roles", Collections.singletonList("liberty-admin"));
         claims.setExpirationTimeMinutesInTheFuture(10);
@@ -275,6 +304,7 @@ public class RestJwtFATTest {
         if (issuer != null) {
             claims.setIssuer(issuer);
         }
+        claims.setAudience(AUDIENCE);
         if (username != null) {
             claims.setSubject(username);
         }
