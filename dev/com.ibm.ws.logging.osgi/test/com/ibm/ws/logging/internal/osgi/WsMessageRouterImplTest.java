@@ -611,7 +611,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testWildcardRoutingWithLevelSuffix() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         try {
             WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
             msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
@@ -645,7 +644,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testWildcardRoutingPrefixOnlyAllLevels() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         try {
             WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
             msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
@@ -688,7 +686,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testWildcardRoutingViaAddMsgToLogHandler() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         try {
             WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
             msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
@@ -721,7 +718,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testWildcardRemovalViaApi() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         try {
             WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
             msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
@@ -760,7 +756,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testMultiHandlerWildcardOverlapAndDeduplication() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         try {
             WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
             msgRouter.setWsLogHandler("HANDLER_PREFIX", mockWsLogHandler);
@@ -813,7 +808,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testEarlyMessagesWildcardReplay() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         try {
             WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
 
@@ -854,7 +848,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testInvalidWildcardEmitsWarningAndDoesNotRoute() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
                 	outputMgr.resetStreams();
         	outputMgr.restoreStreams();
         	outputMgr.captureStreams();
@@ -906,7 +899,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testInvalidLevelCharViaAddMsgToLogHandler() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         outputMgr.resetStreams();
         outputMgr.restoreStreams();
         outputMgr.captureStreams();
@@ -949,7 +941,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testInvalidLevelCharViaModified() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         outputMgr.resetStreams();
         outputMgr.restoreStreams();
         outputMgr.captureStreams();
@@ -993,7 +984,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testMixedValidInvalidAndExplicitRouting() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         outputMgr.resetStreams();
         outputMgr.restoreStreams();
         outputMgr.captureStreams();
@@ -1090,7 +1080,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testUpdateMessageListForHandler() throws Exception {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         try {
             // Initialize the test runner's mockery instance
             mockery = new JUnit4Mockery();
@@ -1204,7 +1193,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testZeroPrefixWildcardViaModifiedEmitsWarning() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         outputMgr.resetStreams();
         outputMgr.restoreStreams();
         outputMgr.captureStreams();
@@ -1241,7 +1229,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testZeroPrefixWildcardViaAddMsgToLogHandlerEmitsWarning() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         outputMgr.resetStreams();
         outputMgr.restoreStreams();
         outputMgr.captureStreams();
@@ -1298,7 +1285,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testOverlappingPatternsRouteHandlerExactlyOnce() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         try {
             WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
             msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
@@ -1332,7 +1318,6 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
      */
     @Test
     public void testWildcardsDoNotAffectStrictSpiLogHandlers() {
-        System.setProperty("com.ibm.ws.beta.edition", "true");
         try {
             WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
 
