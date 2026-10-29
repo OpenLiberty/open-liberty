@@ -61,6 +61,7 @@ Bundle-Localization: \
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
+	io.openliberty.jakarta.interceptor.2.1;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	io.openliberty.mcp;version=latest,\
