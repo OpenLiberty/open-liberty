@@ -75,6 +75,6 @@ public class JandexWebInfAppDefaultAppMgrDefaultTest extends JandexAppTest {
 
     @Test
     public void defaultDefault_testJandex() throws Exception {
-        super.testJandex(JandexAppTest.DO_NOT_EXPECT_JANDEX);
+        super.testJandex(JandexAppTest.JandexExpectation.DO_NOT_EXPECT_JANDEX);
     }
 }

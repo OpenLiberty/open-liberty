@@ -71,6 +71,6 @@ public class JandexAppFalseAppMgrFalseTest extends JandexAppTest {
 
     @Test
     public void falseFalse_testJandex() throws Exception {
-        super.testJandex(JandexAppTest.DO_NOT_EXPECT_JANDEX);
+        super.testJandex(JandexAppTest.JandexExpectation.DO_NOT_EXPECT_JANDEX);
     }
 }

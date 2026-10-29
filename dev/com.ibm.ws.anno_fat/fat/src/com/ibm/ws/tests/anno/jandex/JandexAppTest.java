@@ -185,14 +185,20 @@ public abstract class JandexAppTest extends LoggingTest {
         verifyResponse(MY_SERVLET_URL + "?TestMajorMinorVersion=true", "minorVersion: 1");
     }
 
-    public static final boolean DO_EXPECT_JANDEX = true;
-    public static final boolean DO_NOT_EXPECT_JANDEX = false;
+    public enum JandexExpectation {
+        /** Jandex indexes are expected in all module locations. */
+        DO_EXPECT_JANDEX,
+        /** Jandex indexes are not expected to be used. */
+        DO_NOT_EXPECT_JANDEX,
+        /** Jandex indexes are expected in exactly one module location. */
+        DO_EXPECT_JANDEX_IN_ONE_LOCATION
+    }
 
     /**
      * Verify that jandex function was not trigger: Verify that no "CWWC0092I"
      * messages appear in the server logs.
      */
-    public void testJandex(boolean expectJandex) throws Exception {
+    public void testJandex(JandexExpectation expectJandex) throws Exception {
         // Search for message indicating Jandex is being used.
         //
         // ANNO_JANDEX_USAGE=
@@ -208,7 +214,7 @@ public abstract class JandexAppTest extends LoggingTest {
 
         List<String> selectedMessages = getSharedServer().getLibertyServer().findStringsInLogs("CWWKC009");
 
-        if ( expectJandex ) {
+        if ( expectJandex == JandexExpectation.DO_EXPECT_JANDEX || expectJandex == JandexExpectation.DO_EXPECT_JANDEX_IN_ONE_LOCATION ) {
             assertFalse("Did not find CWWKC0092I or CWWKC0093I, which indicates the use of jandex indexes.", selectedMessages.isEmpty());
 
             selectedMessages = getSharedServer().getLibertyServer().findStringsInLogs("Jandex indexes were read for .*odule locations");
@@ -220,8 +226,13 @@ public abstract class JandexAppTest extends LoggingTest {
                 assertTrue("Could not parse location counts from message [ " + msg + " ] at index " + i, m.find());
                 int jandexLocations = Integer.parseInt(m.group(1));
                 int totalLocations  = Integer.parseInt(m.group(2));
-                assertEquals("Not all module locations had Jandex indexes [ " + msg + " ] at index " + i,
-                    totalLocations, jandexLocations);
+                if ( expectJandex == JandexExpectation.DO_EXPECT_JANDEX_IN_ONE_LOCATION ) {
+                    assertEquals("Expected Jandex indexes in exactly one module location [ " + msg + " ] at index " + i,
+                        1, jandexLocations);
+                } else {
+                    assertEquals("Not all module locations had Jandex indexes [ " + msg + " ] at index " + i,
+                        totalLocations, jandexLocations);
+                }
             }
         } else {
             assertTrue("Found CWWKC0092I or CWWKC0093I, which indicates the use of jandex indexes", selectedMessages.isEmpty());

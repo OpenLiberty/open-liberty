@@ -75,6 +75,6 @@ public class JandexWebInfAppFalseAppMgrTrueTest extends JandexAppTest {
 
     @Test
     public void falseTrue_testJandex() throws Exception {
-        super.testJandex(JandexAppTest.DO_NOT_EXPECT_JANDEX);
+        super.testJandex(JandexAppTest.JandexExpectation.DO_NOT_EXPECT_JANDEX);
     }
 }

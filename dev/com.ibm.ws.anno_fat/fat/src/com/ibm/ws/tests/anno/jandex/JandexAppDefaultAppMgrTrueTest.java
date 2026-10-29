@@ -71,6 +71,6 @@ public class JandexAppDefaultAppMgrTrueTest extends JandexAppTest {
 
     @Test
     public void defaultTrue_testJandex() throws Exception {
-        super.testJandex(JandexAppTest.DO_EXPECT_JANDEX);
+        super.testJandex(JandexAppTest.JandexExpectation.DO_EXPECT_JANDEX);
     }
 }

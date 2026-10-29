@@ -170,6 +170,6 @@ public class JandexWebInfClassesTest extends JandexAppTest {
      */
     @Test
     public void webInfClasses_testJandexIndexIsRead() throws Exception {
-        super.testJandex(JandexAppTest.DO_EXPECT_JANDEX);
+        super.testJandex(JandexAppTest.JandexExpectation.DO_EXPECT_JANDEX);
     }
 }

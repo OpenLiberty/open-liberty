@@ -90,6 +90,6 @@ public class JandexWebInfClassesNoReadWebInfTest extends JandexAppTest {
      */
     @Test
     public void webInfClassesNoReadWebInf_testJandexIndexIsNotRead() throws Exception {
-        super.testJandex(JandexAppTest.DO_NOT_EXPECT_JANDEX);
+        super.testJandex(JandexAppTest.JandexExpectation.DO_NOT_EXPECT_JANDEX);
     }
 }
