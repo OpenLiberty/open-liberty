@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -32,6 +33,9 @@ import io.netty.util.AsciiString;
 public class NettyHeaderUtils {
 
     private static final TraceComponent tc = Tr.register(NettyHeaderUtils.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+
+    /** Ensures the non-sensitive $WSSP warning message is issued only once */
+    private static final AtomicBoolean wsspWarningIssued = new AtomicBoolean(false);
 
     /**
      * Returns the value of the last occurrence of the given header name.
@@ -100,13 +104,14 @@ public class NettyHeaderUtils {
      *
      *
      * @param remoteAddr the resolved remote InetAddress, or null
+     * @param remotePort the remote port of the client, or -1 if unknown
      * @param headers the mutable Netty HttpHeaders map
      * @param desensitizePrivatePortHeader when true $WSSP is evaluated against the non-sensitive trust list
      * @param trustNonSensitive computed at HttpDispatcher.usePrivateHeaders(remoteAddr)
      * @param trustSensitive    computed at HttpDispatcher.usePrivateSensitiveHeaders(remoteAddr)
      
      */
-    public static void filterPrivateHeaders(InetAddress remoteAddr, HttpHeaders headers,
+    public static void filterPrivateHeaders(InetAddress remoteAddr, int remotePort, HttpHeaders headers,
                                             boolean desensitizePrivatePortHeader,
                                             boolean trustNonSensitive, boolean trustSensitive) {
         // Fast-path: source is trusted for everything, so nothing here could be stripped.
@@ -141,6 +146,16 @@ public class NettyHeaderUtils {
             if (key == HttpHeaderKeys.HDR_$WSSP) {
                 // Per-occurrence, admits or drops each $WSSP instance on its own value,
                 wsspNeedsPrune = true;
+
+                // The $WSSP value comes from a peer that is not trusted, so it is deliberately not logged.
+                // warn only for the first request, but trace every request
+                if (wsspWarningIssued.compareAndSet(false, true)) {
+                    Tr.warning(tc, "wssp.header.non.sensitive.address", remoteAddr, remotePort);
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "filterPrivateHeaders: $WSSP header received from non-sensitive address: clientAddress=" + remoteAddr
+                                 + ", clientPort=" + remotePort);
+                }
             } else {
                 // All other $WS* headers: the decision is source-only and therefore identical
                 // for every occurrence, so the whole header goes.
