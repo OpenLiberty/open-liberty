@@ -11,6 +11,6 @@ WLP-DisableAllFeatures-OnConflict: false
 -jars= \
  com.ibm.websphere.appserver.api.security.spnego; location:=dev/api/ibm/
 -files= \
- dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.security.spnego_1.1-javadoc.zip
+ dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.security.spnego_1.2-javadoc.zip
 kind=ga
 edition=core
