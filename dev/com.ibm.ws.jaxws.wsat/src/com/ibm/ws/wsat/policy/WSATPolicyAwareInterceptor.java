@@ -112,19 +112,65 @@ public class WSATPolicyAwareInterceptor extends AbstractPhaseInterceptor<Message
 
     @Override
     public void handleMessage(Message message) throws Fault {
-        // Outbound (client) processing requires the public wsAtomicTransaction-1.2 feature. With only the
-        // private internal features (inbound participant support) outbound must behave exactly as if
-        // WS-AT were not installed, i.e. take the feature_no_exist path.
-        boolean feature_exist = isOut ? WSATFeatureService.isPublicFeaturePresent() : WSATFeatureService.isWSATPresent();
+        // JAX-WS application requests, inbound and outbound, only care about the public
+        // wsAtomicTransaction-1.2 feature. With only the private internal features (used for WS-AT
+        // protocol traffic, e.g. by T-Rex) application requests must behave exactly as if WS-AT were
+        // not installed, i.e. take the feature_no_exist path.
+        boolean feature_exist = WSATFeatureService.isPublicFeaturePresent();
         //We need assert the assertion anyway...
         boolean assertionExist = assertAssertion(message);
-        if (!feature_exist && ((getPhase().equals(Phase.PRE_PROTOCOL) && !isOut) || (getPhase().equals(Phase.WRITE)) && isOut)) {
+        boolean internal_only = !feature_exist && WSATFeatureService.isWSATPresent();
+        if (internal_only && isWSATProtocolMessage(message)) {
+            handleMessage_internal_only_feature_exist(message);
+        } else if (!feature_exist && ((getPhase().equals(Phase.PRE_PROTOCOL) && !isOut) || (getPhase().equals(Phase.WRITE)) && isOut)) {
             handleMessage_feature_no_exist(message, assertionExist);
         } else if (feature_exist && ((getPhase().equals(Phase.RECEIVE) && !isOut) || (getPhase().equals(Phase.SETUP)) && isOut)) {
             //Due to priority is transaction first, we don't need really check assertion here if WS-AT feature presents..
             handleMessage_feature_exist(message);
         }
 
+    }
+
+    /**
+     * @return true if the message is part of WS-AT protocol traffic (a request to, or a response from,
+     *         the WS-AT protocol services under {@link Constants#WSAT_APPLICATION_NAME}, or a request sent to them).
+     */
+    private boolean isWSATProtocolMessage(Message message) {
+        String path = (String) message.get(Message.PATH_INFO);
+        Exchange ex = message.getExchange();
+        if (path == null && ex != null && ex.getInMessage() != null) {
+            // Server response: the request path is only on the inbound message
+            path = (String) ex.getInMessage().get(Message.PATH_INFO);
+        }
+        if (path == null) {
+            // Client request
+            path = (String) message.get(Message.ENDPOINT_ADDRESS);
+        }
+        return path != null && path.contains(Constants.WSAT_APPLICATION_NAME);
+    }
+
+    /**
+     * Only the internal WS-AT features are installed, and this is WS-AT protocol traffic: let it through.
+     * Inbound protocol requests are still subject to the SSL client certificate check.
+     */
+    private void handleMessage_internal_only_feature_exist(Message message) {
+        if (isOut || !getPhase().equals(Phase.RECEIVE)) {
+            return;
+        }
+
+        WSATInterceptorService service = getService();
+        if (service == null)
+            throw new Fault(new RuntimeException("WS-AT Feature is present, however there is no interceptor service available"));
+
+        Exchange ex = message.getExchange();
+        if (ex == null) {
+            throw new Fault(new RuntimeException("Not able to get exchange from message"));
+        }
+
+        LibertyApplicationBus.Type busType = ex.getBus().getExtension(LibertyApplicationBus.Type.class);
+        if (busType != null && busType.equals(LibertyApplicationBus.Type.SERVER)) {
+            message.getInterceptorChain().add(service.getSSLServerInterceptor());
+        }
     }
 
     /**

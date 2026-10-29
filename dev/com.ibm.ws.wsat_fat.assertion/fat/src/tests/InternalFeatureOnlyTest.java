@@ -41,8 +41,10 @@ import componenttest.topology.impl.LibertyServer;
  * <p>{@code WSATInternalOnly} enables {@code wsatInternalTest-1.0}, a test-only wrapper around
  * {@code io.openliberty.wsAtomicTransaction1.2.internal.ee-6.0}, and deliberately does <b>not</b> enable
  * the public {@code wsAtomicTransaction-1.2} feature. {@code propagation} belongs to the public feature
- * only, so it must have no effect here and outbound propagation must be permanently off, while inbound
- * participant coordination must still work.
+ * only, so it must have no effect here. JAX-WS application requests, inbound and outbound, must behave
+ * exactly as if WS-AT were not installed: outbound propagation is permanently off and an inbound
+ * request carrying a WS-AT coordination context is rejected. The internal runtime exists only for WS-AT
+ * protocol traffic (e.g. T-Rex over IIOP), which is not exercised by this class.
  *
  * <p>{@code WSATConditional} (public feature, default {@code always}) acts as the remote coordinator
  * for the inbound test.
@@ -198,34 +200,44 @@ public class InternalFeatureOnlyTest extends PropagationTestBase {
     }
 
     // ---------------------------------------------------------------------------------------------
-    // 2.4 Inbound participant coordination still works
+    // 2.4 Inbound application requests carrying a WS-AT context are rejected
     // ---------------------------------------------------------------------------------------------
 
-    /** Remote coordinator commits: the participant's row persists. */
+    /**
+     * The remote coordinator (public feature) attaches a WS-AT coordination context to a call to an
+     * application service on the internal-only server. With only the internal feature, the server must
+     * behave as if WS-AT were not installed: the request is rejected, the endpoint is never invoked and
+     * the server does not join the coordinator's transaction.
+     */
     @Test
-    public void test2_4_InboundParticipant_Commit() throws Exception {
+    @AllowedFFDC({ "com.ibm.ws.wsat.service.WSATException", "javax.transaction.RollbackException",
+                   "javax.xml.ws.WebServiceException", "jakarta.xml.ws.WebServiceException",
+                   "org.apache.cxf.interceptor.Fault", "java.lang.Exception" })
+    public void test2_4_InboundContextRejected_Commit() throws Exception {
         initTable(internalUrl);
         initTable(coordinatorUrl);
-        assertInbound(true);
+        assertInboundRejected(true);
     }
 
-    /** Remote coordinator rolls back: the participant's row must NOT persist. */
     @Test
-    public void test2_4_InboundParticipant_Rollback() throws Exception {
+    @AllowedFFDC({ "com.ibm.ws.wsat.service.WSATException", "javax.transaction.RollbackException",
+                   "javax.xml.ws.WebServiceException", "jakarta.xml.ws.WebServiceException",
+                   "org.apache.cxf.interceptor.Fault", "java.lang.Exception" })
+    public void test2_4_InboundContextRejected_Rollback() throws Exception {
         initTable(internalUrl);
         initTable(coordinatorUrl);
-        assertInbound(false);
+        assertInboundRejected(false);
     }
 
     // ---------------------------------------------------------------------------------------------
 
-    private void assertInbound(boolean commit) {
+    private void assertInboundRejected(boolean commit) {
         final String key = newKey();
         final String r = call(coordinatorUrl, internalUrl, REQUIRED, commit ? COMMIT : ROLLBACK, key);
-        assertTrue("Inbound coordination should succeed under the internal feature: " + r, r.startsWith("OK:"));
-        assertTrue("Participant should have joined the remote transaction: " + r, r.endsWith("tx=ACTIVE"));
-        assertEquals("Participant row should follow the remote coordinator's " + (commit ? "commit" : "rollback"),
-                     commit ? 1 : 0, count(internalUrl, key));
+        assertException("Inbound WS-AT context must be rejected by an internal-only server", r);
+        assertTrue("Expected the 'not installed' fault but got: " + r, r.contains("WS-AT Feature is not installed"));
+        assertEquals("The request must be rejected before reaching the endpoint, so nothing may be persisted",
+                     0, count(internalUrl, key));
     }
 
     private void updateInternal(String attribute, String value) throws Exception {
