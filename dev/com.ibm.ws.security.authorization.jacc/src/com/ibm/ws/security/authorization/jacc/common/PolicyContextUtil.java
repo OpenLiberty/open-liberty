@@ -9,12 +9,24 @@
  *******************************************************************************/
 package com.ibm.ws.security.authorization.jacc.common;
 
+import static io.openliberty.checkpoint.spi.CheckpointPhase.onRestore;
+
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
 public class PolicyContextUtil {
+
+    // on InstantOn restore, the hostname may differ; clear cache host so the next
+    // call after restore re-resolves against the actual restore host.
+    static {
+        onRestore(() -> cachedHostName = null);
+    }
+
+    // host name is fixed for the lifetime of the server (exception being InstantOn which
+    //  is handled above); cache to avoid expensive repeated DNS lookups.
+    private static volatile String cachedHostName = null;
 
     public static String getContextId(WsLocationAdmin locationAdmin, String applicationName, String moduleName) {
         StringBuilder output = new StringBuilder();
@@ -30,16 +42,20 @@ public class PolicyContextUtil {
      * @return String value of the host name or "localhost" if not able to resolve
      */
     private static String getHostName() {
-        String hostName = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                try {
-                    return java.net.InetAddress.getLocalHost().getCanonicalHostName().toLowerCase();
-                } catch (java.net.UnknownHostException e) {
-                    return "localhost";
+        // lazy initialisation; concurrent first-call races or even secondary call
+        //   races are benign - same value either way, no concurrency issue.
+        if (cachedHostName == null) {
+            cachedHostName = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    try {
+                        return java.net.InetAddress.getLocalHost().getCanonicalHostName().toLowerCase();
+                    } catch (java.net.UnknownHostException e) {
+                        return "localhost";
+                    }
                 }
-            }
-        });
-        return hostName;
+            });
+        }
+        return cachedHostName;
     }
 }
