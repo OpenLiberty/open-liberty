@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018,2022 IBM Corporation and others.
+# Copyright (c) 2018, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,6 +72,11 @@ CONFIG_ATTRIBUTE_IGNORED.useraction=No action is required.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: The {0} HTTP Session Cache configuration attribute changed since the server was checkpointed. If the value of the attribute is changed after the server checkpoint, but before the server process is restored, the application does not use the updated value.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=The specified configuration attribute cannot be modified during the time between the server checkpoint and the server process restore.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Set the value for the attribute before you perform the server checkpoint.
+
+# do not translate: httpSessionCache, cacheManagerRef
+FALLBACK_LIBRARY_NOT_REGISTERED=SESN0313I: The fallback library for the httpSessionCache configuration was not registered because the {0} library service is not available.
+FALLBACK_LIBRARY_NOT_REGISTERED.explanation=The httpSessionCache configuration specifies cacheManagerRef, which uses a fallback library registration to satisfy a library dependency. The {0} library service was not available when the registration was attempted, so the registration was skipped.
+FALLBACK_LIBRARY_NOT_REGISTERED.useraction=No action is required unless the HTTP session cache fails to start. If it fails to start, verify the cache provider library configuration and check for related messages.
 
 INTERNAL_SERVER_ERROR=Internal Server Error
 
