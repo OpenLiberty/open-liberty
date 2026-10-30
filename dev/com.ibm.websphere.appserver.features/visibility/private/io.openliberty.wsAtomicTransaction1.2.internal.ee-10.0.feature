@@ -3,10 +3,18 @@ symbolicName=io.openliberty.wsAtomicTransaction1.2.internal.ee-10.0
 singleton=true
 visibility = private
 -features=\
-  io.openliberty.xmlWS-4.0, \
-  com.ibm.websphere.appserver.servlet-6.0; ibm.tolerates:="6.1, 6.2"
+  io.openliberty.webBundleSecurity.internal-1.0, \
+  io.openliberty.servlet.internal-6.0; ibm.tolerates:="6.1, 6.2", \
+  com.ibm.websphere.appserver.httptransport-1.0, \
+  io.openliberty.xmlws.common-4.0; apiJar=false
 -bundles=\
   io.openliberty.webservices.handler, \
+  com.ibm.ws.javaee.ddmodel.ws, \
+  com.ibm.ws.webservices.javaee.common.jakarta, \
+  com.ibm.ws.jaxws.2.3.common.jakarta; start-phase:=CONTAINER_LATE, \
+  com.ibm.ws.jaxws.webcontainer.jakarta, \
+  com.ibm.ws.jaxws.web.jakarta, \
+  com.ibm.ws.jaxws.wsat, \
   com.ibm.ws.wsat.common.jakarta; start-phase:=CONTAINER_LATE, \
   com.ibm.ws.wsat.webclient.jakarta, \
   com.ibm.ws.wsat.webservice.jakarta, \
