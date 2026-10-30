@@ -16,6 +16,7 @@ import java.util.Set;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -27,6 +28,7 @@ import com.ibm.wsspi.http.VirtualHost;
 import io.openliberty.mcp.internal.config.McpServerApplicationTracker;
 import io.openliberty.mcp.internal.config.McpServerConfigProps;
 import io.openliberty.mcp.internal.introspection.McpIntrospectorContextListener;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
@@ -49,23 +51,32 @@ public class McpServletInitializer implements ServletContainerInitializer {
     @FFDCIgnore(IllegalStateException.class)
     public void onStartup(Set<Class<?>> c, ServletContext context) throws ServletException, IllegalStateException {
         try {
-            ToolRegistry registry = ToolRegistry.get();
-            if (!registry.hasTools()) {
+            ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+            J2EEName moduleName = componentMetaData != null ? componentMetaData.getJ2EEName() : null;
+
+            McpCdiExtension extension = CDI.current().select(McpCdiExtension.class).get();
+            ToolRegistry registry = extension.getCurrentToolRegistry();
+
+            boolean shouldRegister = (registry != null && registry.hasTools()) || (moduleName != null && extension.hasToolManager(moduleName));
+            if (!shouldRegister) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Skipping MCP servlet registration for module " + moduleName + " (no tools or ToolManager references found)");
+                }
                 return;
             }
+
             // Register introspector context listener
             context.addListener(new McpIntrospectorContextListener(registry));
 
-            ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             String appName = getApplicationName(componentMetaData);
-            String moduleName = getModuleName(componentMetaData);
+            String modName = getModuleName(componentMetaData);
 
             McpServerConfigProps configProps = null;
 
             if (appName != null) {
-                configProps = mcpAppTrackerService.run(tracker -> tracker.getConfigForModule(appName, moduleName)).get();
+                configProps = mcpAppTrackerService.run(tracker -> tracker.getConfigForModule(appName, modName)).get();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Looking up MCP config for application: " + appName + ", module: " + moduleName +
+                    Tr.debug(this, tc, "Looking up MCP config for application: " + appName + ", module: " + modName +
                                        ", found: " + (configProps));
                 }
             }

@@ -12,6 +12,7 @@ package io.openliberty.mcp.internal;
 import static io.openliberty.mcp.internal.encoders.EncoderRegistry.DEFAULT_ENCODER_PRIORITY;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,6 +53,7 @@ import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.tools.BeanMethodHandler.MethodMetadata;
 import io.openliberty.mcp.internal.tools.ToolResponseImpl;
+import io.openliberty.mcp.tools.ToolManager;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.annotation.Priority;
@@ -59,14 +61,23 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.BeforeDestroyed;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedField;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
+import jakarta.enterprise.inject.spi.ProcessObserverMethod;
+import jakarta.enterprise.inject.spi.ProcessProducer;
+import jakarta.inject.Provider;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
@@ -92,6 +103,7 @@ public class McpCdiExtension implements Extension {
     private final Map<Bean<?>, Integer> encoderPriorities = new HashMap<>();
     private final Map<Bean<?>, Type> converterBeans = new HashMap<>();
     private ConcurrentHashMap<J2EEName, Map<String, ArrayList<String>>> duplicateToolsMap = new ConcurrentHashMap<>();
+    private final Set<J2EEName> modulesWithToolManager = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private SchemaRegistry schemas = new SchemaRegistry();
     private Jsonb jsonb = createJsonb();
@@ -162,6 +174,165 @@ public class McpCdiExtension implements Extension {
         Class<?> javaClass = pmb.getAnnotatedBeanClass().getJavaClass();
         if (DefaultValueConverter.class.isAssignableFrom(javaClass)) {
             TypeUtility.getDefaultValueConverterType(javaClass).ifPresent(type -> converterBeans.put(pmb.getBean(), type));
+        }
+    }
+
+    private static boolean isToolManagerType(Type type) {
+        if (type == null) {
+            return false;
+        }
+        if (ToolManager.class.equals(type)) {
+            return true;
+        }
+        if (type instanceof Class<?> clazz) {
+            return ToolManager.class.isAssignableFrom(clazz);
+        }
+        if (type instanceof ParameterizedType pt) {
+            Type rawType = pt.getRawType();
+            if (rawType instanceof Class<?> rawClass && (Instance.class.isAssignableFrom(rawClass) || Provider.class.isAssignableFrom(rawClass))) {
+                for (Type arg : pt.getActualTypeArguments()) {
+                    if (isToolManagerType(arg)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    void discoverToolManagerInManagedBean(@Observes ProcessManagedBean<?> pmb) {
+        Class<?> javaClass = pmb.getAnnotatedBeanClass().getJavaClass();
+        if (McpCdiProducers.class.equals(javaClass)) {
+            return;
+        }
+
+        boolean found = false;
+        // Check fields (e.g. @Inject ToolManager or @Inject Instance<ToolManager>)
+        for (AnnotatedField<?> field : pmb.getAnnotatedBeanClass().getFields()) {
+            if (isToolManagerType(field.getBaseType())) {
+                found = true;
+                break;
+            }
+        }
+
+        // Check constructor parameters (e.g. constructor injection)
+        if (!found) {
+            for (AnnotatedConstructor<?> ctor : pmb.getAnnotatedBeanClass().getConstructors()) {
+                for (AnnotatedParameter<?> param : ctor.getParameters()) {
+                    if (isToolManagerType(param.getBaseType())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    break;
+                }
+            }
+        }
+
+        // Check method parameters and return types (e.g. initializer methods, observer methods, producer methods)
+        if (!found) {
+            for (AnnotatedMethod<?> method : pmb.getAnnotatedBeanClass().getMethods()) {
+                if (isToolManagerType(method.getBaseType())) {
+                    found = true;
+                    break;
+                }
+                for (AnnotatedParameter<?> param : method.getParameters()) {
+                    if (isToolManagerType(param.getBaseType())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    break;
+                }
+            }
+        }
+
+        if (found) {
+            J2EEName module = getModuleForBeanOrNull(pmb.getBean());
+            if (module != null) {
+                modulesWithToolManager.add(module);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Found ToolManager reference in managed bean " + javaClass.getName() + " for module " + module);
+                }
+            }
+        }
+    }
+
+    void discoverToolManagerInjectionPoints(@Observes ProcessInjectionPoint<?, ?> pip) {
+        InjectionPoint ip = pip.getInjectionPoint();
+        if (ip == null) {
+            return;
+        }
+        if (isToolManagerType(ip.getType())) {
+            Bean<?> bean = ip.getBean();
+            Class<?> declaringClass = bean != null ? bean.getBeanClass() : (ip.getMember() != null ? ip.getMember().getDeclaringClass() : null);
+            if (declaringClass != null && !McpCdiProducers.class.equals(declaringClass)) {
+                J2EEName module = getModuleForClassOrNull(declaringClass);
+                if (module != null) {
+                    modulesWithToolManager.add(module);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Found ToolManager injection point in class " + declaringClass.getName() + " for module " + module);
+                    }
+                }
+            }
+        }
+    }
+
+    void discoverToolManagerObservers(@Observes ProcessObserverMethod<?, ?> pom) {
+        Class<?> beanClass = pom.getObserverMethod().getBeanClass();
+        if (McpCdiProducers.class.equals(beanClass)) {
+            return;
+        }
+        if (isToolManagerType(pom.getObserverMethod().getObservedType())) {
+            J2EEName module = getModuleForClassOrNull(beanClass);
+            if (module != null) {
+                modulesWithToolManager.add(module);
+            }
+            return;
+        }
+        if (pom.getAnnotatedMethod() != null) {
+            for (AnnotatedParameter<?> param : pom.getAnnotatedMethod().getParameters()) {
+                if (isToolManagerType(param.getBaseType())) {
+                    J2EEName module = getModuleForClassOrNull(beanClass);
+                    if (module != null) {
+                        modulesWithToolManager.add(module);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "Found ToolManager observer parameter in class " + beanClass.getName() + " for module " + module);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    void discoverToolManagerProducers(@Observes ProcessProducer<?, ?> pp) {
+        if (pp.getAnnotatedMember() == null || pp.getAnnotatedMember().getJavaMember() == null) {
+            return;
+        }
+        Class<?> declaringClass = pp.getAnnotatedMember().getJavaMember().getDeclaringClass();
+        if (McpCdiProducers.class.equals(declaringClass)) {
+            return;
+        }
+        if (isToolManagerType(pp.getAnnotatedMember().getBaseType())) {
+            J2EEName module = getModuleForClassOrNull(declaringClass);
+            if (module != null) {
+                modulesWithToolManager.add(module);
+            }
+            return;
+        }
+        if (pp.getAnnotatedMember() instanceof AnnotatedMethod<?> method) {
+            for (AnnotatedParameter<?> param : method.getParameters()) {
+                if (isToolManagerType(param.getBaseType())) {
+                    J2EEName module = getModuleForClassOrNull(declaringClass);
+                    if (module != null) {
+                        modulesWithToolManager.add(module);
+                    }
+                    break;
+                }
+            }
         }
     }
 
@@ -457,5 +628,20 @@ public class McpCdiExtension implements Extension {
         return CDI_SERVICE.run(cdiService -> cdiService.getModuleNameForClass(bean.getBeanClass()))
                           .orElseThrow(() -> new RuntimeException("No current CDIService"))
                           .orElse(null); // No module = global bean (EAR/lib or runtime)
+    }
+
+    private J2EEName getModuleForClassOrNull(Class<?> clazz) {
+        return CDI_SERVICE.run(cdiService -> cdiService.getModuleNameForClass(clazz))
+                          .orElseThrow(() -> new RuntimeException("No current CDIService"))
+                          .orElse(null);
+    }
+
+    public boolean hasToolManager(J2EEName module) {
+        return module != null && modulesWithToolManager.contains(module);
+    }
+
+    public boolean hasToolsOrToolManager(J2EEName module) {
+        ToolRegistry registry = toolRegistries.getForModule(module);
+        return (registry != null && registry.hasTools()) || hasToolManager(module);
     }
 }
