@@ -120,4 +120,5 @@ instrument.classesIncludes: \
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   org.codehaus.woodstox:stax2-api;version='4.2', \
   org.codehaus.woodstox:woodstox-core-asl;version='4.2.0', \
-  com.ibm.websphere.javaee.jcache.1.1.core;version=latest
+  com.ibm.websphere.javaee.jcache.1.1.core;version=latest, \
+  com.ibm.ws.kernel.service;version=latest

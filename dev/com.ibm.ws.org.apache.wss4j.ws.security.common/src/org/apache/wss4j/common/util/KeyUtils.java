@@ -44,7 +44,11 @@ public final class KeyUtils {
     private static final int MAX_SYMMETRIC_KEY_SIZE = 1024;
     private static final Map<String, Integer> DEFAULT_DERIVED_KEY_LENGTHS = new HashMap<>();
 
-    public static final String RSA_ECB_OAEPWITH_SHA1_AND_MGF1_PADDING = "RSA/ECB/OAEPWithSHA1AndMGF1Padding";
+    // Liberty Change Start: set FIPS default
+    public static final String oaepAlgorithm = CryptoUtils.isFips140_3Enabled() 
+                    ? "RSA/ECB/OAEPWithSHA-256AndMGF1Padding"
+                    : "RSA/ECB/OAEPWithSHA1AndMGF1Padding";
+    // Liberty Change End
 
     /**
      * A cached MessageDigest object
@@ -90,6 +94,19 @@ public final class KeyUtils {
      * Convert the raw key bytes into a SecretKey object of type algorithm.
      */
     public static SecretKey prepareSecretKey(String algorithm, byte[] rawKey) {
+
+        // Liberty Change Start: set FIPS default
+        // Must match the mapping in getKeyGenerator() and XMLCipher.getInstance(). Otherwise the sender
+        // generates a 256-bit key, truncates it to 128 bits here (aes128-cbc), but labels the data as
+        // aes256-gcm; the receiver then uses the full 256-bit key and fails with
+        // AEADBadTagException: ICC_AES_GCM_En/DecryptFinal failed
+        if (XMLCipher.AES_128.equals(algorithm) || XMLCipher.AES_256.equals(algorithm)) {
+            algorithm = CryptoUtils.isFips140_3Enabled()
+                        ? "http://www.w3.org/2009/xmlenc11#aes256-gcm"
+                        : "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
+        }
+        // Liberty Change End
+
         // Do an additional check on the keysize required by the encryption algorithm
         int size = 0;
         try {
@@ -122,6 +139,15 @@ public final class KeyUtils {
             //
             // Assume AES as default, so initialize it
             //
+
+            // Liberty Change Start: set FIPS default
+            if (XMLCipher.AES_128.equals(algorithm) || XMLCipher.AES_256.equals(algorithm)) {
+                algorithm = CryptoUtils.isFips140_3Enabled()
+                            ? "http://www.w3.org/2009/xmlenc11#aes256-gcm"
+                            : "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
+            }       
+            // Liberty Change End
+
             String keyAlgorithm = JCEMapper.getJCEKeyAlgorithmFromURI(algorithm);
             if (keyAlgorithm == null || keyAlgorithm.length() == 0) {
                 keyAlgorithm = JCEMapper.translateURItoJCEID(algorithm);
@@ -153,6 +179,16 @@ public final class KeyUtils {
      */
     public static Cipher getCipherInstance(String cipherAlgo)
         throws WSSecurityException {
+
+        // Liberty Change Start: set FIPS default for RSA-OAEP algorithm
+        if (XMLCipher.RSA_OAEP.equals(cipherAlgo) || XMLCipher.RSA_OAEP_11.equals(cipherAlgo) 
+              || XMLCipher.RSA_v1dot5.equals(cipherAlgo)) {
+            cipherAlgo = CryptoUtils.isFips140_3Enabled() 
+                          ? "http://www.w3.org/2009/xmlenc11#rsa-oaep"
+                          : "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
+        } 
+        // Liberty Change End
+
         return getCipherInstance(cipherAlgo, null);
     }
 
@@ -165,6 +201,16 @@ public final class KeyUtils {
      */
     public static Cipher getCipherInstance(String cipherAlgo, String provider)
             throws WSSecurityException {
+ 
+        // Liberty Change Start: set FIPS default for RSA-OAEP algorithm
+        if (XMLCipher.RSA_OAEP.equals(cipherAlgo) || XMLCipher.RSA_OAEP_11.equals(cipherAlgo) 
+             || XMLCipher.RSA_v1dot5.equals(cipherAlgo)) {
+           cipherAlgo = CryptoUtils.isFips140_3Enabled()
+                        ? "http://www.w3.org/2009/xmlenc11#rsa-oaep"
+                        : "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
+        } 
+        // Liberty Change End
+       
         String keyAlgorithm = JCEMapper.translateURItoJCEID(cipherAlgo);
         if (keyAlgorithm == null) {
             throw new WSSecurityException(
@@ -185,31 +231,36 @@ public final class KeyUtils {
                 return Cipher.getInstance(keyAlgorithm, provider);
             }
         } catch (NoSuchPaddingException | NoSuchAlgorithmException e) {
-            if (XMLCipher.RSA_OAEP.equals(cipherAlgo)) {
+            // Liberty Change Start: set condition if RSA_OAEP or RSA_OAEP_11 is used
+            if (XMLCipher.RSA_OAEP.equals(cipherAlgo) || XMLCipher.RSA_OAEP_11.equals(cipherAlgo)
+                 || XMLCipher.RSA_v1dot5.equals(cipherAlgo))  {
+            // Liberty Change End
+
                 // Check to see if an RSA OAEP MGF-1 with SHA-1 algorithm was requested
                 // Some JCE implementations don't support RSA/ECB/OAEPPadding (e.g. nCipherKM of Thales)
+                // Liberty Change Start: to use oaepAlgorithm          
                 try {
                     if (provider == null) {
-                        return Cipher.getInstance(RSA_ECB_OAEPWITH_SHA1_AND_MGF1_PADDING);
+                        return Cipher.getInstance(oaepAlgorithm);
                     } else {
-                        return Cipher.getInstance(RSA_ECB_OAEPWITH_SHA1_AND_MGF1_PADDING, provider);
+                        return Cipher.getInstance(oaepAlgorithm, provider);
                     }
                 } catch (NoSuchProviderException ex1) {
                     throw new WSSecurityException(
                         WSSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, ex1, "unsupportedKeyTransp",
                         new Object[]{
                             "No such provider \"" + JCEMapper.getProviderId() + "\" for \""
-                                + RSA_ECB_OAEPWITH_SHA1_AND_MGF1_PADDING + "\""
+                                + oaepAlgorithm + "\""
                         });
                 } catch (NoSuchPaddingException ex1) {
                     throw new WSSecurityException(
                         WSSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, e, "unsupportedKeyTransp",
-                        new Object[]{"No such padding: \"" + RSA_ECB_OAEPWITH_SHA1_AND_MGF1_PADDING + "\""});
+                        new Object[]{"No such padding: \"" + oaepAlgorithm + "\""});
                 } catch (NoSuchAlgorithmException ex1) {
                     throw new WSSecurityException(
                         WSSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, e, "unsupportedKeyTransp",
-                        new Object[]{"No such algorithm: \"" + RSA_ECB_OAEPWITH_SHA1_AND_MGF1_PADDING + "\""});
-                }
+                        new Object[]{"No such algorithm: \"" + oaepAlgorithm + "\""});
+                } // Liberty Change End
             } else {
                 if (e instanceof NoSuchAlgorithmException) {    //NOPMD
                     throw new WSSecurityException(
