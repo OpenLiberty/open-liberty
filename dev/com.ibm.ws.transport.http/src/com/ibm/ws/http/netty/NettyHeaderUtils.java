@@ -189,12 +189,18 @@ public class NettyHeaderUtils {
     private static void pruneUntrustedWssp(HttpHeaders headers, boolean desensitizePrivatePortHeader,
                                            boolean trustNonSensitive, boolean trustSensitive,
                                            InetSocketAddress remoteSocket) {
-        // Only called when at least one untrusted $WSSP value was seen. Warn only for the first such request.
+        // Only called when at least one untrusted $WSSP value was seen.
         // The $WSSP value comes from a peer that is not trusted, so it is deliberately not logged.
+        InetAddress remoteAddr = (remoteSocket != null) ? remoteSocket.getAddress() : null;
+        int clientPort = (remoteSocket != null) ? remoteSocket.getPort() : -1;
+
+        // warn only for the first request, but trace every request
         if (wsspWarningIssued.compareAndSet(false, true)) {
-            Tr.warning(tc, "wssp.header.non.sensitive.address",
-                       (remoteSocket != null) ? remoteSocket.getAddress() : null,
-                       (remoteSocket != null) ? remoteSocket.getPort() : -1);
+            Tr.warning(tc, "wssp.header.non.sensitive.address", remoteAddr, clientPort);
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "pruneUntrustedWssp: $WSSP header received from non-sensitive address: clientAddress=" + remoteAddr
+                         + ", clientPort=" + clientPort);
         }
 
         Iterator<? extends CharSequence> values =
