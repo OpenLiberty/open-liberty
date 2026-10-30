@@ -170,6 +170,44 @@ public class NettyChain extends AbstractHttpChain {
         }
     }
 
+    /**
+     * Block until an in-progress {@link #stop()} has finished (the chain has left STOPPING), or the
+     * wait expires.  Returns immediately if the chain is not STOPPING.
+     *
+     * stop() returns while the closeFuture listener is still to run on the event loop; that listener
+     * moves the chain to STOPPED.  Callers that must not return before the chain is stopped, such as
+     * HttpEndpointImpl.pause(), call this so a quick resume does not find the chain still STOPPING.
+     * This mirrors HttpChain.stop() in the channel framework, which waits for the stop notification
+     * for the default chain quiesce timeout (HttpChain.StopWait).
+     * Deliberately not synchronized on this chain: the closeFuture listener only needs stopLock.
+     *
+     * The state is not changed on timeout.
+     */
+    public void awaitStopped() {
+        long timeoutMs = nettyFramework.getDefaultChainQuiesceTimeout();
+        long deadline = System.currentTimeMillis() + timeoutMs;
+        synchronized (stopLock) {
+            while (state.get() == ChainState.STOPPING) {
+                long remaining = deadline - System.currentTimeMillis();
+                if (remaining <= 0) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Timed out after " + timeoutMs + "ms waiting for chain to stop on " + endpointName + ", state=" + state.get());
+                    }
+                    return;
+                }
+                try {
+                    stopLock.wait(remaining);
+                } catch (InterruptedException e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Interrupted while waiting for chain to stop on " + endpointName);
+                    }
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+        }
+    }
+
     @Override
     public synchronized void update(String resolvedHostName) {
 
