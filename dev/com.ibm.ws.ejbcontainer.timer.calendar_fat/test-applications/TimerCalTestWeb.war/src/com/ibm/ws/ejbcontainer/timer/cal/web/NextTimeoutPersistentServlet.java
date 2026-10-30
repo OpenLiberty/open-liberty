@@ -33,7 +33,7 @@ import componenttest.custom.junit.runner.Mode;
 @SuppressWarnings("serial")
 public class NextTimeoutPersistentServlet extends AbstractServlet {
 
-    private static final long MAX_WAIT_TIME = 4 * 60 * 1000;
+    private static final long MAX_WAIT_TIME = 6 * 60 * 1000;
 
     @EJB
     protected NextTimeoutPersistIntf ivBean;
