@@ -39,6 +39,8 @@ import com.ibm.ws.tests.anno.jandex.JandexWebInfAppDefaultAppMgrTrueTest;
 import com.ibm.ws.tests.anno.jandex.JandexWebInfAppFalseAppMgrFalseTest;
 import com.ibm.ws.tests.anno.jandex.JandexWebInfAppFalseAppMgrTrueTest;
 import com.ibm.ws.tests.anno.jandex.JandexWebInfAppTrueAppMgrFalseTest;
+import com.ibm.ws.tests.anno.jandex.JandexWebInfAppMgrReadWebInfTrueAppReadWebInfFalseTest;
+import com.ibm.ws.tests.anno.jandex.JandexWebInfAppMgrReadWebInfTrueTest;
 import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesNoReadWebInfTest;
 import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesTest;
 
@@ -81,6 +83,8 @@ import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesTest;
     JandexWebInfAppFalseAppMgrTrueTest.class,
     JandexWebInfAppFalseAppMgrFalseTest.class,
     JandexWebInfAppDefaultAppMgrDefaultTest.class,
+    JandexWebInfAppMgrReadWebInfTrueTest.class,
+    JandexWebInfAppMgrReadWebInfTrueAppReadWebInfFalseTest.class,
 
     // Annotation caching tests
     CacheEnablementTest.class,

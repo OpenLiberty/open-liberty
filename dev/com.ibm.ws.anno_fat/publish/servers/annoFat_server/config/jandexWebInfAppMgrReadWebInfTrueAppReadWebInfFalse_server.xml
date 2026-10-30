@@ -1,0 +1,19 @@
+<server description="Server for testing Jandex index in WEB-INF/classes (readWebInfJandex true on applicationManager, false on application)">
+
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <javaPermission
+    className="java.util.PropertyPermission"
+    name="org.glassfish.web.rfc2109_cookie_names_enforced"
+    actions="read"
+    codebase="${server.config.dir}dropins/TestServlet40_WebInf.ear"/>
+
+  <!-- appManager useJandex=true, appManager readWebInfJandex=true, application readWebInfJandex=false (app override wins) -->
+  <applicationManager useJandex="true" readWebInfJandex="true"/>
+  <application location="TestServlet40_WebInf.ear" readWebInfJandex="false"/>
+
+</server>
