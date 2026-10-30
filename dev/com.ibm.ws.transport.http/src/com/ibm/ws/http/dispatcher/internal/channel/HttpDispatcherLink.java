@@ -1503,9 +1503,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     }
 
     public boolean useTrustedSensitiveHeaders() {
+        // Sensitive headers are never trusted from an unknown peer. Without this, a null remoteAddress
+        // would return the cached "unknown" value, which is enabled, so an unapproved $WSSN would be approved.
+        if (remoteAddress == null) {
+            return false;
+        }
         UsePrivateHeaders useSensitive = usePrivateSensitiveHeaders;
         int lastUpdate = HttpDispatcher.getConfigUpdate();
-        if ((useSensitive == UsePrivateHeaders.unknown || configUpdateSensitive != lastUpdate) && remoteAddress != null) {
+        if (useSensitive == UsePrivateHeaders.unknown || configUpdateSensitive != lastUpdate) {
             useSensitive = usePrivateSensitiveHeaders = UsePrivateHeaders.set(HttpDispatcher.usePrivateSensitiveHeaders(remoteAddress));
             configUpdateSensitive = lastUpdate;
         }
