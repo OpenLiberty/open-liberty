@@ -188,7 +188,9 @@ class ClassLoaderFactory extends GatewayBundleFactory {
      * common-library delegate (for the reverse-link case).
      *
      * <p>Only top-level app-domain ACLs carry a meaningful app name.
-     * Library, thread-context, and bundle-add-on ACLs are skipped.</p>
+     * Library, thread-context, and bundle-add-on ACLs are skipped. Note: Shared libraries
+     * used exclusively by BELL services (without an application reference) do not have an owning
+     * application to recycle and are not registered here.</p>
      */
     private void registerOwnerAppNames(AppClassLoader result) {
         String domain = result.getKey().getDomain();

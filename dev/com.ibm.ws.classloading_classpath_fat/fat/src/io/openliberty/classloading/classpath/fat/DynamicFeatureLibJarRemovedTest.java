@@ -13,15 +13,18 @@
 package io.openliberty.classloading.classpath.fat;
 
 import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST_SERVER;
+import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_SERVLET_PATH;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_APP;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_UNRELATED_APP;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_UNRELATED_WAR;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_WAR;
+import static io.openliberty.classloading.classpath.fat.FATSuite.assertAppStoppedThenStarted;
+import static io.openliberty.classloading.classpath.fat.FATSuite.countAppMessages;
+import static io.openliberty.classloading.classpath.fat.FATSuite.installTestFeatureAndBundle;
+import static io.openliberty.classloading.classpath.fat.FATSuite.stopServerAndUninstall;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
@@ -88,19 +91,10 @@ public class DynamicFeatureLibJarRemovedTest {
     @Server(DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST_SERVER)
     public static LibertyServer server;
 
-    private static final String SERVLET_PATH =
-        TEST_DYNAMIC_FEATURE_APP + "/DynamicFeatureLifecycleTestServlet";
-
     @BeforeClass
     public static void setupTestServer() throws Exception {
         // Feature / bundle installs must happen before startServer().
-        server.installSystemFeature("testFeatureApi-1.0");
-        assertTrue("testFeatureApi-1.0.mf should have been copied to lib/features",
-                   server.fileExistsInLibertyInstallRoot("lib/features/testFeatureApi-1.0.mf"));
-
-        server.installSystemBundle("test.feature.api");
-        assertTrue("test.feature.api.jar should have been copied to lib",
-                   server.fileExistsInLibertyInstallRoot("lib/test.feature.api.jar"));
+        installTestFeatureAndBundle(server);
 
         // Deploy the WAR to the apps directory.
         ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_WAR,
@@ -123,7 +117,7 @@ public class DynamicFeatureLibJarRemovedTest {
     public void testDynamicFeatureLibJarRemovedLifecycle() throws Exception {
         // ── STATE 1: Library JAR present, feature present ────────────────────
         server.setMarkToEndOfLog();
-        FATServletClient.runTest(server, SERVLET_PATH,
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH,
             "testLibraryJarRemovedFromSharedLib_LibraryPresent");
         assertNotNull("State 1 SUCCESS marker not found in log",
             server.waitForStringInLogUsingMark(
@@ -132,7 +126,7 @@ public class DynamicFeatureLibJarRemovedTest {
         // ── STATE 2: Swap to server_no_lib.xml (library JAR removed from fileset) ──
         // setServerConfigurationFromFilePath() must be used here — setServerConfigurationFile()
         // looks in lib/LibertyFATTestFiles/ instead of the server config directory.
-        int unrelatedMessagesBefore = countAppMessages(TEST_DYNAMIC_FEATURE_UNRELATED_APP);
+        int unrelatedMessagesBefore = countAppMessages(server, TEST_DYNAMIC_FEATURE_UNRELATED_APP);
         server.setMarkToEndOfLog();
         server.setServerConfigurationFromFilePath("server_no_lib.xml");
         List<String> libRemovedMessages = server.waitForConfigUpdateInLogUsingMark(
@@ -141,19 +135,19 @@ public class DynamicFeatureLibJarRemovedTest {
             "CWWKZ000[13]I.*" + TEST_DYNAMIC_FEATURE_APP);
         assertAppStoppedThenStarted("State 2", libRemovedMessages);
         assertEquals("State 2: app that does not reference the library must not be restarted",
-                     unrelatedMessagesBefore, countAppMessages(TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+                     unrelatedMessagesBefore, countAppMessages(server, TEST_DYNAMIC_FEATURE_UNRELATED_APP));
         assertEquals("State 2: " + TEST_DYNAMIC_FEATURE_APP + " must have restarted exactly once",
-                     3, countAppMessages(TEST_DYNAMIC_FEATURE_APP));
+                     3, countAppMessages(server, TEST_DYNAMIC_FEATURE_APP));
 
         server.setMarkToEndOfLog();
-        FATServletClient.runTest(server, SERVLET_PATH,
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH,
             "testLibraryJarRemovedFromSharedLib_LibraryRemoved_CachedInterface");
         assertNotNull("State 2a marker not found in log",
             server.waitForStringInLogUsingMark(
                 "DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE2a -"));
 
         server.setMarkToEndOfLog();
-        FATServletClient.runTest(server, SERVLET_PATH,
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH,
             "testLibraryJarRemovedFromSharedLib_LibraryRemoved_FreshInterface");
         assertNotNull("State 2b marker not found in log",
             server.waitForStringInLogUsingMark(
@@ -170,49 +164,22 @@ public class DynamicFeatureLibJarRemovedTest {
             "CWWKZ000[13]I.*" + TEST_DYNAMIC_FEATURE_APP);
         assertAppStoppedThenStarted("State 3", libRestoredMessages);
         assertEquals("State 3: app that does not reference the library must not be restarted",
-                     unrelatedMessagesBefore, countAppMessages(TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+                     unrelatedMessagesBefore, countAppMessages(server, TEST_DYNAMIC_FEATURE_UNRELATED_APP));
         assertEquals("State 3: " + TEST_DYNAMIC_FEATURE_APP + " must have restarted exactly once",
-                     5, countAppMessages(TEST_DYNAMIC_FEATURE_APP));
+                     5, countAppMessages(server, TEST_DYNAMIC_FEATURE_APP));
 
         server.setMarkToEndOfLog();
-        FATServletClient.runTest(server, SERVLET_PATH,
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH,
             "testLibraryJarRemovedFromSharedLib_LibraryRestored");
         assertNotNull("State 3 SUCCESS marker not found in log",
             server.waitForStringInLogUsingMark(
                 "DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST STATE3 - SUCCESS"));
     }
 
-    private static void assertAppStoppedThenStarted(String state, List<String> messages) {
-        int stopped = -1;
-        int started = -1;
-        for (int i = 0; i < messages.size(); i++) {
-            String line = messages.get(i);
-            if (!line.contains(TEST_DYNAMIC_FEATURE_APP)) continue;
-            if (line.contains("CWWKZ0009I") && stopped < 0) stopped = i;
-            else if ((line.contains("CWWKZ0001I") || line.contains("CWWKZ0003I")) && started < 0) started = i;
-        }
-        assertTrue(state + ": " + TEST_DYNAMIC_FEATURE_APP + " was not stopped (CWWKZ0009I)", stopped >= 0);
-        assertTrue(state + ": " + TEST_DYNAMIC_FEATURE_APP + " was not started again (CWWKZ0001I/0003I)", started >= 0);
-        assertTrue(state + ": " + TEST_DYNAMIC_FEATURE_APP + " started before it stopped", stopped < started);
-    }
-
-    private static int countAppMessages(String appName) throws Exception {
-        return server.findStringsInLogs("CWWKZ000[139]I.*" + appName).size();
-    }
-
     @AfterClass
     public static void stopServer() throws Exception {
-        try {
-            // CWWKG0014W — config element referencing a non-existent file may be emitted
-            // when server_no_lib.xml is active (unmatched glob pattern in fileset).
-            server.stopServer("CWWKG0014W");
-        } finally {
-            server.uninstallSystemFeature("testFeatureApi-1.0");
-            assertFalse("testFeatureApi-1.0.mf was not cleaned up",
-                        server.fileExistsInLibertyInstallRoot("lib/features/testFeatureApi-1.0.mf"));
-            server.uninstallSystemBundle("test.feature.api");
-            assertFalse("test.feature.api.jar was not cleaned up",
-                        server.fileExistsInLibertyInstallRoot("lib/test.feature.api.jar"));
-        }
+        // CWWKG0014W — config element referencing a non-existent file may be emitted
+        // when server_no_lib.xml is active (unmatched glob pattern in fileset).
+        stopServerAndUninstall(server, "CWWKG0014W");
     }
 }

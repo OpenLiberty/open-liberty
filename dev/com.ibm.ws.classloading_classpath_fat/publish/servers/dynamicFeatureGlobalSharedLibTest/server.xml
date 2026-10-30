@@ -1,0 +1,35 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>testFeatureApi-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!--
+        Scenario S6: Global Shared Library (GSL).
+        The <library id="global"> makes testSharedFeatureLib.jar available as a parent
+        classloader to any application with no explicit <classloader> element.
+    -->
+    <library id="global">
+        <fileset dir="${server.config.dir}/sharedLibs" includes="testSharedFeatureLib.jar"/>
+    </library>
+
+    <!-- No explicit <classloader> element: inherits the global shared library as its parent -->
+    <webApplication location="testDynamicFeatureApp.war"/>
+
+    <!-- Explicit <classloader> element: opts out of GSL; must not restart when feature is removed -->
+    <webApplication location="testUnrelatedFeatureApp.war">
+        <classloader id="unrelatedCL"/>
+    </webApplication>
+
+    <javaPermission
+        codeBase="${server.config.dir}/apps/testDynamicFeatureApp.war"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+    <javaPermission
+        codeBase="${server.config.dir}/sharedLibs/testSharedFeatureLib.jar"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+</server>

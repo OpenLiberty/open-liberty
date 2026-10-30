@@ -38,6 +38,7 @@
 	<classpathentry kind="src" path="test-applications/testLib18.jar/src"/>
 	<classpathentry kind="src" path="test-applications/testResourceAdaptor.jar/src"/>
 	<classpathentry kind="src" path="test-applications/testSharedFeatureLib.jar/src"/>
+	<classpathentry kind="src" path="test-applications/testSharedFeatureLib2.jar/src"/>
 	<classpathentry kind="src" path="test-applications/testRar1.rar/src"/>
 	<classpathentry kind="src" path="test-resourceadapters/testDummyRA/src"/>
 	<classpathentry kind="src" path="test-bundles/userApiBundle/src"/>

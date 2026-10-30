@@ -1119,7 +1119,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
             }
         } catch (Throwable t) {
             // Must not propagate — this runs on the FeatureManager thread inside setResult().
-            // The enclosing catch is FFDC-instrumented, so the failure is recorded in the FFDC logs.
             Tr.event(tc, "Unexpected error in feature-update recycle listener", t);
         }
     }

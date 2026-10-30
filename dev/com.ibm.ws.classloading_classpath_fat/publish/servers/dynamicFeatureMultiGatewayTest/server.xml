@@ -1,0 +1,43 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>testFeatureApi-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!--
+        Scenario S4: Multi-Gateway deduplication.
+        The application references two shared libraries, each depending on testFeatureApi-1.0.
+        When the feature is removed, both library gateways are invalidated, but the
+        application must be recycled exactly once.
+    -->
+    <library id="testFeatureSharedLib1">
+        <fileset dir="${server.config.dir}/sharedLibs" includes="testSharedFeatureLib.jar"/>
+    </library>
+
+    <library id="testFeatureSharedLib2">
+        <fileset dir="${server.config.dir}/sharedLibs" includes="testSharedFeatureLib2.jar"/>
+    </library>
+
+    <webApplication location="testDynamicFeatureApp.war">
+        <classloader commonLibraryRef="testFeatureSharedLib1, testFeatureSharedLib2"/>
+    </webApplication>
+
+    <!-- Unrelated app: must not restart -->
+    <webApplication location="testUnrelatedFeatureApp.war"/>
+
+    <javaPermission
+        codeBase="${server.config.dir}/apps/testDynamicFeatureApp.war"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+    <javaPermission
+        codeBase="${server.config.dir}/sharedLibs/testSharedFeatureLib.jar"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+    <javaPermission
+        codeBase="${server.config.dir}/sharedLibs/testSharedFeatureLib2.jar"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+</server>

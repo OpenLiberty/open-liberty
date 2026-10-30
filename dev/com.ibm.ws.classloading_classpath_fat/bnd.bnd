@@ -52,6 +52,7 @@ src: \
 	test-applications/testLib18.jar/src, \
 	test-applications/testResourceAdaptor.jar/src, \
 	test-applications/testSharedFeatureLib.jar/src, \
+	test-applications/testSharedFeatureLib2.jar/src, \
 	test-applications/testRar1.rar/src, \
 	test-resourceadapters/testDummyRA/src, \
 	test-bundles/userApiBundle/src, \

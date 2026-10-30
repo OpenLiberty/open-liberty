@@ -12,18 +12,26 @@
  *******************************************************************************/
 package io.openliberty.classloading.classpath.fat;
 
+import static io.openliberty.classloading.classpath.fat.FATSuite.BASE_FEATURES;
+import static io.openliberty.classloading.classpath.fat.FATSuite.BASE_PLUS_DYNAMIC_FEATURE;
+import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_APP2_SERVLET_PATH;
+import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_SERVLET_PATH;
 import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_SHARED_LIB_TEST_SERVER;
+import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_SHARED_LIB_TWO_APPS_TEST_SERVER;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_APP;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_APP2;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_APP2_WAR;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_UNRELATED_APP;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_UNRELATED_WAR;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_WAR;
+import static io.openliberty.classloading.classpath.fat.FATSuite.assertAppStoppedThenStarted;
+import static io.openliberty.classloading.classpath.fat.FATSuite.countAppMessages;
+import static io.openliberty.classloading.classpath.fat.FATSuite.installTestFeatureAndBundle;
+import static io.openliberty.classloading.classpath.fat.FATSuite.stopServerAndUninstall;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -59,107 +67,224 @@ public class DynamicFeatureSharedLibTest {
     @Server(DYNAMIC_FEATURE_SHARED_LIB_TEST_SERVER)
     public static LibertyServer server;
 
-    private static final String SERVLET_PATH =
-        TEST_DYNAMIC_FEATURE_APP + "/DynamicFeatureLifecycleTestServlet";
+    @Server(DYNAMIC_FEATURE_SHARED_LIB_TWO_APPS_TEST_SERVER)
+    public static LibertyServer twoAppsServer;
 
     @BeforeClass
     public static void setupTestServer() throws Exception {
         // Feature / bundle installs must happen before startServer().
-        server.installSystemFeature("testFeatureApi-1.0");
-        assertTrue("testFeatureApi-1.0.mf should have been copied to lib/features",
-                   server.fileExistsInLibertyInstallRoot("lib/features/testFeatureApi-1.0.mf"));
+        installTestFeatureAndBundle(server);
 
-        server.installSystemBundle("test.feature.api");
-        assertTrue("test.feature.api.jar should have been copied to lib",
-                   server.fileExistsInLibertyInstallRoot("lib/test.feature.api.jar"));
-
+        // Server 1 (single app)
         ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_WAR, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_UNRELATED_WAR, DeployOptions.SERVER_ONLY);
-        // sharedLibs/ matches the <fileset dir="${server.config.dir}/sharedLibs"> in server.xml
         ShrinkHelper.exportToServer(server, "sharedLibs", TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR, DeployOptions.SERVER_ONLY);
 
-        server.startServer();
+        // Server 2 (two apps sharing one library)
+        ShrinkHelper.exportAppToServer(twoAppsServer, TEST_DYNAMIC_FEATURE_WAR, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(twoAppsServer, TEST_DYNAMIC_FEATURE_APP2_WAR, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(twoAppsServer, TEST_DYNAMIC_FEATURE_UNRELATED_WAR, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToServer(twoAppsServer, "sharedLibs", TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR, DeployOptions.SERVER_ONLY);
     }
 
     @Test
     public void testDynamicFeatureSharedLibLifecycle() throws Exception {
-        int unrelatedMessagesBefore = countAppMessages(TEST_DYNAMIC_FEATURE_UNRELATED_APP);
+        server.startServer();
+        try {
+            int unrelatedMessagesBefore = countAppMessages(server, TEST_DYNAMIC_FEATURE_UNRELATED_APP);
 
         // ── STATE 1: Feature present ─────────────────────────────────────────
         server.setMarkToEndOfLog();
-        FATServletClient.runTest(server, SERVLET_PATH, "testLibraryDependsOnFeatureApi_FeaturePresent");
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH, "testLibraryDependsOnFeatureApi_FeaturePresent");
         assertNotNull("State 1 SUCCESS marker not found in log",
                       server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE1 - SUCCESS"));
 
         // ── STATE 2: Remove feature dynamically ──────────────────────────────
         server.setMarkToEndOfLog();
-        server.changeFeatures(Arrays.asList("servlet-4.0", "componenttest-1.0"));
+        server.changeFeatures(BASE_FEATURES);
         List<String> removalMessages = server.waitForConfigUpdateInLogUsingMark(
             null, true,
             "CWWKZ0009I.*" + TEST_DYNAMIC_FEATURE_APP,
             "CWWKZ000[13]I.*" + TEST_DYNAMIC_FEATURE_APP);
         assertAppStoppedThenStarted("State 2", removalMessages);
         assertEquals("State 2: unrelated app must not be restarted",
-                     unrelatedMessagesBefore, countAppMessages(TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+                     unrelatedMessagesBefore, countAppMessages(server, TEST_DYNAMIC_FEATURE_UNRELATED_APP));
         assertEquals("State 2: " + TEST_DYNAMIC_FEATURE_APP + " must have restarted exactly once",
-                     3, countAppMessages(TEST_DYNAMIC_FEATURE_APP));
+                     3, countAppMessages(server, TEST_DYNAMIC_FEATURE_APP));
 
         server.setMarkToEndOfLog();
-        FATServletClient.runTest(server, SERVLET_PATH,
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH,
             "testLibraryDependsOnFeatureApi_FeatureRemoved_CachedInterface");
         assertNotNull("State 2a NOT_LOADABLE marker not found in log",
                       server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - NOT_LOADABLE"));
 
         server.setMarkToEndOfLog();
-        FATServletClient.runTest(server, SERVLET_PATH,
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH,
             "testLibraryDependsOnFeatureApi_FeatureRemoved_FreshInterface");
         assertNotNull("State 2b marker not found in log",
                       server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2b -"));
 
         // ── STATE 3: Re-add feature (no app restart expected) ────────────────
         server.setMarkToEndOfLog();
-        server.changeFeatures(Arrays.asList("servlet-4.0", "componenttest-1.0", "testFeatureApi-1.0"));
+        server.changeFeatures(BASE_PLUS_DYNAMIC_FEATURE);
         server.waitForConfigUpdateInLogUsingMark(null, true);
         assertEquals("State 3: unrelated app must not be restarted",
-                     unrelatedMessagesBefore, countAppMessages(TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+                     unrelatedMessagesBefore, countAppMessages(server, TEST_DYNAMIC_FEATURE_UNRELATED_APP));
         assertEquals("State 3: " + TEST_DYNAMIC_FEATURE_APP + " must not have restarted again",
-                     3, countAppMessages(TEST_DYNAMIC_FEATURE_APP));
+                     3, countAppMessages(server, TEST_DYNAMIC_FEATURE_APP));
 
         server.setMarkToEndOfLog();
-        FATServletClient.runTest(server, SERVLET_PATH, "testLibraryDependsOnFeatureApi_FeatureReAdded");
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH, "testLibraryDependsOnFeatureApi_FeatureReAdded");
         assertNotNull("State 3 SUCCESS marker not found in log",
                       server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SUCCESS"));
-    }
 
-    private static void assertAppStoppedThenStarted(String state, List<String> messages) {
-        int stopped = -1;
-        int started = -1;
-        for (int i = 0; i < messages.size(); i++) {
-            String line = messages.get(i);
-            if (!line.contains(TEST_DYNAMIC_FEATURE_APP)) continue;
-            if (line.contains("CWWKZ0009I") && stopped < 0) stopped = i;
-            else if ((line.contains("CWWKZ0001I") || line.contains("CWWKZ0003I")) && started < 0) started = i;
+        // ── STATE 4: Remove feature a second time ────────────────────────────
+        // The GCL created after the re-add must have had its owner app names registered,
+        // otherwise this second removal would not recycle the app.
+        server.setMarkToEndOfLog();
+        server.changeFeatures(BASE_FEATURES);
+        List<String> secondRemovalMessages = server.waitForConfigUpdateInLogUsingMark(
+            null, true,
+            "CWWKZ0009I.*" + TEST_DYNAMIC_FEATURE_APP,
+            "CWWKZ000[13]I.*" + TEST_DYNAMIC_FEATURE_APP);
+        assertAppStoppedThenStarted("State 4", secondRemovalMessages);
+        assertEquals("State 4: unrelated app must not be restarted",
+                     unrelatedMessagesBefore, countAppMessages(server, TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+        assertEquals("State 4: " + TEST_DYNAMIC_FEATURE_APP + " must have restarted exactly once more",
+                     5, countAppMessages(server, TEST_DYNAMIC_FEATURE_APP));
+
+        server.setMarkToEndOfLog();
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH,
+            "testLibraryDependsOnFeatureApi_SecondRemoval_CachedInterface");
+        assertNotNull("State 4a NOT_LOADABLE marker not found in log",
+                      server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE4a - NOT_LOADABLE"));
+
+        server.setMarkToEndOfLog();
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH,
+            "testLibraryDependsOnFeatureApi_SecondRemoval_FreshInterface");
+        assertNotNull("State 4b marker not found in log",
+                      server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE4b -"));
+
+        // ── STATE 5: Re-add feature a second time (no app restart expected) ──
+        server.setMarkToEndOfLog();
+        server.changeFeatures(BASE_PLUS_DYNAMIC_FEATURE);
+        server.waitForConfigUpdateInLogUsingMark(null, true);
+        assertEquals("State 5: unrelated app must not be restarted",
+                     unrelatedMessagesBefore, countAppMessages(server, TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+        assertEquals("State 5: " + TEST_DYNAMIC_FEATURE_APP + " must not have restarted again",
+                     5, countAppMessages(server, TEST_DYNAMIC_FEATURE_APP));
+
+        // The app and library loaders were recycled in State 4, so the State 3 probe loads
+        // its classes through fresh loaders again.
+        server.setMarkToEndOfLog();
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH, "testLibraryDependsOnFeatureApi_FeatureReAdded");
+        assertNotNull("State 5 SUCCESS marker not found in log",
+                      server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SUCCESS"));
+        } finally {
+            if (server.isStarted()) {
+                server.stopServer();
+            }
         }
-        assertTrue(state + ": " + TEST_DYNAMIC_FEATURE_APP + " was not stopped (CWWKZ0009I)", stopped >= 0);
-        assertTrue(state + ": " + TEST_DYNAMIC_FEATURE_APP + " was not started again (CWWKZ0001I/0003I)", started >= 0);
-        assertTrue(state + ": " + TEST_DYNAMIC_FEATURE_APP + " started before it stopped", stopped < started);
     }
 
-    private static int countAppMessages(String appName) throws Exception {
-        return server.findStringsInLogs("CWWKZ000[139]I.*" + appName).size();
+    /**
+     * Scenario S2: Two applications share one library.
+     * When the feature is removed, both applications must be recycled.
+     */
+    @Test
+    public void testDynamicFeatureSharedLibTwoAppsLifecycle() throws Exception {
+        twoAppsServer.startServer();
+        try {
+            int unrelatedMessagesBefore = countAppMessages(twoAppsServer, TEST_DYNAMIC_FEATURE_UNRELATED_APP);
+
+            // ── STATE 1: Feature present ─────────────────────────────────────────
+            twoAppsServer.setMarkToEndOfLog();
+            FATServletClient.runTest(twoAppsServer, DYNAMIC_FEATURE_SERVLET_PATH, "testLibraryDependsOnFeatureApi_FeaturePresent");
+            assertNotNull("State 1 App 1 SUCCESS marker not found in log",
+                          twoAppsServer.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE1 - SUCCESS"));
+
+            twoAppsServer.setMarkToEndOfLog();
+            FATServletClient.runTest(twoAppsServer, DYNAMIC_FEATURE_APP2_SERVLET_PATH, "testLibraryDependsOnFeatureApi_FeaturePresent");
+            assertNotNull("State 1 App 2 SUCCESS marker not found in log",
+                          twoAppsServer.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE1 - SUCCESS"));
+
+            // ── STATE 2: Remove feature dynamically ──────────────────────────────
+            twoAppsServer.setMarkToEndOfLog();
+            twoAppsServer.changeFeatures(BASE_FEATURES);
+            List<String> removalMessages = twoAppsServer.waitForConfigUpdateInLogUsingMark(
+                null, true,
+                "CWWKZ0009I.*\\b" + TEST_DYNAMIC_FEATURE_APP + "\\b",
+                "CWWKZ000[13]I.*\\b" + TEST_DYNAMIC_FEATURE_APP + "\\b",
+                "CWWKZ0009I.*\\b" + TEST_DYNAMIC_FEATURE_APP2 + "\\b",
+                "CWWKZ000[13]I.*\\b" + TEST_DYNAMIC_FEATURE_APP2 + "\\b");
+            assertAppStoppedThenStarted(TEST_DYNAMIC_FEATURE_APP, "State 2 App 1", removalMessages);
+            assertAppStoppedThenStarted(TEST_DYNAMIC_FEATURE_APP2, "State 2 App 2", removalMessages);
+            assertEquals("State 2: unrelated app must not be restarted",
+                         unrelatedMessagesBefore, countAppMessages(twoAppsServer, TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+            assertEquals("State 2: " + TEST_DYNAMIC_FEATURE_APP + " must have restarted exactly once",
+                         3, countAppMessages(twoAppsServer, TEST_DYNAMIC_FEATURE_APP));
+            assertEquals("State 2: " + TEST_DYNAMIC_FEATURE_APP2 + " must have restarted exactly once",
+                         3, countAppMessages(twoAppsServer, TEST_DYNAMIC_FEATURE_APP2));
+
+            twoAppsServer.setMarkToEndOfLog();
+            FATServletClient.runTest(twoAppsServer, DYNAMIC_FEATURE_SERVLET_PATH,
+                "testLibraryDependsOnFeatureApi_FeatureRemoved_CachedInterface");
+            assertNotNull("State 2a App 1 NOT_LOADABLE marker not found in log",
+                          twoAppsServer.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - NOT_LOADABLE"));
+
+            twoAppsServer.setMarkToEndOfLog();
+            FATServletClient.runTest(twoAppsServer, DYNAMIC_FEATURE_APP2_SERVLET_PATH,
+                "testLibraryDependsOnFeatureApi_FeatureRemoved_CachedInterface");
+            assertNotNull("State 2a App 2 NOT_LOADABLE marker not found in log",
+                          twoAppsServer.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2a - NOT_LOADABLE"));
+
+            twoAppsServer.setMarkToEndOfLog();
+            FATServletClient.runTest(twoAppsServer, DYNAMIC_FEATURE_SERVLET_PATH,
+                "testLibraryDependsOnFeatureApi_FeatureRemoved_FreshInterface");
+            assertNotNull("State 2b App 1 marker not found in log",
+                          twoAppsServer.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2b -"));
+
+            twoAppsServer.setMarkToEndOfLog();
+            FATServletClient.runTest(twoAppsServer, DYNAMIC_FEATURE_APP2_SERVLET_PATH,
+                "testLibraryDependsOnFeatureApi_FeatureRemoved_FreshInterface");
+            assertNotNull("State 2b App 2 marker not found in log",
+                          twoAppsServer.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE2b -"));
+
+            // ── STATE 3: Re-add feature (no app restart expected) ────────────────
+            twoAppsServer.setMarkToEndOfLog();
+            twoAppsServer.changeFeatures(BASE_PLUS_DYNAMIC_FEATURE);
+            twoAppsServer.waitForConfigUpdateInLogUsingMark(null, true);
+            assertEquals("State 3: unrelated app must not be restarted",
+                         unrelatedMessagesBefore, countAppMessages(twoAppsServer, TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+            assertEquals("State 3: " + TEST_DYNAMIC_FEATURE_APP + " must not have restarted again",
+                         3, countAppMessages(twoAppsServer, TEST_DYNAMIC_FEATURE_APP));
+            assertEquals("State 3: " + TEST_DYNAMIC_FEATURE_APP2 + " must not have restarted again",
+                         3, countAppMessages(twoAppsServer, TEST_DYNAMIC_FEATURE_APP2));
+
+            twoAppsServer.setMarkToEndOfLog();
+            FATServletClient.runTest(twoAppsServer, DYNAMIC_FEATURE_SERVLET_PATH, "testLibraryDependsOnFeatureApi_FeatureReAdded");
+            assertNotNull("State 3 App 1 SUCCESS marker not found in log",
+                          twoAppsServer.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SUCCESS"));
+
+            twoAppsServer.setMarkToEndOfLog();
+            FATServletClient.runTest(twoAppsServer, DYNAMIC_FEATURE_APP2_SERVLET_PATH, "testLibraryDependsOnFeatureApi_FeatureReAdded");
+            assertNotNull("State 3 App 2 SUCCESS marker not found in log",
+                          twoAppsServer.waitForStringInLogUsingMark("DYNAMIC_FEATURE_SHAREDLIB_TEST STATE3 - SUCCESS"));
+        } finally {
+            if (twoAppsServer.isStarted()) {
+                twoAppsServer.stopServer();
+            }
+        }
     }
 
     @AfterClass
     public static void stopServer() throws Exception {
         try {
-            server.stopServer();
+            if (server != null && server.isStarted()) {
+                server.stopServer();
+            }
         } finally {
-            server.uninstallSystemFeature("testFeatureApi-1.0");
-            assertFalse("testFeatureApi-1.0.mf was not cleaned up",
-                        server.fileExistsInLibertyInstallRoot("lib/features/testFeatureApi-1.0.mf"));
-            server.uninstallSystemBundle("test.feature.api");
-            assertFalse("test.feature.api.jar was not cleaned up",
-                        server.fileExistsInLibertyInstallRoot("lib/test.feature.api.jar"));
+            stopServerAndUninstall(twoAppsServer != null ? twoAppsServer : server);
         }
     }
 }
