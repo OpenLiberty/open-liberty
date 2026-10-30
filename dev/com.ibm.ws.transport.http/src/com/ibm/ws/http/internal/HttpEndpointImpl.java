@@ -1326,7 +1326,13 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             // endpoint will no longer be accepted (CWWKO0220I: TCP Channel ***(-ssl) has stopped listening for
             // requests on host ****  (IPv6) port ****.).
             processHttpChainWork(false, true);
-            
+
+            if (useNetty) {
+                // NettyChain.stop() returns while the server channel is still closing. Wait for STOPPED so the
+                // port is really released and a resume that follows immediately does not find the chain STOPPING.
+                nettyChain.awaitStopped();
+                nettySecureChain.awaitStopped();
+            }
 
             // Check the state of the HTTP chains. The expectation is that the HTTP chains' states are NOT STARTED
             // (UNITIALIZED, DESTROYED, QUIESCED or STOPPED).
