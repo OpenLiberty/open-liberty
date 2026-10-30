@@ -10,10 +10,12 @@
 package io.openliberty.mcp.internal.fat.suite;
 
 import org.junit.ClassRule;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.mcp.internal.fat.introspector.IntrospectorMultiAppTest;
 import io.openliberty.mcp.internal.fat.isolation.MultiAppIsolationTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.BeanLifecycleTest;
@@ -57,10 +59,11 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
  * between repeat runs. It runs as a standalone flat entry in {@code FATSuite} after
  * this suite completes.
  *
- * <p>Test classes must not restart the server, with one exception:
- * {@link io.openliberty.mcp.internal.fat.protocol.ProtocolVersionBetaTest} restarts it with
- * {@code -Dcom.ibm.ws.beta.edition=true} to test beta-only behaviour. It restores the original
- * JVM options and restarts the server again in {@code @AfterClass}, so later tests see a non-beta server.
+ * <p>The whole suite is run twice: once on a normal runtime and once on a beta runtime
+ * ({@code -Dcom.ibm.ws.beta.edition=true}, see {@link BetaRepeatAction}). The server is started once per
+ * repeat, so test classes still must not restart it. A test class which only makes sense in one of the two
+ * repeats can be annotated with {@code @SkipForRepeat}, using {@link BetaRepeatAction#ID} to run it only on
+ * a normal runtime or {@code SkipForRepeat.NO_MODIFICATION} to run it only on a beta runtime.
  *
  * <p>{@link io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest} and
  * {@link io.openliberty.mcp.internal.fat.tool.NoParamNameTest} are also excluded.
@@ -97,7 +100,22 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
 })
 public class McpMainServerSuite {
 
+    private static final String SERVER_NAME = "mcp-server";
+
+    /**
+     * Suite that owns the lifecycle of the {@code mcp-server} Liberty server.
+     * The server is started and stopped once per repeat iteration.
+     *
+     * Tests run on both non-beta and beta runtimes.
+     */
+    public static ServerLifecycleRule serverLifecycle = new ServerLifecycleRule(SERVER_NAME);
+
+    /**
+     * The repeat must be the outer rule so that it is active when {@link #serverLifecycle} starts the server.
+     */
     @ClassRule
-    public static ServerLifecycleRule serverLifecycle = new ServerLifecycleRule("mcp-server");
+    public static RuleChain rules = RuleChain.outerRule(RepeatTests.withoutModification()
+                                                                   .andWith(new BetaRepeatAction()))
+                                             .around(serverLifecycle);
 
 }

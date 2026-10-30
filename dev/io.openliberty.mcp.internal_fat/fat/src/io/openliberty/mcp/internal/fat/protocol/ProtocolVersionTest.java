@@ -11,7 +11,6 @@ package io.openliberty.mcp.internal.fat.protocol;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
-import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_APPLICATION_JSON;
@@ -31,16 +30,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpRequest;
+import io.openliberty.mcp.internal.fat.suite.BetaRepeatAction;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
 
 /**
- *
+ * Tests the protocol version handling on a normal (non-beta) runtime. This class is skipped in the
+ * repeat which runs on a beta runtime, where the equivalent tests are in {@link ProtocolVersionBetaTest}.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(BetaRepeatAction.ID)
 public class ProtocolVersionTest {
 
     // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
@@ -173,28 +176,11 @@ public class ProtocolVersionTest {
 
     @Test
     public void testRejectsUnsupportedProtocolVersion() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "echo",
-                            "arguments": {
-                              "input": "Hello"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
-                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                             .requestProp(MCP_PROTOCOL_VERSION, "2022-02-02")
-                                                                             .requestProp(MCP_SESSION_ID, client.getSessionId())
-                                                                             .jsonBody(request)
-                                                                             .method("POST")
-                                                                             .expectCode(400)
-                                                                             .run(String.class);
+        String response = client.callMCPRaw(ECHO_REQUEST)
+                                .protocolVersion("2022-02-02")
+                                .expectedStatus(400)
+                                .run()
+                                .body();
 
         assertThat("Expected error message about invalid protocol version",
                    response, containsString("An unsupported MCP-Protocol-Version header was provided."));
@@ -207,28 +193,11 @@ public class ProtocolVersionTest {
      */
     @Test
     public void testRejectsBetaProtocolVersionOnNonBeta() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "echo",
-                            "arguments": {
-                              "input": "Hello"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
-                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                             .requestProp(MCP_PROTOCOL_VERSION, "2026-07-28")
-                                                                             .requestProp(MCP_SESSION_ID, client.getSessionId())
-                                                                             .jsonBody(request)
-                                                                             .method("POST")
-                                                                             .expectCode(400)
-                                                                             .run(String.class);
+        String response = client.callMCPRaw(ECHO_REQUEST)
+                                .protocolVersion("2026-07-28")
+                                .expectedStatus(400)
+                                .run()
+                                .body();
 
         assertThat("Expected error message about invalid protocol version",
                    response, containsString("An unsupported MCP-Protocol-Version header was provided."));
@@ -274,14 +243,10 @@ public class ProtocolVersionTest {
     @Test
     public void testAcceptsEachGaProtocolVersionHeaderOnNonBeta() throws Exception {
         for (String version : GA_VERSIONS) {
-            String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
-                                                                                 .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                                 .requestProp(MCP_PROTOCOL_VERSION, version)
-                                                                                 .requestProp(MCP_SESSION_ID, client.getSessionId())
-                                                                                 .jsonBody(ECHO_REQUEST)
-                                                                                 .method("POST")
-                                                                                 .expectCode(200)
-                                                                                 .run(String.class);
+            String response = client.callMCPRaw(ECHO_REQUEST)
+                                    .protocolVersion(version)
+                                    .run()
+                                    .body();
 
             JSONAssert.assertEquals("Unexpected response for MCP-Protocol-Version " + version, ECHO_RESPONSE, response, true);
         }
@@ -306,14 +271,11 @@ public class ProtocolVersionTest {
     @Test
     public void testRejectsNearMissesOfBetaProtocolVersionOnNonBeta() throws Exception {
         for (String version : NEAR_MISS_VERSIONS) {
-            String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
-                                                                                 .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                                 .requestProp(MCP_PROTOCOL_VERSION, version)
-                                                                                 .requestProp(MCP_SESSION_ID, client.getSessionId())
-                                                                                 .jsonBody(ECHO_REQUEST)
-                                                                                 .method("POST")
-                                                                                 .expectCode(400)
-                                                                                 .run(String.class);
+            String response = client.callMCPRaw(ECHO_REQUEST)
+                                    .protocolVersion(version)
+                                    .expectedStatus(400)
+                                    .run()
+                                    .body();
 
             assertThat("Expected error message about invalid protocol version for " + version,
                        response, containsString("An unsupported MCP-Protocol-Version header was provided."));
