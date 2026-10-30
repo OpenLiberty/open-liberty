@@ -38,7 +38,10 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import io.openliberty.security.rest.jwt.tai.RestJwtTAI;
+
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -50,13 +53,13 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
+@SkipForRepeat({ SkipForRepeat.EE9_OR_LATER_FEATURES })
 public class RestJwtNoConnectorFATTest {
 
     private static final Class<?> c = RestJwtNoConnectorFATTest.class;
 
     private static final String ISSUER = "https://localhost:9443/jwt";
     private static final String SHARED_KEY = "superSecretSharedKeyForRestJwtTesting123456";
-    private static final String MBEANS_ENDPOINT = "/IBMJMXConnectorREST/mbeans";
 
     // Anything that would only be logged if the restJwt bundle was started or the TAI was invoked
     private static final String TAI_TRACE_REGEX = "RestJwtTAI|restJwtTAI|io\\.openliberty\\.security\\.rest\\.jwt\\.tai";
@@ -94,7 +97,7 @@ public class RestJwtNoConnectorFATTest {
     public void testBearerRequestNotProcessedByRestJwtTai() throws Exception {
         String token = createJwtToken("adminUser", "liberty-admin");
 
-        HttpURLConnection conn = sendRequest(MBEANS_ENDPOINT, token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, token);
         assertEquals("Expected 404 because the REST connector application is not present", HttpURLConnection.HTTP_NOT_FOUND,
                      conn.getResponseCode());
 
@@ -119,7 +122,7 @@ public class RestJwtNoConnectorFATTest {
     }
 
     private static HttpURLConnection sendRequest(String path, String bearerToken) throws Exception {
-        URL url = new URL("https", server.getHostname(), server.getHttpDefaultSecurePort(), path);
+        URL url = new URL("https", server.getHostname(), server.getHttpSecondarySecurePort(), path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         if (conn instanceof HttpsURLConnection) {
             SSLContext sc = SSLContext.getInstance("TLS");

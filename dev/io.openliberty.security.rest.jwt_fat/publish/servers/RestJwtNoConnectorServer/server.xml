@@ -11,6 +11,13 @@
     <keyStore id="defaultKeyStore" password="Liberty" />
     <ltpa keysPassword="password" />
 
+    <!-- Route the admin REST connector (IBMJMXConnectorREST) through a dedicated admin endpoint/virtual host -->
+    <variable name="admin.virtual.host" value="admin_host"/>
+    <virtualHost id="admin_host" allowFromEndpointRef="adminEndpoint">
+        <hostAlias>*:${bvt.prop.HTTP_secondary.secure}</hostAlias>
+    </virtualHost>
+    <httpEndpoint id="adminEndpoint" host="*" httpPort="-1" httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
     <jwtConsumer id="JMXConnectorRESTConsumer"
                  issuer="https://localhost:9443/jwt"
                  sharedKey="superSecretSharedKeyForRestJwtTesting123456"

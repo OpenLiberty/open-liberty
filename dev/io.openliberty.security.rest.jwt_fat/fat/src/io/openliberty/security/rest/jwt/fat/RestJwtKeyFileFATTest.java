@@ -42,8 +42,11 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import io.openliberty.security.rest.jwt.tai.RestJwtTAI;
+
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -56,13 +59,13 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
+@SkipForRepeat({ SkipForRepeat.EE9_OR_LATER_FEATURES })
 public class RestJwtKeyFileFATTest {
 
     private static final Class<?> c = RestJwtKeyFileFATTest.class;
 
     private static final String ISSUER = "IBMJMXConnectorRESTIssuer";
     private static final String AUDIENCE = "IBMJMXConnectorREST";
-    private static final String MBEANS_ENDPOINT = "/IBMJMXConnectorREST/mbeans";
 
     @Server("RestJwtKeyFileServer")
     public static LibertyServer server;
@@ -133,7 +136,7 @@ public class RestJwtKeyFileFATTest {
     }
 
     private static HttpURLConnection sendRequest(String bearerToken) throws Exception {
-        URL url = new URL("https", server.getHostname(), server.getHttpDefaultSecurePort(), MBEANS_ENDPOINT);
+        URL url = new URL("https", server.getHostname(), server.getHttpSecondarySecurePort(), RestJwtTAI.PREFIX_REST_ENDPOINT);
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
         SSLContext sc = SSLContext.getInstance("TLS");
         sc.init(null, new TrustManager[] { new X509TrustManager() {
