@@ -19,13 +19,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EE6FeatureReplacementAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * Test to verify default values of tcpOptions.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat({
+    EE6FeatureReplacementAction.ID,
+    SkipForRepeat.EE8_FEATURES,
+    SkipForRepeat.EE9_FEATURES,
+    SkipForRepeat.EE10_FEATURES
+})
 public class TcpOptionsDefaultTests {
 
     private static final String CLASS_NAME = TcpOptionsDefaultTests.class.getName();
