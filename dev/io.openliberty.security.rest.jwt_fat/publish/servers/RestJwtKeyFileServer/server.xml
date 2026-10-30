@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="REST Admin JWT TAI FAT Server - public key read from a file">
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>restConnector-2.0</feature>
+        <feature>jwt-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="Liberty" />
+    <ltpa keysPassword="password" />
+
+    <!-- RS256 with no trustedAlias: the public key comes from the file named by jwkEndpointUrl.
+         The tests write the key to resources/security/jwtPublic.pem under the server directory. -->
+    <jwtConsumer id="JMXConnectorRESTConsumer"
+                 issuer="IBMJMXConnectorRESTIssuer"
+                 audiences="IBMJMXConnectorREST"
+                 jwkEndpointUrl="file:${server.config.dir}resources/security/jwtPublic.pem"
+                 signatureAlgorithm="RS256"
+                 clockSkew="1m" />
+
+    <authFilter id="defaultRestJwtAuthFilter">
+        <requestUrl id="defaultRestJwtRequestUrl" urlPattern="/IBMJMXConnectorREST/adminEndpoint" matchType="contains" />
+    </authFilter>
+
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="adminUser" password="password"/>
+        <user name="readerUser" password="password"/>
+        <group name="liberty-admin">
+            <member name="adminUser"/>
+        </group>
+        <group name="liberty-reader">
+            <member name="readerUser"/>
+        </group>
+    </basicRegistry>
+
+    <administrator-role group="liberty-admin" />
+    <reader-role group="liberty-reader" />
+</server>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="REST Admin JWT TAI negative FAT Server: jwt-1.0 without restConnector-2.0">
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- restConnector-2.0 is intentionally absent, so the restJwt-1.0 auto-feature must not be provisioned -->
+    <featureManager>
+        <feature>jwt-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="Liberty" />
+    <ltpa keysPassword="password" />
+
+    <jwtConsumer id="JMXConnectorRESTConsumer"
+                 issuer="https://localhost:9443/jwt"
+                 sharedKey="superSecretSharedKeyForRestJwtTesting123456"
+                 signatureAlgorithm="HS256"
+                 clockSkew="1m" />
+
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="adminUser" password="password"/>
+        <group name="liberty-admin">
+            <member name="adminUser"/>
+        </group>
+    </basicRegistry>
+</server>
