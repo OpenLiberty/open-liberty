@@ -499,6 +499,14 @@ public class TCKRunner {
             File attemptReports = new File(getResultsDir(), MVN_TARGET_FOLDER_PREFIX + getSuiteName() + "_" + FIRST_RUN_REPORTS + "_" + attempt);
             copyDirectory(getSureFireResultsDir(), attemptReports);
 
+            // Capture the state of the server JVM (threads and server introspectors, which include the application class loaders)
+            // while it is still in the failing state, to help find the root cause. The dump is collected with the server logs.
+            try {
+                server.serverDump("thread");
+            } catch (Exception e) {
+                Log.warning(c, "Unable to dump server " + getServerName() + " before re-running tests: " + e);
+            }
+
             // Restart the server. Errors and warnings in the logs of the server that is being replaced are not relevant
             Map<String, String> envVars = server.getLastStartEnvVars();
             try {
