@@ -23,6 +23,7 @@ src: \
     test-applications/MultipleServletsDifferentProviders.war/src,\
     test-applications/MultipleServletsDifferentRoles.war/src,\
     test-applications/MultipleServletsSimilarAnnotations.war/src,\
+    test-applications/OidcMultipartUpload.war/src,\
     test-applications/RedirectToOriginalResourceTruePromptNone.war/src,\
     test-applications/RequestScoped.war/src,\
     test-applications/SessionScoped.war/src,\
@@ -56,6 +57,7 @@ javac.target: 11
 
 -buildpath: \
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
+	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
 	io.openliberty.jakarta.security.3.0;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	com.ibm.ws.security.fat.common;version=latest,\
