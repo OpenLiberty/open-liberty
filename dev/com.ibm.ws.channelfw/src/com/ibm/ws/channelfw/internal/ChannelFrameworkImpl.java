@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2025 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.channelfw.internal;
 
@@ -137,10 +134,6 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      */
     private Map<Class<?>, Object> services = null;
 
-    /** Property name for the chain restart interval timer */
-    public static final String PROPERTY_CHAIN_START_RETRY_INTERVAL = "chainStartRetryInterval";
-    /** Property name for the chain start retry attempt counter */
-    public static final String PROPERTY_CHAIN_START_RETRY_ATTEMPTS = "chainStartRetryAttempts";
     /** Property name for the default chain quiesce timeout length */
     public static final String PROPERTY_CHAIN_QUIESCETIMEOUT = "chainQuiesceTimeout";
     /** Property name for the missing config warning message delay */
@@ -148,20 +141,6 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
     /** Alias used in metatype */
     public static final String PROPERTY_CONFIG_ALIAS = "channelfw";
 
-    /**
-     * Custom property configured in the framework for the length of time in
-     * milliseconds between chain start retries when a RetryableChannelException
-     * results from starting a chain, in milliseconds
-     */
-    protected long chainStartRetryInterval = 5000L;
-
-    /**
-     * Custom property configured in the framework for the number of chain start
-     * retries
-     * that can happen when a RetryableChannelException results from starting a
-     * chain.
-     */
-    protected int chainStartRetryAttempts = 60;
     /** Custom property for timed delay before warning about missing config in milliseconds */
     private long missingConfigWarning = 10000L;
     /** Property for the chain quiescetimeout to default to for various paths in milliseconds */
@@ -234,60 +213,6 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
     }
 
     /**
-     * Setter method for the interval of time between chain restart attempts.
-     *
-     * @param value
-     * @throws NumberFormatException
-     *                                   if the value is not a number or is less than zero
-     */
-    public void setChainStartRetryInterval(Object value) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Setting chain start retry interval [" + value + "]");
-        }
-        try {
-            long num = MetatypeUtils.parseLong(PROPERTY_CONFIG_ALIAS, PROPERTY_CHAIN_START_RETRY_INTERVAL, value, chainStartRetryInterval);
-            if (0L <= num) {
-                this.chainStartRetryInterval = num;
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Value is too low");
-                }
-            }
-        } catch (NumberFormatException nfe) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Value is not a number");
-            }
-        }
-    }
-
-    /**
-     * Setter method for the number of chain restart attempts.
-     *
-     * @param value
-     * @throws NumberFormatException
-     *                                   if the value is not a number or is less than zero
-     */
-    public void setChainStartRetryAttempts(Object value) throws NumberFormatException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Setting chain start retry attempts [" + value + "]");
-        }
-        try {
-            int num = MetatypeUtils.parseInteger(PROPERTY_CONFIG_ALIAS, PROPERTY_CHAIN_START_RETRY_ATTEMPTS, value, chainStartRetryAttempts);
-            if (-1 <= num) {
-                this.chainStartRetryAttempts = num;
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Value too low");
-                }
-            }
-        } catch (NumberFormatException nfe) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Vaue is not a number");
-            }
-        }
-    }
-
-    /**
      * Set the default chain quiesce timeout property from config.
      *
      * @param value
@@ -339,8 +264,6 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
             Tr.entry(tc, "setChannelFrameworkConfig: " + config);
         }
         if (config != null) {
-            setChainStartRetryAttempts(config.getChainStartRetryAttempts());
-            setChainStartRetryInterval(config.getChainStartRetryInterval());
             setDefaultChainQuiesceTimeout(config.getDefaultChainQuiesceTimeout());
             setMissingConfigWarning(config.getMissingConfigWarning());
         }
@@ -4233,26 +4156,6 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
      */
     public long getMissingConfigDelay() {
         return this.missingConfigWarning;
-    }
-
-    /**
-     * Return the maximum number of attempts that will be made to
-     * restart a chain when it fails to start.
-     *
-     * @return long
-     */
-    public long getChainStartRetryAttempts() {
-        return this.chainStartRetryAttempts;
-    }
-
-    /**
-     * Return the length of time which will be waiting between restarts
-     * of a chain after it fails to start.
-     *
-     * @return long
-     */
-    public long getChainStartRetryInterval() {
-        return this.chainStartRetryInterval;
     }
 
     /*
