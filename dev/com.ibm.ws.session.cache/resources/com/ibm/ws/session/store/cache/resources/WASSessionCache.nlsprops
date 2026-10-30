@@ -75,8 +75,8 @@ UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Set the value for the attribute be
 
 # do not translate: httpSessionCache, cacheManagerRef
 FALLBACK_LIBRARY_NOT_REGISTERED=SESN0313I: The fallback library for the httpSessionCache configuration was not registered because the {0} library service is not available.
-FALLBACK_LIBRARY_NOT_REGISTERED.explanation=The httpSessionCache configuration specifies cacheManagerRef, which uses a fallback library registration to satisfy a library dependency. The {0} library service was not available when the registration was attempted, so the registration was skipped.
-FALLBACK_LIBRARY_NOT_REGISTERED.useraction=No action is required unless the HTTP session cache fails to start. If it fails to start, verify the cache provider library configuration and check for related messages.
+FALLBACK_LIBRARY_NOT_REGISTERED.explanation=The httpSessionCache configuration specifies the cacheManagerRef attribute, which uses a fallback library registration to satisfy a library dependency. The specified library service was not available when the registration was attempted, so the registration was skipped.
+FALLBACK_LIBRARY_NOT_REGISTERED.useraction=No action is required unless the HTTP session cache does not start. If the session cache does not start, verify the cache provider library configuration and check for related messages.
 
 INTERNAL_SERVER_ERROR=Internal Server Error
 
