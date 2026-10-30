@@ -39,6 +39,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
@@ -53,6 +54,7 @@ import org.osgi.framework.BundleListener;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -85,6 +87,10 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.utils.KeyBasedLockStore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
+import com.ibm.ws.runtime.update.RuntimeUpdateListener;
+import com.ibm.ws.runtime.update.RuntimeUpdateManager;
+import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
+import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ApiType;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
@@ -93,18 +99,20 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.classloading.ClassTransformer;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
 import com.ibm.wsspi.classloading.ResourceProvider;
+import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.library.ApplicationExtensionLibrary;
 import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.logging.Introspector;
 
-@Component(service = { ClassLoadingService.class, LibertyClassLoadingService.class, ClassLoaderIdentifierService.class, Introspector.class },
+@Component(service = { ClassLoadingService.class, LibertyClassLoadingService.class, ClassLoaderIdentifierService.class, Introspector.class, RuntimeUpdateListener.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = "service.vendor=IBM")
-public class ClassLoadingServiceImpl implements LibertyClassLoadingService<LibertyLoader>, ClassLoaderIdentifierService, Introspector {
+public class ClassLoadingServiceImpl implements LibertyClassLoadingService<LibertyLoader>, ClassLoaderIdentifierService, Introspector, RuntimeUpdateListener {
     static final TraceComponent tc = Tr.register(ClassLoadingServiceImpl.class);
 
     private final Map<ClassLoader, StackTraceElement[]> leakDetectionMap = new ConcurrentHashMap<ClassLoader, StackTraceElement[]>();
@@ -120,11 +128,95 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         }
     });
     
+    /**
+     * Capture window: the FEATURE_BUNDLES_RESOLVED notification for the current UPDATE, or null.
+     *
+     * <p>Only one window is tracked. FeatureManager applies one feature change at a time, so
+     * windows are not expected to overlap. If a window is never closed (e.g. the update fails
+     * before FEATURE_BUNDLES_RESOLVED completes), the next UPDATE overwrites it and the
+     * abandoned data is dropped without a recycle. This is an accepted limitation.</p>
+     */
+    private volatile RuntimeUpdateNotification captureNotification = null;
+
+    /**
+     * ACLs whose gateway went UNRESOLVED during the current capture window.
+     * Used only to drive aclStore.remove(); app names come from capturedAppNames.
+     * Concurrent because the listener may add while the window is being closed.
+     */
+    private volatile Set<AppClassLoader> capturedAcls = null;
+
+    /**
+     * App names to recycle, collected directly from GCL.getOwnerAppNames() during
+     * the capture window. Replaces the delegate-expansion scan in runRecycleListener.
+     * Concurrent because the listener may add while the window is being closed.
+     */
+    private volatile Set<String> capturedAppNames = null;
+
     private final BundleContext bundleContext;
     private final CanonicalStore<ClassLoaderIdentity, AppClassLoader> aclStore = new CanonicalStore<ClassLoaderIdentity, AppClassLoader>();
     private final CanonicalStore<String, ThreadContextClassLoader> tcclStore = new CanonicalStore<String, ThreadContextClassLoader>();
     private final RegionDigraph digraph;
     private final ClassRedefiner redefiner;
+    /**
+     * Optional reference to the application recycle coordinator; used to recycle applications
+     * when a feature bundle is uninstalled. OPTIONAL/DYNAMIC to avoid an OSGi dependency cycle
+     * (com.ibm.ws.app.manager.lifecycle must not depend on com.ibm.ws.classloading).
+     */
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
+    protected volatile ApplicationRecycleCoordinator recycleCoordinator;
+
+    /**
+     * Captures the AppClassLoader whose gateway bundle went UNRESOLVED during a
+     * ProvisioningMode.UPDATE operation. Fires only while a capture window is open.
+     *
+     * <p>Normally there is one live AppClassLoader per gateway bundle: the bundle location
+     * is keyed on the ClassLoaderIdentity string. However, a recycled loader can linger in
+     * {@code appClassLoaders} until garbage collected (the bundle is reused), and child
+     * loaders (e.g. EAR modules) share their parent's gateway bundle. We therefore capture
+     * every match rather than stopping at the first.</p>
+     */
+    private final SynchronousBundleListener gatewayUnresolvedListener = new SynchronousBundleListener() {
+        @Override
+        public void bundleChanged(BundleEvent event) {
+            if (event.getType() != BundleEvent.UNRESOLVED) {
+                return;
+            }
+            if (captureNotification == null) {
+                return; // window not open
+            }
+            Bundle bundle = event.getBundle();
+            // classloaders also holds external bundles used by bundle add-on loaders;
+            // only the generated gateway bundles carry the marker header.
+            if (!classloaders.containsKey(bundle)
+                || !"true".equalsIgnoreCase(bundle.getHeaders("").get(GatewayBundleFactory.GATEWAY_BUNDLE_MARKER))) {
+                return; // not a gateway bundle
+            }
+            // Local copies: the window may be closed (fields nulled) concurrently.
+            Set<AppClassLoader> aclsToEvict = capturedAcls;
+            Set<String> appNames = capturedAppNames;
+            if (aclsToEvict == null || appNames == null) {
+                return; // window closed
+            }
+            synchronized (classloaders) {
+                // Collect app names from the reverse link on each GCL.
+                Set<GatewayClassLoader> gcls = classloaders.get(bundle);
+                if (gcls != null) {
+                    for (GatewayClassLoader gcl : gcls) {
+                        appNames.addAll(gcl.getOwnerAppNames());
+                    }
+                }
+                // Capture ACL instances (needed for aclStore.remove in runRecycleListener).
+                synchronized (appClassLoaders) {
+                    for (AppClassLoader acl : appClassLoaders) {
+                        if (bundle.equals(acl.getBundle())) {
+                            aclsToEvict.add(acl);
+                        }
+                    }
+                }
+            }
+        }
+    };
+
     private final BundleListener listener = new BundleListener() {
         @Override
         public void bundleChanged(BundleEvent event) {
@@ -224,6 +316,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         Bundle systemBundle = this.bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
         BundleContext systemContext = systemBundle.getBundleContext();
         systemContext.addBundleListener(listener);
+        systemContext.addBundleListener(gatewayUnresolvedListener);
     }
 
     @Deactivate
@@ -233,6 +326,11 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         Bundle systemBundle = this.bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
         BundleContext systemContext = systemBundle.getBundleContext();
         systemContext.removeBundleListener(listener);
+        systemContext.removeBundleListener(gatewayUnresolvedListener);
+        // Clear any open capture window so it does not carry into the next operation
+        captureNotification = null;
+        capturedAcls = null;
+        capturedAppNames = null;
         this.cleanupRememberedBundles();
         this.resourceProviders.clear();
     }
@@ -564,10 +662,22 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         };
     }
 
-    /** create a listener to remove a loader from the canonical store on library update */
+    /**
+     * Create a listener to remove a loader from the canonical store on library update.
+     * Also registers the shared-library loader in {@code appClassLoaders} so the
+     * UNRESOLVED capture callback can find it.
+     */
     private void listenForLibraryChanges(String libid, AppClassLoader acl) {
+        // Register in appClassLoaders so the introspector can list it and so the
+        // aclStore eviction in gatewayUnresolvedListener can capture the ACL instance.
+        synchronized (appClassLoaders) {
+            appClassLoaders.add(acl);
+        }
+        // Capture the identity at listener-creation time. The ACL may be GC'd by the time
+        // update() fires, but the identity is needed to determine whether to recycle an app.
+        final ClassLoaderIdentity identity = acl.getKey();
         // ensure this loader is removed from the canonical store when the library is updated
-        new WeakLibraryListener(libid, acl.getKey().getId(), acl, bundleContext) {
+        new WeakLibraryListener(libid, identity.getId(), acl, bundleContext) {
             @Override
             protected void update() {
                 AppClassLoader cl = get();
@@ -575,6 +685,19 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
                     aclStore.remove(cl);
                 }
                 deregister();
+
+                // E3b: a fileset on-disk change fires notifyListeners(false) via FilesetListener
+                // and reaches this update() callback. The gateway-UNRESOLVED capture
+                // (gatewayUnresolvedListener) is not involved, so we must push the recycle here.
+                // Only top-level module loaders represent a running application to recycle;
+                // shared-library loaders (domain "Shared Library" / SPI) are eviction-only.
+                if (isTopLevelAppDomain(identity.getDomain())) {
+                    String appName = extractAppName(identity.getId());
+                    ApplicationRecycleCoordinator coord = recycleCoordinator;
+                    if (coord != null) {
+                        coord.recycleApplications(Collections.singleton(appName));
+                    }
+                }
             }
         };
     }
@@ -897,6 +1020,134 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
                 out.println("    " + ste.toString());
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Called by {@link RuntimeUpdateManager} as each notification is created for an update.
+     * When a {@code FEATURE_BUNDLES_RESOLVED} notification arrives and the current operation is a
+     * ProvisioningMode.UPDATE (confirmed by the presence of an incomplete
+     * {@code FEATURE_UPDATES_COMPLETED} notification), this method opens a capture window and
+     * registers a completion listener that will run the transitive graph eviction and recycle
+     * call once FeatureManager has finished provisioning.</p>
+     */
+    @Override
+    public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
+        if (!RuntimeUpdateNotification.FEATURE_BUNDLES_RESOLVED.equals(notification.getName())) {
+            return; // only interested in FEATURE_BUNDLES_RESOLVED
+        }
+
+        // Confirm this is a ProvisioningMode.UPDATE, not a REFRESH.
+        // FEATURE_UPDATES_COMPLETED is only created for UPDATE operations.
+        RuntimeUpdateNotification fuc = updateManager.getNotification(RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED);
+        if (fuc == null || fuc.isDone()) {
+            return; // not an UPDATE operation, or already completed — nothing to do
+        }
+
+        // Open the capture window bound to this notification object.
+        // Publish both sets before opening the window.
+        capturedAcls = ConcurrentHashMap.<AppClassLoader> newKeySet();
+        capturedAppNames = ConcurrentHashMap.<String> newKeySet();
+        captureNotification = notification;
+
+        // Register the recycle listener; it fires synchronously on the FeatureManager thread
+        // when featureBundlesResolved.setResult(true) is called at the end of provisioning.
+        notification.onCompletion(new CompletionListener<Boolean>() {
+            @Override
+            public void successfulCompletion(Future<Boolean> future, Boolean result) {
+                runRecycleListener();
+            }
+
+            @Override
+            public void failedCompletion(Future<Boolean> future, Throwable t) {
+                // Close the window without recycling on failure path
+                captureNotification = null;
+                capturedAcls = null;
+                capturedAppNames = null;
+            }
+        });
+    }
+
+    /**
+     * Fires at {@code FEATURE_BUNDLES_RESOLVED} completion. Closes the capture window, computes
+     * the transitive set of affected {@link AppClassLoader}s, evicts them from {@code aclStore},
+     * and submits a single {@code recycleApplications} call for the affected application names.
+     *
+     * <p>Must not propagate any exception — a thrown exception would abort
+     * {@code FeatureManager.update()}.</p>
+     */
+    private void runRecycleListener() {
+        try {
+            // Step 1: close window.
+            captureNotification = null;
+
+            // Step 2: take the captured ACLs and app names.
+            Set<AppClassLoader> aclsToEvict = capturedAcls;
+            capturedAcls = null;
+            Set<String> appsToRecycle = capturedAppNames;
+            capturedAppNames = null;
+
+            if ((aclsToEvict == null || aclsToEvict.isEmpty()) && (appsToRecycle == null || appsToRecycle.isEmpty())) {
+                return; // nothing to do
+            }
+
+            if (FrameworkState.isStopping()) {
+                return; // server is going down; skip recycling
+            }
+
+            // Step 3: evict captured ACLs from aclStore.
+            // App names are already in appsToRecycle (populated by the listener).
+            // No delegate-expansion scan needed.
+            if (aclsToEvict != null) {
+                for (AppClassLoader acl : aclsToEvict) {
+                    if (!aclStore.remove(acl) && tc.isDebugEnabled()) {
+                        // Expected for a lingering loader that was already replaced in aclStore.
+                        Tr.debug(tc, "Loader not removed from aclStore (already evicted or replaced): " + acl.getKey());
+                    }
+                }
+            }
+
+            // Step 4: recycle applications.
+            if (appsToRecycle != null && !appsToRecycle.isEmpty()) {
+                ApplicationRecycleCoordinator coord = recycleCoordinator;
+                if (coord != null) {
+                    coord.recycleApplications(appsToRecycle);
+                } else if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "recycleCoordinator is absent; cannot recycle apps after feature update: " + appsToRecycle);
+                }
+            }
+        } catch (Throwable t) {
+            // Must not propagate — this runs on the FeatureManager thread inside setResult().
+            Tr.event(tc, "Unexpected error in feature-update recycle listener", t);
+        }
+    }
+
+    /**
+     * Returns {@code true} for {@link ClassLoaderIdentity} domains that represent a running
+     * application module whose app name can be recycled: {@code "WebModule"}, {@code "EJBModule"},
+     * {@code "ClientModule"}, {@code "ConnectorModule"}, {@code "SpringModule"}.
+     *
+     * <p>Returns {@code false} for {@code "EARApplication"} (handled separately by id),
+     * {@code "Shared Library"}, {@code "Shared Library SPI"}, and {@code "Thread Context"}.</p>
+     */
+    static boolean isTopLevelAppDomain(String domain) {
+        return "WebModule".equals(domain)
+            || "EJBModule".equals(domain)
+            || "ClientModule".equals(domain)
+            || "ConnectorModule".equals(domain)
+            || "SpringModule".equals(domain);
+    }
+
+    /**
+     * Extracts the application name from a {@link ClassLoaderIdentity#getId()} string.
+     *
+     * <p>For WAR, EJB, RAR, EAR sub-modules, and Spring applications the id is
+     * {@code "appName#moduleName"}. Split on {@code #} and take the first segment.</p>
+     */
+    static String extractAppName(String id) {
+        int hash = id.indexOf('#');
+        return hash >= 0 ? id.substring(0, hash) : id;
     }
 
     private void addAppExtensionLibs(ClassLoaderConfiguration config) {

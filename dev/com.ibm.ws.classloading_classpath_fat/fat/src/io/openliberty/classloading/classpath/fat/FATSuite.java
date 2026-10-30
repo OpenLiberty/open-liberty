@@ -12,6 +12,13 @@
  *******************************************************************************/
 package io.openliberty.classloading.classpath.fat;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -24,6 +31,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.topology.impl.LibertyServer;
 import dummy.ra.DummyME;
 import dummy.ra.DummyResourceAdapter;
 import io.openliberty.classloading.classpath.test.client1.ClientLib1;
@@ -53,6 +61,8 @@ import io.openliberty.classloading.classpath.test.war1.ClassPathDefaultLoaderSer
 import io.openliberty.classloading.classpath.test.war2.ClassPathDefaultLoaderServletTest2;
 import io.openliberty.classloading.classpath.test.war3.ClassPathDefaultLoaderServletTest3;
 import io.openliberty.classloading.classpath.util.TestUtils;
+import io.openliberty.classloading.dynamic.feature.lifecycle.test.app.DynamicFeatureLifecycleTestServlet;
+import io.openliberty.classloading.dynamic.feature.unrelated.test.app.DynamicFeatureUnrelatedServlet;
 import io.openliberty.classloading.feature.message.test.app.ParentLastFeatureMessageTestServlet;
 import io.openliberty.classloading.lib.path.test.app.LibPathTestServlet;
 import io.openliberty.classloading.library.precedence.test.app.LibPrecedenceBeforeAppTestServlet;
@@ -60,6 +70,7 @@ import io.openliberty.classloading.library.test.app.LibraryUserTestServlet;
 import io.openliberty.classloading.libs.util.CodeSourceUtil;
 import io.openliberty.classloading.parent.library.inconsistent.test.app.ParentLibraryInconsistentTestServlet;
 import io.openliberty.classloading.platform.delegation.test.app.PlatformDelegationTestServlet;
+import io.openliberty.classloading.shared.feature.lib.LibraryFeatureApiImplState1;
 import io.openliberty.nativelib.test.app.NativeLibraryTestServlet;
 import io.openlibery.classloading.override.library.test.app.OverrideLibraryTestServlet;
 import io.openlibery.classloading.override.library.test.app.a.AOverride;
@@ -108,7 +119,13 @@ import test.bundle.api4.c.API_C4;
     LibraryPrecedenceBeforeAppTests.class,
     LibraryPrecedenceAfterAppTests.class,
     NativeLibraryTest.class,
-    LibraryServiceTests.class
+    LibraryServiceTests.class,
+    DynamicFeatureLifecycleTest.class,
+    DynamicFeatureSharedLibTest.class,
+    DynamicFeatureLibJarRemovedTest.class,
+    DynamicFeatureGlobalSharedLibTest.class,
+    DynamicFeatureEarTest.class,
+    DynamicFeatureMultiGatewayTest.class,
 })
 public class FATSuite {
     static final String CLASSPATH_TEST_WAR_LOADER_SERVER = "classpathTestWarLoader";
@@ -128,6 +145,13 @@ public class FATSuite {
     static final String LIB_PRECEDENCE_AFTER_APP_SERVER = "libPrecedenceAfterAppTest";
     static final String OVERRIDE_LIB_WAR_TEST_SERVER = "overrideLibWarTest";
     static final String LIBRARY_USER_TEST_SERVER = "libraryUserTest";
+    static final String DYNAMIC_FEATURE_LIFECYCLE_TEST_SERVER = "dynamicFeatureLifecycleTest";
+    static final String DYNAMIC_FEATURE_SHARED_LIB_TEST_SERVER = "dynamicFeatureSharedLibTest";
+    static final String DYNAMIC_FEATURE_SHARED_LIB_TWO_APPS_TEST_SERVER = "dynamicFeatureSharedLibTwoAppsTest";
+    static final String DYNAMIC_FEATURE_GLOBAL_SHARED_LIB_TEST_SERVER = "dynamicFeatureGlobalSharedLibTest";
+    static final String DYNAMIC_FEATURE_EAR_TEST_SERVER = "dynamicFeatureEarTest";
+    static final String DYNAMIC_FEATURE_MULTI_GATEWAY_TEST_SERVER = "dynamicFeatureMultiGatewayTest";
+    static final String DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST_SERVER = "dynamicFeatureLibJarRemovedTest";
 
     // ##### ARCHIVE NAMES #####
     // WAR archive names
@@ -142,6 +166,131 @@ public class FATSuite {
     public static final String TEST_LIB_PRECEDENCE_APP = "testLibPrecedence";
     public static final String TEST_OVERRIDE_LIB_APP = "testOverrideLib";
     public static final String TEST_LIBRARY_USER_APP = "testLibraryUser";
+    public static final String TEST_DYNAMIC_FEATURE_APP = "testDynamicFeatureApp";
+    public static final String TEST_DYNAMIC_FEATURE_APP2 = "testDynamicFeatureApp2";
+    // Second copy of the dynamic feature WAR deployed without a library reference; used to assert it is NOT restarted
+    public static final String TEST_DYNAMIC_FEATURE_UNRELATED_APP = "testUnrelatedFeatureApp";
+    public static final String TEST_DYNAMIC_FEATURE_SHARED_LIB = "testSharedFeatureLib";
+    public static final String TEST_DYNAMIC_FEATURE_SHARED_LIB2 = "testSharedFeatureLib2";
+    public static final String TEST_DYNAMIC_FEATURE_EAR_APP = "testDynamicFeatureEar";
+
+    public static final String DYNAMIC_FEATURE_SERVLET_PATH =
+        TEST_DYNAMIC_FEATURE_APP + "/DynamicFeatureLifecycleTestServlet";
+    public static final String DYNAMIC_FEATURE_APP2_SERVLET_PATH =
+        TEST_DYNAMIC_FEATURE_APP2 + "/DynamicFeatureLifecycleTestServlet";
+
+    public static final List<String> BASE_FEATURES =
+        Collections.unmodifiableList(Arrays.asList("servlet-4.0", "componenttest-1.0"));
+    public static final List<String> BASE_PLUS_DYNAMIC_FEATURE =
+        Collections.unmodifiableList(Arrays.asList("servlet-4.0", "componenttest-1.0", "testFeatureApi-1.0"));
+
+    // ##### DYNAMIC FEATURE TEST HELPERS #####
+
+    /**
+     * Installs the dynamic feature and its supporting OSGi bundle into the Liberty installation root.
+     * Must be called in {@code @BeforeClass} before {@code server.startServer()}.
+     *
+     * @param server the Liberty server instance
+     * @throws Exception if installation fails or files are not found
+     */
+    public static void installTestFeatureAndBundle(LibertyServer server) throws Exception {
+        server.installSystemFeature("testFeatureApi-1.0");
+        assertTrue("testFeatureApi-1.0.mf should have been copied to lib/features",
+                   server.fileExistsInLibertyInstallRoot("lib/features/testFeatureApi-1.0.mf"));
+
+        server.installSystemBundle("test.feature.api");
+        assertTrue("test.feature.api.jar should have been copied to lib",
+                   server.fileExistsInLibertyInstallRoot("lib/test.feature.api.jar"));
+    }
+
+    /**
+     * Uninstalls the dynamic feature and its supporting OSGi bundle from the Liberty installation root.
+     * Safely checks for existence before uninstallation, making cleanup idempotent.
+     *
+     * @param server the Liberty server instance
+     * @throws Exception if uninstallation fails
+     */
+    public static void uninstallTestFeatureAndBundle(LibertyServer server) throws Exception {
+        if (server.fileExistsInLibertyInstallRoot("lib/features/testFeatureApi-1.0.mf")) {
+            server.uninstallSystemFeature("testFeatureApi-1.0");
+            assertFalse("testFeatureApi-1.0.mf was not cleaned up",
+                        server.fileExistsInLibertyInstallRoot("lib/features/testFeatureApi-1.0.mf"));
+        }
+        if (server.fileExistsInLibertyInstallRoot("lib/test.feature.api.jar")) {
+            server.uninstallSystemBundle("test.feature.api");
+            assertFalse("test.feature.api.jar was not cleaned up",
+                        server.fileExistsInLibertyInstallRoot("lib/test.feature.api.jar"));
+        }
+    }
+
+    /**
+     * Stops the specified Liberty server if running and cleanly uninstalls the dynamic test
+     * feature and bundle from the Liberty installation root.
+     *
+     * @param server the Liberty server instance
+     * @param ignoredLogMessages optional message prefixes to ignore during server shutdown
+     * @throws Exception if server stop or uninstallation fails
+     */
+    public static void stopServerAndUninstall(LibertyServer server, String... ignoredLogMessages) throws Exception {
+        try {
+            if (server != null && server.isStarted()) {
+                if (ignoredLogMessages != null && ignoredLogMessages.length > 0) {
+                    server.stopServer(ignoredLogMessages);
+                } else {
+                    server.stopServer();
+                }
+            }
+        } finally {
+            if (server != null) {
+                uninstallTestFeatureAndBundle(server);
+            }
+        }
+    }
+
+    /**
+     * Asserts that the specified application was stopped (CWWKZ0009I) and then restarted (CWWKZ0001I/CWWKZ0003I),
+     * and that the stop occurred before the restart.
+     *
+     * @param appName the application name to check
+     * @param state the lifecycle state description for failure messages
+     * @param messages the log messages captured during configuration update
+     */
+    public static void assertAppStoppedThenStarted(String appName, String state, List<String> messages) {
+        int stopped = -1;
+        int started = -1;
+        for (int i = 0; i < messages.size(); i++) {
+            String line = messages.get(i);
+            if (!line.matches(".*\\b" + appName + "\\b.*")) continue;
+            if (line.contains("CWWKZ0009I") && stopped < 0) stopped = i;
+            else if ((line.contains("CWWKZ0001I") || line.contains("CWWKZ0003I")) && started < 0) started = i;
+        }
+        assertTrue(state + ": " + appName + " was not stopped (CWWKZ0009I)", stopped >= 0);
+        assertTrue(state + ": " + appName + " was not started again (CWWKZ0001I/0003I)", started >= 0);
+        assertTrue(state + ": " + appName + " started before it stopped", stopped < started);
+    }
+
+    /**
+     * Overload for tests where the default application name is {@link #TEST_DYNAMIC_FEATURE_APP}.
+     *
+     * @param state the lifecycle state description for failure messages
+     * @param messages the log messages captured during configuration update
+     */
+    public static void assertAppStoppedThenStarted(String state, List<String> messages) {
+        assertAppStoppedThenStarted(TEST_DYNAMIC_FEATURE_APP, state, messages);
+    }
+
+    /**
+     * Counts the total number of start/stop messages (CWWKZ0001I, CWWKZ0003I, CWWKZ0009I)
+     * for a given application in the server logs. Uses word boundaries to avoid partial matches.
+     *
+     * @param server the Liberty server instance
+     * @param appName the application name
+     * @return the number of matching log messages
+     * @throws Exception if log search fails
+     */
+    public static int countAppMessages(LibertyServer server, String appName) throws Exception {
+        return server.findStringsInLogs("CWWKZ000[139]I.*\\b" + appName + "\\b").size();
+    }
 
     // EJB archive names
     public static final String TEST_EJB1 = "testEjb1";
@@ -226,6 +375,11 @@ public class FATSuite {
     static final WebArchive TEST_OVERRIDE_LIB_WAR;
     static final WebArchive TEST_LIB_PRECEDENCE_WAR;
     static final WebArchive TEST_LIBRARY_USER_WAR;
+    static final WebArchive TEST_DYNAMIC_FEATURE_WAR;
+    static final WebArchive TEST_DYNAMIC_FEATURE_APP2_WAR;
+    static final WebArchive TEST_DYNAMIC_FEATURE_UNRELATED_WAR;
+    static final JavaArchive TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR;
+    static final JavaArchive TEST_DYNAMIC_FEATURE_SHARED_LIB2_JAR;
 
     // EJB archives
     static final JavaArchive TEST_EJB1_JAR;
@@ -264,6 +418,7 @@ public class FATSuite {
 
     // EAR archives
     static final EnterpriseArchive TEST_CLASS_PATH_EAR;
+    static final EnterpriseArchive TEST_DYNAMIC_FEATURE_EAR;
     static {
         try {
 
@@ -374,6 +529,29 @@ public class FATSuite {
             TEST_LIBRARY_USER_WAR = ShrinkHelper.buildDefaultApp(TEST_LIBRARY_USER_APP + ".war",
                                                                    LibraryUserTestServlet.class.getPackage().getName());
 
+            // Single consolidated WAR: contains the servlet and the in-WAR impl classes.
+            // Used across all dynamic feature lifecycle tests.
+            TEST_DYNAMIC_FEATURE_WAR = ShrinkHelper.buildDefaultApp(TEST_DYNAMIC_FEATURE_APP + ".war",
+                                                                     DynamicFeatureLifecycleTestServlet.class.getPackage().getName(),
+                                                                     "io.openliberty.classloading.dynamic.feature.test.app");
+
+            // Independent application with no dependency on the dynamic feature or its shared library.
+            // Used to assert the unrelated app is NOT restarted when only the feature or library changes.
+            TEST_DYNAMIC_FEATURE_UNRELATED_WAR = ShrinkHelper.buildDefaultApp(TEST_DYNAMIC_FEATURE_UNRELATED_APP + ".war",
+                                                                              DynamicFeatureUnrelatedServlet.class.getPackage().getName());
+
+            TEST_DYNAMIC_FEATURE_APP2_WAR = ShrinkHelper.buildDefaultApp(TEST_DYNAMIC_FEATURE_APP2 + ".war",
+                                                                     DynamicFeatureLifecycleTestServlet.class.getPackage().getName(),
+                                                                     "io.openliberty.classloading.dynamic.feature.test.app");
+
+            // Shared library JAR: contains the four implementation classes for Tests 2 and 3.
+            TEST_DYNAMIC_FEATURE_SHARED_LIB_JAR = ShrinkHelper.buildJavaArchive(TEST_DYNAMIC_FEATURE_SHARED_LIB + ".jar",
+                                                                     LibraryFeatureApiImplState1.class.getPackage().getName());
+
+            // Second shared library JAR: contains distinct implementation classes for multi-gateway test (S4).
+            TEST_DYNAMIC_FEATURE_SHARED_LIB2_JAR = ShrinkHelper.buildJavaArchive(TEST_DYNAMIC_FEATURE_SHARED_LIB2 + ".jar",
+                                                                     "io.openliberty.classloading.shared.feature.lib2");
+
             TEST_RESOURCE_ADAPTOR_JAR = ShrinkHelper.buildJavaArchive(TEST_RESOURCE_ADAPTOR + ".jar",
                                                                       TestResourceAdapter.class.getPackage().getName()).
                             add(TEST_LIB17_JAR, "/", ZipExporter.class);
@@ -386,6 +564,11 @@ public class FATSuite {
             TEST_DUMMY_RAR = ShrinkHelper.buildDefaultRar(TEST_DUMMY_RA, DummyResourceAdapter.class.getPackage().getName());
 
             TEST_CLIENT1_JAR = ShrinkHelper.buildJavaArchive(TEST_CLIENT1 + ".jar", ClientLib1.class.getPackage().getName());
+
+            String testDynamicFeatureEarFileName = TEST_DYNAMIC_FEATURE_EAR_APP + ".ear";
+            TEST_DYNAMIC_FEATURE_EAR = ShrinkWrap.create(EnterpriseArchive.class, testDynamicFeatureEarFileName)
+                            .addAsModule(TEST_DYNAMIC_FEATURE_WAR)
+                            .addAsModule(TEST_DYNAMIC_FEATURE_APP2_WAR);
 
             String testClassPathEarFileName = TEST_CLASS_PATH_APP + ".ear";
             TEST_CLASS_PATH_EAR = ShrinkWrap.create(EnterpriseArchive.class, testClassPathEarFileName)

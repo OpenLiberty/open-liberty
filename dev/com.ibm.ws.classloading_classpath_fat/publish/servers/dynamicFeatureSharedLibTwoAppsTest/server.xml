@@ -1,0 +1,41 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>testFeatureApi-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!--
+        Scenario S2: Single shared library referenced by two distinct applications.
+        When testFeatureApi-1.0 is removed, both applications must be recycled.
+    -->
+    <library id="sharedFeatureLib">
+        <fileset dir="${server.config.dir}/sharedLibs" includes="testSharedFeatureLib.jar"/>
+    </library>
+
+    <webApplication id="testDynamicFeatureApp" location="testDynamicFeatureApp.war" contextRoot="testDynamicFeatureApp">
+        <classloader commonLibraryRef="sharedFeatureLib"/>
+    </webApplication>
+
+    <webApplication id="testDynamicFeatureApp2" location="testDynamicFeatureApp2.war" contextRoot="testDynamicFeatureApp2">
+        <classloader commonLibraryRef="sharedFeatureLib"/>
+    </webApplication>
+
+    <!-- Unrelated app: does not reference the shared library; must not be restarted -->
+    <webApplication location="testUnrelatedFeatureApp.war"/>
+
+    <javaPermission
+        codeBase="${server.config.dir}/apps/testDynamicFeatureApp.war"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+    <javaPermission
+        codeBase="${server.config.dir}/apps/testDynamicFeatureApp2.war"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+    <javaPermission
+        codeBase="${server.config.dir}/sharedLibs/testSharedFeatureLib.jar"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+</server>
