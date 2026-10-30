@@ -508,6 +508,14 @@ public class H2StreamProcessor {
                             try {
                                 processPINGFrame();
                             } catch (Http2Exception e) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "processNextFrame: verifyReadFrameSequence threw " + e.getClass().getSimpleName()
+                                                + " on stream " + myID + " state " + state
+                                                + " frameType " + frameType + " direction " + direction
+                                                + " isReadFrame " + currentFrame.isReadFrame()
+                                                + " errorCode " + e.getErrorString()
+                                                + " msg: " + e.getMessage());
+                                }
                                 if (addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
                                     addFrame = ADDITIONAL_FRAME.GOAWAY;
                                     addFrameException = e;
@@ -556,6 +564,12 @@ public class H2StreamProcessor {
                         processWindowUpdateFrame();
                     }
                 } catch (Http2Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "processNextFrame: processWindowUpdateFrame threw " + e.getClass().getSimpleName()
+                                     + " on stream " + myID + " state " + state
+                                     + " errorCode " + e.getErrorString()
+                                     + " msg: " + e.getMessage());
+                    }
                     if (addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
                         if (e.isConnectionError()) {
                             addFrame = ADDITIONAL_FRAME.GOAWAY;
@@ -878,7 +892,10 @@ public class H2StreamProcessor {
         FrameWindowUpdate castFrame = (FrameWindowUpdate) currentFrame;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "processWindowUpdateFrame: streamID: " + castFrame.getStreamId() + " desired increment: " + castFrame.getWindowSizeIncrement());
+            Tr.debug(tc, "processWindowUpdateFrame: streamID: " + castFrame.getStreamId()
+                         + " desired increment: " + castFrame.getWindowSizeIncrement()
+                         + " isReadFrame: " + castFrame.isReadFrame()
+                         + " currentStreamWindowLimit: " + streamWindowUpdateWriteLimit);
         }
 
         if (myID == 0) {
@@ -1617,7 +1634,7 @@ public class H2StreamProcessor {
                              data.getPayloadLength(), myID);
 
             synchronized (this) {
-                streamWindowUpdateWriteLimit -= currentFrame.getPayloadLength();
+                streamWindowUpdateWriteLimit -= data.getPayloadLength();
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1770,7 +1787,6 @@ public class H2StreamProcessor {
 
                 // Create a fresh FrameData from our defensive copy
                 FrameData retryFrame = pending.createFrameForRetry(myID);
-                this.currentFrame = retryFrame;
                 WriteResult result = performDataWrite(retryFrame);
 
                 if (result == WriteResult.COMPLETE) {
@@ -1875,10 +1891,7 @@ public class H2StreamProcessor {
             fce.setConnectionError(false);
 
             FrameRstStream rst = new FrameRstStream(myID, fce.getErrorCode(), false);
-            synchronized (this) {
-                this.currentFrame = rst;
-            }
-            attemptFrameWrite();
+            attemptFrameWrite(rst);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "handleWriteTimeout: stream: " + myID + " sent RST_STREAM due to timeout");
@@ -1966,6 +1979,12 @@ public class H2StreamProcessor {
     private void verifyReadFrameSequence() throws ProtocolException, StreamClosedException {
 
         if (!currentFrame.isReadFrame()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "verifyReadFrameSequence: frame " + currentFrame.getFrameType()
+                             + " on stream " + myID + " has direction WRITE (not READ)"
+                             + " - this is a protocol error. Frame details: streamId=" + currentFrame.getStreamId()
+                             + " frameDirection=" + (currentFrame.isWriteFrame() ? "WRITE" : "READ/UNKNOWN"));
+            }
             throw new ProtocolException("Write frame was given for Read frame processing");
         }
 
@@ -2594,10 +2613,13 @@ public class H2StreamProcessor {
      * @return WriteResult indicating COMPLETE, DEFERRED, or FAILED
      */
     private WriteResult attemptFrameWrite() throws FlowControlException, Http2Exception {
+        return attemptFrameWrite(this.currentFrame);
+    }
+
+    private WriteResult attemptFrameWrite(Frame currentFrame) throws FlowControlException, Http2Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "attemptFrameWrite entry: stream: " + myID);
         }
-        Frame currentFrame = this.currentFrame;
 
         // Check if stream is closed
         if (!currentFrame.getFrameType().equals(FrameTypes.GOAWAY) && isStreamClosed()) {
