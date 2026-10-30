@@ -10,6 +10,7 @@
 package io.openliberty.transport.http.keepalive.servlet;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletException;
@@ -30,6 +31,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * <p>The servlet echoes the {@code req} query parameter so a test can tell
  * which response it is reading.
+ *
+ * <p>A POST reads and discards its body before answering. The
+ * {@code Expect: 100-continue} tests rely on that, since a container only
+ * sends {@code 100 Continue} once the application is ready for the body.
  */
 @WebServlet("/KeepAliveServlet")
 public class KeepAliveServlet extends HttpServlet {
@@ -45,5 +50,16 @@ public class KeepAliveServlet extends HttpServlet {
         response.setContentLength(body.length);
         response.getOutputStream().write(body);
         response.getOutputStream().flush();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        InputStream in = request.getInputStream();
+        byte[] buffer = new byte[256];
+        while (in.read(buffer) >= 0) {
+            // discard the body
+        }
+        doGet(request, response);
     }
 }

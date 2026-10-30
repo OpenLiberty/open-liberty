@@ -89,6 +89,9 @@ public class KeepAliveEnforcementTest {
      */
     private static final int STAYS_OPEN_TIMEOUT_MS = 1500;
 
+    /** Body sent by the Expect: 100-continue tests, after the server has answered 100 Continue. */
+    private static final String EXPECT_CONTINUE_BODY = "a=1&b=2";
+
     /** HTTP/2 client connection preface (RFC 7540 section 3.5). */
     private static final String H2_PREFACE = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 
@@ -390,6 +393,90 @@ public class KeepAliveEnforcementTest {
 
             assertTrue("The server must close the connection after response 2 without answering pipelined request 3",
                        connection.isClosedByServer(RESPONSE_TIMEOUT_MS));
+        }
+    }
+
+    // ---------------------------------------------------------------------
+    // Expect: 100-continue
+    // ---------------------------------------------------------------------
+
+    /**
+     * Control test. With the default configuration a request with
+     * {@code Expect: 100-continue} gets {@code 100 Continue}, then the final
+     * response, and the socket stays open.
+     */
+    @Test
+    public void defaultConfig_expect100Continue_staysOpen() throws Exception {
+        try (RawConnection connection = new RawConnection()) {
+            assertContinueThenFinalResponse(connection, false);
+        }
+    }
+
+    /**
+     * With {@code keepAliveEnabled=false} the {@code 100 Continue} must not close
+     * the socket, because the client has not sent its body yet. The final
+     * response then carries {@code close} and the server closes the socket.
+     *
+     * <p>The {@code Connection} header of the interim {@code 100} itself is not
+     * asserted. The channel framework adds {@code close} to it and the Netty
+     * handler leaves it alone. Both are harmless, since the connection only
+     * closes after the final response.
+     */
+    @Test
+    public void keepAliveDisabled_expect100Continue_finalCloses() throws Exception {
+        setKeepAliveOptions(false, null);
+
+        try (RawConnection connection = new RawConnection()) {
+            assertContinueThenFinalResponse(connection, true);
+        }
+    }
+
+    /**
+     * Same as above for {@code maxKeepAliveRequests=1}, where the request with
+     * {@code Expect: 100-continue} is itself the last allowed request.
+     */
+    @Test
+    public void maxKeepAliveRequestsOne_expect100Continue_finalCloses() throws Exception {
+        setKeepAliveOptions(null, 1);
+
+        try (RawConnection connection = new RawConnection()) {
+            assertContinueThenFinalResponse(connection, true);
+        }
+    }
+
+    /**
+     * Sends a POST with {@code Expect: 100-continue} and no body, expects an
+     * interim {@code 100 Continue} that does not close the socket, then sends the
+     * body and checks the final response. The {@code Connection} header of the
+     * {@code 100} is logged but not asserted, see the callers.
+     *
+     * @param expectClose true when the final response must carry {@code Connection: close}
+     *                    and the server must close the socket, false when both must not happen
+     */
+    private void assertContinueThenFinalResponse(RawConnection connection, boolean expectClose) throws IOException {
+        connection.sendPostExpectingContinue(1, EXPECT_CONTINUE_BODY);
+
+        RawResponse interim = connection.readResponseHead();
+        LOG.info("expect100 interim response:\n" + interim);
+        assertEquals("The server must answer Expect: 100-continue with 100 Continue", 100, interim.statusCode);
+        assertFalse("The server must not close the connection after 100 Continue, the client has not sent its body yet",
+                    connection.isClosedByServer(STAYS_OPEN_TIMEOUT_MS));
+
+        connection.writeRaw(EXPECT_CONTINUE_BODY);
+        RawResponse finalResponse = connection.readResponse();
+        LOG.info("expect100 final response:\n" + finalResponse);
+        assertEquals("The final response should succeed", 200, finalResponse.statusCode);
+        assertTrue("The final response should be for request 1: " + finalResponse.body.trim(),
+                   finalResponse.body.contains("req=1"));
+
+        if (expectClose) {
+            assertTrue("The final response must carry Connection: close", finalResponse.isConnectionClose());
+            assertTrue("The server must close the connection after the final response",
+                       connection.isClosedByServer(RESPONSE_TIMEOUT_MS));
+        } else {
+            assertFalse("The final response must not carry Connection: close", finalResponse.isConnectionClose());
+            assertFalse("The server must leave the connection open",
+                        connection.isClosedByServer(STAYS_OPEN_TIMEOUT_MS));
         }
     }
 
@@ -861,6 +948,22 @@ public class KeepAliveEnforcementTest {
                 requests.append("\r\n");
             }
             out.write(requests.toString().getBytes(StandardCharsets.ISO_8859_1));
+            out.flush();
+        }
+
+        /**
+         * Sends only the head of a POST to the test servlet with {@code Expect: 100-continue}
+         * and a {@code Content-Length} for {@code body}, but not the body itself. The caller
+         * sends the body with {@link #writeRaw(String)} after the server answers {@code 100 Continue}.
+         */
+        void sendPostExpectingContinue(int requestNumber, String body) throws IOException {
+            String request = "POST " + SERVLET_PATH + "?req=" + requestNumber + " HTTP/1.1\r\n"
+                             + "Host: " + server.getHostname() + ':' + server.getHttpDefaultPort() + "\r\n"
+                             + "Content-Type: application/x-www-form-urlencoded\r\n"
+                             + "Content-Length: " + body.length() + "\r\n"
+                             + "Expect: 100-continue\r\n"
+                             + "\r\n";
+            out.write(request.getBytes(StandardCharsets.ISO_8859_1));
             out.flush();
         }
 
