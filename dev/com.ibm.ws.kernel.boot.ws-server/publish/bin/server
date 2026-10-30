@@ -1367,7 +1367,7 @@ serverCmd()
       rc=$?
     fi
 
-  elif [ "${uname}" = OS/390 ] && [ -n "${WLP_ZOS_PROCEDURE}" ] && [ -e "${WLP_INSTALL_DIR}/lib/native/zos/s390x/bbgzcsl" ]; then
+  elif [ "${uname}" = "OS/390" ] && [ -n "${WLP_ZOS_PROCEDURE}" ] && [ -e "${WLP_INSTALL_DIR}/lib/native/zos/s390x/bbgzcsl" ]; then
       # Start the STC procedure. (Start the server)
       if [ -n "${WLP_ZOS_JOBNAME}" ]; then
         "${WLP_INSTALL_DIR}/lib/native/zos/s390x/bbgzcsl" "${WLP_ZOS_PROCEDURE}" "${SERVER_NAME}" "${X_PID_FILE}" "${WLP_ZOS_JOBNAME}" "$@"
