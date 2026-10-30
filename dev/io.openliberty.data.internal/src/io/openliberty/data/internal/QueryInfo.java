@@ -3471,8 +3471,8 @@ public abstract class QueryInfo {
     }
 
     /**
-     * Identifies conflicts between the QueryOptions or Fetching annotation(s)
-     * and other incompatible annotations present on the repository method.
+     * Identifies conflicts between other repository method annotations and the
+     * QueryOptions or Fetching annotation(s).
      * This method is only invoked when there are known to be annotations on the
      * repository method that would be incompatible with QueryOptions or Fetching.
      *

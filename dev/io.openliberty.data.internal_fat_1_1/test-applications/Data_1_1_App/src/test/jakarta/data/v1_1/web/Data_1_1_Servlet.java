@@ -65,6 +65,7 @@ import jakarta.data.restrict.Restriction;
 import jakarta.data.spi.expression.literal.NumericLiteral;
 import jakarta.inject.Inject;
 import jakarta.persistence.LockTimeoutException;
+import jakarta.persistence.Persistence;
 import jakarta.persistence.PersistenceException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -81,6 +82,8 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import test.jakarta.data.v1_1.web.Fraction.Decimal;
 import test.jakarta.data.v1_1.web.Fraction.Decimal.Type;
+import test.jakarta.data.v1_1.web.Giver.Category;
+import test.jakarta.data.v1_1.web.Grantee.Focus;
 import test.jakarta.data.v1_1.web.Mail.RecipientAddress;
 import test.jakarta.data.v1_1.web.Mail.SenderAddress;
 
@@ -103,6 +106,9 @@ public class Data_1_1_Servlet extends FATServlet {
 
     @Inject
     Fractions fractions;
+
+    @Inject
+    Grants grants;
 
     @Inject
     Mailbox mailbox;
@@ -144,6 +150,53 @@ public class Data_1_1_Servlet extends FATServlet {
                 fractionsToAdd.add(f);
             }
         fractions.supply(fractionsToAdd);
+
+        // TODO enable once EclipseLink issue tracked by #34901 is fixed
+        if (!isHibernatePersistence())
+            return;
+        Giver nih = Giver.of("National Institutes of Health", Category.GOVERNMENT);
+        Giver raf = Giver.of("Rochester Area Foundation", Category.FOUNDATION);
+        Giver mhs = Giver.of("Minnesota Historial Society", Category.FOUNDATION);
+        grants.registerGiver(nih);
+        grants.registerGiver(raf);
+        grants.registerGiver(mhs);
+
+        Grantee rctc = Grantee.of("Rochester Community and Technical College",
+                                  Focus.EDUCATION);
+        Grantee qhnc = Grantee.of("Quarry Hill Nature Center",
+                                  Focus.ENVIRONMENT);
+        Grantee fpr = Grantee.of("Family Promise Rochester",
+                                 Focus.HOUSING);
+        Grantee ochc = Grantee.of("History Center of Olmsted County",
+                                  Focus.EDUCATION);
+        Grantee mayo = Grantee.of("Mayo Clinic",
+                                  Focus.HEALTH);
+        grants.registerRecipient(rctc);
+        grants.registerRecipient(qhnc);
+        grants.registerRecipient(fpr);
+        grants.registerRecipient(ochc);
+        grants.registerRecipient(mayo);
+
+        grants.issue(Grant.of(1001L, "Workforce Development Scholarships",
+                              175000, true, nih, rctc,
+                              List.of(LocalDate.of(2026, 6, 30),
+                                      LocalDate.of(2026, 12, 31))));
+        grants.issue(Grant.of(1002L, "Oak Savanna Restoration",
+                              1200, false, raf, qhnc,
+                              List.of(LocalDate.of(2026, 9, 30))));
+        grants.issue(Grant.of(1003L, "Stoppel Farmstead Restoration Project",
+                              14500, false, mhs, ochc,
+                              List.of(LocalDate.of(2026, 9, 30),
+                                      LocalDate.of(2026, 12, 31))));
+        grants.issue(Grant.of(1004L, "Rural Health Initiative",
+                              95000, true, raf, mayo,
+                              List.of(LocalDate.of(2026, 6, 30),
+                                      LocalDate.of(2026, 12, 31))));
+        grants.issue(Grant.of(1005L, "Clinical and Translational Science Award",
+                              48200000, true, nih, mayo,
+                              List.of(LocalDate.of(2026, 3, 31),
+                                      LocalDate.of(2026, 9, 30),
+                                      LocalDate.of(2026, 12, 31))));
     }
 
     /**
@@ -1253,6 +1306,54 @@ public class Data_1_1_Servlet extends FATServlet {
                     throw x;
             }
         }
+    }
+
+    /**
+     * Use a repository method annotated with both {@code @Fetching} and
+     * {@code @QueryOptions(entityGraph=...)} to verify that the two mechanisms
+     * combine: the {@code @Fetching} annotation eagerly loads the {@code giver}
+     * association and the entity graph eagerly loads the {@code recipient}
+     * association, while the {@code reportingDates} element collection remains
+     * lazy because neither mechanism requests it.
+     */
+    @Test
+    public void testFetchingAddedToQueryOptionEntityGraph() {
+        // TODO enable once EclipseLink issue tracked by #34901 is fixed
+        if (!isHibernatePersistence())
+            return;
+
+        // Grant 1003: MHS -> History Center of Olmsted County
+        Grant g = grants.withRecipientAndReportingDates(1003L)
+                        .orElseThrow();
+
+        assertEquals(1003L,
+                     g.id);
+        assertEquals("Stoppel Farmstead Restoration Project",
+                     g.title);
+        assertEquals(14500,
+                     g.amount);
+        assertEquals(false,
+                     g.renewable);
+
+        // recipient was eagerly loaded by the entity graph
+        assertEquals("History Center of Olmsted County",
+                     g.recipient.name);
+        assertEquals(Grantee.Focus.EDUCATION,
+                     g.recipient.focus);
+
+        // reportingDates was eagerly loaded by @Fetching
+        assertEquals(List.of(LocalDate.of(2026, 9, 30),
+                             LocalDate.of(2026, 12, 31)),
+                     g.reportingDates);
+
+        // giver was not requested by @Fetching or the entity graph;
+        // PersistenceUtil.isLoaded is the reliable way to check this because
+        // accessing a public field on a lazy @ManyToOne proxy returns null
+        // rather than raising LazyInitializationException (Hibernate only
+        // intercepts initialization through bytecode-enhanced getters, not
+        // direct public field reads)
+        assertEquals(false,
+                     Persistence.getPersistenceUtil().isLoaded(g, "giver"));
     }
 
     /**
