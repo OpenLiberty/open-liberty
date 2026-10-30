@@ -62,11 +62,15 @@ public class ClientServlet1 extends HttpServlet {
 
         String appName = request.getParameter("app");
         String methodName = request.getParameter("method");
+        String servicePort = request.getParameter("servicePort");
+        if (servicePort == null || servicePort.isEmpty()) {
+            throw new ServletException("Required parameter 'servicePort' is missing");
+        }
 
         String result = "";
         if (appName.equals("policyAttachmentsService1")) {
             try {
-                String service = "http://localhost:8091/policyAttachmentsService1/HelloService1?wsdl";
+                String service = "http://localhost:" + servicePort + "/policyAttachmentsService1/HelloService1?wsdl";
                 QName serviceName = new QName(
                                 "http://service1.policyattachments.ws.ibm.com/",
                                 "HelloService1");
@@ -84,11 +88,14 @@ public class ClientServlet1 extends HttpServlet {
                 writer.println(result);
                 System.out.println(result);
             } catch (Exception e) {
+                System.out.println("WSAT-DEBUG ClientServlet1 service1 exception: " + e);
+                for (StackTraceElement s : e.getStackTrace()) { System.out.println("  at " + s); }
+                Throwable c = e.getCause(); if (c != null) { System.out.println("Caused by: " + c); for (StackTraceElement s : c.getStackTrace()) { System.out.println("  at " + s); } }
                 writer.println(e.getMessage());
             }
         } else if (appName.equals("policyAttachmentsService2")) {
             try {
-                String service = "http://localhost:8091/policyAttachmentsService2/HelloService2?wsdl";
+                String service = "http://localhost:" + servicePort + "/policyAttachmentsService2/HelloService2?wsdl";
                 QName serviceName = new QName(
                                 "http://service2.policyattachments.ws.ibm.com/",
                                 "HelloService2");
@@ -106,11 +113,14 @@ public class ClientServlet1 extends HttpServlet {
                 writer.println(result);
                 System.out.println(result);
             } catch (Exception e) {
+                System.out.println("WSAT-DEBUG ClientServlet1 service2 exception: " + e);
+                for (StackTraceElement s : e.getStackTrace()) { System.out.println("  at " + s); }
+                Throwable c = e.getCause(); if (c != null) { System.out.println("Caused by: " + c); for (StackTraceElement s : c.getStackTrace()) { System.out.println("  at " + s); } }
                 writer.println(e.getMessage());
             }
         } else if (appName.equals("policyAttachmentsService3")) {
             try {
-                String service = "http://localhost:8091/policyAttachmentsService3/HelloService3?wsdl";
+                String service = "http://localhost:" + servicePort + "/policyAttachmentsService3/HelloService3?wsdl";
                 QName serviceName = new QName(
                                 "http://service3.policyattachments.ws.ibm.com/",
                                 "HelloService3");
@@ -128,6 +138,9 @@ public class ClientServlet1 extends HttpServlet {
                 writer.println(result);
                 System.out.println(result);
             } catch (Exception e) {
+                System.out.println("WSAT-DEBUG ClientServlet1 service3 exception: " + e);
+                for (StackTraceElement s : e.getStackTrace()) { System.out.println("  at " + s); }
+                Throwable c = e.getCause(); if (c != null) { System.out.println("Caused by: " + c); for (StackTraceElement s : c.getStackTrace()) { System.out.println("  at " + s); } }
                 writer.println(e.getMessage());
             }
         } else {

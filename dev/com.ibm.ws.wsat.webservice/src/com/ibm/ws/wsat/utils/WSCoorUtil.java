@@ -241,11 +241,19 @@ public class WSCoorUtil {
         return result;
     }
 
-    /*
+    /**
      * Returns the status of the wsat:ATTransaction policy for the message being processed:
-     * AssertionStatus.NULL - no policy present
-     * AssertionStatus.TRUE - policy present but marked optional
-     * AssertionStatus.FALSE - policy present and required
+     * <ul>
+     *   <li>{@link AssertionStatus#NULL} - no WS-AT policy is present, or policy cannot be determined
+     *       (e.g. no Endpoint on the exchange, no EffectivePolicy found, or no WSDL metadata). It is a deliberate
+     *       implementation choice to treat "cannot determine" identically to "no assertion".</li>
+     *   <li>{@link AssertionStatus#TRUE} - WS-AT policy is present and marked optional.</li>
+     *   <li>{@link AssertionStatus#FALSE} - WS-AT policy is present and required.</li>
+     * </ul>
+     *
+     * @param msg the message being processed
+     * @param isServer true if processing on the server side, false on the client side
+     * @return the assertion status
      */
     public static AssertionStatus isOptional(Message msg, boolean isServer) {
         AssertionStatus result = AssertionStatus.NULL;
