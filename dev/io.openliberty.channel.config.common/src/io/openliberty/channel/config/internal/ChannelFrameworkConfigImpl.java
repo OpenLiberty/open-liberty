@@ -27,7 +27,7 @@ import io.openliberty.channel.config.ChannelFrameworkConfig;
 
 /*
  * This class represents the `channelfw` configuration for the Channel Framework. Currently, only the chainQuiesceTimeout is
- * necessary for NettyFrameworkImpl to access. However, the other three properties were inlcuded for completeness.
+ * necessary for NettyFrameworkImpl to access. However, the other properties were inlcuded for completeness.
  *
  * Elements of this class are adapated from CHFWBundle and ChannelFrameworkImpl from the 'com.ibm.ws.channelfw' bundle.
  */
@@ -43,10 +43,6 @@ public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
                                                          "ChannelFramework",
                                                          "io.openliberty.channel.config.internal.resources.ChannelConfigMessages");
 
-    /** Property name for the chain restart interval timer */
-    public final String PROPERTY_CHAIN_START_RETRY_INTERVAL = "chainStartRetryInterval";
-    /** Property name for the chain start retry attempt counter */
-    public final String PROPERTY_CHAIN_START_RETRY_ATTEMPTS = "chainStartRetryAttempts";
     /** Property name for the default chain quiesce timeout length */
     public final String PROPERTY_CHAIN_QUIESCETIMEOUT = "chainQuiesceTimeout";
     /** Property name for the missing config warning message delay */
@@ -57,20 +53,6 @@ public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
     /** Default chain quiesce timeout value in milliseconds (must match metatype.xml default) */
     private static final long DEFAULT_CHAIN_QUIESCE_TIMEOUT = 30000L;
 
-    /**
-     * Custom property configured in the framework for the length of time in
-     * milliseconds between chain start retries when a RetryableChannelException
-     * results from starting a chain, in milliseconds
-     */
-    private long chainStartRetryInterval = 5000L;
-
-    /**
-     * Custom property configured in the framework for the number of chain start
-     * retries
-     * that can happen when a RetryableChannelException results from starting a
-     * chain.
-     */
-    private int chainStartRetryAttempts = 60;
     /** Custom property for timed delay before warning about missing config in milliseconds */
     private long missingConfigWarning = 10000L;
     /** Property for the chain quiescetimeout to default to for various paths in milliseconds */
@@ -126,75 +108,13 @@ public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Processing config", cfwConfiguration);
         }
-        Object value = cfwConfiguration.get(PROPERTY_CHAIN_START_RETRY_ATTEMPTS);
-        if (null != value) {
-            setChainStartRetryAttempts(value);
-        }
-        value = cfwConfiguration.get(PROPERTY_CHAIN_START_RETRY_INTERVAL);
-        if (null != value) {
-            setChainStartRetryInterval(value);
-        }
-        value = cfwConfiguration.get(PROPERTY_CHAIN_QUIESCETIMEOUT);
+        Object value = cfwConfiguration.get(PROPERTY_CHAIN_QUIESCETIMEOUT);
         if (null != value) {
             setDefaultChainQuiesceTimeout(value);
         }
         value = cfwConfiguration.get(PROPERTY_MISSING_CONFIG_WARNING);
         if (null != value) {
             setMissingConfigWarning(value);
-        }
-    }
-
-    /**
-     * Setter method for the interval of time between chain restart attempts.
-     *
-     * @param value
-     * @throws NumberFormatException
-     *                                   if the value is not a number or is less than zero
-     */
-    private void setChainStartRetryInterval(Object value) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Setting chain start retry interval [" + value + "]");
-        }
-        try {
-            long num = MetatypeUtils.parseLong(PROPERTY_CONFIG_ALIAS, PROPERTY_CHAIN_START_RETRY_INTERVAL, value, chainStartRetryInterval);
-            if (0L <= num) {
-                this.chainStartRetryInterval = num;
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Value is too low");
-                }
-            }
-        } catch (NumberFormatException nfe) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Value is not a number");
-            }
-        }
-    }
-
-    /**
-     * Setter method for the number of chain restart attempts.
-     *
-     * @param value
-     * @throws NumberFormatException
-     *                                   if the value is not a number or is less than zero
-     */
-    private void setChainStartRetryAttempts(Object value) throws NumberFormatException {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Setting chain start retry attempts [" + value + "]");
-        }
-        try {
-            int num = MetatypeUtils.parseInteger(PROPERTY_CONFIG_ALIAS, PROPERTY_CHAIN_START_RETRY_ATTEMPTS, value, chainStartRetryAttempts);
-            if (-1 <= num) {
-                this.chainStartRetryAttempts = num;
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Value too low");
-                }
-            }
-        } catch (NumberFormatException nfe) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Vaue is not a number");
-            }
         }
     }
 
@@ -294,28 +214,6 @@ public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
         return missingConfigWarning;
     }
 
-    /**
-     * Return the maximum number of attempts that will be made to
-     * restart a chain when it fails to start.
-     *
-     * @return long
-     */
-    @Override
-    public long getChainStartRetryAttempts() {
-        return chainStartRetryAttempts;
-    }
-
-    /**
-     * Return the length of time which will be waiting between restarts
-     * of a chain after it fails to start.
-     *
-     * @return long
-     */
-    @Override
-    public long getChainStartRetryInterval() {
-        return chainStartRetryInterval;
-    }
-
     /*
      * Query the default chain quiesce timeout to use.
      *
@@ -330,8 +228,6 @@ public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ChannelFrameworkConfigImpl [");
-        sb.append(PROPERTY_CHAIN_START_RETRY_ATTEMPTS).append("=").append(chainStartRetryAttempts).append(", ");
-        sb.append(PROPERTY_CHAIN_START_RETRY_INTERVAL).append("=").append(chainStartRetryInterval).append(", ");
         sb.append(PROPERTY_CHAIN_QUIESCETIMEOUT).append("=").append(chainQuiesceTimeout).append(", ");
         sb.append(PROPERTY_MISSING_CONFIG_WARNING).append("=").append(missingConfigWarning);
         sb.append("]");
