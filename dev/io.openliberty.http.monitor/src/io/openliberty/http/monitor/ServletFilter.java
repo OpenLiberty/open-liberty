@@ -20,7 +20,9 @@ import com.ibm.websphere.monitor.annotation.Monitor;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.servlet.error.ServletErrorReport;
+import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
@@ -179,13 +181,31 @@ public class ServletFilter implements Filter {
 
 			resolveNetworkProtocolInfo(httpServletRequest.getProtocol(), builder);
 
-			builder.withServerName(httpServletRequest.getServerName());
+			builder.withServerName(getRoutingServerName(httpServletRequest));
 			builder.withServerPort(httpServletRequest.getServerPort());
 		} else {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, String.format("Expected an HttpServletRequest, instead got [%s].",servletRequest.getClass().toString()));
 			}
 		}
+	}
+
+	/**
+	 * The server name used to select the virtual host: never an unapproved $WSSN that a client chose, so
+	 * the server address attribute stays bounded, and reading it does not mark the response for
+	 * "Cache-Control: no-store" as getServerName() would.
+	 *
+	 * @param request
+	 * @return the routing server name; getServerName() when the request is not a web container request
+	 */
+	private static String getRoutingServerName(HttpServletRequest request) {
+		if (request instanceof SRTServletRequest) {
+			IRequest iRequest = ((SRTServletRequest) request).getIRequest();
+			if (iRequest != null) {
+				return WebContainer.getRoutingHost(iRequest);
+			}
+		}
+		return request.getServerName();
 	}
 
 	/**

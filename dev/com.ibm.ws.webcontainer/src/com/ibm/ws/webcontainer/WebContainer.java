@@ -757,7 +757,7 @@ public abstract class WebContainer extends BaseContainer {
         return vhostKey.toString();
     }
 
-    private String getRoutingHost(IRequest req) {
+    public static String getRoutingHost(IRequest req) {
         if (req instanceof IRequestExtended) {
             HttpInboundConnection conn = ((IRequestExtended) req).getHttpInboundConnection();
             if (conn instanceof HttpInboundConnectionExtended) {
