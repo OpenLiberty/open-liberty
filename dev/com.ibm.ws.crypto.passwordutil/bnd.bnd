@@ -62,6 +62,6 @@ instrument.disabled: true
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	org.mockito:mockito-core;version=4.11.0, \
     org.mockito:mockito-inline;version=4.11.0, \
-    net.bytebuddy:byte-buddy;version=1.17.8, \
-    net.bytebuddy:byte-buddy-agent;version=1.17.8, \
+    net.bytebuddy:byte-buddy;version=1.18.10, \
+    net.bytebuddy:byte-buddy-agent;version=1.18.10, \
 	com.ibm.ws.logging;version=latest
