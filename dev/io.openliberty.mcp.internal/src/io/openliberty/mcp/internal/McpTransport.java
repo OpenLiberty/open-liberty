@@ -90,7 +90,7 @@ public class McpTransport {
         try {
             version = readProtocolVersionHeader();
         } catch (NoSuchElementException e) {
-            String supportedValues = Arrays.stream(McpProtocolVersion.values())
+            String supportedValues = Arrays.stream(McpProtocolVersion.availableValues())
                                            .map(McpProtocolVersion::getVersion)
                                            .collect(Collectors.joining(", "));
             String excpetionMesaage = Tr.formatMessage(tc, "unsupported.mcp.http.version", supportedValues);

@@ -36,12 +36,19 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
+import io.openliberty.mcp.internal.fat.suite.BetaRepeatAction;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 
+/**
+ * Skipped on the beta runtime repeat: this test does not depend on the protocol version, and each server dump
+ * takes about a minute, so repeating it adds about three minutes to the build.
+ */
 @RunWith(FATRunner.class)
 @Mode(Mode.TestMode.LITE)
+@SkipForRepeat(BetaRepeatAction.ID)
 public class IntrospectorMultiAppTest {
 
     private static final String BASIC_TOOLS = "BasicTools";

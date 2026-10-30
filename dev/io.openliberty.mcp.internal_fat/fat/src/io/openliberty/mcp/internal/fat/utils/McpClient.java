@@ -589,6 +589,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         private boolean anyStatus = false;
         private String mcpPath;
         private String sessionIdOverride;
+        private String protocolVersionOverride;
         private String basicAuthUsername;
         private String basicAuthPassword;
 
@@ -624,6 +625,15 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         }
 
         /**
+         * Override the {@code MCP-Protocol-Version} header for this single call only.
+         * Useful for testing how the server handles unsupported or beta protocol versions.
+         */
+        public RawCall protocolVersion(String protocolVersion) {
+            this.protocolVersionOverride = protocolVersion;
+            return this;
+        }
+
+        /**
          * Override the Basic Auth credentials for this single call only.
          * Use when the call must be made on an existing session but with different credentials,
          * e.g. testing that a cross-user request is rejected.
@@ -651,7 +661,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
             HttpRequest.Builder builder = HttpRequest.newBuilder()
                             .uri(URI.create(url))
                             .header(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                            .header(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
+                            .header(MCP_PROTOCOL_VERSION, protocolVersionOverride != null ? protocolVersionOverride : VALUE_MCP_PROTOCOL_VERSION)
                             .header("Content-Type", VALUE_APPLICATION_JSON)
                             .POST(HttpRequest.BodyPublishers.ofString(jsonRequestBody));
 

@@ -46,6 +46,8 @@ import componenttest.topology.impl.LibertyServerFactory;
  * <p>The configured server is started before the MCP FAT suite runs and stopped
  * afterward, even if the suite fails.
  *
+ * <p>If the suite is being repeated with {@link BetaRepeatAction}, the server is started as a beta runtime.
+ *
  * <p>When the server has the {@code ssl-1.0} feature installed, startup waits
  * for the SSL port to open.
  *
@@ -136,6 +138,10 @@ public class ServerLifecycleRule implements TestRule {
     protected void before() throws Throwable {
         isRunning = true;
         server = LibertyServerFactory.getLibertyServer(serverName, testClass);
+        if (BetaRepeatAction.isActive()) {
+            // Must happen here: fetching the server above recreates its directory, which discards any earlier jvm.options changes
+            BetaRepeatAction.applyTo(server);
+        }
         server.startServer();
 
         if (serverInstalledSsl()) {
