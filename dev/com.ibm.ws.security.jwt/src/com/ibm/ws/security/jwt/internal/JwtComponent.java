@@ -40,6 +40,7 @@ import com.ibm.websphere.kernel.server.ServerInfoMBean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.JWKProvider;
@@ -53,6 +54,8 @@ import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 public class JwtComponent implements JwtConfig {
 
     private static final TraceComponent tc = Tr.register(JwtComponent.class);
+
+    private static boolean issuedBetaMessage = false;
 
     private String issuer = null;
     private String issuerUrl = null;
@@ -181,7 +184,7 @@ public class JwtComponent implements JwtConfig {
         loadJweConfigOptions(props);
 
         if (isJwkCapableSigAlgorithm()) {
-            initializeJwkProvider(this);
+            initializeJwkProvider();
         }
 
         // expiresInSeconds wins if present
@@ -191,7 +194,25 @@ public class JwtComponent implements JwtConfig {
             valid = valid * 3600;
         }
 
-        checkWorkloadIdentityClaimConflicts();
+        if (isRunningBetaMode()) {
+            checkIfJwtOutlivesJwk();
+            checkWorkloadIdentityClaimConflicts();
+        }
+    }
+
+    private void checkIfJwtOutlivesJwk() {
+        if (!isJwkEnabled) {
+            return;
+        }
+
+        // jwkRotationTime is in milliseconds; valid is in seconds.
+        // A signing key stays in the JWK set for jwkMaxKeys rotation periods.
+        // If that window < token lifetime, tokens can outlive their signing key.
+        long keyWindowInSeconds = (jwkRotationTime / 1000L) * jwkMaxKeys;
+        if (keyWindowInSeconds < valid) {
+            long jwkRotationTimeInMinutes = jwkRotationTime / 60000L;
+            Tr.warning(tc, "JWK_KEY_COVERAGE_WINDOW_TOO_SHORT", new Object[] { issuer, jwkRotationTimeInMinutes, jwkMaxKeys, valid });
+        }
     }
 
     private void checkWorkloadIdentityClaimConflicts() {
@@ -200,22 +221,22 @@ public class JwtComponent implements JwtConfig {
         }
 
         if (workloadIdentityClaim.equals("iss") && issuerUrl != null) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER, issuerUrl, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER, issuerUrl, workloadIdentityClaim, JwtUtils.CFG_KEY_ISSUER });
+            throw new IllegalStateException(msg);
         } else if (workloadIdentityClaim.equals("aud") && audiences != null) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES, audiences, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES, audiences, workloadIdentityClaim, JwtUtils.CFG_KEY_AUDIENCES });
+            throw new IllegalStateException(msg);
         } else if (workloadIdentityClaim.equals("scope") && scope != null) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE, scope, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE, scope, workloadIdentityClaim, JwtUtils.CFG_KEY_SCOPE });
+            throw new IllegalStateException(msg);
         } else if (workloadIdentityClaim.equals("jti") && jti) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI, jti, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI, jti, workloadIdentityClaim, JwtUtils.CFG_KEY_JTI });
+            throw new IllegalStateException(msg);
         }
 
         if (claims != null && claims.contains(workloadIdentityClaim)) {
-            String msg = String.format("The [%s] JSON Web Token (JWT) builder configuration specifies both the workloadIdentityClaim attribute with a value of [%s] and the %s attribute with a value of [%s]. The JWT builder will set the [%s] claim to the workload identity and the %s attribute will be ignored.", issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS, claims, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS);
-            Tr.warning(tc, msg);
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG", new Object[] { issuer, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS, claims, workloadIdentityClaim, JwtUtils.CFG_KEY_CLAIMS });
+            throw new IllegalStateException(msg);
         }
     }
 
@@ -226,17 +247,10 @@ public class JwtComponent implements JwtConfig {
         return (KeyAlgorithmChecker.isRSAlgorithm(sigAlg) || KeyAlgorithmChecker.isESAlgorithm(sigAlg));
     }
 
-    private void initializeJwkProvider(JwtConfig jwtConfig) {
-
-        if (jwtConfig == null) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "No config object found");
-            }
-            return;
-        }
-        if (jwtConfig.isJwkEnabled()) {
-            jwkProvider = new JWKProvider(jwtConfig.getJwkSigningKeySize(), jwtConfig.getSignatureAlgorithm(),
-                    jwtConfig.getJwkRotationTime(), jwtConfig.getJwkMaxKeys());
+    private void initializeJwkProvider() {
+        if (isJwkEnabled()) {
+            jwkProvider = new JWKProvider(getJwkSigningKeySize(), getSignatureAlgorithm(),
+                    getJwkRotationTime(), getJwkMaxKeys());
         }
     }
 
@@ -414,18 +428,15 @@ public class JwtComponent implements JwtConfig {
         return jwkProvider != null ? jwkProvider.getJWK() : null;
     }
 
-    @Override
-    public long getJwkRotationTime() {
+    private long getJwkRotationTime() {
         return jwkRotationTime;
     }
 
-    @Override
-    public int getJwkSigningKeySize() {
+    private int getJwkSigningKeySize() {
         return jwkSigningKeySize;
     }
 
-    @Override
-    public int getJwkMaxKeys() {
+    private int getJwkMaxKeys() {
         return jwkMaxKeys;
     }
 
@@ -527,6 +538,18 @@ public class JwtComponent implements JwtConfig {
     @Override
     public long getNbfOffsetTime() {
         return nbfOffsetTime;
+    }
+
+    private boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class BuilderImpl for the first time.");
+                issuedBetaMessage = true;
+            }
+            return true;
+        }
     }
 
 }
