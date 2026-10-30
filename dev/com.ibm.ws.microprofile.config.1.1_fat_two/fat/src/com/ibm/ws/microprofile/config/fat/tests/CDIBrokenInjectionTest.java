@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.fat.tests;
 
@@ -46,7 +43,7 @@ public class CDIBrokenInjectionTest extends FATServletClient {
 
     // Don't repeat against mpConfig > 1.4 since the error messages changed. New similar tests are in io.openliberty.microprofile.config.2.0.internal_fat bucket
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat("brokenCDIConfigServer", MicroProfileActions.MP12, MicroProfileActions.MP33);
+    public static RepeatTests r = MicroProfileActions.repeat("brokenCDIConfigServer", MicroProfileActions.MP12_EE7, MicroProfileActions.MP33);
 
     @Server("brokenCDIConfigServer")
     public static LibertyServer server;

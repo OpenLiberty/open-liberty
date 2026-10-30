@@ -13,7 +13,7 @@ IBM-API-Package: \
  org.eclipse.microprofile.rest.client.spi; type="stable"
 IBM-ShortName: mpRestClient-1.2
 Subsystem-Name: MicroProfile Rest Client 1.2
--features=com.ibm.websphere.appserver.mpConfig-1.3; ibm.tolerates:="1.4", \
+-features=io.openliberty.microprofile.internal.mpConfig-1.3; ibm.tolerates:="1.4", \
   io.openliberty.mpCompatible-0.0, \
   com.ibm.websphere.appserver.jsonp-1.1, \
   com.ibm.websphere.appserver.javax.annotation-1.3, \

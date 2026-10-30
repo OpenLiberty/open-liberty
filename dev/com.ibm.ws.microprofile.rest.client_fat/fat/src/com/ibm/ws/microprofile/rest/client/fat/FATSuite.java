@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public class FATSuite {
                                               MicroProfileActions.MP70_EE11, // 4.0_EE11
                                               MicroProfileActions.MP70_EE10, // 4.0_EE10
                                               MicroProfileActions.MP61, // 3.0+EE10
-                                              MicroProfileActions.MP13, //mpRestClient-1.0
+                                              MicroProfileActions.MP13_EE7, //mpRestClient-1.0
                                               MicroProfileActions.MP20, //mpRestClient-1.1
                                               MicroProfileActions.MP22, // 1.2
                                               MicroProfileActions.MP30, // 1.3
@@ -67,7 +67,7 @@ public class FATSuite {
             return MicroProfileActions.repeat(servers,
                                               MicroProfileActions.MP70_EE11, // 4.0_EE11
                                               MicroProfileActions.MP70_EE10, // 4.0_EE10
-                                              MicroProfileActions.MP13); //mpRestClient-1.0
+                                              MicroProfileActions.MP13_EE7); //mpRestClient-1.0
 
         }
 
@@ -82,7 +82,7 @@ public class FATSuite {
                                               MicroProfileActions.MP70_EE11, // 4.0_EE11
                                               MicroProfileActions.MP70_EE10, // 4.0_EE10
                                               MicroProfileActions.MP61, // 3.0+EE10
-                                              MicroProfileActions.MP14, //mpRestClient-1.1
+                                              MicroProfileActions.MP14_EE7, //mpRestClient-1.1
                                               MicroProfileActions.MP20, //mpRestClient-1.1
                                               MicroProfileActions.MP22, // 1.2
                                               MicroProfileActions.MP30, // 1.3
@@ -94,7 +94,7 @@ public class FATSuite {
             return MicroProfileActions.repeat(servers,
                                               MicroProfileActions.MP70_EE11, // 4.0_EE11
                                               MicroProfileActions.MP70_EE10, // 4.0_EE10
-                                              MicroProfileActions.MP14); //mpRestClient-1.1
+                                              MicroProfileActions.MP14_EE7); //mpRestClient-1.1
 
         }
 

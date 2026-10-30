@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,7 @@ public class HealthActions {
 
     public static final FeatureSet MP41_MPHEALTH40 = MicroProfileActions.MP41.removeFeature("mpHealth-3.1").addFeature("mpHealth-4.0").build(MP41_MPHEALTH40_ID);
 
-    public static final FeatureSet MP14_MPHEALTH40 = MicroProfileActions.MP14.removeFeature("mpHealth-1.0").addFeature("mpHealth-4.0").build(MP14_MPHEALTH40_ID);
+    public static final FeatureSet MP14_MPHEALTH40 = MicroProfileActions.MP14_EE7.removeFeature("mpHealth-1.0").addFeature("mpHealth-4.0").build(MP14_MPHEALTH40_ID);
 
     //All MicroProfile Health FeatureSets - must be descending order
     private static final FeatureSet[] ALL_MPHEALTH_SETS_ARRAY = { MicroProfileActions.MP70_EE11,

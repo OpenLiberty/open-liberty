@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,46 +32,87 @@ public class MicroProfileActions {
                                                           "jaxrs-2.0",
                                                           "jsonp-1.0" };
 
-    private static final String[] MP12_FEATURES_ARRAY = { "microProfile-1.2",
-                                                          "servlet-3.1",
-                                                          "cdi-1.2",
-                                                          "jaxrs-2.0",
-                                                          "jsonp-1.0",
-                                                          "mpConfig-1.1",
-                                                          "mpFaultTolerance-1.0",
-                                                          "mpHealth-1.0",
-                                                          "mpJwt-1.0",
-                                                          "mpMetrics-1.0" };
+    private static final String[] MP12_EE7_FEATURES_ARRAY = { "microProfile-1.2",
+                                                              "servlet-3.1",
+                                                              "cdi-1.2",
+                                                              "jaxrs-2.0",
+                                                              "jsonp-1.0",
+                                                              "mpConfig-1.1",
+                                                              "mpFaultTolerance-1.0",
+                                                              "mpHealth-1.0",
+                                                              "mpJwt-1.0",
+                                                              "mpMetrics-1.0" };
 
-    private static final String[] MP13_FEATURES_ARRAY = { "microProfile-1.3",
-                                                          "servlet-3.1",
-                                                          "cdi-1.2",
-                                                          "jaxrs-2.0",
-                                                          "jaxrsClient-2.0",
-                                                          "jsonp-1.0",
-                                                          "mpConfig-1.2",
-                                                          "mpFaultTolerance-1.0",
-                                                          "mpHealth-1.0",
-                                                          "mpJwt-1.0",
-                                                          "mpMetrics-1.1",
-                                                          "mpOpenAPI-1.0",
-                                                          "mpOpenTracing-1.0",
-                                                          "mpRestClient-1.0" };
+    private static final String[] MP12_EE8_FEATURES_ARRAY = { "microProfile-1.2",
+                                                              "servlet-4.0",
+                                                              "cdi-2.0",
+                                                              "jaxrs-2.1",
+                                                              "jsonp-1.1",
+                                                              "mpConfig-1.1",
+                                                              "mpFaultTolerance-1.0",
+                                                              "mpHealth-1.0",
+                                                              "mpJwt-1.0",
+                                                              "mpMetrics-1.0" };
 
-    private static final String[] MP14_FEATURES_ARRAY = { "microProfile-1.4",
-                                                          "servlet-3.1",
-                                                          "cdi-1.2",
-                                                          "jaxrs-2.0",
-                                                          "jaxrsClient-2.0",
-                                                          "jsonp-1.0",
-                                                          "mpConfig-1.3",
-                                                          "mpFaultTolerance-1.1",
-                                                          "mpHealth-1.0",
-                                                          "mpJwt-1.1",
-                                                          "mpMetrics-1.1",
-                                                          "mpOpenAPI-1.0",
-                                                          "mpOpenTracing-1.1",
-                                                          "mpRestClient-1.1" };
+    private static final String[] MP13_EE7_FEATURES_ARRAY = { "microProfile-1.3",
+                                                              "servlet-3.1",
+                                                              "cdi-1.2",
+                                                              "jaxrs-2.0",
+                                                              "jaxrsClient-2.0",
+                                                              "jsonp-1.0",
+                                                              "mpConfig-1.2",
+                                                              "mpFaultTolerance-1.0",
+                                                              "mpHealth-1.0",
+                                                              "mpJwt-1.0",
+                                                              "mpMetrics-1.1",
+                                                              "mpOpenAPI-1.0",
+                                                              "mpOpenTracing-1.0",
+                                                              "mpRestClient-1.0" };
+
+    private static final String[] MP13_EE8_FEATURES_ARRAY = { "microProfile-1.3",
+                                                              "servlet-4.0",
+                                                              "cdi-2.0",
+                                                              "jaxrs-2.1",
+                                                              "jaxrsClient-2.1",
+                                                              "jsonp-1.1",
+                                                              "mpConfig-1.2",
+                                                              "mpFaultTolerance-1.0",
+                                                              "mpHealth-1.0",
+                                                              "mpJwt-1.0",
+                                                              "mpMetrics-1.1",
+                                                              "mpOpenAPI-1.0",
+                                                              "mpOpenTracing-1.0",
+                                                              "mpRestClient-1.0" };
+
+    private static final String[] MP14_EE7_FEATURES_ARRAY = { "microProfile-1.4",
+                                                              "servlet-3.1",
+                                                              "cdi-1.2",
+                                                              "jaxrs-2.0",
+                                                              "jaxrsClient-2.0",
+                                                              "jsonp-1.0",
+                                                              "mpConfig-1.3",
+                                                              "mpFaultTolerance-1.1",
+                                                              "mpHealth-1.0",
+                                                              "mpJwt-1.1",
+                                                              "mpMetrics-1.1",
+                                                              "mpOpenAPI-1.0",
+                                                              "mpOpenTracing-1.1",
+                                                              "mpRestClient-1.1" };
+
+    private static final String[] MP14_EE8_FEATURES_ARRAY = { "microProfile-1.4",
+                                                              "servlet-4.0",
+                                                              "cdi-2.0",
+                                                              "jaxrs-2.1",
+                                                              "jaxrsClient-2.1",
+                                                              "jsonp-1.1",
+                                                              "mpConfig-1.3",
+                                                              "mpFaultTolerance-1.1",
+                                                              "mpHealth-1.0",
+                                                              "mpJwt-1.1",
+                                                              "mpMetrics-1.1",
+                                                              "mpOpenAPI-1.0",
+                                                              "mpOpenTracing-1.1",
+                                                              "mpRestClient-1.1" };
 
     private static final String[] MP20_FEATURES_ARRAY = { "microProfile-2.0",
                                                           "servlet-4.0", //ee8
@@ -127,7 +168,7 @@ public class MicroProfileActions {
                                                           "mpHealth-1.0",
                                                           "mpJwt-1.1",
                                                           "mpMetrics-1.1",
-                                                          "mpOpenAPI-1.0",
+                                                          "mpOpenAPI-1.1",
                                                           "mpOpenTracing-1.3",
                                                           "mpRestClient-1.2",
                                                           "mpContextPropagation-1.0", //standalone
@@ -373,9 +414,12 @@ public class MicroProfileActions {
                                                                "mpReactiveStreams-3.0" };//standalone
 
     private static final Set<String> MP10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP10_FEATURES_ARRAY)));
-    private static final Set<String> MP12_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP12_FEATURES_ARRAY)));
-    private static final Set<String> MP13_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP13_FEATURES_ARRAY)));
-    private static final Set<String> MP14_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP14_FEATURES_ARRAY)));
+    private static final Set<String> MP12_EE7_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP12_EE7_FEATURES_ARRAY)));
+    private static final Set<String> MP12_EE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP12_EE8_FEATURES_ARRAY)));
+    private static final Set<String> MP13_EE7_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP13_EE7_FEATURES_ARRAY)));
+    private static final Set<String> MP13_EE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP13_EE8_FEATURES_ARRAY)));
+    private static final Set<String> MP14_EE7_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP14_EE7_FEATURES_ARRAY)));
+    private static final Set<String> MP14_EE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP14_EE8_FEATURES_ARRAY)));
     private static final Set<String> MP20_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP20_FEATURES_ARRAY)));
     private static final Set<String> MP21_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP21_FEATURES_ARRAY)));
     private static final Set<String> MP22_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP22_FEATURES_ARRAY)));
@@ -394,9 +438,12 @@ public class MicroProfileActions {
 
     //The FeatureSet IDs. Since these will be used as the RepeatAction IDs, they can also be used in annotations such as @SkipForRepeat
     public static final String MP10_ID = EE7FeatureReplacementAction.ID + "_MicroProfile_10";
-    public static final String MP12_ID = EE7FeatureReplacementAction.ID + "_MicroProfile_12";
-    public static final String MP13_ID = EE7FeatureReplacementAction.ID + "_MicroProfile_13";
-    public static final String MP14_ID = EE7FeatureReplacementAction.ID + "_MicroProfile_14";
+    public static final String MP12_EE7_ID = EE7FeatureReplacementAction.ID + "_MicroProfile_12";
+    public static final String MP12_EE8_ID = EE8FeatureReplacementAction.ID + "_MicroProfile_12";
+    public static final String MP13_EE7_ID = EE7FeatureReplacementAction.ID + "_MicroProfile_13";
+    public static final String MP13_EE8_ID = EE8FeatureReplacementAction.ID + "_MicroProfile_13";
+    public static final String MP14_EE7_ID = EE7FeatureReplacementAction.ID + "_MicroProfile_14";
+    public static final String MP14_EE8_ID = EE8FeatureReplacementAction.ID + "_MicroProfile_14";
     public static final String MP20_ID = EE8FeatureReplacementAction.ID + "_MicroProfile_20";
     public static final String MP21_ID = EE8FeatureReplacementAction.ID + "_MicroProfile_21";
     public static final String MP22_ID = EE8FeatureReplacementAction.ID + "_MicroProfile_22";
@@ -416,9 +463,12 @@ public class MicroProfileActions {
 
     //The MicroProfile FeatureSets
     public static final FeatureSet MP10 = new FeatureSet(MP10_ID, MP10_FEATURE_SET, EEVersion.EE7);
-    public static final FeatureSet MP12 = new FeatureSet(MP12_ID, MP12_FEATURE_SET, EEVersion.EE7);
-    public static final FeatureSet MP13 = new FeatureSet(MP13_ID, MP13_FEATURE_SET, EEVersion.EE7);
-    public static final FeatureSet MP14 = new FeatureSet(MP14_ID, MP14_FEATURE_SET, EEVersion.EE7);
+    public static final FeatureSet MP12_EE7 = new FeatureSet(MP12_EE7_ID, MP12_EE7_FEATURE_SET, EEVersion.EE7);
+    public static final FeatureSet MP12_EE8 = new FeatureSet(MP12_EE8_ID, MP12_EE8_FEATURE_SET, EEVersion.EE8);
+    public static final FeatureSet MP13_EE7 = new FeatureSet(MP13_EE7_ID, MP13_EE7_FEATURE_SET, EEVersion.EE7);
+    public static final FeatureSet MP13_EE8 = new FeatureSet(MP13_EE8_ID, MP13_EE8_FEATURE_SET, EEVersion.EE8);
+    public static final FeatureSet MP14_EE7 = new FeatureSet(MP14_EE7_ID, MP14_EE7_FEATURE_SET, EEVersion.EE7);
+    public static final FeatureSet MP14_EE8 = new FeatureSet(MP14_EE8_ID, MP14_EE8_FEATURE_SET, EEVersion.EE8);
     public static final FeatureSet MP20 = new FeatureSet(MP20_ID, MP20_FEATURE_SET, EEVersion.EE8);
     public static final FeatureSet MP21 = new FeatureSet(MP21_ID, MP21_FEATURE_SET, EEVersion.EE8);
     public static final FeatureSet MP22 = new FeatureSet(MP22_ID, MP22_FEATURE_SET, EEVersion.EE8);
@@ -437,10 +487,16 @@ public class MicroProfileActions {
     public static final FeatureSet MP70_EE11_APP_MODE = new FeatureSet(MP70_EE11_APP_MODE_ID, MP70_EE11_FEATURE_SET, EEVersion.EE11);
 
     //All MicroProfile FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_SETS_ARRAY = { MP71_EE11, MP71_EE10, MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13,
-                                                         MP12, MP10 };
+    //This list does not include MP 1.2, 1.3, and 1.4 with EE 8 features
+    private static final FeatureSet[] ALL_SETS_ARRAY = { MP71_EE11, MP71_EE10, MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14_EE7,
+                                                         MP13_EE7, MP12_EE7, MP10 };
+
+    private static final FeatureSet[] ALL_SETS_ARRAY_PLUS = { MP71_EE11, MP71_EE10, MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20,
+                                                              MP14_EE8, MP14_EE7, MP13_EE8, MP13_EE7, MP12_EE8, MP12_EE7, MP10 };
 
     public static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
+
+    public static final List<FeatureSet> ALL_PLUS = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY_PLUS));
 
     /**
      * Get a RepeatTests instance for the given FeatureSets. The first FeatureSet will be run in LITE mode. The others will be run in FULL.
