@@ -117,8 +117,7 @@ public class TCPUtils {
      * ChannelFuture.await() waits for the I/O thread to complete the operation.
      *
      * On success the channel is registered into the framework's active-channels map and
-     * the caller-supplied openListener is invoked (via generateOpenListenerWrapper so it
-     * runs on a Liberty executor thread, matching the pre-existing contract).
+     * the caller-supplied openListener is invoked directly on the calling thread.
      *
      * On failure the method returns the failed future; the caller is responsible for
      * logging the error and invoking openListener with the terminal failure future.
@@ -276,14 +275,14 @@ public class TCPUtils {
                 }
                 Thread.currentThread().interrupt();
                 // Outbound: release the caller blocked on the connect outcome.
-                notifyOutboundFailure(framework, config, openListener, channel.newFailedFuture(ie));
+                notifyOutboundFailure(config, openListener, channel.newFailedFuture(ie));
                 return null;
             }
 
             if (future == null) {
                 // channel was closed before the bind/connect started.
                 // Outbound: release the caller blocked on the connect outcome.
-                notifyOutboundFailure(framework, config, openListener,
+                notifyOutboundFailure(config, openListener,
                                       channel.newFailedFuture(new IOException("Channel closed before connect for " + config.getExternalName())));
                 return null;
             }
@@ -292,7 +291,7 @@ public class TCPUtils {
                 registerSuccess(framework, channel, config, resolvedHost, inetPort);
                 if (openListener != null) {
                     try {
-                        generateOpenListenerWrapper(framework, openListener).operationComplete(future);
+                        openListener.operationComplete(future);
                     } catch (Exception e) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Exception dispatching openListener success callback: " + e.getMessage());
@@ -384,7 +383,7 @@ public class TCPUtils {
                         registerSuccess(framework, channel, config, resolvedHost, inetPort);
                         if (openListener != null) {
                             try {
-                                generateOpenListenerWrapper(framework, openListener).operationComplete(future);
+                                openListener.operationComplete(future);
                             } catch (Exception e) {
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(tc, "Exception dispatching openListener success callback (reuseAddr): " + e.getMessage());
@@ -433,7 +432,7 @@ public class TCPUtils {
                 // A failed outbound connect closes the channel; still notify the listener so
                 // callers blocked waiting for the outcome are released.  Inbound keeps the
                 // existing silent return: the channel was normally closed by NettyChain.stop().
-                notifyOutboundFailure(framework, config, openListener, future);
+                notifyOutboundFailure(config, openListener, future);
                 return future;
             }
 
@@ -463,7 +462,7 @@ public class TCPUtils {
 
             if (openListener != null) {
                 try {
-                    generateOpenListenerWrapper(framework, openListener).operationComplete(future);
+                    openListener.operationComplete(future);
                 } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Exception dispatching openListener failure callback: " + e.getMessage());
@@ -482,18 +481,14 @@ public class TCPUtils {
      * No-op for inbound channels: their silent exits are left unchanged.  The channel was
      * normally closed by NettyChain.stop(), which already notifies the virtual host, so
      * reporting a failed future to the chain's listener is unnecessary.
-     *
-     * Dispatched via generateOpenListenerWrapper so the listener runs on a Liberty executor
-     * thread, consistent with the other listener calls in open().
      */
-    private static void notifyOutboundFailure(NettyFrameworkImpl framework,
-                                              TCPConfigurationImpl config, ChannelFutureListener openListener,
+    private static void notifyOutboundFailure(TCPConfigurationImpl config, ChannelFutureListener openListener,
                                               ChannelFuture failedFuture) {
         if (config.isInbound() || openListener == null) {
             return;
         }
         try {
-            generateOpenListenerWrapper(framework, openListener).operationComplete(failedFuture);
+            openListener.operationComplete(failedFuture);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception dispatching openListener outbound failure callback for "
@@ -502,6 +497,7 @@ public class TCPUtils {
         }
     }
 
+    // TODO: Consider removing this unused helper once synchronous listener dispatch is fully validated.
     private static ChannelFutureListener generateOpenListenerWrapper(NettyFrameworkImpl framework, ChannelFutureListener listener) {
         return new ChannelFutureListener() {
             @Override
