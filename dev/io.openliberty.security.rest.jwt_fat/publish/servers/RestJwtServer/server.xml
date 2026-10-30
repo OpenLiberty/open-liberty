@@ -19,7 +19,7 @@
                  clockSkew="1m" />
 
     <authFilter id="defaultRestJwtAuthFilter">
-        <requestUrl id="defaultRestJwtRequestUrl" urlPattern="/IBMJMXConnectorREST" matchType="contains" />
+        <requestUrl id="defaultRestJwtRequestUrl" urlPattern="/IBMJMXConnectorREST/adminEndpoint" matchType="contains" />
     </authFilter>
 
     <basicRegistry id="basic" realm="BasicRealm">

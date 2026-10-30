@@ -38,6 +38,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import io.openliberty.security.rest.jwt.tai.RestJwtTAI;
+
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -56,7 +58,6 @@ public class RestJwtNoConnectorFATTest {
 
     private static final String ISSUER = "https://localhost:9443/jwt";
     private static final String SHARED_KEY = "superSecretSharedKeyForRestJwtTesting123456";
-    private static final String MBEANS_ENDPOINT = "/IBMJMXConnectorREST/mbeans";
 
     // Anything that would only be logged if the restJwt bundle was started or the TAI was invoked
     private static final String TAI_TRACE_REGEX = "RestJwtTAI|restJwtTAI|io\\.openliberty\\.security\\.rest\\.jwt\\.tai";
@@ -94,7 +95,7 @@ public class RestJwtNoConnectorFATTest {
     public void testBearerRequestNotProcessedByRestJwtTai() throws Exception {
         String token = createJwtToken("adminUser", "liberty-admin");
 
-        HttpURLConnection conn = sendRequest(MBEANS_ENDPOINT, token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, token);
         assertEquals("Expected 404 because the REST connector application is not present", HttpURLConnection.HTTP_NOT_FOUND,
                      conn.getResponseCode());
 

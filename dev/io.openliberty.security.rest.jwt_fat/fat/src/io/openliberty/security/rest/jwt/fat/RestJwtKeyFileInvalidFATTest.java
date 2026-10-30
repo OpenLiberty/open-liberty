@@ -42,6 +42,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import io.openliberty.security.rest.jwt.tai.RestJwtTAI;
+
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -65,7 +67,6 @@ public class RestJwtKeyFileInvalidFATTest {
 
     private static final String ISSUER = "IBMJMXConnectorRESTIssuer";
     private static final String AUDIENCE = "IBMJMXConnectorREST";
-    private static final String MBEANS_ENDPOINT = "/IBMJMXConnectorREST/mbeans";
 
     @Server("RestJwtKeyFileServer")
     public static LibertyServer server;
@@ -168,7 +169,7 @@ public class RestJwtKeyFileInvalidFATTest {
     }
 
     private static HttpURLConnection sendRequest(String bearerToken) throws Exception {
-        URL url = new URL("https", server.getHostname(), server.getHttpDefaultSecurePort(), MBEANS_ENDPOINT);
+        URL url = new URL("https", server.getHostname(), server.getHttpDefaultSecurePort(), RestJwtTAI.ADMIN_REST_ENDPOINT);
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
         SSLContext sc = SSLContext.getInstance("TLS");
         sc.init(null, new TrustManager[] { new X509TrustManager() {

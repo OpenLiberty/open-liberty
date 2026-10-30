@@ -179,11 +179,11 @@ public class RestJwtTAITest {
         mockery.checking(new Expectations() {
             {
                 allowing(request).getRequestURI();
-                will(returnValue("/IBMJMXConnectorREST/mbeans"));
+                will(returnValue("/IBMJMXConnectorREST/adminEndpoint"));
                 allowing(request).getRequestURL();
-                will(returnValue(new StringBuffer("https://localhost:9443/IBMJMXConnectorREST/mbeans")));
+                will(returnValue(new StringBuffer("https://localhost:9443/IBMJMXConnectorREST/adminEndpoint")));
                 allowing(request).getServletPath();
-                will(returnValue("/mbeans"));
+                will(returnValue("/adminEndpoint"));
                 allowing(request).getContextPath();
                 will(returnValue("/IBMJMXConnectorREST"));
                 allowing(request).getHeader("Authorization");

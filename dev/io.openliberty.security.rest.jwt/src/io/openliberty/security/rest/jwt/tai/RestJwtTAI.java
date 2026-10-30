@@ -332,7 +332,7 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
         JwtConsumerConfig config = jwtConsumerConfigRef.getService(DEFAULT_JWT_CONSUMER_ID);
         MpConfigProperties mpProps = getKeyLocationProperties(config);
         if (mpProps == null) {
-            return JwtConsumer.create().createJwt(token);
+            return JwtConsumer.create(DEFAULT_JWT_CONSUMER_ID).createJwt(token);
         }
         return config.getConsumerUtils().parseJwt(token, config, mpProps);
     }
