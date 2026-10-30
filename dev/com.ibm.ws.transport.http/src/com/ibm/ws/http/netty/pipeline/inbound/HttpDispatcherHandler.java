@@ -229,6 +229,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                     // The legacy parser rejects this protocol condition without FFDC.
                     if (!(failure instanceof ContentLengthNotAllowedException)
                                     && !isExpectedRequestValidationFailure(failure)
+                                    && !isNonNumericContentLength(failure)
                                     && !failure.getMessage().contains("possibly HTTP/0.9")) {
                         FFDCFilter.processException(failure, HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
                     }
@@ -363,6 +364,15 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         return failure instanceof HttpRequestValidationException
                         || (failure instanceof IllegalArgumentException
                                         && failure.getCause() instanceof HttpRequestValidationException);
+    }
+
+    // Netty reports a non-numeric Content-Length (for example a value left with a leading SP after an
+    // obs-fold is normalized) as a plain IllegalArgumentException. The legacy parser rejects this
+    // without FFDC, so it is a client error, not a server fault.
+    private static boolean isNonNumericContentLength(Throwable failure) {
+        return failure instanceof IllegalArgumentException
+                        && failure.getMessage() != null
+                        && failure.getMessage().startsWith("Content-Length value is not a number");
     }
 
     private static boolean isUpgrade(HttpRequest req) {
