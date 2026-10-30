@@ -14,7 +14,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -517,7 +516,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         // finish the port listening logic, that need to run at the end of server
         // startup
         FutureTask<ChannelFuture> task;
-        CountDownLatch latch = new CountDownLatch(serverStartedTasks.size());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Netty Framework signaled- Server Completely Started signal received");
         }
@@ -525,9 +523,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             while ((task = serverStartedTasks.poll()) != null) {
                 try {
                     if (!task.isCancelled()) {
-                        executorService.submit(new StartTaskRunnable(task, latch));
-                    } else
-                        latch.countDown();
+                        task.run();
+                        task.get(getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS);
+                    }
                 } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
@@ -535,41 +533,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                 }
             }
 
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
             serverCompletelyStarted.set(true);
             isActive = true;
             syncStarted.notifyAll();
         }
-    }
-
-    private class StartTaskRunnable implements Runnable {
-
-        private FutureTask<ChannelFuture> task;
-        private CountDownLatch latch;
-
-        public StartTaskRunnable(FutureTask<ChannelFuture> task, CountDownLatch latch) {
-            this.task = task;
-            this.latch = latch;
-        }
-
-        @Override
-        public void run() {
-            task.run();
-            try {
-                task.get(getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS);
-            } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "caught exception performing startup task: " + e);
-                }
-            }
-            latch.countDown();
-        }
-
     }
 
     /**
@@ -594,7 +561,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             if (!serverCompletelyStarted.get()) {
                 serverStartedTasks.add(future);
             } else {
-                this.executorService.submit(future);
+                future.run();
             }
             return future;
         }

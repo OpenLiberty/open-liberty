@@ -319,11 +319,17 @@ public class NettyChain extends AbstractHttpChain {
                 bootstrap.childOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
                 bootstrap.childHandler(httpPipeline);
 
-                serverChannel = nettyFramework.startInbound(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
+                Channel channel = nettyFramework.startInbound(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
-                VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
-                String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
-                postEvent(topic, currentConfig, null);
+                // The bind can complete synchronously inside startInbound().  If it already failed,
+                // channelFutureHandler() has set STOPPED and notified the virtual host, so do not
+                // keep the failed channel or announce the endpoint as started.
+                if (state.get() != ChainState.STOPPED) {
+                    serverChannel = channel;
+                    VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
+                    String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
+                    postEvent(topic, currentConfig, null);
+                }
 
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -429,8 +435,12 @@ public class NettyChain extends AbstractHttpChain {
         synchronized (this) {
             // Check if this callback is for a stale channel that bound the port after
             // the chain was already restarted.
-            // Close the stale channel so it doesn't hold the port open for the next bind attempt.
-            if (future.channel() != serverChannel) {
+            // If serverChannel has not been assigned yet (during synchronous startInbound execution),
+            // assign it now so this channel is recognized as the current channel.
+            // Close any real stale channel so it doesn't hold the port open for the next bind attempt.
+            if (serverChannel == null) {
+                serverChannel = future.channel();
+            } else if (future.channel() != serverChannel) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Stale channel " + future.channel()
                         + " fired callback but current serverChannel is " + serverChannel + ", closing stale channel...");
@@ -457,6 +467,8 @@ public class NettyChain extends AbstractHttpChain {
                     VirtualHostMap.notifyStopped(owner, currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                     currentConfig.clearActivePort();
                 }
+                // Forget the failed channel so the next bind is not mistaken for a stale callback.
+                serverChannel = null;
                 state.set(ChainState.STOPPED);
             }
             //Register chain for quiesce, NO_OP is passed as the task as there is no special 
@@ -500,11 +512,21 @@ public class NettyChain extends AbstractHttpChain {
 
     @Override
     public int getActivePort() {
-        return (currentConfig != null) ? currentConfig.configPort : -1;
+        ActiveConfiguration cfg = currentConfig;
+        ChainState s = state.get();
+        // Return the port only when the configuration is complete and the chain is
+        // actively starting or started. If the chain is stopped (e.g. incomplete SSL config,
+        // missing keystore, or disabled), return -1 to prevent registering phantom virtual
+        // host aliases or reporting non-listening secure ports to listeners/MBeans.
+        return (cfg != null && cfg.configPort >= 0 && cfg.complete()
+                && (s == ChainState.STARTING || s == ChainState.STARTED)) ? cfg.configPort : -1;
     }
 
     public String getActiveHost() {
-        return (currentConfig != null) ? currentConfig.configHost : null;
+        ActiveConfiguration cfg = currentConfig;
+        ChainState s = state.get();
+        return (cfg != null && cfg.complete()
+                && (s == ChainState.STARTING || s == ChainState.STARTED)) ? cfg.configHost : null;
     }
 
     /**
