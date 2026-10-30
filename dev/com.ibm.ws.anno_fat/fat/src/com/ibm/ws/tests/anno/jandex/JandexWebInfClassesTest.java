@@ -147,17 +147,17 @@ public class JandexWebInfClassesTest extends JandexAppTest {
     //
 
     @Test
-    public void webInfClasses_testServletIsRunning() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexTrue_testServletIsRunning() throws Exception {
         super.testServletIsRunning();
     }
 
     @Test
-    public void webInfClasses_testServletIsRunning31() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexTrue_testServletIsRunning31() throws Exception {
         super.testServletIsRunning31();
     }
 
     @Test
-    public void webInfClasses_testServletVersions() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexTrue_testServletVersions() throws Exception {
         super.testServletVersions();
     }
 
@@ -169,7 +169,7 @@ public class JandexWebInfClassesTest extends JandexAppTest {
      * the CWWKC009x message is expected to appear in the server log.
      */
     @Test
-    public void webInfClasses_testJandexIndexIsRead() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexTrue_testJandexIndexIsRead() throws Exception {
         super.testJandex(JandexAppTest.JandexExpectation.DO_EXPECT_JANDEX);
     }
 }

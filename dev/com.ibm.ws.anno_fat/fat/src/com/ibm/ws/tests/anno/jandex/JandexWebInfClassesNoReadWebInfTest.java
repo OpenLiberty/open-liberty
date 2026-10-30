@@ -69,17 +69,17 @@ public class JandexWebInfClassesNoReadWebInfTest extends JandexAppTest {
     }
 
     @Test
-    public void webInfClassesNoReadWebInf_testServletIsRunning() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexFalse_testServletIsRunning() throws Exception {
         super.testServletIsRunning();
     }
 
     @Test
-    public void webInfClassesNoReadWebInf_testServletIsRunning31() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexFalse_testServletIsRunning31() throws Exception {
         super.testServletIsRunning31();
     }
 
     @Test
-    public void webInfClassesNoReadWebInf_testServletVersions() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexFalse_testServletVersions() throws Exception {
         super.testServletVersions();
     }
 
@@ -91,7 +91,7 @@ public class JandexWebInfClassesNoReadWebInfTest extends JandexAppTest {
      * The jandex index in the jar file is under META-INF so it should be used
      */
     @Test
-    public void webInfClassesNoReadWebInf_testJandexIndexIsNotRead() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexFalse_testJandexIndexIsNotRead() throws Exception {
         super.testJandex(JandexAppTest.JandexExpectation.DO_EXPECT_JANDEX_IN_ONE_LOCATION);
     }
 }

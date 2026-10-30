@@ -59,22 +59,22 @@ public class JandexWebInfAppDefaultAppMgrTrueTest extends JandexAppTest {
     }
 
     @Test
-    public void defaultTrue_testServletIsRunning() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexDefault_applicationReadWebInfJandexTrue_testServletIsRunning() throws Exception {
         super.testServletIsRunning();
     }
 
     @Test
-    public void defaultTrue_testServletIsRunning31() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexDefault_applicationReadWebInfJandexTrue_testServletIsRunning31() throws Exception {
         super.testServletIsRunning31();
     }
 
     @Test
-    public void defaultTrue_testServletVersions() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexDefault_applicationReadWebInfJandexTrue_testServletVersions() throws Exception {
         super.testServletVersions();
     }
 
     @Test
-    public void defaultTrue_testJandex() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexDefault_applicationReadWebInfJandexTrue_testJandex() throws Exception {
         super.testJandex(JandexAppTest.JandexExpectation.DO_EXPECT_JANDEX);
     }
 }

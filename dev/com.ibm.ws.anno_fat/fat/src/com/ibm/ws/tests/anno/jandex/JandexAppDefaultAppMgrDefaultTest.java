@@ -55,22 +55,22 @@ public class JandexAppDefaultAppMgrDefaultTest extends JandexAppTest {
     //
 
     @Test
-    public void defaultDefault_testServletIsRunning() throws Exception {
+    public void applicationManagerUseJandexDefault_applicationUseJandexDefault_testServletIsRunning() throws Exception {
         super.testServletIsRunning();
     }
 
     @Test
-    public void defaultDefault_testServletisRunning31() throws Exception {
+    public void applicationManagerUseJandexDefault_applicationUseJandexDefault_testServletIsRunning31() throws Exception {
         super.testServletIsRunning31();
     }
 
     @Test
-    public void defaultDefault_testServletVersions() throws Exception {
+    public void applicationManagerUseJandexDefault_applicationUseJandexDefault_testServletVersions() throws Exception {
         super.testServletVersions();
     }
 
     @Test
-    public void defaultDefault_testJandex() throws Exception {
+    public void applicationManagerUseJandexDefault_applicationUseJandexDefault_testJandex() throws Exception {
         super.testJandex(JandexAppTest.JandexExpectation.DO_NOT_EXPECT_JANDEX);
     }
 }
