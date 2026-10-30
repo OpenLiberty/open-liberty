@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.net.Authenticator;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +32,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -38,6 +41,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -59,6 +63,7 @@ import org.junit.Assert;
 import org.junit.Assume;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -95,6 +100,12 @@ public class TCKRunner {
     private static final String MVN_FILENAME_PREFIX = "mvnOutput_";
     private static final String MVN_TEST_OUTPUT_FILENAME_PREFIX = MVN_FILENAME_PREFIX + MVN_TEST + "_";
     private static final String MVN_TARGET_FOLDER_PREFIX = "tck_";
+
+    // Intermittent in-container JUnit 5 discovery failure (see rerunTestClassesWithDiscoveryFailures)
+    private static final String NO_TEST_METHOD_FOUND = "No test method found";
+    private static final String MVN_TEST_RERUN_OUTPUT_FILENAME_PREFIX = MVN_FILENAME_PREFIX + MVN_TEST + "_rerun_";
+    private static final String FIRST_RUN_REPORTS = "surefire-reports-first-run";
+    private static final Pattern JAVA_CLASS_NAME = Pattern.compile("[\\p{L}_$][\\p{L}\\p{N}_$]*(\\.[\\p{L}_$][\\p{L}\\p{N}_$]*)*");
 
     private static final long startNanos = System.nanoTime();
 
@@ -382,6 +393,13 @@ public class TCKRunner {
 
         // Run mvn clean test
         ProcessResult testOutput = runCleanTestCmd();
+
+        // Work around intermittent in-container test discovery failures by re-running the affected classes on a fresh server
+        ProcessResult rerunOutput = rerunTestClassesWithDiscoveryFailures();
+        if (rerunOutput != null) {
+            testOutput = rerunOutput;
+        }
+
         List<String> failingTestsList = postProcessTestResults(testOutput.getOutput());
         if (failingTestsList.isEmpty()) {
             assertEquals("No tests failed but maven exit code was non-zero", 0, testOutput.getExitCode());
@@ -430,6 +448,157 @@ public class TCKRunner {
         List<String> testcmd = getMvnCommandParams(MVN_CLEAN, MVN_TEST);
         ProcessResult mvnResult = runMvnCmd(testcmd, getTCKRunnerDir(), getMavenUserHome(), getMvnTestOutputFile());
         return mvnResult;
+    }
+
+    /**
+     * Work around an intermittent failure of the in-container JUnit 5 test discovery done by Arquillian.
+     * <p>
+     * Occasionally, in a CI run, the JUnit 5 Arquillian container (arquillian-junit5-container) finds no test method to
+     * run inside the Liberty server and reports <code>org.junit.platform.commons.JUnitException: No test method found</code>
+     * for the remaining tests of a class (defect 300064). Once it happens the server JVM stays in that state:
+     * every later test, including those of newly deployed applications, fails the same way. A new server JVM is fine.
+     * No error is reported by the server and the tests that fail did not actually run.
+     * <p>
+     * If the only problems found in a test class are of that kind, restart the server and run just those test classes again.
+     * The results of the first attempt are copied aside so that they are kept as evidence. A warning is logged
+     * every time this recovery is used so that the occurrence rate can be tracked.
+     * Failures of any other kind are never retried.
+     *
+     * @return the result of the last maven re-run, or null if no re-run was needed or possible
+     */
+    private ProcessResult rerunTestClassesWithDiscoveryFailures() throws Exception {
+        final int maxAttempts = 2;
+
+        if (isTestNG) {
+            return null; // The failure is specific to the JUnit 5 Arquillian container
+        }
+
+        ProcessResult rerunResult = null;
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            List<String> classesToRerun;
+            try {
+                classesToRerun = getTestClassesWithOnlyDiscoveryFailures(getSureFireResultsDir());
+            } catch (Exception e) {
+                Log.warning(c, "Unable to check the results for '" + NO_TEST_METHOD_FOUND + "' errors: " + e);
+                return rerunResult;
+            }
+            if (classesToRerun.isEmpty()) {
+                return rerunResult;
+            }
+
+            if (!server.isStarted()) {
+                Log.warning(c, "Test classes failed with '" + NO_TEST_METHOD_FOUND + "' but server " + getServerName()
+                               + " was not started by the test so it cannot be restarted. Not re-running " + classesToRerun);
+                return rerunResult;
+            }
+
+            Log.warning(c, "Test classes failed with '" + NO_TEST_METHOD_FOUND + "' (defect 300064). Restarting server "
+                           + getServerName() + " and re-running (attempt " + attempt + " of " + maxAttempts + "): " + classesToRerun);
+
+            // Keep the results of the failed attempt, mvn clean is not used for the re-run so the reports would be overwritten
+            File attemptReports = new File(getResultsDir(), MVN_TARGET_FOLDER_PREFIX + getSuiteName() + "_" + FIRST_RUN_REPORTS + "_" + attempt);
+            copyDirectory(getSureFireResultsDir(), attemptReports);
+
+            // Capture the state of the server JVM (threads and server introspectors, which include the application class loaders)
+            // while it is still in the failing state, to help find the root cause. The dump is collected with the server logs.
+            try {
+                server.serverDump("thread");
+            } catch (Exception e) {
+                Log.warning(c, "Unable to dump server " + getServerName() + " before re-running tests: " + e);
+            }
+
+            // Restart the server. Errors and warnings in the logs of the server that is being replaced are not relevant
+            Map<String, String> envVars = server.getLastStartEnvVars();
+            try {
+                server.stopServer(".*");
+            } catch (Exception e) {
+                Log.warning(c, "Exception stopping server " + getServerName() + " before re-running tests: " + e);
+            }
+            if (server.isStarted()) {
+                Log.warning(c, "Server " + getServerName() + " could not be stopped. Not re-running " + classesToRerun);
+                return rerunResult;
+            }
+            for (Entry<String, String> envVar : envVars.entrySet()) {
+                server.addEnvVar(envVar.getKey(), envVar.getValue());
+            }
+            server.startServer();
+
+            // Run only the affected classes. Reports of other classes from the first run are left in place.
+            List<String> rerunCmd = getMvnCommandParams(MVN_TEST,
+                                                        "-Dtest=" + String.join(",", classesToRerun),
+                                                        "-Dsurefire.failIfNoSpecifiedTests=false");
+            File rerunOutputFile = new File(getResultsDir(), MVN_TEST_RERUN_OUTPUT_FILENAME_PREFIX + getSuiteName() + "_" + attempt);
+            rerunResult = runMvnCmd(rerunCmd, getTCKRunnerDir(), getMavenUserHome(), rerunOutputFile);
+        }
+
+        return rerunResult;
+    }
+
+    /**
+     * Find the test classes in surefire reports where tests failed with "No test method found" and nothing else went wrong.
+     *
+     * @param  reportsDir the directory containing the surefire TEST-*.xml reports
+     * @return            the fully qualified names of the test classes, in a stable order
+     */
+    private static List<String> getTestClassesWithOnlyDiscoveryFailures(File reportsDir) throws Exception {
+        File[] reports = reportsDir.listFiles((dir, name) -> name.matches("TEST.*\\.xml"));
+        if (reports == null) {
+            return Collections.emptyList();
+        }
+
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        XPathExpression notPassing = xpath.compile("//testcase[error or failure]");
+        Set<String> ignoredNames = new HashSet<>(Arrays.asList("arquillianBeforeTest", "arquillianAfterTest"));
+
+        Map<String, Boolean> classes = new LinkedHashMap<>(); // class name -> only discovery failures so far
+        for (File report : reports) {
+            NodeList testcases = (NodeList) notPassing.evaluate(builder.parse(report), XPathConstants.NODESET);
+            for (int i = 0; i < testcases.getLength(); i++) {
+                Element testcase = (Element) testcases.item(i);
+                if (ignoredNames.contains(testcase.getAttribute("name"))) {
+                    continue;
+                }
+
+                String className = testcase.getAttribute("classname");
+                int suffix = className.indexOf('('); // class names have a suffix when usePhrasedTestCaseClassName is set
+                if (suffix >= 0) {
+                    className = className.substring(0, suffix);
+                }
+
+                boolean discoveryFailure = testcase.getElementsByTagName("failure").getLength() == 0;
+                NodeList errors = testcase.getElementsByTagName("error");
+                for (int e = 0; e < errors.getLength(); e++) {
+                    if (!NO_TEST_METHOD_FOUND.equals(((Element) errors.item(e)).getAttribute("message"))) {
+                        discoveryFailure = false;
+                    }
+                }
+
+                Boolean previous = classes.get(className);
+                classes.put(className, discoveryFailure && (previous == null || previous));
+            }
+        }
+
+        List<String> result = new ArrayList<>();
+        for (Entry<String, Boolean> entry : classes.entrySet()) {
+            if (entry.getValue() && JAVA_CLASS_NAME.matcher(entry.getKey()).matches()) {
+                result.add(entry.getKey());
+            }
+        }
+        return result;
+    }
+
+    private static void copyDirectory(File source, File target) throws IOException {
+        try (Stream<Path> paths = Files.walk(source.toPath())) {
+            for (Path from : (Iterable<Path>) paths::iterator) {
+                Path to = target.toPath().resolve(source.toPath().relativize(from).toString());
+                if (Files.isDirectory(from)) {
+                    Files.createDirectories(to);
+                } else {
+                    Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+        }
     }
 
     /**
