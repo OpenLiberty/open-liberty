@@ -73,7 +73,10 @@ import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesTest;
     JandexAppTrueAppMgrTrueTest.class,
     JandexWebInfClassesTest.class,
     JandexWebInfClassesNoReadWebInfTest.class,
-    JandexWebInfAppDefaultAppMgrTrueTest.class,
+    //The next five tests are all testing different combinatinos of config
+    //they would need a full restart between them to clear the cache
+    //so we can't save time reusing a server
+    JandexWebInfAppDefaultAppMgrTrueTest.class, 
     JandexWebInfAppTrueAppMgrFalseTest.class,
     JandexWebInfAppFalseAppMgrTrueTest.class,
     JandexWebInfAppFalseAppMgrFalseTest.class,
