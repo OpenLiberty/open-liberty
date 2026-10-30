@@ -114,6 +114,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     /** Holds dedicated groups before their channel is known (between bootstrap creation and successful bind). */
     private final Set<EventLoopGroup> pendingDedicatedGroups = ConcurrentHashMap.newKeySet();
 
+    /** Channels whose bind failed due to "Address already in use"; used to suppress spurious quiesce warnings. */
+    private final Set<Channel> bindFailedChannels = ConcurrentHashMap.newKeySet();
+
     private EventLoopGroup sharedAcceptGroup;
     private EventLoopGroup childGroup;
 
@@ -641,11 +644,25 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                     chan.pipeline().addFirst(new QuiesceHandler(quiesce));
                 }
             } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                    Tr.warning(tc, "netty.quiesce.channel.not.endpoint");
+                // If the channel is in bindFailedChannels it never became an active endpoint,
+                // so suppress the warning; otherwise emit it for genuinely unexpected cases.
+                if (!bindFailedChannels.remove(chan)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                        Tr.warning(tc, "netty.quiesce.channel.not.endpoint");
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * Record that a channel's bind failed due to "Address already in use" so that
+     * {@link #registerEndpointQuiesce} can suppress the spurious not-an-endpoint warning.
+     *
+     * @param channel the channel whose bind failed
+     */
+    public void addBindFailedChannel(Channel channel) {
+        bindFailedChannels.add(channel);
     }
 
     /**

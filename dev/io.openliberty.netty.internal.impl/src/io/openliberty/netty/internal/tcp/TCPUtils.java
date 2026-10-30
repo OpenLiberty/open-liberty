@@ -258,6 +258,16 @@ public class TCPUtils {
                                                                                             newHost, String.valueOf(inetPort), openFuture.cause().getMessage() });
                             }
                         }
+                        // Track channels that failed to bind due to "Address already in use" so that
+                        // registerEndpointQuiesce can suppress the spurious not-an-endpoint warning.
+                        Throwable bindCause = openFuture.cause();
+                        while (bindCause != null) {
+                            if (bindCause.getMessage() != null && bindCause.getMessage().contains("Address already in use")) {
+                                framework.addBindFailedChannel(channel);
+                                break;
+                            }
+                            bindCause = bindCause.getCause();
+                        }
                     }
                 }
             }
