@@ -617,7 +617,12 @@ final class LTPACrypto {
             throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
         SecretKey sKey = null;
         if (cipher.indexOf(CryptoUtils.ENCRYPT_ALGORITHM_AES) != -1) {
-            int keyLength = fipsEnabled ? CryptoUtils.AES_256_KEY_LENGTH_BYTES : CryptoUtils.AES_128_KEY_LENGTH_BYTES;
+            // Use the actual key length from the provided key array
+            // This supports both 24-byte (non-FIPS) and 32-byte (FIPS/ICSF) keys
+            int keyLength = key.length;
+            if (keyLength != 24 && keyLength != 32) {
+                throw new InvalidKeyException("Invalid AES key length: " + keyLength + " bytes. Expected 24 or 32 bytes.");
+            }
             sKey = new SecretKeySpec(key, 0, keyLength, CryptoUtils.ENCRYPT_ALGORITHM_AES);
         } else {
             DESedeKeySpec kSpec = new DESedeKeySpec(key);
@@ -773,9 +778,13 @@ final class LTPACrypto {
                 key[7] = c.toByteArray();
             }
         } catch (java.security.NoSuchAlgorithmException e) {
-            // instrumented ffdc
+            System.err.println("ERROR: RSA algorithm not available: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to generate RSA keys - NoSuchAlgorithmException", e);
         } catch (java.security.NoSuchProviderException e) {
-            // instrumented ffdc
+            System.err.println("ERROR: Crypto provider not available: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to generate RSA keys - NoSuchProviderException", e);
         } catch (java.lang.UnsupportedOperationException uoe) {
             // This is when hard ware crypto provider is at the top of java.security
             // Using the different key creation routines.
