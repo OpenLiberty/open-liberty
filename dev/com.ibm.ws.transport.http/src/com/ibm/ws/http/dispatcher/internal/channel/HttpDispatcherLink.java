@@ -40,11 +40,13 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.h2internal.H2InboundLink;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundChannel;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.dispatcher.classify.DecoratedExecutorThread;
+import com.ibm.ws.http.dispatcher.internal.AllowedServerNamesMatcher;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
@@ -148,14 +150,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private InetAddress remoteAddress = null;
     /** Cached local host name */
     private String localCanonicalHostName = null;
-    /** Cached local host:port alias */
-    private String localHostAlias = null;
     /** Cached remote origin */
     private String remoteContextAddress;
 
     private volatile boolean linkIsReady = false;
     private volatile UsePrivateHeaders usePrivateHeaders = UsePrivateHeaders.unknown;
+    private volatile UsePrivateHeaders usePrivateSensitiveHeaders = UsePrivateHeaders.unknown;
     private volatile int configUpdate = 0;
+    private volatile int configUpdateSensitive = 0;
 
     // Using Lock instead of Object with synchronized (WebConnCanCloseSync) to allow
     // for unmounting when using virtual threads
@@ -209,6 +211,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
         super.init(inVC);
         inVC.getStateMap().put(LINK_ID, this);
+        this.usePrivateSensitiveHeaders = UsePrivateHeaders.unknown;
         this.myChannel = channel;
         this.request = new HttpRequestImpl(HttpDispatcher.useEE7Streams());
         this.response = new HttpResponseImpl(this);
@@ -899,8 +902,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         this.myChannel.incrementActiveConns();
+        this.usePrivateSensitiveHeaders = UsePrivateHeaders.unknown;
         init(inVC);
         this.isc = (HttpInboundServiceContextImpl) getDeviceLink().getChannelAccessor();
+
         this.remoteAddress = isc.getRemoteAddr();
 
         //Add for Servlet 6.0
@@ -1249,7 +1254,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     // interjection of proxy headers, there has to be some way of showing what
                     // ended up being requested.
                     // Scrub the host header before returning it in the error response
-                    msg = encodeDataString(getRequestedHost()).getBytes();
+                    msg = encodeDataString(getRequestedRoutingHost()).getBytes();
                     body.write(msg);
                     body.write(port);
                     body.write(Integer.toString(getRequestedPort()).getBytes());
@@ -1287,26 +1292,146 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         rMsg.setHeader("Content-Type", "text/html; charset=UTF-8");
     }
 
+    /** Returns the host from the Host header or request URI, or "localhost" if absent. */
+    private String getDefaultHostName() {
+        String host = request != null ? request.getVirtualHost() : null;
+        if (host == null)
+            return "localhost"; // avoid leaking information
+        return host;
+    }
+
+    /** Formats the $WSSN and Host values for trace, with control characters escaped. */
+    private static String traceNames(String wssn, String host) {
+        return "$WSSN=[" + AllowedServerNamesMatcher.traceSafe(wssn) + "] Host=[" + AllowedServerNamesMatcher.traceSafe(host) + "]";
+    }
+
+    private String getEffectiveWssn() {
+        if (!useTrustedHeaders()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getRequestedHost: peer not trusted, using Host");
+            }
+            return null;
+        }
+        if (request == null) {
+            return null;
+        }
+        String wssn = request.getHeader(HttpHeaderKeys.HDR_$WSSN);
+        if (wssn == null || wssn.isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getRequestedHost: no $WSSN header, using Host");
+            }
+            return null;
+        }
+        if (!AllowedServerNamesMatcher.isWellFormed(wssn)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getRequestedHost: $WSSN ignored (malformed): " + traceNames(wssn, getDefaultHostName()));
+            }
+            return null;
+        }
+        String host = getDefaultHostName();
+        if (wssn.equalsIgnoreCase(host)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getRequestedHost: using Host, $WSSN same as Host: " + traceNames(wssn, host));
+            }
+            return null;
+        }
+        return wssn;
+    }
+
+    private boolean isWssnApproved(String wssn) {
+        if (useTrustedSensitiveHeaders()) {
+            return true;
+        }
+        AllowedServerNamesMatcher matcher = HttpDispatcher.getAllowedServerNamesMatcher();
+        if (matcher != null && matcher.matches(wssn)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
-     * Get the requested host based on the Host and/or private headers.
+     * Decide whether an unapproved $WSSN value may be used as the API server name.
+     * When it can be used, the response is marked so that Cache-Control no-store is
+     * added when the response headers are written.
+     */
+    private boolean useUnapprovedServerName(String wssn, String host) {
+        if (this.nettyContext != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getRequestedHost: $WSSN ignored (Netty transport, no-store not available): " + traceNames(wssn, host));
+            }
+            return false;
+        }
+
+        if (this.isc == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getRequestedHost: $WSSN ignored (no inbound service context, no-store not possible): " + traceNames(wssn, host));
+            }
+            return false;
+        }
+
+        HttpResponseMessage response = this.isc.getResponse();
+        if (!(response instanceof HttpResponseMessageImpl)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getRequestedHost: $WSSN ignored (no response object, no-store not possible): " + traceNames(wssn, host));
+            }
+            return false;
+        }
+        HttpResponseMessageImpl responseImpl = (HttpResponseMessageImpl) response;
+
+        if (responseImpl.isForceNoStore()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getRequestedHost: $WSSN unapproved, no-store already marked, returning $WSSN: " + traceNames(wssn, host));
+            }
+            return true;
+        }
+
+        if (this.isc.headersSent()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getRequestedHost: $WSSN ignored (headers already sent, no-store not possible): " + traceNames(wssn, host));
+            }
+            return false;
+        }
+
+        responseImpl.setForceNoStore(true);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getRequestedHost: $WSSN used with Cache-Control no-store (not in allowedServerNames, sensitive-trusted=[false]): " + traceNames(wssn, host));
+        }
+        return true;
+    }
+
+    /**
+     * The API server name: the host name returned to the application by getServerName(),
+     * used in getRequestURL() and redirect Location headers.
      * <p>
-     * per Servlet spec, this is similar to getServerName:
-     * Returns the host name of the server to which the request was sent.
-     * It is the value of the part before ":" in the Host header value, if any,
-     * or the resolved server name, or the server IP address.
-     *
-     * @param request        the inbound request
-     * @param remoteHostAddr the requesting client IP address
+     * Returns $WSSN when the request rules select it (approved or unapproved with no-store marker);
+     * otherwise returns the host from the Host header or request URI.
      */
     @Override
     public String getRequestedHost() {
-        // Get the requested host: find the HostName according to HTTP 1.1 spec
-        String host = request.getVirtualHost();
+        String wssn = getEffectiveWssn();
+        if (wssn == null) {
+            return getDefaultHostName();
+        }
+        if (isWssnApproved(wssn)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getRequestedHost: $WSSN used (approved): " + traceNames(wssn, getDefaultHostName()));
+            }
+            return wssn;
+        }
+        String host = getDefaultHostName();
+        return useUnapprovedServerName(wssn, host) ? wssn : host;
+    }
 
-        if (host == null) // unlikely.
-            return "localhost"; // avoid leaking information
-
-        return host;
+    /**
+     * Get the requested routing host based on the Host and/or private headers (routing name).
+     */
+    @Override
+    public String getRequestedRoutingHost() {
+        String wssn = getEffectiveWssn();
+        if (wssn != null && isWssnApproved(wssn)) {
+            return wssn;
+        }
+        return getDefaultHostName();
     }
 
     /**
@@ -1377,6 +1502,21 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         return useHeaders.asBoolean();
     }
 
+    public boolean useTrustedSensitiveHeaders() {
+        // Sensitive headers are never trusted from an unknown peer. Without this, a null remoteAddress
+        // would return the cached "unknown" value, which is enabled, so an unapproved $WSSN would be approved.
+        if (remoteAddress == null) {
+            return false;
+        }
+        UsePrivateHeaders useSensitive = usePrivateSensitiveHeaders;
+        int lastUpdate = HttpDispatcher.getConfigUpdate();
+        if (useSensitive == UsePrivateHeaders.unknown || configUpdateSensitive != lastUpdate) {
+            useSensitive = usePrivateSensitiveHeaders = UsePrivateHeaders.set(HttpDispatcher.usePrivateSensitiveHeaders(remoteAddress));
+            configUpdateSensitive = lastUpdate;
+        }
+        return useSensitive.asBoolean();
+    }
+
     @Override
     public String getTrustedHeader(String headerName) {
         if (useTrustedHeaders() && request != null) {
@@ -1399,11 +1539,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     @Override
     public String getLocalHostAlias() {
-        String alias = localHostAlias;
-        if (alias == null) {
-            alias = localHostAlias = getRequestedHost() + ":" + getRequestedPort();
-        }
-        return alias;
+        return getRequestedRoutingHost() + ":" + getRequestedPort();
     }
 
     @Override
