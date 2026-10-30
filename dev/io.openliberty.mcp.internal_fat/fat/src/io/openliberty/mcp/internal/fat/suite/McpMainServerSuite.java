@@ -33,6 +33,8 @@ import io.openliberty.mcp.internal.fat.tool.MultiModuleToolTestToolManager;
 import io.openliberty.mcp.internal.fat.tool.NonRequiredArgsToolsTest;
 import io.openliberty.mcp.internal.fat.tool.ToolCallEventTraceTest;
 import io.openliberty.mcp.internal.fat.tool.ToolErrorHandlingTest;
+import io.openliberty.mcp.internal.fat.tool.DynamicOnlyToolManagerTest;
+import io.openliberty.mcp.internal.fat.tool.MixedEarModuleTest;
 import io.openliberty.mcp.internal.fat.tool.ToolManagerTest;
 import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
 
@@ -87,6 +89,8 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 ToolErrorHandlingTest.class,
                 ToolManagerTest.class,
                 UnsupportedAnnotationWarningTest.class,
+                DynamicOnlyToolManagerTest.class,
+                MixedEarModuleTest.class,
 })
 public class McpMainServerSuite {
 

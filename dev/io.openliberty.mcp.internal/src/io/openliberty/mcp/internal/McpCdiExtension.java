@@ -40,9 +40,11 @@ import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
+import io.openliberty.mcp.internal.config.McpServerConfigProps;
 import io.openliberty.mcp.internal.content.TextContentImpl;
 import io.openliberty.mcp.internal.encoders.EncoderRegistries;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
+import io.openliberty.mcp.internal.introspection.McpIntrospectorContextListener;
 import io.openliberty.mcp.internal.moduleScope.ModuleContext;
 import io.openliberty.mcp.internal.requests.IconImpl;
 import io.openliberty.mcp.internal.requests.ImplementationInfoImpl;
@@ -70,7 +72,6 @@ import jakarta.enterprise.inject.spi.ProcessManagedBean;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
-
 /**
  * Finds tools
  */
@@ -92,6 +93,13 @@ public class McpCdiExtension implements Extension {
     private final Map<Bean<?>, Integer> encoderPriorities = new HashMap<>();
     private final Map<Bean<?>, Type> converterBeans = new HashMap<>();
     private ConcurrentHashMap<J2EEName, Map<String, ArrayList<String>>> duplicateToolsMap = new ConcurrentHashMap<>();
+
+    /**
+     * Tracks modules that have already had their MCP endpoint registered to prevent double-registration.
+     * Used by the fast path in {@link McpServletInitializer} (when {@code @Tool} beans exist at CDI
+     * scan time) so the deferred {@link McpDeferredEndpointListener} does not register a second time.
+     */
+    private final Set<String> registeredModuleContextPaths = ConcurrentHashMap.newKeySet();
 
     private SchemaRegistry schemas = new SchemaRegistry();
     private Jsonb jsonb = createJsonb();
@@ -421,6 +429,18 @@ public class McpCdiExtension implements Extension {
                 }
             }
         }
+    }
+
+    /**
+     * Marks the given servlet context path as having its MCP endpoint already registered.
+     * Returns {@code true} if this call was the first to mark the path as registered,
+     * preventing double-registration by {@link McpDeferredEndpointListener}.
+     *
+     * @param contextPath the servlet context path of the module
+     * @return {@code true} if this call was the first to mark the path as registered
+     */
+    public boolean markRegistered(String contextPath) {
+        return registeredModuleContextPaths.add(contextPath);
     }
 
     public ToolRegistry getCurrentToolRegistry() {
