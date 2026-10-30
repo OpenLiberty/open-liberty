@@ -81,6 +81,20 @@ import com.ibm.wsspi.library.Library;
 public class AppClassLoader extends ContainerClassLoader implements SpringLoader {
     static final TraceComponent tc = Tr.register(AppClassLoader.class);
 
+    /**
+     * The native library file extension for the current platform, derived once
+     * from System.mapLibraryName. For example ".dll" on Windows, ".so" on Linux,
+     * ".dylib" on macOS. Used to detect native files in shared library config.
+     */
+    private static final String NATIVE_LIB_EXTENSION;
+    static {
+        // System.mapLibraryName("check") returns e.g. "check.dll", "libcheck.so", "libcheck.dylib".
+        // Extract everything from the last '.' to get the platform extension.
+        String mapped = System.mapLibraryName("check");
+        int dot = mapped.lastIndexOf('.');
+        NATIVE_LIB_EXTENSION = dot >= 0 ? mapped.substring(dot) : "";
+    }
+
     private static final Set<String> forbiddenClassNames = Collections.unmodifiableSet( loadForbidden() );
 
     private static final String FORBIDDEN_PROPERTIES = "forbidden.properties";
@@ -193,6 +207,8 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private final Iterable<LibertyLoader> beforeAppDelegateLoaders;
     private final Iterable<LibertyLoader> afterAppDelegateLoaders;
     private final List<File> nativeLibraryFiles = new ArrayList<File>();
+    /** Guards against logging the native-access warning more than once per loader. */
+    private volatile boolean nativeAccessWarningLogged = false;
     private final List<ClassFileTransformer> transformers = new ArrayList<ClassFileTransformer>();
     private final List<ClassFileTransformer> systemTransformers;
     private final DeclaredApiAccess apiAccess;
@@ -1133,19 +1149,51 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private void copyLibraryElementsToClasspath(Library library, boolean prepend) {
         Collection<File> files = library.getFiles();
         addToClassPath(library.getContainers(), prepend);
+        boolean hasNativeFile = false;
         if (files != null && !!!files.isEmpty()) {
             for (File file : files) {
-
                 nativeLibraryFiles.add(file);
+                if (isNativeLibraryName(file.getName())) {
+                    hasNativeFile = true;
+                }
             }
         }
 
         for (Fileset fileset : library.getFilesets()) {
             for (File file : fileset.getFileset()) {
-
                 nativeLibraryFiles.add(file);
+                if (isNativeLibraryName(file.getName())) {
+                    hasNativeFile = true;
+                }
             }
         }
+
+        // On Java 24+, loading a native library from classpath code is a restricted
+        // operation (JEP 472). Warn once per class loader if a native file (.so/.dll/.dylib)
+        // was just registered and the JVM was not started with native access enabled.
+        // Note: this only covers explicit <file> and <fileset> entries. Native libraries
+        // inside containers (searched by super.findLibrary) are not checked here because
+        // eagerly listing container entries to detect native files would be too expensive.
+        // Check isNativeAccessEnabled first (cached) to avoid the cost of scanning files.
+        if (!nativeAccessWarningLogged && hasNativeFile
+                && !NativeLibraryAccessChecker.isNativeAccessEnabled()) {
+            nativeAccessWarningLogged = true;
+            Tr.warning(tc, "cls.native.access.not.enabled", library.id());
+        }
+    }
+
+    /**
+     * Returns true if the file name looks like a native library.
+     * Uses the platform-specific extension derived from System.mapLibraryName.
+     * The check is case-insensitive to handle Windows .DLL vs .dll variants.
+     */
+    private static boolean isNativeLibraryName(String name) {
+        if (name == null || NATIVE_LIB_EXTENSION.isEmpty()
+                || name.length() < NATIVE_LIB_EXTENSION.length()) {
+            return false;
+        }
+        return name.regionMatches(true, name.length() - NATIVE_LIB_EXTENSION.length(),
+                                  NATIVE_LIB_EXTENSION, 0, NATIVE_LIB_EXTENSION.length());
     }
 
     /**
