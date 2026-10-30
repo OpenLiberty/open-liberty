@@ -1,0 +1,2 @@
+-Dcom.ibm.ws.beta.edition=true
+-Dio.openliberty.ejb.enableRequestEvents=true
