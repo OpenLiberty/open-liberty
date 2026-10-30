@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019, 2026 IBM Corporation and others.
+# Copyright (c) 2019 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,7 +65,3 @@ WSAT_PROXY_CWLIB0210.useraction=Modify the externalURLPrefix address to start wi
 WSAT_PROXY_CWLIB0211=CWLIB0211W: externalURLPrefix {0} for WS-AT must start with https:// when SSL is enabled.
 WSAT_PROXY_CWLIB0211.explanation=Proxy address for WS-AT must start with https:// when SSL is enabled.
 WSAT_PROXY_CWLIB0211.useraction=Modify the externalURLPrefix address to start with https:// when SSL is enabled.
-
-WSAT_CONFIG_RESTART_REQUIRED_CWLIB0212=CWLIB0212I: A configuration change was detected for the wsAtomicTransaction element. A server restart is required for the change to take effect. All transactions should be allowed to complete before changing any transaction-related configuration.
-WSAT_CONFIG_RESTART_REQUIRED_CWLIB0212.explanation=Dynamic configuration updates are not supported for wsAtomicTransaction. The active configuration remains in effect until the server is restarted.
-WSAT_CONFIG_RESTART_REQUIRED_CWLIB0212.useraction=Allow all transactions to complete before applying configuration changes. Ideally, restart the server in recovery mode and then shut it down before applying transaction configuration changes.
