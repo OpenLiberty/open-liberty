@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -222,9 +223,21 @@ public class FixAdaptor {
 
     public static void preCheck(IFixInfo fixInfo, File baseDir) throws InstallException {
         Set<UpdatedFile> updatedFiles = fixInfo.getUpdates().getFiles();
-        for (UpdatedFile file : updatedFiles) {
-            File filePath = new File(baseDir, file.getId());
-            isFileLocked(fixInfo.getId(), filePath);
+        if (updatedFiles != null && !updatedFiles.isEmpty()) {
+            final AtomicReference<InstallException> lockException = new AtomicReference<InstallException>();
+            updatedFiles.parallelStream().forEach(file -> {
+                if (lockException.get() == null) {
+                    try {
+                        File filePath = new File(baseDir, file.getId());
+                        isFileLocked(fixInfo.getId(), filePath);
+                    } catch (InstallException e) {
+                        lockException.compareAndSet(null, e);
+                    }
+                }
+            });
+            if (lockException.get() != null) {
+                throw lockException.get();
+            }
         }
         File backupFile = new File(baseDir, "/lib/fixes/" + fixInfo.getId() + "_" + fixInfo.getVersion() + ".zip");
         if (backupFile.exists() && backupFile.length() > 0) {

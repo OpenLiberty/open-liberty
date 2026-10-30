@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -116,11 +117,20 @@ class UninstallDirector extends AbstractDirector {
                 retrieveUninstallFileList(uninstallAsset, checkDependency, features);
                 engine.preCheck(uninstallAsset);
             }
-            if (toBeDeleted != null) {
-                for (File f : toBeDeleted) {
-                    for (String productId : productIds) {
-                        InstallUtils.isFileLocked("ERROR_UNINSTALL_PRODUCT_FILE_LOCKED", productId, f);
+            if (toBeDeleted != null && !toBeDeleted.isEmpty()) {
+                final String errorProductId = (productIds != null && productIds.length > 0 && productIds[0] != null) ? productIds[0] : "";
+                final AtomicReference<InstallException> lockException = new AtomicReference<InstallException>();
+                toBeDeleted.parallelStream().forEach(f -> {
+                    if (lockException.get() == null) {
+                        try {
+                            InstallUtils.isFileLocked("ERROR_UNINSTALL_PRODUCT_FILE_LOCKED", errorProductId, f);
+                        } catch (InstallException e) {
+                            lockException.compareAndSet(null, e);
+                        }
                     }
+                });
+                if (lockException.get() != null) {
+                    throw lockException.get();
                 }
             }
         }
