@@ -799,12 +799,18 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
             final byte[] lineContent = line.array();
             final int startLine = line.arrayOffset() + line.readerIndex();
             final byte firstChar = lineContent[startLine];
-            if (name != null && (firstChar == ' ' || firstChar == '\t')) {
-                //please do not make one line from below code
-                //as it breaks +XX:OptimizeStringConcat optimization
-                String trimmedLine = langAsciiString(lineContent, startLine, lineLength).trim();
-                String valueStr = value;
-                value = valueStr + ' ' + trimmedLine;
+            if (firstChar == ' ' || firstChar == '\t') {
+                if (isDecodingRequest()) {
+                    throw new HttpRequestValidationException(
+                            new IllegalArgumentException("Obsolete line folding is not allowed in HTTP headers"));
+                }
+                if (name != null) {
+                    //please do not make one line from below code
+                    //as it breaks +XX:OptimizeStringConcat optimization
+                    String trimmedLine = langAsciiString(lineContent, startLine, lineLength).trim();
+                    String valueStr = value;
+                    value = valueStr + ' ' + trimmedLine;
+                }
             } else {
                 if (name != null) {
                 	if (shouldDoLibertyCheck && limitNumHeaders < headers.size()) {
