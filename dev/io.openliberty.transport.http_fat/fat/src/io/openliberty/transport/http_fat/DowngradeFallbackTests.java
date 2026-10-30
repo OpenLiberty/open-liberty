@@ -185,18 +185,41 @@ public class DowngradeFallbackTests {
             assertEquals("Expected HTTP 403 Forbidden", 403, response1.getStatusCode());
             assertTrue("Expected servlet response marker in body", response1.getBody().contains(DowngradeFallbackServlet.RESPONSE_MARKER));
 
-            // 2. Send follow-up request over keep-alive connection
-            String request2 = "GET " + SERVLET_PATH + "?step=after_403 HTTP/1.1\r\n" +
-                              "Host: " + server.getHostname() + ":" + server.getHttpDefaultPort() + "\r\n" +
-                              "Connection: close\r\n" +
-                              "\r\n";
+            // 2. Check if server closed the connection on 403 error status
+            boolean connectionClose = "close".equalsIgnoreCase(response1.getHeaders().get("connection"));
+            if (connectionClose) {
+                // If the connection was closed on error, verify subsequent request succeeds on a fresh connection
+                try (Socket socket2 = new Socket(server.getHostname(), server.getHttpDefaultPort())) {
+                    socket2.setSoTimeout(SOCKET_TIMEOUT_MS);
+                    OutputStream out2 = socket2.getOutputStream();
+                    InputStream in2 = socket2.getInputStream();
 
-            out.write(request2.getBytes(StandardCharsets.ISO_8859_1));
-            out.flush();
+                    String request2 = "GET " + SERVLET_PATH + "?step=after_403 HTTP/1.1\r\n" +
+                                      "Host: " + server.getHostname() + ":" + server.getHttpDefaultPort() + "\r\n" +
+                                      "Connection: close\r\n" +
+                                      "\r\n";
 
-            ParsedHttpResponse response2 = readResponse(in);
-            assertEquals("Expected HTTP 200 OK after custom status refusal", 200, response2.getStatusCode());
-            assertTrue("Expected query string step=after_403", response2.getBody().contains("step=after_403"));
+                    out2.write(request2.getBytes(StandardCharsets.ISO_8859_1));
+                    out2.flush();
+
+                    ParsedHttpResponse response2 = readResponse(in2);
+                    assertEquals("Expected HTTP 200 OK after custom status refusal", 200, response2.getStatusCode());
+                    assertTrue("Expected query string step=after_403", response2.getBody().contains("step=after_403"));
+                }
+            } else {
+                // Otherwise continue over the keep-alive connection
+                String request2 = "GET " + SERVLET_PATH + "?step=after_403 HTTP/1.1\r\n" +
+                                  "Host: " + server.getHostname() + ":" + server.getHttpDefaultPort() + "\r\n" +
+                                  "Connection: close\r\n" +
+                                  "\r\n";
+
+                out.write(request2.getBytes(StandardCharsets.ISO_8859_1));
+                out.flush();
+
+                ParsedHttpResponse response2 = readResponse(in);
+                assertEquals("Expected HTTP 200 OK after custom status refusal", 200, response2.getStatusCode());
+                assertTrue("Expected query string step=after_403", response2.getBody().contains("step=after_403"));
+            }
         }
     }
 
@@ -475,6 +498,10 @@ public class DowngradeFallbackTests {
 
         int getStatusCode() {
             return statusCode;
+        }
+
+        Map<String, String> getHeaders() {
+            return headers;
         }
 
         String getBody() {

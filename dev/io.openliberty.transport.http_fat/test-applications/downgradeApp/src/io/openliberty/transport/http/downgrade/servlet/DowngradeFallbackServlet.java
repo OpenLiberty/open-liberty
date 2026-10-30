@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -9,8 +10,11 @@
  *******************************************************************************/
 package io.openliberty.transport.http.downgrade.servlet;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -53,12 +57,20 @@ public class DowngradeFallbackServlet extends HttpServlet {
         }
 
         response.setContentType("text/plain");
-        PrintWriter writer = response.getWriter();
-        writer.println(RESPONSE_MARKER);
-        writer.println("method=" + request.getMethod());
-        writer.println("query=" + request.getQueryString());
-        writer.println("upgradeHeader=" + request.getHeader("Upgrade"));
-        writer.println("connectionHeader=" + request.getHeader("Connection"));
-        writer.flush();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintWriter pw = new PrintWriter(baos);
+        pw.println(RESPONSE_MARKER);
+        pw.println("method=" + request.getMethod());
+        pw.println("query=" + request.getQueryString());
+        pw.println("upgradeHeader=" + request.getHeader("Upgrade"));
+        pw.println("connectionHeader=" + request.getHeader("Connection"));
+        pw.flush();
+
+        byte[] body = baos.toByteArray();
+        response.setContentLength(body.length);
+        OutputStream out = response.getOutputStream();
+        out.write(body);
+        out.flush();
     }
 }
