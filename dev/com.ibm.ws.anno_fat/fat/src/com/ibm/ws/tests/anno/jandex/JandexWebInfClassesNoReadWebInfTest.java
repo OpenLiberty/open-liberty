@@ -26,6 +26,8 @@ import com.ibm.ws.tests.anno.JandexIndexV13RepeatAction;
 import com.ibm.ws.tests.anno.JandexV1RepeatAction;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -38,6 +40,7 @@ import componenttest.rules.repeater.RepeatTests;
  * ignored and no CWWKC009x messages are emitted.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class JandexWebInfClassesNoReadWebInfTest extends JandexAppTest {
 
     private static final Logger LOG = Logger.getLogger(JandexWebInfClassesNoReadWebInfTest.class.getName());
@@ -66,17 +69,17 @@ public class JandexWebInfClassesNoReadWebInfTest extends JandexAppTest {
     }
 
     @Test
-    public void webInfClassesNoReadWebInf_testServletIsRunning() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexFalse_testServletIsRunning() throws Exception {
         super.testServletIsRunning();
     }
 
     @Test
-    public void webInfClassesNoReadWebInf_testServletIsRunning31() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexFalse_testServletIsRunning31() throws Exception {
         super.testServletIsRunning31();
     }
 
     @Test
-    public void webInfClassesNoReadWebInf_testServletVersions() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexFalse_testServletVersions() throws Exception {
         super.testServletVersions();
     }
 
@@ -84,9 +87,11 @@ public class JandexWebInfClassesNoReadWebInfTest extends JandexAppTest {
      * Verify that the Jandex index at WEB-INF/classes/META-INF/jandex.idx is NOT
      * used when readWebInfJandex is absent from the server.xml application element.
      * No CWWKC009x messages should appear in the server log.
+     *
+     * The jandex index in the jar file is under META-INF so it should be used
      */
     @Test
-    public void webInfClassesNoReadWebInf_testJandexIndexIsNotRead() throws Exception {
-        super.testJandex(JandexAppTest.DO_NOT_EXPECT_JANDEX);
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexFalse_testJandexIndexIsNotRead() throws Exception {
+        super.testJandex(JandexAppTest.JandexExpectation.DO_EXPECT_JANDEX_IN_ONE_LOCATION);
     }
 }

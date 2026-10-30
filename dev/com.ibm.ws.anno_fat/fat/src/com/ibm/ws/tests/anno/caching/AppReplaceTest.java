@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.tests.anno.caching;
 import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -97,6 +98,12 @@ public class AppReplaceTest {
         server.setMarkToEndOfLog();
 
         EnterpriseArchive earArchiveTwo = getEAR("two");
+        // An empty StringAsset is added to ensure that the archive size differs between earArchiveOne
+        // and earArchiveTwo. Since classes in both packages have identical name lengths and bytecode sizes,
+        // this avoids an identical container signature (<length>,<lastModified>) when the archives are
+        // generated in rapid succession within the same timestamp second, ensuring the annotation cache
+        // recognizes that the application content has changed.
+        earArchiveTwo.addAsResource(new StringAsset(""), "marker.txt");
         ShrinkHelper.exportDropinAppToServer(server, earArchiveTwo, ShrinkHelper.DeployOptions.OVERWRITE);
         assertNotNull( server.waitForStringInLog("CWWKZ0001I:.*TestReplace.*") );
         server.setMarkToEndOfLog();

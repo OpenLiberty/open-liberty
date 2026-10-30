@@ -80,6 +80,21 @@ public class JandexWebInfClassesTest extends JandexAppTest {
      * WEB-INF/classes/META-INF/jandex.idx rather than the WAR-root META-INF/.
      */
     public static void setUpWebInfClasses(Logger logger, SharedServer sharedServer) throws Exception {
+        setUpWebInfClasses(logger, sharedServer, null, null);
+    }
+
+    public static void setUpWebInfClasses(
+        Logger logger,
+        SharedServer sharedServer,
+        String serverConfigName, String jvmOptionsName) throws Exception {
+
+        if (serverConfigName != null) {
+            install(logger, sharedServer, serverConfigName, "server.xml");
+        }
+
+        if (jvmOptionsName != null) {
+            install(logger, sharedServer, jvmOptionsName, "jvm.options");
+        }
 
         logger.info("setUpWebInfClasses: Add TestServlet40 (WEB-INF/classes jandex) to the server applications folder");
 
@@ -132,17 +147,17 @@ public class JandexWebInfClassesTest extends JandexAppTest {
     //
 
     @Test
-    public void webInfClasses_testServletIsRunning() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexTrue_testServletIsRunning() throws Exception {
         super.testServletIsRunning();
     }
 
     @Test
-    public void webInfClasses_testServletIsRunning31() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexTrue_testServletIsRunning31() throws Exception {
         super.testServletIsRunning31();
     }
 
     @Test
-    public void webInfClasses_testServletVersions() throws Exception {
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexTrue_testServletVersions() throws Exception {
         super.testServletVersions();
     }
 
@@ -154,7 +169,7 @@ public class JandexWebInfClassesTest extends JandexAppTest {
      * the CWWKC009x message is expected to appear in the server log.
      */
     @Test
-    public void webInfClasses_testJandexIndexIsRead() throws Exception {
-        super.testJandex(JandexAppTest.DO_EXPECT_JANDEX);
+    public void applicationManagerUseJandexTrue_applicationUseJandexTrue_applicationReadWebInfJandexTrue_testJandexIndexIsRead() throws Exception {
+        super.testJandex(JandexAppTest.JandexExpectation.DO_EXPECT_JANDEX);
     }
 }
