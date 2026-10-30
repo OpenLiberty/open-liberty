@@ -85,6 +85,29 @@ public enum McpProtocolVersion {
     }
 
     /**
+     * Returns the newest protocol version which is available on the current runtime.
+     * <p>
+     * On a beta runtime this is {@link #V_2026_07_28}, otherwise it is {@link #V_2025_11_25}.
+     *
+     * @return the newest available protocol version
+     */
+    public static McpProtocolVersion latest() {
+        return V_2026_07_28.isAvailable() ? V_2026_07_28 : V_2025_11_25;
+    }
+
+    /**
+     * Checks whether this protocol version is within the given range.
+     *
+     * @param min the minimum version (inclusive)
+     * @param max the maximum version (inclusive)
+     * @return true if this version is between min and max, inclusive
+     */
+    public boolean isBetween(McpProtocolVersion min, McpProtocolVersion max) {
+        // Versions are declared newest first, so a newer version has a lower ordinal
+        return ordinal() <= min.ordinal() && ordinal() >= max.ordinal();
+    }
+
+    /**
      * Return true if this protocol version supports structured content in tool responses and outputSchema
      * in tool descriptions. Structured content and outputSchema are only supported in protocol version
      * 2025-06-18 and later

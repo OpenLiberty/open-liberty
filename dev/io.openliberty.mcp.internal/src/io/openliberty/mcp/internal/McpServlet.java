@@ -135,7 +135,7 @@ public class McpServlet extends HttpServlet {
         McpOperationMetrics metrics = new McpOperationMetrics();
 
         try {
-            transport.init(sessionStores.getCurrent());
+            transport.init(sessionStores.getCurrent(), mcpConfig);
 
             metrics.setTransport(transport);
             McpRequest mcpRequest = transport.getMcpRequest();
@@ -258,7 +258,15 @@ public class McpServlet extends HttpServlet {
      */
 
     @Override
+    @FFDCIgnore(HttpResponseException.class)
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            McpTransport.validateProtocolVersionHeader(req, mcpConfig);
+        } catch (HttpResponseException e) {
+            resp.sendError(e.getStatusCode(), e.getMessage());
+            return;
+        }
+
         if (isServerStateless()) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");
             return;
@@ -615,10 +623,15 @@ public class McpServlet extends HttpServlet {
         McpProtocolVersion version;
         try {
             version = McpProtocolVersion.parse(params.getProtocolVersion());
+            if (!version.isBetween(mcpConfig.minimumProtocolVersion(), mcpConfig.maximumProtocolVersion())) {
+                // Client requested version is not configured
+                // Respond with our preferred version
+                version = mcpConfig.maximumProtocolVersion();
+            }
         } catch (NoSuchElementException e) {
             // Client requested version not supported
             // Respond with our preferred version
-            version = McpProtocolVersion.V_2025_11_25;
+            version = mcpConfig.maximumProtocolVersion();
         }
         // TODO store client capabilities
         // TODO store client info
