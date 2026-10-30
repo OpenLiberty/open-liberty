@@ -10,7 +10,10 @@
 package io.openliberty.mcp.internal.config;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -19,7 +22,10 @@ import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
+import io.openliberty.mcp.internal.McpProtocolVersion;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
 
 /**
@@ -37,6 +43,9 @@ public class McpConfigurationComponent {
 
     private volatile McpServerConfigProps config;
     private volatile String servicePid;
+
+    private static final String CFG_MINIMUM_PROTOCOL_VERSION = "minimumProtocolVersion";
+    private static final String CFG_MAXIMUM_PROTOCOL_VERSION = "maximumProtocolVersion";
 
     @Activate
     protected void activate(Map<String, Object> properties) {
@@ -65,7 +74,52 @@ public class McpConfigurationComponent {
         // Parse flattened serverInfo properties (ibm:flat="true" in metatype.xml)
         ServerInfo serverInfo = parseServerInfo(properties);
 
-        this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid, sessionTimeout, serverInfo, asyncTimeout);
+        // minimumProtocolVersion and maximumProtocolVersion are beta. Because the metatype provides
+        // defaults, the properties are always present, so they are only read when running a beta runtime.
+        // Otherwise the defaults are used (minimum 2025-03-26, maximum 2025-11-25).
+        McpProtocolVersion minimumProtocolVersion = null;
+        McpProtocolVersion maximumProtocolVersion = null;
+        if (ProductInfo.getBetaEdition()) {
+            minimumProtocolVersion = parseProtocolVersion(properties, CFG_MINIMUM_PROTOCOL_VERSION);
+            maximumProtocolVersion = parseProtocolVersion(properties, CFG_MAXIMUM_PROTOCOL_VERSION);
+
+            McpProtocolVersion effectiveMinimum = minimumProtocolVersion != null ? minimumProtocolVersion : McpProtocolVersion.defaultMinimum();
+            McpProtocolVersion effectiveMaximum = maximumProtocolVersion != null ? maximumProtocolVersion : McpProtocolVersion.defaultMaximum();
+            if (!effectiveMinimum.isBetween(McpProtocolVersion.oldest(), effectiveMaximum)) {
+                Tr.error(tc, "CWMCM0046E.protocol.version.range.invalid", effectiveMinimum.getVersion(), effectiveMaximum.getVersion());
+                minimumProtocolVersion = null;
+                maximumProtocolVersion = null;
+            }
+        }
+
+        this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid, sessionTimeout, serverInfo, asyncTimeout,
+                                               minimumProtocolVersion, maximumProtocolVersion);
+    }
+
+    /**
+     * Parse a protocol version attribute, which is either "latest" or a supported protocol version.
+     * Logs an error and returns null if the value is not valid. The caller then uses the default for that attribute.
+     *
+     * @param properties the configuration properties
+     * @param attributeName the name of the attribute to read
+     * @return the protocol version, or null if the attribute is not set or not valid
+     */
+    @FFDCIgnore(NoSuchElementException.class)
+    private McpProtocolVersion parseProtocolVersion(Map<String, Object> properties, String attributeName) {
+        String value = (String) properties.get(attributeName);
+        if (value == null) {
+            return null;
+        }
+        try {
+            return McpProtocolVersion.parseConfigValue(value.trim());
+        } catch (NoSuchElementException e) {
+            String supportedValues = McpProtocolVersion.LATEST + ", "
+                                     + Arrays.stream(McpProtocolVersion.values())
+                                             .map(McpProtocolVersion::getVersion)
+                                             .collect(Collectors.joining(", "));
+            Tr.error(tc, "CWMCM0045E.protocol.version.invalid", attributeName, value, supportedValues);
+            return null;
+        }
     }
 
     /**

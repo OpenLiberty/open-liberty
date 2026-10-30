@@ -23,6 +23,7 @@ import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.mcp.internal.fat.conformance.tests.ConformanceTests;
 import io.openliberty.mcp.internal.fat.oidc.tests.AuthorizationFlowTests;
 import io.openliberty.mcp.internal.fat.oidc.tests.OidcTests;
+import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionConfigBetaTest;
 import io.openliberty.mcp.internal.fat.serverinfo.CustomServerInfoTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatelessConfigChangeOnRestoreTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatelessModeTest;
@@ -67,6 +68,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 DynamicMcpPathUpdateTest.class,
                 InvalidAsyncTimeoutTest.class,
                 InvalidSessionTimeoutTest.class,
+                ProtocolVersionConfigBetaTest.class,
                 StatelessConfigChangeOnRestoreTest.class,
                 StatelessModeTest.class,
                 // These deploy intentionally failing apps on "mcp-server" and start/stop it

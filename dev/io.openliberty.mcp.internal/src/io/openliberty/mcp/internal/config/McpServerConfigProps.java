@@ -11,6 +11,7 @@ package io.openliberty.mcp.internal.config;
 
 import java.time.Duration;
 
+import io.openliberty.mcp.internal.McpProtocolVersion;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
 
 /**
@@ -23,6 +24,8 @@ import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
  * @param sessionTimeout The session timeout duration
  * @param serverInfo The server info configuration
  * @param asyncTimeout The timeout in seconds for asynchronous tool calls
+ * @param minimumProtocolVersion The oldest accepted protocol version (optional, can be null)
+ * @param maximumProtocolVersion The newest accepted protocol version (optional, can be null)
  */
 public record McpServerConfigProps(boolean stateless,
                                    String moduleName,
@@ -30,7 +33,9 @@ public record McpServerConfigProps(boolean stateless,
                                    String servicePid,
                                    Duration sessionTimeout,
                                    ServerInfo serverInfo,
-                                   long asyncTimeoutMs) implements McpConfig {
+                                   long asyncTimeoutMs,
+                                   McpProtocolVersion minimumProtocolVersion,
+                                   McpProtocolVersion maximumProtocolVersion) implements McpConfig {
     public static final String FALLBACK_PATH = "/mcp";
     public static final int DEFAULT_ASYNC_TIMEOUT_MS = 30_000;
 
@@ -41,15 +46,24 @@ public record McpServerConfigProps(boolean stateless,
     // Default ServerInfo with defaults (name and version only, title and description are null)
     public static final ServerInfo DEFAULT_SERVER_INFO = new ServerInfo(DEFAULT_SERVER_NAME, null, DEFAULT_SERVER_VERSION, null);
 
-    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, Duration.ofMinutes(10), null, DEFAULT_ASYNC_TIMEOUT_MS);
+    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, Duration.ofMinutes(10), null, DEFAULT_ASYNC_TIMEOUT_MS,
+                                                                                       null, null);
 
     /**
      * Compact constructor that validates and applies defaults for required fields.
      * Only name and version are required in ServerInfo (title and description are optional).
      * If serverInfo is null, DEFAULT_SERVER_INFO is used.
      * If serverInfo is provided but name or version are null, defaults are applied.
+     * If a protocol version is null, the default for that bound is used.
      */
     public McpServerConfigProps {
+        if (minimumProtocolVersion == null) {
+            minimumProtocolVersion = McpProtocolVersion.defaultMinimum();
+        }
+        if (maximumProtocolVersion == null) {
+            maximumProtocolVersion = McpProtocolVersion.defaultMaximum();
+        }
+
         // If serverInfo is null, use DEFAULT_SERVER_INFO
         if (serverInfo == null) {
             serverInfo = DEFAULT_SERVER_INFO;

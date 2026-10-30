@@ -28,6 +28,15 @@ public enum McpProtocolVersion {
     V_2025_06_18("2025-06-18"),
     V_2025_03_26("2025-03-26");
 
+    /** Config value which selects the latest supported protocol version */
+    public static final String LATEST = "latest";
+
+    /** Oldest version accepted when the runtime is not beta (and the default minimum) */
+    public static final McpProtocolVersion GA_MINIMUM = V_2025_03_26;
+
+    /** Newest version accepted when the runtime is not beta */
+    public static final McpProtocolVersion GA_MAXIMUM = V_2025_11_25;
+
     private final String version;
     private final boolean beta;
 
@@ -82,6 +91,68 @@ public enum McpProtocolVersion {
             }
         }
         throw new NoSuchElementException();
+    }
+
+    /**
+     * Parses a protocol version from a configuration value. In addition to the version strings
+     * understood by {@link #parse(String)}, the special value {@value #LATEST} selects {@link #latest()}.
+     *
+     * @param value the configuration value
+     * @return the protocol version
+     * @throws NoSuchElementException if the value is not {@value #LATEST} or a supported protocol version
+     */
+    public static McpProtocolVersion parseConfigValue(String value) {
+        if (LATEST.equals(value)) {
+            return latest();
+        }
+        return parse(value);
+    }
+
+    /**
+     * @return the newest protocol version supported by this runtime
+     */
+    public static McpProtocolVersion latest() {
+        return values()[0];
+    }
+
+    /**
+     * @return the oldest protocol version supported by this runtime
+     */
+    public static McpProtocolVersion oldest() {
+        McpProtocolVersion[] all = values();
+        return all[all.length - 1];
+    }
+
+    /**
+     * The minimum protocol version accepted when none is configured, or when the configuration is ignored
+     * because the runtime is not beta.
+     *
+     * @return the default minimum protocol version
+     */
+    public static McpProtocolVersion defaultMinimum() {
+        return GA_MINIMUM;
+    }
+
+    /**
+     * The maximum protocol version accepted when none is configured, or when the configuration is ignored
+     * because the runtime is not beta.
+     * <p>
+     * The beta runtime defaults to the latest version. Other runtimes are restricted to {@link #GA_MAXIMUM}.
+     *
+     * @return the default maximum protocol version
+     */
+    public static McpProtocolVersion defaultMaximum() {
+        return ProductInfo.getBetaEdition() ? latest() : GA_MAXIMUM;
+    }
+
+    /**
+     * @param min the minimum version (inclusive)
+     * @param max the maximum version (inclusive)
+     * @return true if this version is between min and max, inclusive
+     */
+    public boolean isBetween(McpProtocolVersion min, McpProtocolVersion max) {
+        // Versions are ISO dates, so string order is chronological order
+        return version.compareTo(min.version) >= 0 && version.compareTo(max.version) <= 0;
     }
 
     /**

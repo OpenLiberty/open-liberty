@@ -1,0 +1,48 @@
+<server description="MCP Server with configurable protocol versions (beta)">
+
+  <featureManager>
+    <feature>servlet-6.0</feature>
+    <feature>cdi-4.0</feature>
+    <feature>mcp-1.0</feature>
+  </featureManager>
+
+  <!-- Applications are stateless so tests can send requests with an arbitrary MCP-Protocol-Version header -->
+
+  <!-- No protocol version configuration: all versions are accepted -->
+  <application location="defaultVersionsApp.war">
+    <mcp stateless="true"/>
+  </application>
+
+  <!-- Only one version is accepted -->
+  <application location="singleVersionApp.war">
+    <mcp stateless="true" minimumProtocolVersion="2025-06-18" maximumProtocolVersion="2025-06-18"/>
+  </application>
+
+  <!-- Only a minimum: maximum defaults to latest -->
+  <application location="minimumOnlyApp.war">
+    <mcp stateless="true" minimumProtocolVersion="2025-06-18"/>
+  </application>
+
+  <!-- Only a maximum: minimum defaults to the oldest version -->
+  <application location="maximumOnlyApp.war">
+    <mcp stateless="true" maximumProtocolVersion="2025-06-18"/>
+  </application>
+
+  <!-- "latest" selects the newest supported version -->
+  <application location="latestApp.war">
+    <mcp stateless="true" minimumProtocolVersion="latest" maximumProtocolVersion="latest"/>
+  </application>
+
+  <!-- Not a valid version: error is logged and the defaults are used -->
+  <application location="invalidVersionApp.war">
+    <mcp stateless="true" minimumProtocolVersion="2022-02-02"/>
+  </application>
+
+  <!-- Minimum is newer than maximum: error is logged and the defaults are used -->
+  <application location="invalidRangeApp.war">
+    <mcp stateless="true" minimumProtocolVersion="2025-11-25" maximumProtocolVersion="2025-03-26"/>
+  </application>
+
+  <include location="../fatTestPorts.xml" />
+
+</server>

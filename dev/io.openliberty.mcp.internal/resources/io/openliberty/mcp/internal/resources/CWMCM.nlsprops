@@ -347,3 +347,20 @@ CWMCM0043W.unsupported.annotation.useraction=Remove the unsupported annotation f
 CWMCM0044I.localhost.header.rejected=CWMCM0044I: The server did not process a local MCP request because the Origin header value was not valid.
 CWMCM0044I.localhost.header.rejected.explanation=Unsecured HTTP requests from localhost must either have no Origin header, or have an Origin header that contains only localhost or a loopback address. An Origin header that contains any other value indicates a possible DNS rebinding attack.
 CWMCM0044I.localhost.header.rejected.useraction=Ensure that the Origin header is either not present or contains only localhost.
+
+# Used for server logging
+# Do not translate "MCP", "latest"
+# {0} = The name of the configuration attribute
+# {1} = The value that was specified
+# {2} = The list of valid values
+CWMCM0045E.protocol.version.invalid=CWMCM0045E: The {1} value is not valid for the {0} attribute of the mcp configuration element. Valid values: {2}. The default value is used instead.
+CWMCM0045E.protocol.version.invalid.explanation=The minimumProtocolVersion and maximumProtocolVersion attributes must be set to latest or to a protocol version that is supported by the server.
+CWMCM0045E.protocol.version.invalid.useraction=Set the attribute to latest or to one of the valid values.
+
+# Used for server logging
+# Do not translate "MCP", "minimumProtocolVersion", "maximumProtocolVersion"
+# {0} = The effective minimum protocol version
+# {1} = The effective maximum protocol version
+CWMCM0046E.protocol.version.range.invalid=CWMCM0046E: The minimum MCP protocol version {0} is newer than the maximum MCP protocol version {1}. The default protocol version range is used instead.
+CWMCM0046E.protocol.version.range.invalid.explanation=The minimumProtocolVersion attribute of the mcp configuration element must not be newer than the maximumProtocolVersion attribute.
+CWMCM0046E.protocol.version.range.invalid.useraction=Set the minimumProtocolVersion attribute to a protocol version that is the same as or older than the maximumProtocolVersion attribute.
