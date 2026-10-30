@@ -364,7 +364,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             throw new IllegalArgumentException("requestMetadata");
         }
         if (this.nettyRequestMetadata != null) {
-            throw new IllegalStateException("Netty request metadata is already initialized");
+            throw new IllegalStateException(Tr.formatMessage(tc, "netty.request.metadata.already.initialized"));
         }
         this.nettyRequestMetadata = requestMetadata;
     }

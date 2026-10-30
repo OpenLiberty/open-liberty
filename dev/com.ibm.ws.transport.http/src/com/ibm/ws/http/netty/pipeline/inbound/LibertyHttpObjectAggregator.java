@@ -123,7 +123,7 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
 
                 if (sizeOfCurrentChunk > maxContentLength ||
                     (content.readableBytes() + sizeOfCurrentChunk) > maxContentLength) {
-                    throw new IllegalHttpBodyException("Chunk size exceeds configured message size limit of " + maxContentLength + " bytes.");
+                    throw new IllegalHttpBodyException(Tr.formatMessage(tc, "netty.content.length.exceeded", maxContentLength));
                 }
 
                 content.addComponent(true, httpContent.content().retain());
