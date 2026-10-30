@@ -278,6 +278,100 @@ public class KeepAliveEnforcementTest {
     }
 
     // ---------------------------------------------------------------------
+    // Pipelined requests
+    // ---------------------------------------------------------------------
+
+    /**
+     * Control for the pipelining tests. With the default configuration, three
+     * requests sent in one write must be answered in order, none of the responses
+     * may ask for the connection to be closed, and the socket must stay open.
+     *
+     * <p>Without this test, the "request not answered" checks in the tests below
+     * would also pass if pipelined requests were never answered at all.
+     */
+    @Test
+    public void defaultConfig_pipelinedRequests_allAnsweredInOrder() throws Exception {
+        try (RawConnection connection = new RawConnection()) {
+            connection.sendPipelinedGets(3);
+
+            for (int i = 1; i <= 3; i++) {
+                RawResponse response = connection.readResponse();
+                LOG.info("defaultConfig pipelined response " + i + ":\n" + response);
+
+                assertEquals("Pipelined request " + i + " should succeed", 200, response.statusCode);
+                assertTrue("Responses must arrive in request order, expected req=" + i + " but got: " + response.body.trim(),
+                           response.body.contains("req=" + i));
+                assertFalse("Response " + i + " must not ask to close the connection with default config",
+                            response.isConnectionClose());
+            }
+            assertFalse("The server must leave the connection open with default config",
+                        connection.isClosedByServer(STAYS_OPEN_TIMEOUT_MS));
+        }
+    }
+
+    /**
+     * With {@code keepAliveEnabled=false}, two requests sent in one write must
+     * produce one response, carrying {@code Connection: close}. The server then
+     * closes the socket without answering the second request.
+     *
+     * <p>This is how the channel framework behaves: it reads a pipelined request
+     * only after the previous exchange has finished and the connection is still
+     * persistent. Netty must match.
+     */
+    @Test
+    public void keepAliveDisabled_pipelinedRequests_secondNotAnswered() throws Exception {
+        setKeepAliveOptions(false, null);
+
+        try (RawConnection connection = new RawConnection()) {
+            connection.sendPipelinedGets(2);
+
+            RawResponse first = connection.readResponse();
+            LOG.info("keepAliveDisabled pipelined response 1:\n" + first);
+            assertEquals("Pipelined request 1 should succeed", 200, first.statusCode);
+            assertTrue("Response 1 must be for request 1: " + first.body.trim(), first.body.contains("req=1"));
+            assertTrue("keepAliveEnabled=false must add Connection: close to response 1", first.isConnectionClose());
+
+            assertTrue("The server must close the connection after response 1 without answering pipelined request 2",
+                       connection.isClosedByServer(RESPONSE_TIMEOUT_MS));
+        }
+    }
+
+    /**
+     * With {@code maxKeepAliveRequests=2}, three requests sent in one write must
+     * produce two responses. Response 1 leaves the connection open, response 2
+     * carries {@code Connection: close}, and the server then closes the socket
+     * without answering request 3.
+     *
+     * <p>This checks the request counter against the response that is being
+     * written. If the counter counted every pipelined request as soon as it
+     * arrived, response 1 would already see the limit as reached and be closed
+     * early, so response 2 would never be sent.
+     */
+    @Test
+    public void maxKeepAliveRequests_pipelinedRequests_closesOnNthAndDropsTheRest() throws Exception {
+        setKeepAliveOptions(null, 2);
+
+        try (RawConnection connection = new RawConnection()) {
+            connection.sendPipelinedGets(3);
+
+            RawResponse first = connection.readResponse();
+            LOG.info("maxKeepAliveRequests pipelined response 1:\n" + first);
+            assertEquals("Pipelined request 1 should succeed", 200, first.statusCode);
+            assertTrue("Response 1 must be for request 1: " + first.body.trim(), first.body.contains("req=1"));
+            assertFalse("Response 1 of 2 must not close the connection", first.isConnectionClose());
+
+            RawResponse second = connection.readResponse();
+            LOG.info("maxKeepAliveRequests pipelined response 2:\n" + second);
+            assertEquals("Pipelined request 2 should succeed", 200, second.statusCode);
+            assertTrue("Response 2 must be for request 2: " + second.body.trim(), second.body.contains("req=2"));
+            assertTrue("Response 2 of 2 must carry Connection: close", second.isConnectionClose());
+
+            assertTrue("The server must close the connection after response 2 without answering pipelined request 3",
+                       connection.isClosedByServer(RESPONSE_TIMEOUT_MS));
+        }
+    }
+
+    // ---------------------------------------------------------------------
     // Servlet 3.1 HttpUpgradeHandler upgrades
     // ---------------------------------------------------------------------
 
@@ -729,6 +823,22 @@ public class KeepAliveEnforcementTest {
             }
             request.append("\r\n");
             out.write(request.toString().getBytes(StandardCharsets.ISO_8859_1));
+            out.flush();
+        }
+
+        /**
+         * Sends {@code count} GET requests to the test servlet in a single write,
+         * without waiting for any response (HTTP/1.1 pipelining). The requests are
+         * numbered 1 to {@code count}, and the servlet echoes the number back.
+         */
+        void sendPipelinedGets(int count) throws IOException {
+            StringBuilder requests = new StringBuilder();
+            for (int i = 1; i <= count; i++) {
+                requests.append("GET ").append(SERVLET_PATH).append("?req=").append(i).append(" HTTP/1.1\r\n");
+                requests.append("Host: ").append(server.getHostname()).append(':').append(server.getHttpDefaultPort()).append("\r\n");
+                requests.append("\r\n");
+            }
+            out.write(requests.toString().getBytes(StandardCharsets.ISO_8859_1));
             out.flush();
         }
 
