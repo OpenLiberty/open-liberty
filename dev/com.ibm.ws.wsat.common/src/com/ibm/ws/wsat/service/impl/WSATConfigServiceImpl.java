@@ -78,20 +78,23 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     private static final AtomicServiceReference<Handler> handlerService = new AtomicServiceReference<Handler>(WSATHANDLERSERVICE_REFERENCE_NAME);
     private static final AtomicServiceReference<VariableRegistry> variableRegistryRef = new AtomicServiceReference<VariableRegistry>(VARIABLEREGISTRY_REFERENCE_NAME);
 
-    private boolean enabled;
-    private String sslId;
-    private String proxy;
-    private long asyncResponseTimeout;
-    private boolean clientAuth;
-    private boolean checkWsdlMode;
+    // These fields are written by the DS lifecycle thread in modified() and deactivate(), and
+    // read on request threads through the WSATConfigService getters, so they are volatile.
+    private volatile boolean enabled;
+    private volatile String sslId;
+    private volatile String proxy;
+    private volatile long asyncResponseTimeout;
+    private volatile boolean clientAuth;
+    private volatile boolean checkWsdlMode;
+    // The next two are only used by the DS lifecycle methods, so they need no volatile.
     private String configuredVirtualHostId = "default_host";
     private ServiceReference<VirtualHost> configuredVirtualHostRef = null;
     // The actual VirtualHost service instance for the configured non-default virtual host.
     // Obtained via BundleContext.getService() (not locateService) so it works regardless
     // of whether the reference was DS-bound. Null when using default_host.
-    private VirtualHost configuredVirtualHost = null;
+    private volatile VirtualHost configuredVirtualHost = null;
 
-    private static WSATConfigService INSTANCE;
+    private static volatile WSATConfigService INSTANCE;
 
     public WSATConfigServiceImpl() {
         INSTANCE = this;
