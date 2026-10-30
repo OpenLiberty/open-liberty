@@ -28,6 +28,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -69,7 +70,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Future;
-import io.openliberty.channel.config.ChannelFrameworkConfig;
+
+import com.ibm.ws.runtime.update.ServerElementConfig;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ConfigConstants;
@@ -112,6 +114,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     /** Holds dedicated groups before their channel is known (between bootstrap creation and successful bind). */
     private final Set<EventLoopGroup> pendingDedicatedGroups = ConcurrentHashMap.newKeySet();
 
+    /** Channels whose bind failed due to "Address already in use"; used to suppress spurious quiesce warnings. */
+    private final Set<Channel> bindFailedChannels = ConcurrentHashMap.newKeySet();
+
     private EventLoopGroup sharedAcceptGroup;
     private EventLoopGroup childGroup;
 
@@ -119,7 +124,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     private ScheduledExecutorService scheduledExecutorService = null;
 
-    private ChannelFrameworkConfig channelConfig;
+    private ServerElementConfig serverElementConfig;
 
     private boolean useNativeIO = true;
 
@@ -170,6 +175,12 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                 NettyThreadMetrics.logMetrics(childGroup);
             }, metricsWindow, metricsWindow, TimeUnit.MILLISECONDS);
         }
+    }
+
+    @Modified
+    protected synchronized void modified(Map<String, Object> config) {
+        // Log warning that dynamic Netty configuration changes are not supported
+        Tr.warning(tc, "netty.dynamic.config.not.supported");
     }
 
     /**
@@ -324,23 +335,13 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         this.executorService = executorService;
     }
 
-    /*
-     * Used for share config between legacy channel framework and the netty framework.
-     */
-    @Reference(service = ChannelFrameworkConfig.class, cardinality = ReferenceCardinality.MANDATORY)
-    protected void setChannelFWConfig(ChannelFrameworkConfig config) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Updating ChannelFrameworkConfig: " + config);
-        }
-        this.channelConfig = config;
+    @Reference(service = ServerElementConfig.class, cardinality = ReferenceCardinality.MANDATORY)
+    protected void setServerElementConfig(ServerElementConfig config) {
+        this.serverElementConfig = config;
     }
 
-    protected void updatedChannelFWConfig(ChannelFrameworkConfig config) {
-        this.channelConfig = config;
-    }
-
-    public ChannelFrameworkConfig getChannelFWConfig() {
-        return this.channelConfig;
+    protected void unsetServerElementConfig(ServerElementConfig config) {
+        this.serverElementConfig = null;
     }
 
     /**
@@ -414,7 +415,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             }
             isActive = false;
             // If the system is configured to quiesce connections..
-            long timeout = channelConfig.getDefaultChainQuiesceTimeout();
+            long timeout = serverElementConfig.getQuiesceTimeoutMillis();
 
             if (timeout > 0) {
                 if (activeChannelMap.isEmpty() && outboundConnections.isEmpty()) {
@@ -643,11 +644,25 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                     chan.pipeline().addFirst(new QuiesceHandler(quiesce));
                 }
             } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                    Tr.warning(tc, "Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");
+                // If the channel is in bindFailedChannels it never became an active endpoint,
+                // so suppress the warning; otherwise emit it for genuinely unexpected cases.
+                if (!bindFailedChannels.remove(chan)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                        Tr.warning(tc, "netty.quiesce.channel.not.endpoint");
+                    }
                 }
             }
         }
+    }
+
+    /**
+     * Record that a channel's bind failed due to "Address already in use" so that
+     * {@link #registerEndpointQuiesce} can suppress the spurious not-an-endpoint warning.
+     *
+     * @param channel the channel whose bind failed
+     */
+    public void addBindFailedChannel(Channel channel) {
+        bindFailedChannels.add(channel);
     }
 
     /**
@@ -784,7 +799,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Override
     public long getDefaultChainQuiesceTimeout() {
-        return channelConfig.getDefaultChainQuiesceTimeout();
+        return serverElementConfig.getQuiesceTimeoutMillis();
     }
 
     @Override
