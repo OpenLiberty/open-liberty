@@ -227,6 +227,28 @@ public class KeepAliveEnforcementTest {
     }
 
     /**
+     * {@code maxKeepAliveRequests=0} is accepted by the configuration and, as in
+     * the channel framework, behaves like {@code 1}: the first response must
+     * carry {@code Connection: close} and the server must close the socket.
+     */
+    @Test
+    public void maxKeepAliveRequestsZero_closesAfterFirstResponse() throws Exception {
+        setKeepAliveOptions(null, 0);
+
+        try (RawConnection connection = new RawConnection()) {
+            connection.sendGet(1);
+            RawResponse response = connection.readResponse();
+            LOG.info("maxKeepAliveRequests=0 response:\n" + response);
+
+            assertEquals("The request itself should still succeed", 200, response.statusCode);
+            assertTrue("maxKeepAliveRequests=0 must add Connection: close to the first response",
+                       response.isConnectionClose());
+            assertTrue("The server must close the connection after the first response",
+                       connection.isClosedByServer(RESPONSE_TIMEOUT_MS));
+        }
+    }
+
+    /**
      * Regression test for the header-spoofing bypass, against
      * {@code keepAliveEnabled=false}. The request sends
      * {@code x-http2-stream-id} on an HTTP/1.1 connection. The connection is
