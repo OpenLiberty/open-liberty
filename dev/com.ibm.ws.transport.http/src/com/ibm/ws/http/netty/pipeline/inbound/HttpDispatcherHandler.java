@@ -235,7 +235,13 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                                     && !failure.getMessage().contains("possibly HTTP/0.9")) {
                         FFDCFilter.processException(failure, HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
                     }
-                    sendErrorMessage(failure);
+                    // If streaming is already active, signal the error to the application stream 
+                    // rather than sending a duplicate direct transport response.
+                    if (!(msg instanceof HttpRequest) && queue != null && !queue.isEosSignaled()) {
+                        queue.signalError(failure);
+                    } else {
+                        sendErrorMessage(failure);
+                    }
                 } else {
                     sendErrorMessage(new Exception("HTTP request decoding failure!"));
                 }
@@ -385,9 +391,18 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private static boolean isExpectedRequestValidationFailure(Throwable failure) {
-        return failure instanceof HttpRequestValidationException                        
+        return failure instanceof HttpRequestValidationException
+                        || isChunkSizeOverflow(failure)                        
                         || (failure instanceof IllegalArgumentException
                                         && failure.getCause() instanceof HttpRequestValidationException);
+    }
+
+    // Netty's HttpObjectDecoder reports an out-of-range chunk-size field as 
+    // NumberFormatException("Chunk size overflow: <n>"); the legacy parser rejects it without FFDC.
+    private static boolean isChunkSizeOverflow(Throwable failure) {
+        return failure instanceof NumberFormatException
+                        && failure.getMessage() != null
+                        && failure.getMessage().startsWith("Chunk size overflow");
     }
 
     private static boolean isUpgrade(HttpRequest req) {

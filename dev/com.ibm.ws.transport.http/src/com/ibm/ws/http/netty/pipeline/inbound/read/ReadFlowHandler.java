@@ -359,6 +359,22 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             return;
         }
 
+        // A body fragment the decoder could not parse (e.g. chunk-size overflow) means the
+        // request framing is corrupt, so the connection can never be reused. Still forward it
+        // so the application's body stream observes the error.
+        if (message instanceof HttpContent && ((HttpContent) message).decoderResult().isFailure()) {
+            state.setKeepAliveAllowed(false);
+            state.setStopReading(true);
+            super.channelRead(context, message);
+            // If the response is still pending, onResponseComplete closes once it is written.
+            // If it already completed there is no later hook, so close here.
+            if (!state.isResponseInFlight() && context.channel().isActive()) {
+                state.releaseQueue();
+                context.close();
+            }
+            return;
+        }
+
         // --------------------------------------------------------------------
         // HttpContent (body chunk or LastHttpContent)
         // --------------------------------------------------------------------

@@ -306,7 +306,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         BodyQueue bodyQueue = (body != null) ? body.getBodyQueue() : null;
 
         if (!this.isc.isBodyComplete()) {
-            if (shouldDrainRequestBodyBeforeNettyClose(e)) {
+            if (shouldDrainRequestBodyBeforeNettyClose(e, bodyQueue)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Body not fully read; starting async purge: draining BodyQueue.");
                 }
@@ -424,7 +424,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         final FullHttpRequest requestReference = (this.nettyRequest != null) ? this.nettyRequest : this.nettyHeaderOnly;
         boolean requestTrailersRequireClose = requestTrailersRequireClose(requestReference);
-        if (nettyContext.pipeline().get(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME) == null || quiescing || requestTrailersRequireClose) {
+        boolean bodyErrorRequiresClose = bodyErrorRequiresClose(bodyQueue);
+        if (nettyContext.pipeline().get(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME) == null || quiescing || requestTrailersRequireClose || bodyErrorRequiresClose) {
             this.nettyContext.channel().close();
         } else {
             // Signal app-done so the lifecycle coordinator can perform isc.clear() once.
@@ -469,14 +470,19 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         return requestReference != null && requestReference.headers().contains(HttpHeaderNames.TRAILER);
     }
 
+    static boolean bodyErrorRequiresClose(BodyQueue bodyQueue) {
+        // Corrupted body framing cannot safely be reused for subsequent requests
+        return bodyQueue != null && bodyQueue.error() != null;
+    }
+
     /**
      * Returns {@code true} when the remaining request body should be drained
      * before the connection is reused. Drain is skipped only for genuine
      * termination conditions: error, quiesce, or non-keepalive exchange.
      */
-    private boolean shouldDrainRequestBodyBeforeNettyClose(Exception closeCause) {
-        // Non-null exception = error state; matches Channel Framework's errorState check.
-        if (closeCause != null) {
+    private boolean shouldDrainRequestBodyBeforeNettyClose(Exception closeCause, BodyQueue bodyQueue) {
+        // Non-null exception or body error = error state; matches Channel Framework's errorState check.
+        if (closeCause != null || bodyErrorRequiresClose(bodyQueue)) {
             return false;
         }
         if (this.nettyContext == null) {
