@@ -16,7 +16,7 @@
         <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS-->
         <testng.version>7.5.1</testng.version>
         <slf4j.version>2.0.6</slf4j.version>
-        <arquillian.version>1.7.0.Alpha13</arquillian.version>
+        <arquillian.version>1.10.2.Final</arquillian.version>
         <arquillian.liberty.managed.version>1.0.8</arquillian.liberty.managed.version>
 
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
