@@ -59,7 +59,7 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
     @TestServlet(servlet = SchedulerFATServlet.class, path = APP_NAME)
     public static LibertyServer server;
 
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DatabaseContainerType.H2);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -88,9 +88,6 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
                       server.waitForStringInLog("CWWKF0008I"));
         assertNotNull("Server should report it has started",
                       server.waitForStringInLog("CWWKF0011I"));
-
-        // Wait for the Derby start messages from DataSource/database creation to avoid servlet init trying to concurrently start Derby.
-        server.waitForStringInLog("DSRA8206I"); // connected to Derby
     }
 
     @AfterClass
