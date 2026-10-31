@@ -61,10 +61,10 @@ public class NettyConfigurationTests {
         LOG.info("Testing default netty configuration values");
 
         // Verify default values are picked up
-        assertNotNull("Default scalerMinThreads=1 not found",
-                      server.waitForStringInTrace(".*scalerMinThreads=1.*"));
-        assertNotNull("Default scalerMaxThreads=4 not found",
-                      server.waitForStringInTrace(".*scalerMaxThreads=4.*"));
+        assertNotNull("Default eventGroupMinThreads=1 not found",
+                      server.waitForStringInTrace(".*eventGroupMinThreads=1.*"));
+        assertNotNull("Default eventGroupMaxThreads=4 not found",
+                      server.waitForStringInTrace(".*eventGroupMaxThreads=4.*"));
         assertNotNull("Default scalerWindowSize=1500 not found",
                       server.waitForStringInTrace(".*scalerWindowSize=1500.*"));
         assertNotNull("Default scalerDownThreshold=0.15 not found",
@@ -93,11 +93,12 @@ public class NettyConfigurationTests {
         server.startServer(NettyConfigurationTests.class.getSimpleName() + ".log", false);
         
         // Verify custom configuration values (all different from defaults)
+        // Note: internal properties are still logged. 
         LOG.info("Verifying custom netty configuration values");
-        assertNotNull("Custom scalerMinThreads=2 not found (default is 1)",
-                      server.waitForStringInTrace(".*scalerMinThreads=2.*"));
-        assertNotNull("Custom scalerMaxThreads=8 not found (default is 4)",
-                      server.waitForStringInTrace(".*scalerMaxThreads=8.*"));
+        assertNotNull("Custom eventGroupMinThreads=2 not found (default is 1)",
+                      server.waitForStringInTrace(".*eventGroupMinThreads=2.*"));
+        assertNotNull("Custom eventGroupMaxThreads=8 not found (default is 4)",
+                      server.waitForStringInTrace(".*eventGroupMaxThreads=8.*"));
         assertNotNull("Custom scalerWindowSize=2000 not found (default is 1500)",
                       server.waitForStringInTrace(".*scalerWindowSize=2000.*"));
         assertNotNull("Custom scalerDownThreshold=0.20 not found (default is 0.15)",
