@@ -125,6 +125,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     // NEW: per-request marker to avoid double-enqueue when FullHttpRequest is used
     private boolean aggregatedBodyEnqueued;
+    
+    // Marker to reject a declared Content-Length over messageSizeLimit before the request dispatch
+    private boolean requestRejected;
 
     private final Map<String, HttpInputStream> streamMap = new ConcurrentHashMap<>();
 
@@ -257,6 +260,23 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 return;
             }
 
+            // Reject a declared Content-Length over messageSizeLimit before the request is
+            // dispatched to the application. Mirrors
+            // HttpInboundServiceContextImpl.parsingComplete()
+            // in the channel framework, so the servlet never runs and no EOFException is
+            // signalled to a thread blocked reading the body when the connection closes.
+            requestRejected = false;
+            final long sizeLimit = config.getMessageSizeLimit();
+            if ((connectionProtocol == ProtocolName.HTTP1 || connectionProtocol == ProtocolName.HTTP10)
+                    && HttpConfigConstants.UNLIMITED != sizeLimit
+                    && HttpUtil.getContentLength(req, -1L) > sizeLimit) {
+                requestRejected = true;
+                sendErrorMessage(StatusCodes.ENTITY_TOO_LARGE,
+                        new TooLongFrameException("Content length exceeded max of " + sizeLimit + " bytes."));
+                ReferenceCountUtil.release(req);
+                return;
+            }
+
             upgradingNow = false;
             streamingInitialized = false;
             aggregatedBodyEnqueued = false;
@@ -303,6 +323,11 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
         if (msg instanceof HttpContent) {
             HttpContent content = (HttpContent) msg;
+
+            if(requestRejected) {
+                ReferenceCountUtil.release(content);
+                return;
+            }
 
             int sizeOfCurrentChunk = content.content().readableBytes();
             if (HttpConfigConstants.UNLIMITED != config.getMessageSizeLimit() && (sizeOfCurrentChunk > config.getMessageSizeLimit() ||
@@ -360,7 +385,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private static boolean isExpectedRequestValidationFailure(Throwable failure) {
-        return failure instanceof HttpRequestValidationException
+        return failure instanceof HttpRequestValidationException                        
                         || (failure instanceof IllegalArgumentException
                                         && failure.getCause() instanceof HttpRequestValidationException);
     }
