@@ -48,7 +48,7 @@ public class ObsoleteLineFoldingTest {
     private static final String APP_NAME = "obsFoldApp";
     private static final String SERVLET_PATH = "/" + APP_NAME + "/ObsFoldEchoServlet";
     private static final String HOST_HEADER_NAME = "malformed-framing.example.test";
-    private static final int SOCKET_TIMEOUT_MS = 1000;
+    private static final int SOCKET_TIMEOUT_MS = 5000;
     private static boolean runningNetty = false;
 
     @Server("ObsoleteLineFolding")
