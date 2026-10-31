@@ -59,12 +59,13 @@ import test.jakarta.data.web.eclipselink.Animal.ScientificName;
  * EclipseLink. The built-in provider is needed for record entities and
  * any repositories that specify a DataSource as their dataStore.
  */
-@DataSourceDefinition(name = "java:app/jdbc/DerbyDataSource",
-                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
-                      databaseName = "memory:testdb",
-                      properties = "createDatabase=create")
-@Resource(name = "java:module/env/jdbc/DerbyDataSourceRef",
-          lookup = "java:app/jdbc/DerbyDataSource")
+@DataSourceDefinition(name = "java:app/jdbc/H2DataSource",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "${env.DB_URL}",
+                      user = "${env.DB_USER}",
+                      password = "${env.DB_PASSWORD}")
+@Resource(name = "java:module/env/jdbc/H2DataSourceRef",
+          lookup = "java:app/jdbc/H2DataSource")
 @Resource(name = "java:module/env/data/DataStoreRef",
           lookup = "java:comp/DefaultDataSource")
 @SuppressWarnings("serial")

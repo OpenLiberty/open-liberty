@@ -39,7 +39,7 @@ import test.jakarta.data.web.Receipt;
 /**
  * Repository interface for the Receipt entity which is a record
  */
-@Repository(dataStore = "java:module/env/jdbc/DerbyDataSourceRef")
+@Repository(dataStore = "java:module/env/jdbc/H2DataSourceRef")
 public interface Receipts extends CrudRepository<Receipt, Long> {
     @Query("UPDATE Receipt SET total = total * (1.0 + :taxRate) WHERE purchaseId = :id")
     boolean addTax(long id, float taxRate);
