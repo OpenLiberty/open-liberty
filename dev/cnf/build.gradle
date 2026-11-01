@@ -142,11 +142,11 @@ task cleanPublishedOutputs(type: Delete) {
     }
 }
 
-task cleanRepos(type: Delete) {
+task cleanRepos {
     doLast {
         // cnf/release is only ever populated by Gradle, so delete it entirely.
         project.delete('release')
-        delete 'release.mvn'
+        project.delete('release.mvn')
 
         // cnf/local may contain Eclipse-built artifacts (identified by the .eclipse
         // suffix) that are expensive to rebuild. Delete only the non-Eclipse files
@@ -163,9 +163,9 @@ task cleanRepos(type: Delete) {
                 if (contents != null && contents.length == 0) project.delete(dir)
             }
         }
-        delete 'local.mvn'
+        project.delete('local.mvn')
 
-        delete fileTree('mavenlibs')
+        project.delete(fileTree('mavenlibs'))
     }
 }
 
