@@ -15,6 +15,7 @@ package io.openliberty.jakarta.data.tck;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.junit.ClassRule;
@@ -27,6 +28,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.topology.database.H2Database;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 
@@ -46,8 +48,11 @@ public class FATSuite extends TestContainerSuite {
 
     public static String JNOSQL_VERSION = "1.1.12";
 
+    private static final H2Database h2Database = H2Database.create("dbuser1", "dbpwd1")
+                    .withDatabaseName("testdb");
+
     @ClassRule
-    public static JdbcDatabaseContainer<?> relationalDatabase = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> relationalDatabase = DatabaseContainerFactory.createH2(Optional.of(h2Database));
 
     @ClassRule
     public static MongoDBContainer noSQLDatabase = new MongoDBContainer(mongoDBImage);
@@ -88,6 +93,8 @@ public class FATSuite extends TestContainerSuite {
                 return ""; // All tests passing on Derby
             case DerbyClient:
                 return ""; // Derby client currently not tested during DB Rotation
+            case H2:
+                return ""; // All tests passing on H2
             case Oracle:
                 return ""; // All tests passing on Oracle
             case Postgres:
