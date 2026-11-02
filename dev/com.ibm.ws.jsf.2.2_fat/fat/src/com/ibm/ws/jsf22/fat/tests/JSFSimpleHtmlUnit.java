@@ -280,7 +280,7 @@ public class JSFSimpleHtmlUnit {
 
             String msg = "No context init parameter 'org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE' found, using default value 'true'";
             String autocompleteValue = "autocomplete=\"off\"";
-            if(JakartaEEAction.isEE11OrLaterActive()) { // default in 4.1.2 (but backported to 4.1.1 in OL)
+            if(JakartaEEAction.isEE11OrLaterActive()) { // default since MyFaces 4.1.2
                 msg = "No context init parameter 'org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE' found, using default value 'one-time-code'";
                 autocompleteValue = "autocomplete=\"one-time-code\"";
             } 
