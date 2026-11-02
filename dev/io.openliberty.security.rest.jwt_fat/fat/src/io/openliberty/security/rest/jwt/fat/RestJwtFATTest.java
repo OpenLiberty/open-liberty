@@ -96,7 +96,7 @@ public class RestJwtFATTest {
     @Test
     public void testValidJwtWithAdminRole_Success() throws Exception {
         String token = createJwtToken("adminUser", Collections.singletonList("liberty-admin"), ISSUER, SHARED_KEY, 10);
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", token);
         int responseCode = conn.getResponseCode();
         assertEquals("Expected 200 OK for valid admin JWT", HttpURLConnection.HTTP_OK, responseCode);
     }
@@ -108,7 +108,7 @@ public class RestJwtFATTest {
     @Test
     public void testValidJwt_NoLtpaCookieInResponse() throws Exception {
         String token = createJwtToken("adminUser", Collections.singletonList("liberty-admin"), ISSUER, SHARED_KEY, 10);
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", token);
         assertEquals("Expected 200 OK for valid admin JWT", HttpURLConnection.HTTP_OK, conn.getResponseCode());
         List<String> setCookies = conn.getHeaderFields().get("Set-Cookie");
         if (setCookies != null) {
@@ -121,7 +121,7 @@ public class RestJwtFATTest {
     @Test
     public void testValidJwtWithReaderRole_Success() throws Exception {
         String token = createJwtToken("readerUser", Collections.singletonList("liberty-reader"), ISSUER, SHARED_KEY, 10);
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", token);
         int responseCode = conn.getResponseCode();
         assertEquals("Expected 200 OK for valid reader JWT", HttpURLConnection.HTTP_OK, responseCode);
     }
@@ -129,7 +129,7 @@ public class RestJwtFATTest {
     @Test
     public void testValidJwtWithUnauthorizedRole_Forbidden() throws Exception {
         String token = createJwtToken("unauthorizedUser", Collections.singletonList("unauthorizedGroup"), ISSUER, SHARED_KEY, 10);
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", token);
         int responseCode = conn.getResponseCode();
         assertEquals("Expected 403 Forbidden for user without required roles", HttpURLConnection.HTTP_FORBIDDEN, responseCode);
     }
@@ -138,7 +138,7 @@ public class RestJwtFATTest {
     @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     public void testInvalidSignatureJwt_Unauthorized() throws Exception {
         String token = createJwtToken("adminUser", Collections.singletonList("liberty-admin"), ISSUER, WRONG_KEY, 10);
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", token);
         int responseCode = conn.getResponseCode();
         assertEquals("Expected 401 Unauthorized for JWT with invalid signature", HttpURLConnection.HTTP_UNAUTHORIZED, responseCode);
     }
@@ -146,21 +146,21 @@ public class RestJwtFATTest {
     @Test
     public void testExpiredJwt_Unauthorized() throws Exception {
         String token = createJwtToken("adminUser", Collections.singletonList("liberty-admin"), ISSUER, SHARED_KEY, -10);
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", token);
         int responseCode = conn.getResponseCode();
         assertEquals("Expected 401 Unauthorized for expired JWT", HttpURLConnection.HTTP_UNAUTHORIZED, responseCode);
     }
 
     @Test
     public void testMissingToken_Unauthorized() throws Exception {
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", null);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", null);
         int responseCode = conn.getResponseCode();
         assertEquals("Expected 401 Unauthorized when Authorization header is omitted", HttpURLConnection.HTTP_UNAUTHORIZED, responseCode);
     }
 
     @Test
     public void testMalformedBearerToken_Unauthorized() throws Exception {
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", "not.a.valid.jwt.token");
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", "not.a.valid.jwt.token");
         int responseCode = conn.getResponseCode();
         assertEquals("Expected 401 Unauthorized for malformed Bearer token", HttpURLConnection.HTTP_UNAUTHORIZED, responseCode);
     }
@@ -174,7 +174,7 @@ public class RestJwtFATTest {
         String ltpaToken = getLtpaTokenViaBasicAuth("adminUser", "password");
         assertNotNull("Could not obtain an LtpaToken2 cookie using basic auth", ltpaToken);
 
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", ltpaToken);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", ltpaToken);
         assertEquals("Expected 401 Unauthorized when an LTPA token is sent as the Bearer token",
                      HttpURLConnection.HTTP_UNAUTHORIZED, conn.getResponseCode());
     }
@@ -185,7 +185,7 @@ public class RestJwtFATTest {
     @Test
     public void testJwtFromOtherIssuer_Unauthorized() throws Exception {
         String token = createJwtToken("adminUser", Collections.singletonList("liberty-admin"), "https://other.issuer", SHARED_KEY, 10);
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", token);
         assertEquals("Expected 401 Unauthorized for a JWT from another issuer", HttpURLConnection.HTTP_UNAUTHORIZED, conn.getResponseCode());
     }
 
@@ -203,7 +203,7 @@ public class RestJwtFATTest {
         claims.setIssuedAtToNow();
         claims.setGeneratedJwtId();
 
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", signClaims(claims, SHARED_KEY));
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", signClaims(claims, SHARED_KEY));
         assertEquals("Expected 401 Unauthorized for a JWT for another audience", HttpURLConnection.HTTP_UNAUTHORIZED, conn.getResponseCode());
     }
 
@@ -216,7 +216,7 @@ public class RestJwtFATTest {
         String ltpaToken = getLtpaTokenViaBasicAuth("adminUser", "password");
         assertNotNull("Could not obtain an LtpaToken2 cookie using basic auth", ltpaToken);
 
-        HttpURLConnection conn = sendRequestWithCookie(RestJwtTAI.ADMIN_REST_ENDPOINT, "LtpaToken2=" + ltpaToken);
+        HttpURLConnection conn = sendRequestWithCookie(RestJwtTAI.PREFIX_REST_ENDPOINT, "LtpaToken2=" + ltpaToken);
         assertEquals("Expected 401 Unauthorized when only an LtpaToken2 cookie is sent",
                      HttpURLConnection.HTTP_UNAUTHORIZED, conn.getResponseCode());
     }
@@ -233,7 +233,7 @@ public class RestJwtFATTest {
         claims.setGeneratedJwtId();
 
         String token = signClaims(claims, SHARED_KEY);
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", token);
         assertEquals("Expected 200 OK when username is in 'upn' claim", HttpURLConnection.HTTP_OK, conn.getResponseCode());
     }
 
@@ -249,7 +249,7 @@ public class RestJwtFATTest {
         claims.setGeneratedJwtId();
 
         String token = signClaims(claims, SHARED_KEY);
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", token);
         assertEquals("Expected 200 OK when username is in 'preferred_username' claim", HttpURLConnection.HTTP_OK, conn.getResponseCode());
     }
 
@@ -265,7 +265,7 @@ public class RestJwtFATTest {
         claims.setGeneratedJwtId();
 
         String token = signClaims(claims, SHARED_KEY);
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", token);
         assertEquals("Expected 200 OK when username is in 'username' claim", HttpURLConnection.HTTP_OK, conn.getResponseCode());
     }
 
@@ -281,7 +281,7 @@ public class RestJwtFATTest {
         claims.setGeneratedJwtId();
 
         String token = signClaims(claims, SHARED_KEY);
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", token);
         assertEquals("Expected 200 OK when groups claim is a comma-separated string", HttpURLConnection.HTTP_OK, conn.getResponseCode());
     }
 
@@ -297,7 +297,7 @@ public class RestJwtFATTest {
         claims.setGeneratedJwtId();
 
         String token = signClaims(claims, SHARED_KEY);
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, "GET", token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, "GET", token);
         assertEquals("Expected 200 OK when groups are provided via 'roles' claim", HttpURLConnection.HTTP_OK, conn.getResponseCode());
     }
 
@@ -339,8 +339,8 @@ public class RestJwtFATTest {
      * and returns the value of the LtpaToken2 cookie that the server issues.
      */
     private String getLtpaTokenViaBasicAuth(String user, String password) throws Exception {
-        int port = server.getHttpDefaultSecurePort();
-        URL url = new URL("https", server.getHostname(), port, RestJwtTAI.ADMIN_REST_ENDPOINT);
+        int port = server.getHttpSecondarySecurePort();
+        URL url = new URL("https", server.getHostname(), port, RestJwtTAI.PREFIX_REST_ENDPOINT);
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
         conn.setSSLSocketFactory(getTrustAllSocketFactory());
         conn.setHostnameVerifier(getTrustAllHostnameVerifier());
@@ -363,7 +363,7 @@ public class RestJwtFATTest {
     }
 
     private HttpURLConnection sendRequestWithCookie(String path, String cookie) throws Exception {
-        int port = server.getHttpDefaultSecurePort();
+        int port = server.getHttpSecondarySecurePort();
         URL url = new URL("https", server.getHostname(), port, path);
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
         conn.setSSLSocketFactory(getTrustAllSocketFactory());
@@ -377,7 +377,7 @@ public class RestJwtFATTest {
     }
 
     private HttpURLConnection sendRequest(String path, String method, String bearerToken) throws Exception {
-        int port = server.getHttpDefaultSecurePort();
+        int port = server.getHttpSecondarySecurePort();
         URL url = new URL("https", server.getHostname(), port, path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         if (conn instanceof HttpsURLConnection) {

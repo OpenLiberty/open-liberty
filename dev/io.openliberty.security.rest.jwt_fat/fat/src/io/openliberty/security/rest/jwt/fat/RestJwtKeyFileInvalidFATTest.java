@@ -171,7 +171,7 @@ public class RestJwtKeyFileInvalidFATTest {
     }
 
     private static HttpURLConnection sendRequest(String bearerToken) throws Exception {
-        URL url = new URL("https", server.getHostname(), server.getHttpDefaultSecurePort(), RestJwtTAI.ADMIN_REST_ENDPOINT);
+        URL url = new URL("https", server.getHostname(), server.getHttpSecondarySecurePort(), RestJwtTAI.PREFIX_REST_ENDPOINT);
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
         SSLContext sc = SSLContext.getInstance("TLS");
         sc.init(null, new TrustManager[] { new X509TrustManager() {

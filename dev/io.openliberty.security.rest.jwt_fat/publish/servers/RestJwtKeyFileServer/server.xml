@@ -11,6 +11,13 @@
     <keyStore id="defaultKeyStore" password="Liberty" />
     <ltpa keysPassword="password" />
 
+    <!-- Route the admin REST connector (IBMJMXConnectorREST) through a dedicated admin endpoint/virtual host -->
+    <variable name="admin.virtual.host" value="admin_host"/>
+    <virtualHost id="admin_host" allowFromEndpointRef="adminEndpoint">
+        <hostAlias>*:${bvt.prop.HTTP_secondary.secure}</hostAlias>
+    </virtualHost>
+    <httpEndpoint id="adminEndpoint" host="*" httpPort="-1" httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
     <!-- RS256 with no trustedAlias: the public key comes from the file named by jwkEndpointUrl.
          The tests write the key to resources/security/jwtPublic.pem under the server directory. -->
     <jwtConsumer id="JMXConnectorRESTConsumer"
@@ -19,10 +26,6 @@
                  jwkEndpointUrl="file:${server.config.dir}resources/security/jwtPublic.pem"
                  signatureAlgorithm="RS256"
                  clockSkew="1m" />
-
-    <authFilter id="defaultRestJwtAuthFilter">
-        <requestUrl id="defaultRestJwtRequestUrl" urlPattern="/IBMJMXConnectorREST/adminEndpoint" matchType="contains" />
-    </authFilter>
 
     <basicRegistry id="basic" realm="BasicRealm">
         <user name="adminUser" password="password"/>

@@ -79,11 +79,11 @@ public class RestJwtTAITest {
         mockery.checking(new Expectations() {
             {
                 allowing(request).getRequestURI();
-                will(returnValue("/IBMJMXConnectorREST/adminEndpoint"));
+                will(returnValue("/IBMJMXConnectorREST/mbeans"));
                 allowing(request).getRequestURL();
-                will(returnValue(new StringBuffer("https://localhost:9443/IBMJMXConnectorREST/adminEndpoint")));
+                will(returnValue(new StringBuffer("https://localhost:9443/IBMJMXConnectorREST/mbeans")));
                 allowing(request).getServletPath();
-                will(returnValue("/adminEndpoint"));
+                will(returnValue("/mbeans"));
                 allowing(request).getContextPath();
                 will(returnValue("/IBMJMXConnectorREST"));
                 allowing(request).getHeader("Authorization");
@@ -157,11 +157,11 @@ public class RestJwtTAITest {
         mockery.checking(new Expectations() {
             {
                 allowing(request).getRequestURI();
-                will(returnValue("/IBMJMXConnectorREST/adminEndpoint"));
+                will(returnValue("/IBMJMXConnectorREST/mbeans"));
                 allowing(request).getRequestURL();
-                will(returnValue(new StringBuffer("https://localhost:9443/IBMJMXConnectorREST/adminEndpoint")));
+                will(returnValue(new StringBuffer("https://localhost:9443/IBMJMXConnectorREST/mbeans")));
                 allowing(request).getServletPath();
-                will(returnValue("/adminEndpoint"));
+                will(returnValue("/mbeans"));
                 allowing(request).getContextPath();
                 will(returnValue("/IBMJMXConnectorREST"));
                 allowing(request).getHeader("Authorization");
@@ -179,11 +179,11 @@ public class RestJwtTAITest {
         mockery.checking(new Expectations() {
             {
                 allowing(request).getRequestURI();
-                will(returnValue("/IBMJMXConnectorREST/adminEndpoint"));
+                will(returnValue("/IBMJMXConnectorREST/mbeans"));
                 allowing(request).getRequestURL();
-                will(returnValue(new StringBuffer("https://localhost:9443/IBMJMXConnectorREST/adminEndpoint")));
+                will(returnValue(new StringBuffer("https://localhost:9443/IBMJMXConnectorREST/mbeans")));
                 allowing(request).getServletPath();
-                will(returnValue("/adminEndpoint"));
+                will(returnValue("/mbeans"));
                 allowing(request).getContextPath();
                 will(returnValue("/IBMJMXConnectorREST"));
                 allowing(request).getHeader("Authorization");
@@ -216,11 +216,11 @@ public class RestJwtTAITest {
         mockery.checking(new Expectations() {
             {
                 allowing(request).getRequestURI();
-                will(returnValue("/IBMJMXConnectorREST/adminEndpoint"));
+                will(returnValue("/IBMJMXConnectorREST/mbeans"));
                 allowing(request).getRequestURL();
-                will(returnValue(new StringBuffer("https://localhost:9443/IBMJMXConnectorREST/adminEndpoint")));
+                will(returnValue(new StringBuffer("https://localhost:9443/IBMJMXConnectorREST/mbeans")));
                 allowing(request).getServletPath();
-                will(returnValue("/adminEndpoint"));
+                will(returnValue("/mbeans"));
                 allowing(request).getContextPath();
                 will(returnValue("/IBMJMXConnectorREST"));
                 allowing(request).getHeader("Authorization");

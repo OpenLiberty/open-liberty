@@ -97,7 +97,7 @@ public class RestJwtNoConnectorFATTest {
     public void testBearerRequestNotProcessedByRestJwtTai() throws Exception {
         String token = createJwtToken("adminUser", "liberty-admin");
 
-        HttpURLConnection conn = sendRequest(RestJwtTAI.ADMIN_REST_ENDPOINT, token);
+        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, token);
         assertEquals("Expected 404 because the REST connector application is not present", HttpURLConnection.HTTP_NOT_FOUND,
                      conn.getResponseCode());
 
@@ -122,7 +122,7 @@ public class RestJwtNoConnectorFATTest {
     }
 
     private static HttpURLConnection sendRequest(String path, String bearerToken) throws Exception {
-        URL url = new URL("https", server.getHostname(), server.getHttpDefaultSecurePort(), path);
+        URL url = new URL("https", server.getHostname(), server.getHttpSecondarySecurePort(), path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         if (conn instanceof HttpsURLConnection) {
             SSLContext sc = SSLContext.getInstance("TLS");

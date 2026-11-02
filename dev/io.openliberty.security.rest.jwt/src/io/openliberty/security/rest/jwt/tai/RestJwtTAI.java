@@ -84,7 +84,7 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
     public static final String KEY_JWT_CONSUMER_CONFIG = "jwtConsumerConfig";
     public static final String DEFAULT_JWT_CONSUMER_ID = "JMXConnectorRESTConsumer";
 
-    public static final String ADMIN_REST_ENDPOINT = "/IBMJMXConnectorREST/adminEndpoint";
+    public static final String PREFIX_REST_ENDPOINT = "/IBMJMXConnectorREST/mbeans";
 
     static final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
     static protected final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_FILTER);
@@ -381,22 +381,22 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
         }
 
         String requestURI = request.getRequestURI();
-        if (requestURI != null && requestURI.contains(ADMIN_REST_ENDPOINT)) {
+        if (requestURI != null && requestURI.contains(PREFIX_REST_ENDPOINT)) {
             return true;
         }
 
         StringBuffer requestURL = request.getRequestURL();
-        if (requestURL != null && requestURL.toString().contains(ADMIN_REST_ENDPOINT)) {
+        if (requestURL != null && requestURL.toString().contains(PREFIX_REST_ENDPOINT)) {
             return true;
         }
 
         String servletPath = request.getServletPath();
-        if (servletPath != null && servletPath.contains(ADMIN_REST_ENDPOINT)) {
+        if (servletPath != null && servletPath.contains(PREFIX_REST_ENDPOINT)) {
             return true;
         }
 
         String contextPath = request.getContextPath();
-        if (contextPath != null && contextPath.contains(ADMIN_REST_ENDPOINT)) {
+        if (contextPath != null && contextPath.contains(PREFIX_REST_ENDPOINT)) {
             return true;
         }
 
