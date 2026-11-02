@@ -199,13 +199,17 @@ public class ServletFilter implements Filter {
 	 * @return the routing server name; getServerName() when the request is not a web container request
 	 */
 	private static String getRoutingServerName(HttpServletRequest request) {
+		String routingHost = request.getServerName();
 		if (request instanceof SRTServletRequest) {
 			IRequest iRequest = ((SRTServletRequest) request).getIRequest();
 			if (iRequest != null) {
-				return WebContainer.getRoutingHost(iRequest);
+				routingHost = WebContainer.getRoutingHost(iRequest);
 			}
 		}
-		return request.getServerName();
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(tc, "ServletFilter.getRoutingServerName: routing name --> " + routingHost);
+		}
+		return routingHost;
 	}
 
 	/**
