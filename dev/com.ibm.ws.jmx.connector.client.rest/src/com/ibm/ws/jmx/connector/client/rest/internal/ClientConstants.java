@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *******************************************************************************/
 
 package com.ibm.ws.jmx.connector.client.rest.internal;
+
+import com.ibm.ws.jmx.connector.client.rest.ClientProvider;
 
 class ClientConstants {
 
@@ -41,4 +43,6 @@ class ClientConstants {
     static final String CONNECTOR_URI = "IBMJMXConnectorREST";
 
     static final String ROUTER_URI = CONNECTOR_URI + "/router";
+
+    static final String BEARER_TOKEN_AUTHENTICATION = ClientProvider.CLIENT_DOMAIN + ".BEARER_TOKEN_AUTH";
 }
