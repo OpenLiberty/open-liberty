@@ -519,23 +519,31 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Netty Framework signaled- Server Completely Started signal received");
         }
-        synchronized (syncStarted) {
-            while ((task = serverStartedTasks.poll()) != null) {
-                try {
-                    if (!task.isCancelled()) {
-                        task.run();
-                        task.get(getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS);
-                    }
-                } catch (Exception e) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
-                    }
+        // Tasks are run on this thread outside of syncStarted, so that a task that needs
+        // other locks (e.g. NettyChain) cannot deadlock with a thread holding those locks
+        // and calling runWhenServerStarted. Polling and marking the server as started
+        // are done under the lock so that no queued task is missed.
+        while (true) {
+            synchronized (syncStarted) {
+                task = serverStartedTasks.poll();
+                if (task == null) {
+                    serverCompletelyStarted.set(true);
+                    isActive = true;
+                    syncStarted.notifyAll();
+                    return;
                 }
             }
-
-            serverCompletelyStarted.set(true);
-            isActive = true;
-            syncStarted.notifyAll();
+            try {
+                if (!task.isCancelled()) {
+                    task.run();
+                    // Task has completed, this only surfaces any failure for tracing
+                    task.get();
+                }
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
+                }
+            }
         }
     }
 
@@ -556,15 +564,16 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             future.cancel(false);
             return future;
         }
+        FutureTask<ChannelFuture> future = new FutureTask<ChannelFuture>(callable);
         synchronized (syncStarted) {
-            FutureTask<ChannelFuture> future = new FutureTask<ChannelFuture>(callable);
             if (!serverCompletelyStarted.get()) {
                 serverStartedTasks.add(future);
-            } else {
-                future.run();
+                return future;
             }
-            return future;
         }
+        // Run outside syncStarted to avoid holding it while the task takes other locks
+        future.run();
+        return future;
     }
 
     /*
