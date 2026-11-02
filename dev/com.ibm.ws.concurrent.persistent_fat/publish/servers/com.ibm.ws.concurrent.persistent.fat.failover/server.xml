@@ -37,7 +37,7 @@
   <!-- database (always H2 embedded) for the test application -->
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="H2JDBCLib"/>
-    <properties.h2 URL="${env.DB_URL}"/>
+    <properties.h2 URL="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"/>
   </dataSource>
   
   <library id="FATJDBCLib">
