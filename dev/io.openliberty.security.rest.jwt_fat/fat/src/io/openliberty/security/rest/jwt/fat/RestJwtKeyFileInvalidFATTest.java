@@ -42,8 +42,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import io.openliberty.security.rest.jwt.tai.RestJwtTAI;
-
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -171,7 +169,7 @@ public class RestJwtKeyFileInvalidFATTest {
     }
 
     private static HttpURLConnection sendRequest(String bearerToken) throws Exception {
-        URL url = new URL("https", server.getHostname(), server.getHttpSecondarySecurePort(), RestJwtTAI.PREFIX_REST_ENDPOINT);
+        URL url = new URL("https", server.getHostname(), server.getHttpSecondarySecurePort(), FATSuite.REST_MBEANS_ENDPOINT);
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
         SSLContext sc = SSLContext.getInstance("TLS");
         sc.init(null, new TrustManager[] { new X509TrustManager() {

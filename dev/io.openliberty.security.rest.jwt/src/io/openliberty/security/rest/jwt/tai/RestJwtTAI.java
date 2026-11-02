@@ -84,7 +84,7 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
     public static final String KEY_JWT_CONSUMER_CONFIG = "jwtConsumerConfig";
     public static final String DEFAULT_JWT_CONSUMER_ID = "JMXConnectorRESTConsumer";
 
-    public static final String PREFIX_REST_ENDPOINT = "/IBMJMXConnectorREST/mbeans";
+    public static final String PREFIX_REST_ENDPOINT = "/IBMJMXConnectorREST";
 
     static final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
     static protected final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_FILTER);

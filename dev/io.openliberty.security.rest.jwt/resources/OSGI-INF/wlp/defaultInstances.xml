@@ -12,7 +12,7 @@
  -->
 <server>
     <authFilter id="defaultRestJwtAuthFilter">
-        <requestUrl id="defaultRestJwtRequestUrl" urlPattern="/IBMJMXConnectorREST/" matchType="contains" />
+        <requestUrl id="defaultRestJwtRequestUrl" urlPattern="/IBMJMXConnectorREST" matchType="contains" />
         <host id="defaultRestJwtHost" name="localhost" matchType="contains" />
     </authFilter>
 </server>
