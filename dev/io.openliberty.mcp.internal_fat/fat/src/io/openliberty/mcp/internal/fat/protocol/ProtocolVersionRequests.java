@@ -11,6 +11,7 @@ package io.openliberty.mcp.internal.fat.protocol;
 
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
@@ -21,12 +22,15 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 
 /**
- * Helpers for tests which send requests using a chosen {@code MCP-Protocol-Version} header to a
- * stateless MCP application.
+ * Helpers for tests which send requests using a chosen {@code MCP-Protocol-Version} header to an
+ * MCP application.
  * <p>
  * {@link io.openliberty.mcp.internal.fat.utils.McpClient} always sends the 2025-11-25 header, so it cannot be
  * used to test a protocol version range which excludes that version. These helpers use {@link HttpRequest}
- * directly, like {@link ProtocolVersionTest}. The applications must be stateless so no session is needed.
+ * directly, like {@link ProtocolVersionTest}.
+ * <p>
+ * Stateless applications need no session. For stateful applications use {@link #initialize} to obtain a session
+ * and the {@code ...InSession} methods to send requests in it.
  */
 public final class ProtocolVersionRequests {
 
@@ -68,6 +72,14 @@ public final class ProtocolVersionRequests {
                     }
                     """;
 
+    /**
+     * The interesting parts of a successful initialize response.
+     *
+     * @param protocolVersion the protocolVersion in the result
+     * @param sessionId the Mcp-Session-Id response header, or {@code null} if the application is stateless
+     */
+    public record InitializeResponse(String protocolVersion, String sessionId) {}
+
     private ProtocolVersionRequests() {
         // utility class
     }
@@ -78,7 +90,17 @@ public final class ProtocolVersionRequests {
      * @param protocolVersion the value for the MCP-Protocol-Version header, or {@code null} to omit the header
      */
     public static void assertEchoAccepted(LibertyServer server, String appName, String protocolVersion) throws Exception {
-        String response = post(server, appName, protocolVersion, ECHO_REQUEST, 200);
+        assertEchoAcceptedInSession(server, appName, protocolVersion, null);
+    }
+
+    /**
+     * Sends a tools/call request for the echo tool in a session and expects it to be accepted.
+     *
+     * @param protocolVersion the value for the MCP-Protocol-Version header, or {@code null} to omit the header
+     * @param sessionId the value for the Mcp-Session-Id header, or {@code null} to omit the header
+     */
+    public static void assertEchoAcceptedInSession(LibertyServer server, String appName, String protocolVersion, String sessionId) throws Exception {
+        String response = post(server, appName, protocolVersion, sessionId, ECHO_REQUEST, 200);
         assertThat("Expected the echo tool to run with protocol version " + protocolVersion,
                    response, containsString("Hello"));
     }
@@ -90,11 +112,21 @@ public final class ProtocolVersionRequests {
      * @param expectedSupportedValues the exact list the server should report as supported, e.g. "2025-06-18"
      */
     public static void assertEchoRejected(LibertyServer server, String appName, String protocolVersion, String expectedSupportedValues) throws Exception {
-        String response = post(server, appName, protocolVersion, ECHO_REQUEST, 400);
-        assertThat("Expected error message about unsupported protocol version " + protocolVersion,
-                   response, containsString(UNSUPPORTED_MESSAGE));
-        assertThat("Expected error message to list the supported versions",
-                   response, containsString("Supported values: " + expectedSupportedValues));
+        assertEchoRejectedInSession(server, appName, protocolVersion, null, expectedSupportedValues);
+    }
+
+    /**
+     * Sends a tools/call request for the echo tool in a session and expects it to be rejected with HTTP 400.
+     *
+     * @param protocolVersion the value for the MCP-Protocol-Version header, or {@code null} to omit the header
+     * @param sessionId the value for the Mcp-Session-Id header, or {@code null} to omit the header
+     * @param expectedSupportedValues the exact list the server should report as supported, e.g. "2025-06-18"
+     */
+    public static void assertEchoRejectedInSession(LibertyServer server, String appName, String protocolVersion, String sessionId,
+                                                   String expectedSupportedValues)
+                    throws Exception {
+        String response = post(server, appName, protocolVersion, sessionId, ECHO_REQUEST, 400);
+        assertRejectedResponse(protocolVersion, response, expectedSupportedValues);
     }
 
     /**
@@ -105,19 +137,62 @@ public final class ProtocolVersionRequests {
      * @return the protocolVersion in the result
      */
     public static String initializeAndGetProtocolVersion(LibertyServer server, String appName, String clientProtocolVersion) throws Exception {
-        String response = post(server, appName, null, String.format(INITIALIZE_REQUEST, clientProtocolVersion), 200);
-        return new JSONObject(response).getJSONObject("result").getString("protocolVersion");
+        return initialize(server, appName, null, clientProtocolVersion).protocolVersion();
     }
 
-    private static String post(LibertyServer server, String appName, String protocolVersion, String body, int expectedCode) throws Exception {
+    /**
+     * Sends an initialize request and expects it to be accepted.
+     *
+     * @param headerVersion the value for the MCP-Protocol-Version header, or {@code null} to omit the header
+     * @param clientProtocolVersion the protocol version requested by the client in the initialize params
+     * @return the protocol version selected by the server and the session ID, if there is one
+     */
+    public static InitializeResponse initialize(LibertyServer server, String appName, String headerVersion, String clientProtocolVersion) throws Exception {
+        HttpRequest request = newRequest(server, appName, headerVersion, null, String.format(INITIALIZE_REQUEST, clientProtocolVersion), 200);
+        String response = request.run(String.class);
+        String selectedVersion = new JSONObject(response).getJSONObject("result").getString("protocolVersion");
+        return new InitializeResponse(selectedVersion, request.getResponseHeader(MCP_SESSION_ID));
+    }
+
+    /**
+     * Sends an initialize request and expects it to be rejected with HTTP 400 because of its MCP-Protocol-Version header.
+     *
+     * @param headerVersion the value for the MCP-Protocol-Version header
+     * @param clientProtocolVersion the protocol version requested by the client in the initialize params
+     * @param expectedSupportedValues the exact list the server should report as supported, e.g. "2025-06-18"
+     */
+    public static void assertInitializeRejected(LibertyServer server, String appName, String headerVersion, String clientProtocolVersion,
+                                                String expectedSupportedValues)
+                    throws Exception {
+        String response = newRequest(server, appName, headerVersion, null, String.format(INITIALIZE_REQUEST, clientProtocolVersion), 400).run(String.class);
+        assertRejectedResponse(headerVersion, response, expectedSupportedValues);
+    }
+
+    private static void assertRejectedResponse(String protocolVersion, String response, String expectedSupportedValues) {
+        assertThat("Expected error message about unsupported protocol version " + protocolVersion,
+                   response, containsString(UNSUPPORTED_MESSAGE));
+        assertThat("Expected error message to list the supported versions",
+                   response, containsString("Supported values: " + expectedSupportedValues));
+    }
+
+    private static String post(LibertyServer server, String appName, String protocolVersion, String sessionId, String body, int expectedCode) throws Exception {
+        return newRequest(server, appName, protocolVersion, sessionId, body, expectedCode).run(String.class);
+    }
+
+    private static HttpRequest newRequest(LibertyServer server, String appName, String protocolVersion, String sessionId, String body,
+                                          int expectedCode)
+                    throws Exception {
         HttpRequest request = new HttpRequest(server, "/" + appName + "/mcp")
-                                                                              .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                              .jsonBody(body)
-                                                                              .method("POST")
-                                                                              .expectCode(expectedCode);
+                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                             .jsonBody(body)
+                                                                             .method("POST")
+                                                                             .expectCode(expectedCode);
         if (protocolVersion != null) {
             request = request.requestProp(MCP_PROTOCOL_VERSION, protocolVersion);
         }
-        return request.run(String.class);
+        if (sessionId != null) {
+            request = request.requestProp(MCP_SESSION_ID, sessionId);
+        }
+        return request;
     }
 }

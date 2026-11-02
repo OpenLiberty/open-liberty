@@ -15,11 +15,18 @@ import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.V
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.V_2025_11_25;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.V_2026_07_28;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertEchoAccepted;
+import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertEchoAcceptedInSession;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertEchoRejected;
+import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertEchoRejectedInSession;
+import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertInitializeRejected;
+import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.initialize;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.initializeAndGetProtocolVersion;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -30,10 +37,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.Mcp;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.InitializeResponse;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 
 /**
@@ -43,7 +54,15 @@ import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
  * The server is started with {@code -Dcom.ibm.ws.beta.edition=true} (see the server's {@code jvm.options}).
  * The behaviour when the runtime is not beta is tested by {@link ProtocolVersionConfigNonBetaTest}.
  * <p>
- * The applications are stateless so requests can be sent with any {@code MCP-Protocol-Version} header.
+ * Most applications are stateless so requests can be sent with any {@code MCP-Protocol-Version} header.
+ * {@link #STATEFUL_APP} is stateful and tests version negotiation and the range within a session.
+ * <p>
+ * The configuration error messages do not name the application, so each application with an invalid value uses a
+ * value which no other application uses, and the log assertions match on that value.
+ * <p>
+ * The errors for the initial configuration are logged before the applications start, so they are searched for in the
+ * whole log with {@link #assertLogged}. That does not depend on the log mark, which {@link #updateDynamicRange} moves,
+ * so the tests do not depend on the order they run in.
  */
 @RunWith(FATRunner.class)
 public class ProtocolVersionConfigBetaTest {
@@ -55,11 +74,25 @@ public class ProtocolVersionConfigBetaTest {
     private static final String LATEST_APP = "latestApp";
     private static final String INVALID_VERSION_APP = "invalidVersionApp";
     private static final String INVALID_RANGE_APP = "invalidRangeApp";
+    private static final String LATEST_MINIMUM_OLDER_MAXIMUM_APP = "latestMinimumOlderMaximumApp";
+    private static final String INVALID_MAXIMUM_APP = "invalidMaximumApp";
+    private static final String INVALID_BOTH_APP = "invalidBothApp";
+    private static final String UPPER_CASE_LATEST_APP = "upperCaseLatestApp";
+    private static final String WHITESPACE_APP = "whitespaceApp";
+    private static final String EMPTY_VALUES_APP = "emptyValuesApp";
+    private static final String STATEFUL_APP = "statefulRangeApp";
+    private static final String DYNAMIC_APP = "dynamicRangeApp";
 
     private static final List<String> APPS = List.of(DEFAULT_APP, SINGLE_VERSION_APP, MINIMUM_ONLY_APP, MAXIMUM_ONLY_APP,
-                                                     LATEST_APP, INVALID_VERSION_APP, INVALID_RANGE_APP);
+                                                     LATEST_APP, INVALID_VERSION_APP, INVALID_RANGE_APP,
+                                                     LATEST_MINIMUM_OLDER_MAXIMUM_APP, INVALID_MAXIMUM_APP, INVALID_BOTH_APP,
+                                                     UPPER_CASE_LATEST_APP, WHITESPACE_APP, EMPTY_VALUES_APP,
+                                                     STATEFUL_APP, DYNAMIC_APP);
 
     private static final String ALL_VERSIONS = "2026-07-28, 2025-11-25, 2025-06-18, 2025-03-26";
+
+    /** The values listed by CWMCM0045E, which are "latest" followed by every supported version */
+    private static final String VALID_VALUES = "latest, " + ALL_VERSIONS;
 
     @Server("mcp-server-protocol-version-beta")
     public static LibertyServer server;
@@ -84,6 +117,8 @@ public class ProtocolVersionConfigBetaTest {
         // Errors are expected for the apps with invalid configuration
         server.stopServer("CWMCM0045E", "CWMCM0046E");
     }
+
+    // ---- Default, single version, minimum only, maximum only and latest ----
 
     @Test
     public void testDefaultAcceptsAllVersions() throws Exception {
@@ -130,6 +165,21 @@ public class ProtocolVersionConfigBetaTest {
     }
 
     @Test
+    public void testInitializeWithHeaderInRangeIsAccepted() throws Exception {
+        // A header is not needed on initialize, but it is accepted when it is within the range
+        assertEquals(V_2025_06_18, initialize(server, SINGLE_VERSION_APP, V_2025_06_18, V_2025_06_18).protocolVersion());
+    }
+
+    @Test
+    public void testInitializeWithHeaderOutOfRangeIsRejected() throws Exception {
+        // A header which names a version outside the range is rejected even on initialize, because the header
+        // is checked before the request is processed. Only a missing header is exempt.
+        assertInitializeRejected(server, SINGLE_VERSION_APP, V_2025_11_25, V_2025_06_18, V_2025_06_18);
+        assertInitializeRejected(server, SINGLE_VERSION_APP, V_2025_03_26, V_2025_06_18, V_2025_06_18);
+        assertInitializeRejected(server, SINGLE_VERSION_APP, "2022-02-02", V_2025_06_18, V_2025_06_18);
+    }
+
+    @Test
     public void testMinimumOnlyDefaultsMaximumToLatest() throws Exception {
         String supported = "2026-07-28, 2025-11-25, 2025-06-18";
         assertEchoAccepted(server, MINIMUM_ONLY_APP, V_2025_06_18);
@@ -162,24 +212,197 @@ public class ProtocolVersionConfigBetaTest {
         assertEquals(V_2026_07_28, initializeAndGetProtocolVersion(server, LATEST_APP, V_2025_03_26));
     }
 
+    // ---- Invalid values ----
+
     @Test
     public void testInvalidVersionIsReportedAndDefaultsUsed() throws Exception {
-        assertNotNull("Expected CWMCM0045E for the invalid protocol version",
-                      server.waitForStringInLog("CWMCM0045E.*2022-02-02.*minimumProtocolVersion|CWMCM0045E.*minimumProtocolVersion.*2022-02-02"));
+        // The message names the attribute and the value, and lists the valid values
+        assertLogged("Expected CWMCM0045E for the invalid minimum protocol version",
+                     "CWMCM0045E.*2022-02-02.*minimumProtocolVersion.*Valid values: " + VALID_VALUES);
         // The invalid value is ignored so every version is accepted
-        assertEchoAccepted(server, INVALID_VERSION_APP, V_2025_03_26);
-        assertEchoAccepted(server, INVALID_VERSION_APP, V_2025_06_18);
-        assertEchoAccepted(server, INVALID_VERSION_APP, V_2025_11_25);
-        assertEchoAccepted(server, INVALID_VERSION_APP, V_2026_07_28);
+        assertAllVersionsAccepted(INVALID_VERSION_APP);
     }
 
     @Test
     public void testMinimumNewerThanMaximumIsReportedAndDefaultsUsed() throws Exception {
-        assertNotNull("Expected CWMCM0046E for the invalid range",
-                      server.waitForStringInLog("CWMCM0046E"));
-        assertEchoAccepted(server, INVALID_RANGE_APP, V_2025_03_26);
-        assertEchoAccepted(server, INVALID_RANGE_APP, V_2025_06_18);
-        assertEchoAccepted(server, INVALID_RANGE_APP, V_2025_11_25);
-        assertEchoAccepted(server, INVALID_RANGE_APP, V_2026_07_28);
+        // The message names the minimum first and the maximum second
+        assertLogged("Expected CWMCM0046E for the invalid range", "CWMCM0046E.*2025-11-25.*2025-03-26");
+        assertAllVersionsAccepted(INVALID_RANGE_APP);
+    }
+
+    @Test
+    public void testLatestMinimumNewerThanOlderMaximumIsReportedAndDefaultsUsed() throws Exception {
+        // "latest" is resolved before the range is compared, so the message names the version it resolved to
+        assertLogged("Expected CWMCM0046E for the invalid range", "CWMCM0046E.*2026-07-28.*2025-06-18");
+        assertAllVersionsAccepted(LATEST_MINIMUM_OLDER_MAXIMUM_APP);
+    }
+
+    @Test
+    public void testInvalidMaximumIsReportedAndValidMinimumIsKept() throws Exception {
+        assertLogged("Expected CWMCM0045E for the invalid maximum protocol version",
+                     "CWMCM0045E.*2099-01-01.*maximumProtocolVersion.*Valid values: " + VALID_VALUES);
+        // The message starts "The <value> value is not valid for the <attribute> attribute"
+        assertTrue("The valid minimum protocol version should not be reported",
+                   server.findStringsInLogs("CWMCM0045E: The 2025-06-18 value is not valid").isEmpty());
+
+        // Only the invalid maximum is replaced by its default, which is latest in a beta runtime
+        String supported = "2026-07-28, 2025-11-25, 2025-06-18";
+        assertEchoAccepted(server, INVALID_MAXIMUM_APP, V_2025_06_18);
+        assertEchoAccepted(server, INVALID_MAXIMUM_APP, V_2025_11_25);
+        assertEchoAccepted(server, INVALID_MAXIMUM_APP, V_2026_07_28);
+        assertEchoRejected(server, INVALID_MAXIMUM_APP, V_2025_03_26, supported);
+        assertEchoRejected(server, INVALID_MAXIMUM_APP, null, supported);
+    }
+
+    @Test
+    public void testBothInvalidAreReportedAndDefaultsUsed() throws Exception {
+        assertLogged("Expected CWMCM0045E for the invalid minimum protocol version",
+                     "CWMCM0045E.*bogus-minimum.*minimumProtocolVersion");
+        assertLogged("Expected CWMCM0045E for the invalid maximum protocol version",
+                     "CWMCM0045E.*bogus-maximum.*maximumProtocolVersion");
+        assertAllVersionsAccepted(INVALID_BOTH_APP);
+    }
+
+    @Test
+    public void testLatestIsCaseSensitive() throws Exception {
+        assertLogged("Expected CWMCM0045E for LATEST, which is not the same as latest",
+                     "CWMCM0045E.*LATEST.*minimumProtocolVersion");
+        assertAllVersionsAccepted(UPPER_CASE_LATEST_APP);
+    }
+
+    @Test
+    public void testSurroundingWhitespaceIsIgnored() throws Exception {
+        assertEchoAccepted(server, WHITESPACE_APP, V_2025_06_18);
+        assertEchoRejected(server, WHITESPACE_APP, V_2025_03_26, V_2025_06_18);
+        assertEchoRejected(server, WHITESPACE_APP, V_2025_11_25, V_2025_06_18);
+    }
+
+    @Test
+    public void testEmptyValuesAreReportedAndDefaultsUsed() throws Exception {
+        // An empty value is passed to the component as an empty string, which is not a valid version.
+        // This is the current behaviour. If empty values are changed to mean "not set", update this test.
+        // The message has no value between "The" and "value", which is why there are two spaces.
+        assertLogged("Expected CWMCM0045E for the empty minimum protocol version",
+                     "CWMCM0045E: The  value is not valid for the minimumProtocolVersion attribute");
+        assertLogged("Expected CWMCM0045E for the empty maximum protocol version",
+                     "CWMCM0045E: The  value is not valid for the maximumProtocolVersion attribute");
+        assertAllVersionsAccepted(EMPTY_VALUES_APP);
+    }
+
+    // ---- Stateful applications ----
+
+    @Test
+    public void testStatefulInitializeNegotiatesVersionAndCreatesSession() throws Exception {
+        InitializeResponse response = initialize(server, STATEFUL_APP, null, V_2025_11_25);
+        assertEquals(V_2025_11_25, response.protocolVersion());
+        assertNotNull("Expected a session ID from a stateful application", response.sessionId());
+
+        InitializeResponse older = initialize(server, STATEFUL_APP, null, V_2025_06_18);
+        assertEquals(V_2025_06_18, older.protocolVersion());
+        assertNotNull(older.sessionId());
+    }
+
+    @Test
+    public void testStatefulInitializeRespondsWithMaximumWhenClientVersionNotInRange() throws Exception {
+        // The session is still created. The client decides whether it can use the version it was offered.
+        for (String clientVersion : new String[] { V_2025_03_26, V_2026_07_28, "2022-02-02" }) {
+            InitializeResponse response = initialize(server, STATEFUL_APP, null, clientVersion);
+            assertEquals("Wrong version selected for client version " + clientVersion, V_2025_11_25, response.protocolVersion());
+            assertNotNull(response.sessionId());
+        }
+    }
+
+    @Test
+    public void testStatefulRangeAppliesToRequestsInSession() throws Exception {
+        String sessionId = initialize(server, STATEFUL_APP, null, V_2025_11_25).sessionId();
+        assertNotNull(sessionId);
+
+        assertEchoAcceptedInSession(server, STATEFUL_APP, V_2025_06_18, sessionId);
+        assertEchoAcceptedInSession(server, STATEFUL_APP, V_2025_11_25, sessionId);
+
+        String supported = "2025-11-25, 2025-06-18";
+        assertEchoRejectedInSession(server, STATEFUL_APP, V_2025_03_26, sessionId, supported);
+        assertEchoRejectedInSession(server, STATEFUL_APP, V_2026_07_28, sessionId, supported);
+        assertEchoRejectedInSession(server, STATEFUL_APP, "2022-02-02", sessionId, supported);
+        // A missing header is interpreted as 2025-03-26, which is below the minimum
+        assertEchoRejectedInSession(server, STATEFUL_APP, null, sessionId, supported);
+    }
+
+    @Test
+    public void testStatefulInitializeWithHeaderOutOfRangeIsRejected() throws Exception {
+        assertInitializeRejected(server, STATEFUL_APP, V_2025_03_26, V_2025_11_25, "2025-11-25, 2025-06-18");
+        assertInitializeRejected(server, STATEFUL_APP, V_2026_07_28, V_2025_11_25, "2025-11-25, 2025-06-18");
+    }
+
+    // ---- Configuration updates ----
+
+    @Test
+    public void testRangeCanBeUpdatedWhileServerIsRunning() throws Exception {
+        boolean updated = false;
+        try {
+            // Initial range: only 2025-06-18
+            assertEchoAccepted(server, DYNAMIC_APP, V_2025_06_18);
+            assertEchoRejected(server, DYNAMIC_APP, V_2025_11_25, V_2025_06_18);
+            assertEchoRejected(server, DYNAMIC_APP, V_2025_03_26, V_2025_06_18);
+
+            // Widen the range
+            updated = true;
+            updateDynamicRange("2025-03-26", "2025-11-25");
+            assertEchoAccepted(server, DYNAMIC_APP, V_2025_03_26);
+            assertEchoAccepted(server, DYNAMIC_APP, V_2025_06_18);
+            assertEchoAccepted(server, DYNAMIC_APP, V_2025_11_25);
+            assertEchoRejected(server, DYNAMIC_APP, V_2026_07_28, "2025-11-25, 2025-06-18, 2025-03-26");
+
+            // Move to latest
+            updateDynamicRange("latest", "latest");
+            assertEchoAccepted(server, DYNAMIC_APP, V_2026_07_28);
+            assertEchoRejected(server, DYNAMIC_APP, V_2025_11_25, V_2026_07_28);
+            assertEquals(V_2026_07_28, initializeAndGetProtocolVersion(server, DYNAMIC_APP, V_2025_03_26));
+
+            // An invalid range is reported, and the defaults are used instead of keeping the previous range.
+            // 2025-11-25 and 2025-06-18 appear together in no other CWMCM0046E message.
+            updateDynamicRange("2025-11-25", "2025-06-18");
+            assertNotNull("Expected CWMCM0046E for the updated range",
+                          server.waitForStringInLog("CWMCM0046E.*2025-11-25.*2025-06-18"));
+            assertAllVersionsAccepted(DYNAMIC_APP);
+        } finally {
+            // Restore the initial range so the server configuration is the same if the class is run again.
+            // Skipped if nothing was changed, because an unchanged configuration produces no update to wait for.
+            if (updated) {
+                updateDynamicRange("2025-06-18", "2025-06-18");
+            }
+        }
+        assertEchoAccepted(server, DYNAMIC_APP, V_2025_06_18);
+        assertEchoRejected(server, DYNAMIC_APP, V_2025_11_25, V_2025_06_18);
+    }
+
+    private static void updateDynamicRange(String minimum, String maximum) throws Exception {
+        server.setMarkToEndOfLog();
+        ServerConfiguration config = server.getServerConfiguration();
+        Application app = config.getApplications().getBy("location", DYNAMIC_APP + ".war");
+        assertNotNull("Expected to find the application in the server configuration", app);
+
+        Mcp mcp = app.getMcps().get(0);
+        mcp.setMinimumProtocolVersion(minimum);
+        mcp.setMaximumProtocolVersion(maximum);
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(DYNAMIC_APP));
+    }
+
+    /**
+     * Asserts that a message matching the regular expression is anywhere in messages.log. Unlike
+     * {@code waitForStringInLog} this searches from the start of the log and ignores the log mark.
+     */
+    private static void assertLogged(String failureMessage, String regexp) throws Exception {
+        assertFalse(failureMessage, server.findStringsInLogs(regexp).isEmpty());
+    }
+
+    private static void assertAllVersionsAccepted(String appName) throws Exception {
+        assertEchoAccepted(server, appName, V_2025_03_26);
+        assertEchoAccepted(server, appName, V_2025_06_18);
+        assertEchoAccepted(server, appName, V_2025_11_25);
+        assertEchoAccepted(server, appName, V_2026_07_28);
+        // A missing header is interpreted as 2025-03-26
+        assertEchoAccepted(server, appName, null);
     }
 }

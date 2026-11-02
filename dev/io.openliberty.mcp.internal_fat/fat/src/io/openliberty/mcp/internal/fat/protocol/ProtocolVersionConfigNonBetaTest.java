@@ -47,6 +47,8 @@ public class ProtocolVersionConfigNonBetaTest {
     private static final String RESTRICTED_APP = "protocolVersionNonBetaRestricted";
     /** Configured with values which are not valid versions, which would be reported if they were not ignored */
     private static final String INVALID_APP = "protocolVersionNonBetaInvalid";
+    /** Configured with latest, which would only allow 2026-07-28 if it was not ignored */
+    private static final String LATEST_APP = "protocolVersionNonBetaLatest";
 
     private static final String ALL_VERSIONS = "2025-11-25, 2025-06-18, 2025-03-26";
 
@@ -71,10 +73,20 @@ public class ProtocolVersionConfigNonBetaTest {
             mcp.setMaximumProtocolVersion("2022-02-02");
             app.getMcps().add(mcp);
         });
+
+        WebArchive latestWar = ShrinkWrap.create(WebArchive.class, LATEST_APP + ".war").addPackage(BasicTools.class.getPackage());
+        serverLifecycle.deployWithConfiguration(latestWar, app -> {
+            Mcp mcp = new Mcp();
+            mcp.setStateless("true");
+            mcp.setMinimumProtocolVersion("latest");
+            mcp.setMaximumProtocolVersion("latest");
+            app.getMcps().add(mcp);
+        });
     }
 
     @AfterClass
     public static void teardown() throws Exception {
+        serverLifecycle.undeployWithConfiguration(LATEST_APP);
         serverLifecycle.undeployWithConfiguration(INVALID_APP);
         serverLifecycle.undeployWithConfiguration(RESTRICTED_APP);
     }
@@ -112,6 +124,17 @@ public class ProtocolVersionConfigNonBetaTest {
         assertEchoAccepted(serverLifecycle.getServer(), INVALID_APP, V_2025_11_25);
         assertTrue("Invalid protocol version values should be ignored without an error when the runtime is not beta",
                    serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0045E|CWMCM0046E",
-                                                                           serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
+                                                                          serverLifecycle.getServer().getDefaultLogFile())
+                                  .isEmpty());
+    }
+
+    @Test
+    public void testLatestIsIgnored() throws Exception {
+        // latest is 2026-07-28 in a beta runtime, so if it was honoured only that version would be accepted
+        assertEchoAccepted(serverLifecycle.getServer(), LATEST_APP, V_2025_03_26);
+        assertEchoAccepted(serverLifecycle.getServer(), LATEST_APP, V_2025_11_25);
+        assertEchoAccepted(serverLifecycle.getServer(), LATEST_APP, null);
+        assertEchoRejected(serverLifecycle.getServer(), LATEST_APP, V_2026_07_28, ALL_VERSIONS);
+        assertEquals(V_2025_11_25, initializeAndGetProtocolVersion(serverLifecycle.getServer(), LATEST_APP, V_2026_07_28));
     }
 }

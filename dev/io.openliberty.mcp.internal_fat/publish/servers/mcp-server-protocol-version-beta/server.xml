@@ -43,6 +43,47 @@
     <mcp stateless="true" minimumProtocolVersion="2025-11-25" maximumProtocolVersion="2025-03-26"/>
   </application>
 
+
+  <!-- "latest" as the minimum is newer than an older maximum: error is logged and the defaults are used -->
+  <application location="latestMinimumOlderMaximumApp.war">
+    <mcp stateless="true" minimumProtocolVersion="latest" maximumProtocolVersion="2025-06-18"/>
+  </application>
+
+  <!-- Valid minimum, invalid maximum: error is logged for the maximum only and the valid minimum is kept -->
+  <application location="invalidMaximumApp.war">
+    <mcp stateless="true" minimumProtocolVersion="2025-06-18" maximumProtocolVersion="2099-01-01"/>
+  </application>
+
+  <!-- Both invalid: an error is logged for each and the defaults are used -->
+  <application location="invalidBothApp.war">
+    <mcp stateless="true" minimumProtocolVersion="bogus-minimum" maximumProtocolVersion="bogus-maximum"/>
+  </application>
+
+  <!-- "latest" is case sensitive: error is logged and the defaults are used -->
+  <application location="upperCaseLatestApp.war">
+    <mcp stateless="true" minimumProtocolVersion="LATEST"/>
+  </application>
+
+  <!-- Surrounding whitespace is ignored -->
+  <application location="whitespaceApp.war">
+    <mcp stateless="true" minimumProtocolVersion=" 2025-06-18 " maximumProtocolVersion=" 2025-06-18 "/>
+  </application>
+
+  <!-- Empty values never restrict the range: the defaults are used -->
+  <application location="emptyValuesApp.war">
+    <mcp stateless="true" minimumProtocolVersion="" maximumProtocolVersion=""/>
+  </application>
+
+  <!-- Stateful (the default): the version is negotiated on initialize and the range applies to the session's requests -->
+  <application location="statefulRangeApp.war">
+    <mcp minimumProtocolVersion="2025-06-18" maximumProtocolVersion="2025-11-25"/>
+  </application>
+
+  <!-- Updated by the test while the server is running -->
+  <application location="dynamicRangeApp.war">
+    <mcp stateless="true" minimumProtocolVersion="2025-06-18" maximumProtocolVersion="2025-06-18"/>
+  </application>
+  
   <include location="../fatTestPorts.xml" />
 
 </server>

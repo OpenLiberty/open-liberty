@@ -100,4 +100,43 @@ public class McpProtocolVersionTest {
         assertEquals(McpProtocolVersion.V_2026_07_28, adapter.adaptFromJson("2026-07-28"));
         assertEquals("2026-07-28", adapter.adaptToJson(McpProtocolVersion.V_2026_07_28));
     }
+
+    // Unit tests for the invariants of {@link McpProtocolVersion} that the beta
+    // {@code minimumProtocolVersion} and {@code maximumProtocolVersion} configuration depends on.
+
+    /**
+     * latest() and oldest() rely on the declaration order, and isBetween() relies on the version strings sorting
+     * in date order.
+     */
+    @Test
+    public void testVersionsAreDeclaredNewestFirst() {
+        McpProtocolVersion[] all = McpProtocolVersion.values();
+        for (int i = 0; i < all.length - 1; i++) {
+            assertTrue(all[i].getVersion() + " should be newer than " + all[i + 1].getVersion(),
+                       all[i].getVersion().compareTo(all[i + 1].getVersion()) > 0);
+        }
+    }
+
+    /**
+     * The newest version must stay beta only, so the GA maximum has to be older than the latest version.
+     */
+    @Test
+    public void testGaMaximumIsOlderThanLatest() {
+        assertTrue(McpProtocolVersion.GA_MAXIMUM.getVersion() + " should be older than " + McpProtocolVersion.latest().getVersion(),
+                   McpProtocolVersion.GA_MAXIMUM.getVersion().compareTo(McpProtocolVersion.latest().getVersion()) < 0);
+        assertTrue("The GA minimum should not be newer than the GA maximum",
+                   McpProtocolVersion.GA_MINIMUM.isBetween(McpProtocolVersion.oldest(), McpProtocolVersion.GA_MAXIMUM));
+    }
+
+    /**
+     * Every supported version can be configured by its version string, and "latest" selects the newest one.
+     * This covers versions which are added later without a change to the FAT.
+     */
+    @Test
+    public void testParseConfigValue() {
+        for (McpProtocolVersion version : McpProtocolVersion.values()) {
+            assertEquals(version, McpProtocolVersion.parseConfigValue(version.getVersion()));
+        }
+        assertEquals(McpProtocolVersion.latest(), McpProtocolVersion.parseConfigValue("latest"));
+    }
 }
