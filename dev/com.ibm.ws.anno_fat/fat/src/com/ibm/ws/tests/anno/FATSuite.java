@@ -41,6 +41,7 @@ import com.ibm.ws.tests.anno.jandex.JandexWebInfAppFalseAppMgrTrueTest;
 import com.ibm.ws.tests.anno.jandex.JandexWebInfAppTrueAppMgrFalseTest;
 import com.ibm.ws.tests.anno.jandex.JandexWebInfAppMgrReadWebInfTrueAppReadWebInfFalseTest;
 import com.ibm.ws.tests.anno.jandex.JandexWebInfAppMgrReadWebInfTrueTest;
+import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesBadIndexTest;
 import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesNoReadWebInfTest;
 import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesTest;
 
@@ -75,6 +76,7 @@ import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesTest;
     JandexAppTrueAppMgrTrueTest.class,
     JandexWebInfClassesTest.class,
     JandexWebInfClassesNoReadWebInfTest.class,
+    JandexWebInfClassesBadIndexTest.class,
     //The next five tests are all testing different combinatinos of config
     //they would need a full restart between them to clear the cache
     //so we can't save time reusing a server
