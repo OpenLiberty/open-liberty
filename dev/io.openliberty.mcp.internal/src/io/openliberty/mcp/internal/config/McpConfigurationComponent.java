@@ -98,6 +98,7 @@ public class McpConfigurationComponent {
 
     /**
      * Parse a protocol version attribute, which is either "latest" or a supported protocol version.
+     * An attribute which is missing, empty or only whitespace is treated as not set.
      * Logs an error and returns null if the value is not valid. The caller then uses the default for that attribute.
      *
      * @param properties the configuration properties
@@ -107,7 +108,7 @@ public class McpConfigurationComponent {
     @FFDCIgnore(NoSuchElementException.class)
     private McpProtocolVersion parseProtocolVersion(Map<String, Object> properties, String attributeName) {
         String value = (String) properties.get(attributeName);
-        if (value == null) {
+        if (value == null || value.isBlank()) {
             return null;
         }
         try {
