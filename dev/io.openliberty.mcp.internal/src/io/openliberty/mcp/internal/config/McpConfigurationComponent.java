@@ -114,7 +114,7 @@ public class McpConfigurationComponent {
             return McpProtocolVersion.parseConfigValue(value.trim());
         } catch (NoSuchElementException e) {
             String supportedValues = McpProtocolVersion.LATEST + ", "
-                                     + Arrays.stream(McpProtocolVersion.values())
+                                     + Arrays.stream(McpProtocolVersion.availableValues())
                                              .map(McpProtocolVersion::getVersion)
                                              .collect(Collectors.joining(", "));
             Tr.error(tc, "CWMCM0045E.protocol.version.invalid", attributeName, value, supportedValues);

@@ -118,10 +118,13 @@ public class McpProtocolVersionTest {
     }
 
     /**
-     * The newest version must stay beta only, so the GA maximum has to be older than the latest version.
+     * The newest version must stay beta only, so the GA maximum has to be older than the latest version
+     * of a beta runtime.
      */
     @Test
     public void testGaMaximumIsOlderThanLatest() {
+        System.setProperty(BETA_PROPERTY, "true");
+
         assertTrue(McpProtocolVersion.GA_MAXIMUM.getVersion() + " should be older than " + McpProtocolVersion.latest().getVersion(),
                    McpProtocolVersion.GA_MAXIMUM.getVersion().compareTo(McpProtocolVersion.latest().getVersion()) < 0);
         assertTrue("The GA minimum should not be newer than the GA maximum",
@@ -134,9 +137,23 @@ public class McpProtocolVersionTest {
      */
     @Test
     public void testParseConfigValue() {
+        System.setProperty(BETA_PROPERTY, "true");
+
         for (McpProtocolVersion version : McpProtocolVersion.values()) {
             assertEquals(version, McpProtocolVersion.parseConfigValue(version.getVersion()));
         }
-        assertEquals(McpProtocolVersion.latest(), McpProtocolVersion.parseConfigValue("latest"));
+        assertEquals(McpProtocolVersion.V_2026_07_28, McpProtocolVersion.parseConfigValue("latest"));
+    }
+
+    /**
+     * On a non-beta runtime the beta version is not the latest version, and it is not accepted by default.
+     */
+    @Test
+    public void testLatestAndAcceptedVersionsExcludeBetaOnNonBeta() {
+        System.setProperty(BETA_PROPERTY, "false");
+        assertEquals(McpProtocolVersion.GA_MAXIMUM, McpProtocolVersion.latest());
+        assertEquals(McpProtocolVersion.GA_MINIMUM, McpProtocolVersion.oldest());
+        assertEquals(McpProtocolVersion.GA_MAXIMUM, McpProtocolVersion.defaultMaximum());
+        assertFalse(Arrays.asList(McpProtocolVersion.availableValues()).contains(McpProtocolVersion.V_2026_07_28));
     }
 }

@@ -258,7 +258,15 @@ public class McpServlet extends HttpServlet {
      */
 
     @Override
+    @FFDCIgnore(HttpResponseException.class)
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        try {
+            McpTransport.validateProtocolVersionHeader(req, mcpConfig);
+        } catch (HttpResponseException e) {
+            resp.sendError(e.getStatusCode(), e.getMessage());
+            return;
+        }
+
         if (isServerStateless()) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");
             return;

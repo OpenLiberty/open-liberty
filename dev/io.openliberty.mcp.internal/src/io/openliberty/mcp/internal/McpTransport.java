@@ -120,7 +120,31 @@ public class McpTransport {
         this.sessionInfo = session;
     }
 
-    private HttpResponseException unsupportedProtocolVersion(List<McpProtocolVersion> acceptedVersions) {
+    /**
+     * Checks the protocol version header of a request which is not processed by {@link #init}, such as a session DELETE.
+     * A missing header is allowed. A header which is unknown, or outside the configured range, is rejected.
+     *
+     * @param req the request
+     * @param mcpConfig the configuration, which determines the protocol versions that are accepted
+     * @throws HttpResponseException with status 400 if the header names a version which is not accepted
+     */
+    @FFDCIgnore(NoSuchElementException.class)
+    public static void validateProtocolVersionHeader(HttpServletRequest req, McpConfig mcpConfig) {
+        String header = req.getHeader(MCP_HEADER);
+        if (header == null) {
+            return;
+        }
+        List<McpProtocolVersion> acceptedVersions = mcpConfig.acceptedProtocolVersions();
+        try {
+            if (!acceptedVersions.contains(McpProtocolVersion.parse(header))) {
+                throw unsupportedProtocolVersion(acceptedVersions);
+            }
+        } catch (NoSuchElementException e) {
+            throw unsupportedProtocolVersion(acceptedVersions);
+        }
+    }
+
+    private static HttpResponseException unsupportedProtocolVersion(List<McpProtocolVersion> acceptedVersions) {
         String supportedValues = acceptedVersions.stream()
                                                  .map(McpProtocolVersion::getVersion)
                                                  .collect(Collectors.joining(", "));

@@ -109,17 +109,17 @@ public enum McpProtocolVersion {
     }
 
     /**
-     * @return the newest protocol version supported by this runtime
+     * @return the newest protocol version available on this runtime
      */
     public static McpProtocolVersion latest() {
-        return values()[0];
+        return availableValues()[0];
     }
 
     /**
-     * @return the oldest protocol version supported by this runtime
+     * @return the oldest protocol version available on this runtime
      */
     public static McpProtocolVersion oldest() {
-        McpProtocolVersion[] all = values();
+        McpProtocolVersion[] all = availableValues();
         return all[all.length - 1];
     }
 

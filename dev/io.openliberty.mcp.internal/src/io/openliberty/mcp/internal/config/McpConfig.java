@@ -58,10 +58,10 @@ public interface McpConfig {
     /**
      * Returns the protocol versions which requests may use, newest first
      *
-     * @return the protocol versions between the minimum and maximum, inclusive
+     * @return the available protocol versions between the minimum and maximum, inclusive
      */
     default List<McpProtocolVersion> acceptedProtocolVersions() {
-        return Arrays.stream(McpProtocolVersion.values())
+        return Arrays.stream(McpProtocolVersion.availableValues())
                      .filter(v -> v.isBetween(minimumProtocolVersion(), maximumProtocolVersion()))
                      .toList();
     }

@@ -14,11 +14,13 @@ import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.V
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.V_2025_06_18;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.V_2025_11_25;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.V_2026_07_28;
+import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertDeleteRejected;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertEchoAccepted;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertEchoAcceptedInSession;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertEchoRejected;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertEchoRejectedInSession;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertInitializeRejected;
+import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.delete;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.initialize;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.initializeAndGetProtocolVersion;
 import static org.junit.Assert.assertEquals;
@@ -332,6 +334,42 @@ public class ProtocolVersionConfigBetaTest {
     public void testStatefulInitializeWithHeaderOutOfRangeIsRejected() throws Exception {
         assertInitializeRejected(server, STATEFUL_APP, V_2025_03_26, V_2025_11_25, "2025-11-25, 2025-06-18");
         assertInitializeRejected(server, STATEFUL_APP, V_2026_07_28, V_2025_11_25, "2025-11-25, 2025-06-18");
+    }
+
+    // ---- Session DELETE requests ----
+
+    @Test
+    public void testStatefulDeleteWithHeaderOutOfRangeIsRejectedAndSessionKept() throws Exception {
+        String sessionId = initialize(server, STATEFUL_APP, null, V_2025_11_25).sessionId();
+        assertNotNull(sessionId);
+
+        String supported = "2025-11-25, 2025-06-18";
+        assertDeleteRejected(server, STATEFUL_APP, V_2025_03_26, sessionId, supported);
+        assertDeleteRejected(server, STATEFUL_APP, V_2026_07_28, sessionId, supported);
+        assertDeleteRejected(server, STATEFUL_APP, "2022-02-02", sessionId, supported);
+
+        // A rejected DELETE must not delete the session
+        assertEchoAcceptedInSession(server, STATEFUL_APP, V_2025_11_25, sessionId);
+
+        // A header within the range is accepted and deletes the session
+        delete(server, STATEFUL_APP, V_2025_06_18, sessionId, 200);
+        delete(server, STATEFUL_APP, V_2025_06_18, sessionId, 404);
+    }
+
+    @Test
+    public void testStatefulDeleteWithoutHeaderIsAccepted() throws Exception {
+        // A missing header is allowed on DELETE, even though 2025-03-26 is below the minimum
+        String sessionId = initialize(server, STATEFUL_APP, null, V_2025_11_25).sessionId();
+        assertNotNull(sessionId);
+        delete(server, STATEFUL_APP, null, sessionId, 200);
+    }
+
+    @Test
+    public void testStatelessDeleteWithHeaderOutOfRangeIsRejected() throws Exception {
+        // The header is checked before the request is answered with 404 for a stateless application
+        assertDeleteRejected(server, SINGLE_VERSION_APP, V_2025_11_25, null, V_2025_06_18);
+        assertDeleteRejected(server, SINGLE_VERSION_APP, "2022-02-02", null, V_2025_06_18);
+        delete(server, SINGLE_VERSION_APP, V_2025_06_18, null, 404);
     }
 
     // ---- Configuration updates ----

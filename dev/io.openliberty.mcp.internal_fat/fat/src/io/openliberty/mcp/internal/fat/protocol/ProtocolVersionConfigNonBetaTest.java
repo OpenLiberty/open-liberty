@@ -13,6 +13,7 @@ import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.V
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.V_2025_06_18;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.V_2025_11_25;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.V_2026_07_28;
+import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertDeleteRejected;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertEchoAccepted;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertEchoRejected;
 import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.initializeAndGetProtocolVersion;
@@ -108,6 +109,13 @@ public class ProtocolVersionConfigNonBetaTest {
     public void testVersionNewerThanGaMaximumIsRejected() throws Exception {
         // 2026-07-28 is a valid protocol version, but it is above the maximum used when the runtime is not beta
         assertEchoRejected(serverLifecycle.getServer(), RESTRICTED_APP, V_2026_07_28, ALL_VERSIONS);
+    }
+
+    @Test
+    public void testDeleteUsesGaRange() throws Exception {
+        // The header is checked against the non-beta range, not the configured range of 2025-11-25 only
+        assertDeleteRejected(serverLifecycle.getServer(), RESTRICTED_APP, V_2026_07_28, null, ALL_VERSIONS);
+        assertDeleteRejected(serverLifecycle.getServer(), RESTRICTED_APP, "2022-02-02", null, ALL_VERSIONS);
     }
 
     @Test

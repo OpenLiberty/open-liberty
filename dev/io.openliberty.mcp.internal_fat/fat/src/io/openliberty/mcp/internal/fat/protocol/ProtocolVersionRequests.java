@@ -168,6 +168,39 @@ public final class ProtocolVersionRequests {
         assertRejectedResponse(headerVersion, response, expectedSupportedValues);
     }
 
+    /**
+     * Sends a DELETE request for a session and expects the given HTTP status.
+     *
+     * @param protocolVersion the value for the MCP-Protocol-Version header, or {@code null} to omit the header
+     * @param sessionId the value for the Mcp-Session-Id header, or {@code null} to omit the header
+     * @return the response body
+     */
+    public static String delete(LibertyServer server, String appName, String protocolVersion, String sessionId, int expectedCode) throws Exception {
+        HttpRequest request = new HttpRequest(server, "/" + appName + "/mcp")
+                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                             .method("DELETE")
+                                                                             .expectCode(expectedCode);
+        if (protocolVersion != null) {
+            request = request.requestProp(MCP_PROTOCOL_VERSION, protocolVersion);
+        }
+        if (sessionId != null) {
+            request = request.requestProp(MCP_SESSION_ID, sessionId);
+        }
+        return request.run(String.class);
+    }
+
+    /**
+     * Sends a DELETE request for a session and expects it to be rejected with HTTP 400 because of its
+     * MCP-Protocol-Version header.
+     *
+     * @param expectedSupportedValues the exact list the server should report as supported, e.g. "2025-06-18"
+     */
+    public static void assertDeleteRejected(LibertyServer server, String appName, String protocolVersion, String sessionId,
+                                            String expectedSupportedValues)
+                    throws Exception {
+        assertRejectedResponse(protocolVersion, delete(server, appName, protocolVersion, sessionId, 400), expectedSupportedValues);
+    }
+
     private static void assertRejectedResponse(String protocolVersion, String response, String expectedSupportedValues) {
         assertThat("Expected error message about unsupported protocol version " + protocolVersion,
                    response, containsString(UNSUPPORTED_MESSAGE));
