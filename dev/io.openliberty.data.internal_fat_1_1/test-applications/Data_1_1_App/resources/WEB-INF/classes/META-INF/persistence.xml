@@ -30,6 +30,9 @@
         <class>test.jakarta.data.v1_1.web.Billboard</class>
         <class>test.jakarta.data.v1_1.web.Commercial</class>
         <class>test.jakarta.data.v1_1.web.Fraction</class>
+        <class>test.jakarta.data.v1_1.web.Giver</class>
+        <class>test.jakarta.data.v1_1.web.Grant</class>
+        <class>test.jakarta.data.v1_1.web.Grantee</class>
         <class>test.jakarta.data.v1_1.web.Mail</class>
         <class>test.jakarta.data.v1_1.web.Sector</class>
 

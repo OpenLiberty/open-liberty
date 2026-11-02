@@ -19,6 +19,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
 import jakarta.data.Limit;
@@ -54,6 +56,8 @@ import jakarta.persistence.LockModeType;
 import jakarta.persistence.query.JakartaQuery;
 import jakarta.persistence.query.NativeQuery;
 import jakarta.persistence.query.QueryOptions;
+import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 
 /**
  * Repository for the Fraction entity
@@ -194,6 +198,20 @@ public interface Fractions {
                     """)
     Optional<Fraction> firstValueWithin(double minValue, double maxValue);
 
+    // Do not add @Asynchronous to this method
+    @Find
+    @QueryOptions(lockMode = LockModeType.PESSIMISTIC_READ)
+    @Transactional(TxType.REQUIRES_NEW)
+    CompletionStage<Fraction> futurePessimisticRead//
+    (@By(_Fraction.NAME) String nameOfFraction);
+
+    // Do not add @Asynchronous to this method
+    @Find
+    @QueryOptions(lockMode = LockModeType.PESSIMISTIC_WRITE)
+    @Transactional(TxType.REQUIRES_NEW)
+    CompletableFuture<Optional<Fraction>> futureWriteLock//
+    (@By(_Fraction.NAME) String nameOfFraction);
+
     @Query("WHERE denominator = ?1 AND numerator < denominator")
     @First
     @OrderBy(value = _Fraction.NUMERATOR, descending = true)
@@ -295,6 +313,17 @@ public interface Fractions {
     default Stream<Ratio> ratioStreamWithSumOfTerms(int sum) {
         return Stream.of();
     }
+
+    @Query("""
+                    UPDATE Fraction
+                       SET numerator = ?2,
+                           denominator = ?3,
+                           reduced = TRUE
+                     WHERE name = ?1
+                    """)
+    boolean reduce(String name,
+                   int numeratorReduced,
+                   int denominatorReduced);
 
     @Delete
     List<Fraction> remove(Like name,
