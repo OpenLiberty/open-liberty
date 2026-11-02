@@ -38,6 +38,5 @@ public class WSATAssertionPolicyProvider extends AbstractPolicyInterceptorProvid
 
     public WSATAssertionPolicyProvider() {
         super(ASSERTION_TYPES);
-        //      getInInterceptors().add(new WSATPolicyAwareInterceptor(Phase.RECEIVE, false));
     }
 }

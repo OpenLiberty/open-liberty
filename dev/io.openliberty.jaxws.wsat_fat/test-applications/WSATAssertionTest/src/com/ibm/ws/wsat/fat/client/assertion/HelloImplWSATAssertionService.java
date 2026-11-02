@@ -5,7 +5,6 @@
 
 package com.ibm.ws.wsat.fat.client.assertion;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -14,7 +13,7 @@ import javax.xml.ws.WebServiceClient;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
 
-@WebServiceClient(name = "HelloImplWSATAssertionService", targetNamespace = "http://server.fat.wsat.ws.ibm.com/", wsdlLocation = "http://localhost:8010/assertion/HelloImplWSATAssertionService?wsdl")
+@WebServiceClient(name = "HelloImplWSATAssertionService", targetNamespace = "http://server.fat.wsat.ws.ibm.com/", wsdlLocation = "http://localhost/assertion/HelloImplWSATAssertionService?wsdl")
 public class HelloImplWSATAssertionService
     extends Service
 {
@@ -24,15 +23,11 @@ public class HelloImplWSATAssertionService
     private final static QName HelloImplWSATAssertionSERVICE_QNAME = new QName("http://server.fat.wsat.ws.ibm.com/", "HelloImplWSATAssertionService");
 
     static {
-        URL url = null;
-        WebServiceException e = null;
-        try {
-            url = new URL("http://localhost:8010/assertion/HelloImplWSATAssertionService?wsdl");
-        } catch (MalformedURLException ex) {
-            e = new WebServiceException(ex);
-        }
-        HelloImplWSATAssertionSERVICE_WSDL_LOCATION = url;
-        HelloImplWSATAssertionSERVICE_EXCEPTION = e;
+        // No static WSDL URL: tests always pass a live wsdlLocation at construction time.
+        HelloImplWSATAssertionSERVICE_WSDL_LOCATION = null;
+        HelloImplWSATAssertionSERVICE_EXCEPTION = new WebServiceException(
+            "HelloImplWSATAssertionService must be constructed with an explicit wsdlLocation; "
+            + "the no-arg constructor is not supported in FAT tests.");
     }
 
     public HelloImplWSATAssertionService() {
