@@ -801,7 +801,8 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
             final byte firstChar = lineContent[startLine];
             if (firstChar == ' ' || firstChar == '\t') {
                 if (isDecodingRequest()) {
-                    throw new IllegalArgumentException("Obsolete line folding is not allowed in HTTP headers");
+                    throw new HttpRequestValidationException(
+                            new IllegalArgumentException("Obsolete line folding is not allowed in HTTP headers"));
                 }
                 if (name != null) {
                     //please do not make one line from below code
