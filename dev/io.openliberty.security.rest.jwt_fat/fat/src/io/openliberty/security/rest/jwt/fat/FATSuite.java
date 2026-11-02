@@ -27,4 +27,5 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 RestJwtKeyFileInvalidFATTest.class
 })
 public class FATSuite {
+    public static final String REST_MBEANS_ENDPOINT = "/IBMJMXConnectorREST/mbeans";
 }

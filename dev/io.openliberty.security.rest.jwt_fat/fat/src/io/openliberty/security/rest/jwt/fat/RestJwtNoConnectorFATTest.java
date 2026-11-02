@@ -38,8 +38,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import io.openliberty.security.rest.jwt.tai.RestJwtTAI;
-
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -97,7 +95,7 @@ public class RestJwtNoConnectorFATTest {
     public void testBearerRequestNotProcessedByRestJwtTai() throws Exception {
         String token = createJwtToken("adminUser", "liberty-admin");
 
-        HttpURLConnection conn = sendRequest(RestJwtTAI.PREFIX_REST_ENDPOINT, token);
+        HttpURLConnection conn = sendRequest(FATSuite.REST_MBEANS_ENDPOINT, token);
         assertEquals("Expected 404 because the REST connector application is not present", HttpURLConnection.HTTP_NOT_FOUND,
                      conn.getResponseCode());
 
