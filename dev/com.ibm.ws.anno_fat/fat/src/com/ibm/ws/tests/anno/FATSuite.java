@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012,2025 IBM Corporation and others.
+ * Copyright (c) 2012,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,6 +34,14 @@ import com.ibm.ws.tests.anno.jandex.JandexAppFalseAppMgrFalseTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppFalseAppMgrTrueTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppTrueAppMgrFalseTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppTrueAppMgrTrueTest;
+import com.ibm.ws.tests.anno.jandex.JandexWebInfAppDefaultAppMgrDefaultTest;
+import com.ibm.ws.tests.anno.jandex.JandexWebInfAppDefaultAppMgrTrueTest;
+import com.ibm.ws.tests.anno.jandex.JandexWebInfAppFalseAppMgrFalseTest;
+import com.ibm.ws.tests.anno.jandex.JandexWebInfAppFalseAppMgrTrueTest;
+import com.ibm.ws.tests.anno.jandex.JandexWebInfAppTrueAppMgrFalseTest;
+import com.ibm.ws.tests.anno.jandex.JandexWebInfAppMgrReadWebInfTrueAppReadWebInfFalseTest;
+import com.ibm.ws.tests.anno.jandex.JandexWebInfAppMgrReadWebInfTrueTest;
+import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesNoReadWebInfTest;
 import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesTest;
 
 /**
@@ -66,6 +74,17 @@ import com.ibm.ws.tests.anno.jandex.JandexWebInfClassesTest;
     JandexAppTrueAppMgrFalseTest.class,
     JandexAppTrueAppMgrTrueTest.class,
     JandexWebInfClassesTest.class,
+    JandexWebInfClassesNoReadWebInfTest.class,
+    //The next five tests are all testing different combinatinos of config
+    //they would need a full restart between them to clear the cache
+    //so we can't save time reusing a server
+    JandexWebInfAppDefaultAppMgrTrueTest.class, 
+    JandexWebInfAppTrueAppMgrFalseTest.class,
+    JandexWebInfAppFalseAppMgrTrueTest.class,
+    JandexWebInfAppFalseAppMgrFalseTest.class,
+    JandexWebInfAppDefaultAppMgrDefaultTest.class,
+    JandexWebInfAppMgrReadWebInfTrueTest.class,
+    JandexWebInfAppMgrReadWebInfTrueAppReadWebInfFalseTest.class,
 
     // Annotation caching tests
     CacheEnablementTest.class,
