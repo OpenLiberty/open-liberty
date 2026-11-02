@@ -98,6 +98,17 @@
 			<systemPath>${io.openliberty.org.jboss.weld5}</systemPath>
 		</dependency>
 
+		<!-- TEMPORARY (testing only): patched arquillian-junit5-container jar.
+		     Declared BEFORE the standard container dependency so its classes take precedence on the classpath.
+		     The standard dependency below is kept to supply the transitive dependencies. -->
+		<dependency>
+			<groupId>org.jboss.arquillian.junit5</groupId>
+			<artifactId>arquillian-junit5-container-patched</artifactId>
+			<version>1.9.6.Final-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/../deps/arquillian-junit5-container-1.9.6.Final-SNAPSHOT.jar</systemPath>
+		</dependency>
+
 		<!-- Test dependencies needed by Liberty Arquillian Plugin for Junit5 -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
