@@ -278,7 +278,7 @@ public class Connector implements JMXConnector {
         if (!ConnectorSettings.CERTIFICATE_AUTHENTICATION.equals(credentials)) {
             String[] userPass = (String[]) credentials;
             user = userPass[0];
-            if ("Bearer".equals(user)) {
+            if (ClientConstants.BEARER_TOKEN_AUTHENTICATION.equals(user)) {
                 basicAuthHeader = RequestIdentity.bearerHeader(userPass[1]);
             } else {
                 JSONConverter converter = JSONConverter.getConverter();
