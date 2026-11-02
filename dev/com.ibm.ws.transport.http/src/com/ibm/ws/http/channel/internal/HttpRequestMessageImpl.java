@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -77,6 +78,9 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     /** RAS trace variable */
     private static final TraceComponent tc = Tr.register(HttpRequestMessageImpl.class, HttpMessages.HTTP_TRACE_NAME,
             HttpMessages.HTTP_BUNDLE);
+
+    /** Ensures the non-sensitive $WSSP warning message is issued only once */
+    private static final AtomicBoolean wsspWarningIssued = new AtomicBoolean(false);
 
     /** Serialization ID field */
     private static final long serialVersionUID = 5759292362534888246L;
@@ -2249,9 +2253,25 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
 
             rc = HttpDispatcher.isPrivateHeaderTrusted(remoteAddr, hkey, isWssp ? value : null, desensitizePrivatePortHeader);
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && !rc) {
-                Tr.debug(tc, "filterAdd: WAS private header [" + key.getName()
-                        + "] not permitted from [" + remoteAddr + "]");
+            if (!rc) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "filterAdd: WAS private header [" + key.getName()
+                            + "] not permitted from [" + remoteAddr + "]");
+                }
+
+                if (isWssp) {
+                    // The $WSSP value comes from a peer that is not trusted, so it is deliberately not logged.
+                    int clientPort = (hisc != null) ? hisc.getRemotePort() : -1;
+
+                    // warn only for the first request, but trace every request
+                    if (wsspWarningIssued.compareAndSet(false, true)) {
+                        Tr.warning(tc, "wssp.header.non.sensitive.address", remoteAddr, clientPort);
+                    }
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "filterAdd: $WSSP header received from non-sensitive address: clientAddress=" + remoteAddr
+                                     + ", clientPort=" + clientPort);
+                    }
+                }
             }
         }
         return rc;
