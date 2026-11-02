@@ -16,7 +16,7 @@ import java.util.Locale;
 
 /**
  * Parser and matcher for the {@code allowedServerNames} {@code httpDispatcher}
- * attribute (PH71846.5).
+ * attribute.
  *
  * <p>The attribute is a comma-separated list of host-name patterns. Each entry
  * is either an exact well-formed host name or a leading {@code *.} followed by

@@ -350,13 +350,17 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
     }
 
     private static String getRoutingHost(HttpInboundConnection conn, ServletRequest req) {
+        String routingHost = req.getServerName();
         if (conn instanceof HttpInboundConnectionExtended) {
             Object link = ((HttpInboundConnectionExtended) conn).getHttpDispatcherLink();
             if (link instanceof HttpDispatcherLink) {
-                return ((HttpDispatcherLink) link).getRequestedRoutingHost();
+                routingHost = ((HttpDispatcherLink) link).getRequestedRoutingHost();
             }
         }
-        return req.getServerName();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "DynamicVirtualHost.getRoutingHost: routing host --> " + routingHost);
+        }
+        return routingHost;
     }
 
     @Override

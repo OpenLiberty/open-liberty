@@ -54,7 +54,7 @@ public class AllowedServerNamesMatcherTest {
     }
 
     // -----------------------------------------------------------------------
-    // Section 8 item 3: positive matches
+    // Positive matches
     // -----------------------------------------------------------------------
 
     @Test
@@ -81,7 +81,7 @@ public class AllowedServerNamesMatcherTest {
     }
 
     // -----------------------------------------------------------------------
-    // Section 8 item 4: negative cases
+    // Negative cases
     // -----------------------------------------------------------------------
 
     @Test
@@ -114,7 +114,7 @@ public class AllowedServerNamesMatcherTest {
     }
 
     // -----------------------------------------------------------------------
-    // Section 8 item 4a: parse guards -- rejection with correct reason
+    // Parse guards: rejection with correct reason
     // -----------------------------------------------------------------------
 
     @Test
@@ -236,7 +236,7 @@ public class AllowedServerNamesMatcherTest {
     }
 
     // -----------------------------------------------------------------------
-    // Section 8 item 4b: well-formedness of the $WSSN value
+    // Well-formedness of the candidate value
     // -----------------------------------------------------------------------
 
     @Test
@@ -335,7 +335,7 @@ public class AllowedServerNamesMatcherTest {
     }
 
     // -----------------------------------------------------------------------
-    // Section 8 item 4c: wildcard scope and length caps
+    // Wildcard scope and length caps
     // -----------------------------------------------------------------------
 
     @Test

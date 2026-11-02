@@ -189,10 +189,9 @@ public class HttpDispatcherAllowedServerNamesTest {
 
     /**
      * The early-return case: modified() is called with a null or empty config.
-     * This is the path that the task note (S1-2 item 4) asked us to analyse.
      * We verified that the early return fires only for null/empty config -- a scenario
      * that does not occur during normal config updates (OSGi always delivers a
-     * non-empty map).  We documented this in the code comment in modified().
+     * non-empty map).  The code comment in modified() documents this.
      * This test confirms the field retains the last-assigned matcher in that edge case
      * (which is the expected behaviour; a null/empty config means DS has nothing new).
      */
