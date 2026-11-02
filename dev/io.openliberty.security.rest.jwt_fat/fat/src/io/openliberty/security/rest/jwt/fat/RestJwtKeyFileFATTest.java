@@ -46,6 +46,7 @@ import io.openliberty.security.rest.jwt.tai.RestJwtTAI;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -58,6 +59,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
+@SkipForRepeat({ SkipForRepeat.EE9_OR_LATER_FEATURES })
 public class RestJwtKeyFileFATTest {
 
     private static final Class<?> c = RestJwtKeyFileFATTest.class;

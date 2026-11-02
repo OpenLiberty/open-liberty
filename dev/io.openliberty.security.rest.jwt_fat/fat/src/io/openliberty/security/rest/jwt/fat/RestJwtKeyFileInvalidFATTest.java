@@ -45,6 +45,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import io.openliberty.security.rest.jwt.tai.RestJwtTAI;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -61,6 +62,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
+@SkipForRepeat({ SkipForRepeat.EE9_OR_LATER_FEATURES })
 public class RestJwtKeyFileInvalidFATTest {
 
     private static final Class<?> c = RestJwtKeyFileInvalidFATTest.class;
