@@ -63,6 +63,10 @@ public class FIPS1403SecurityUtilityInvalidEnvTests{
         boolean validEnv = false;
         if (ji.majorVersion() == 8) {
             String dir = ji.javaHome();
+            //For non-z/OS installs, need to check instead the `jre` directory
+            if (!System.getProperty("os.name").equalsIgnoreCase("z/OS") && !dir.endsWith("jre")) {
+                dir = dir + "/jre";
+            }
             Set<String> dirs = Stream.of(new File(dir).listFiles())
                     .filter(File::isDirectory)
                     .map(File::getName)
