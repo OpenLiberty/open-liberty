@@ -37,9 +37,11 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE6FeatureReplacementAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -47,6 +49,12 @@ import componenttest.topology.utils.HttpUtils;
  * Test to ensure that the tcpOptions inactivityTimeout works.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat({
+    EE6FeatureReplacementAction.ID,
+    SkipForRepeat.EE8_FEATURES,
+    SkipForRepeat.EE9_FEATURES,
+    SkipForRepeat.EE10_FEATURES
+})
 @Mode(TestMode.FULL)
 public class InactivityTimeoutTests {
 
@@ -471,7 +479,7 @@ public class InactivityTimeoutTests {
                        server.findStringsInLogsAndTraceUsingMark("connection closed due to idle timeout").size() >= 1);
         }
     }
-
+    
     /**
      * The test will set the inactivitiyTimeout to a value of 5s.
      *

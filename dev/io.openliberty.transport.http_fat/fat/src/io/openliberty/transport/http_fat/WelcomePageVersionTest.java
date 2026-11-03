@@ -28,15 +28,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EE6FeatureReplacementAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * Test to verify that the Open Liberty welcome page displays the runtime version
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat({
+    EE6FeatureReplacementAction.ID,
+    SkipForRepeat.EE8_FEATURES,
+    SkipForRepeat.EE9_FEATURES,
+    SkipForRepeat.EE10_FEATURES
+})
 @Mode(TestMode.FULL)
 public class WelcomePageVersionTest {
     private static final Class<?> c = WelcomePageVersionTest.class;
