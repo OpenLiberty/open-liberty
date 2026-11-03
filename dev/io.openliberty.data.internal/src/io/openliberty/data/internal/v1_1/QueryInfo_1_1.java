@@ -1167,6 +1167,7 @@ public class QueryInfo_1_1 extends QueryInfo {
     @Override
     @Trivial
     protected void initEntityGraph() {
+
         String graphName = "";
         if (QUERY_OPTIONS_CLASS != null) {
             Annotation queryOptions = method.getAnnotation(QUERY_OPTIONS_CLASS);
@@ -1175,6 +1176,20 @@ public class QueryInfo_1_1 extends QueryInfo {
                     graphName = (String) QUERY_OPTIONS_CLASS //
                                     .getMethod("entityGraph") //
                                     .invoke(queryOptions);
+
+                    QueryHint[] hints = (QueryHint[]) QUERY_OPTIONS_CLASS //
+                                    .getMethod("hints") //
+                                    .invoke(queryOptions);
+
+                    for (QueryHint hint : hints)
+                        if (Util.LOADGRAPH.equals(hint.name()))
+                            if (graphName.length() == 0) {
+                                graphName = hint.value();
+                                break;
+                            } else if (!graphName.equals(hint.value())) {
+                                throw Fail.queryOptionsGraphConflict(this);
+                            }
+
                 } catch (IllegalAccessException | NoSuchMethodException x) {
                     throw new RuntimeException(x); // should be impossible
                 } catch (InvocationTargetException x) {
@@ -1348,39 +1363,39 @@ public class QueryInfo_1_1 extends QueryInfo {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "setReadOptions", Util.toString(options), query);
 
-        Class<?> QueryOptions = options.getClass();
-        Object flush = QueryOptions //
+        Object flush = QUERY_OPTIONS_CLASS //
                         .getMethod("flush") //
                         .invoke(options); // QueryFlushMode
-        CacheStoreMode cacheStoreMode = (CacheStoreMode) QueryOptions //
+        CacheStoreMode cacheStoreMode = (CacheStoreMode) QUERY_OPTIONS_CLASS //
                         .getMethod("cacheStoreMode") //
                         .invoke(options);
-        CacheRetrieveMode cacheRetrieveMode = (CacheRetrieveMode) QueryOptions //
+        CacheRetrieveMode cacheRetrieveMode = (CacheRetrieveMode) QUERY_OPTIONS_CLASS //
                         .getMethod("cacheRetrieveMode") //
                         .invoke(options);
-        QueryHint[] hints = (QueryHint[]) QueryOptions //
+        QueryHint[] hints = (QueryHint[]) QUERY_OPTIONS_CLASS //
                         .getMethod("hints") //
                         .invoke(options);
-        LockModeType lockMode = (LockModeType) QueryOptions //
+        LockModeType lockMode = (LockModeType) QUERY_OPTIONS_CLASS //
                         .getMethod("lockMode") //
                         .invoke(options);
-        PessimisticLockScope lockScope = (PessimisticLockScope) QueryOptions //
+        PessimisticLockScope lockScope = (PessimisticLockScope) QUERY_OPTIONS_CLASS //
                         .getMethod("lockScope") //
                         .invoke(options);
-        int timeout = (Integer) QueryOptions //
+        int timeout = (Integer) QUERY_OPTIONS_CLASS //
                         .getMethod("timeout") //
                         .invoke(options);
 
         // QueryOptions specified via Hints:
         for (QueryHint hint : hints)
-            if (Util.FETCHGRAPH.equals(hint.name()) ||
-                Util.LOADGRAPH.equals(hint.name()))
+            if (Util.FETCHGRAPH.equals(hint.name()))
                 query.setHint(hint.name(),
                               entityHandler.getClass() //
                                               .getMethod("getEntityGraph",
                                                          String.class) //
                                               .invoke(entityHandler,
                                                       hint.value()));
+            else if (Util.LOADGRAPH.equals(hint.name()))
+                ; // already read by initEntityGraph and stored in eagerlyFetch
             else
                 query.setHint(hint.name(),
                               hint.value());
