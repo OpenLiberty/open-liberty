@@ -30,7 +30,8 @@ public record McpServerConfigProps(boolean stateless,
                                    String servicePid,
                                    Duration sessionTimeout,
                                    ServerInfo serverInfo,
-                                   long asyncTimeoutMs) implements McpConfig {
+                                   long asyncTimeoutMs,
+                                   McpConfig.EnableEndpoint enableEndpoint) implements McpConfig {
     public static final String FALLBACK_PATH = "/mcp";
     public static final int DEFAULT_ASYNC_TIMEOUT_MS = 30_000;
 
@@ -41,7 +42,8 @@ public record McpServerConfigProps(boolean stateless,
     // Default ServerInfo with defaults (name and version only, title and description are null)
     public static final ServerInfo DEFAULT_SERVER_INFO = new ServerInfo(DEFAULT_SERVER_NAME, null, DEFAULT_SERVER_VERSION, null);
 
-    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, Duration.ofMinutes(10), null, DEFAULT_ASYNC_TIMEOUT_MS);
+    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, Duration.ofMinutes(10), null, DEFAULT_ASYNC_TIMEOUT_MS,
+                                                                                       McpConfig.EnableEndpoint.AUTO);
 
     /**
      * Compact constructor that validates and applies defaults for required fields.

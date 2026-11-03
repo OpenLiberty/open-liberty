@@ -66,6 +66,9 @@ public class ToolRegistry implements ToolManager {
 
     private final ToolStore toolStore = new ToolStore();
 
+    /** True when at least one tool was registered from a CDI {@code @Tool}-annotated method. */
+    private volatile boolean hasAnnotatedTools = false;
+
     /**
      * Create a toolRegistry
      *
@@ -100,6 +103,23 @@ public class ToolRegistry implements ToolManager {
 
     public boolean hasTools() {
         return !toolStore.getAllToolInfos().isEmpty();
+    }
+
+    /**
+     * Returns {@code true} if at least one tool in this registry was registered via a
+     * CDI {@code @Tool}-annotated method (as opposed to only being registered programmatically
+     * via {@link #newTool(String)}).
+     */
+    public boolean hasAnnotatedTools() {
+        return hasAnnotatedTools;
+    }
+
+    /**
+     * Marks this registry as containing at least one tool registered from a {@code @Tool} annotation.
+     * Called by {@code McpCdiExtension} during CDI deployment.
+     */
+    public void markHasAnnotatedTools() {
+        hasAnnotatedTools = true;
     }
 
     public List<ToolMetadata> getAllTools() {
