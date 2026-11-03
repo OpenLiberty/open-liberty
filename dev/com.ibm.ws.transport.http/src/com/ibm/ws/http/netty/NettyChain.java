@@ -184,6 +184,9 @@ public class NettyChain extends AbstractHttpChain {
      * The state is not changed on timeout.
      */
     public void awaitStopped() {
+        if (state.get() != ChainState.STOPPING) {
+            return;
+        }
         long timeoutMs = nettyFramework.getDefaultChainQuiesceTimeout();
         long deadline = System.currentTimeMillis() + timeoutMs;
         synchronized (stopLock) {
@@ -321,10 +324,19 @@ public class NettyChain extends AbstractHttpChain {
 
                 Channel channel = nettyFramework.startInbound(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
-                // The bind can complete synchronously inside startInbound().  If it already failed,
-                // channelFutureHandler() has set STOPPED and notified the virtual host, so do not
-                // keep the failed channel or announce the endpoint as started.
-                if (state.get() != ChainState.STOPPED) {
+                if (channel == null) {
+                    // startInbound() returns null when no bind was scheduled (framework stopping, or the
+                    // channel could not be registered).  channelFutureHandler() will never run, so resolve
+                    // the state here; otherwise the chain would stay STARTING forever.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "startInbound returned no channel for " + endpointName + ", chain not started");
+                    }
+                    state.set(ChainState.STOPPED);
+                    notifyAll();
+                } else if (state.get() != ChainState.STOPPED) {
+                    // The bind can complete synchronously inside startInbound().  If it already failed,
+                    // channelFutureHandler() has set STOPPED and notified the virtual host, so do not
+                    // keep the failed channel or announce the endpoint as started.
                     serverChannel = channel;
                     VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                     String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;

@@ -21,10 +21,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.channel.Channel;
@@ -207,7 +206,7 @@ public class TCPUtils {
         if (inetHost == NettyConstants.INADDR_ANY) {
             hostLogString = "*  (" + IPvType + ")";
         } else {
-            hostLogString = config.getHostname() + "  (" + IPvType + ": "
+            hostLogString = inetAddr.getAddress().getHostName() + "  (" + IPvType + ": "
                             + inetAddr.getAddress().getHostAddress() + ")";
         }
 
@@ -335,11 +334,9 @@ public class TCPUtils {
                         Tr.debug(tc, "Probing " + probeHost + ":" + inetPort + " for an active listener for "
                                      + config.getExternalName());
                     }
-                    try {
-                        SocketChannel probe = SocketChannel.open(probeAddr);
+                    try (SocketChannel probe = SocketChannel.open(probeAddr)) {
                         // Connection succeeded — someone is actively listening.
                         activeListenerDetected = true;
-                        probe.close();
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Probe connection to " + probeHost + ":" + inetPort
                                      + " succeeded — real port conflict for " + config.getExternalName());
@@ -347,8 +344,8 @@ public class TCPUtils {
                     } catch (IOException probeIoe) {
                         // Connection refused — only TIME_WAIT sockets present, no active listener.
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Probe connection refused on " + probeHost + ":" + inetPort
-                                     + " — TIME_WAIT only, retrying with SO_REUSEADDR=true for "
+                            Tr.debug(tc, "Probe connection to " + probeHost + ":" + inetPort
+                                     + " failed (" + probeIoe + ") — TIME_WAIT only, retrying with SO_REUSEADDR=true for "
                                      + config.getExternalName());
                         }
                     }
@@ -557,11 +554,11 @@ public class TCPUtils {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "Deferred bind task running for " + config.getExternalName());
                             }
-                            // Running on the Liberty executor thread — safe to block with await().
+                            // Runs on a non-Netty-I/O thread (the ServerStarted thread, or the caller
+                            // if the server is already started) — safe to block with await().
                             // open() drives the full retry loop synchronously here, so this
                             // Callable does not return until the terminal bind outcome (success
-                            // or all retries exhausted).  StartTaskRunnable.task.get() therefore
-                            // unblocks at exactly the right time with no CompletableFuture needed.
+                            // or all retries exhausted).
                             return open(framework, channel, config, inetHost, inetPort, openListener,
                                         config.getPortOpenRetries());
                         }

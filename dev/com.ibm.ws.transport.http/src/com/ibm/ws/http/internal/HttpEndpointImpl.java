@@ -1500,7 +1500,11 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         int httpsChainState = getCurrentHttpsChain().getChainState();
 
         // Return true if any of these states apply: UNITIALIZED, DESTROYED, QUIESCED or STOPPED.
-        return (httpChainState != ChainState.STARTED.val && httpsChainState != ChainState.STARTED.val);
+        // A chain that is STARTING has a bind in flight (the Netty bind is deferred until the server
+        // has started) and will be listening shortly, so it is not paused.  A failed bind ends in STOPPED.
+        boolean httpActive = httpChainState == ChainState.STARTED.val || httpChainState == ChainState.STARTING.val;
+        boolean httpsActive = httpsChainState == ChainState.STARTED.val || httpsChainState == ChainState.STARTING.val;
+        return !httpActive && !httpsActive;
     }
 
     /** {@inheritDoc} */
