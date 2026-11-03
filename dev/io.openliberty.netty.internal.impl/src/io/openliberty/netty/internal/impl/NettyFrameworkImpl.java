@@ -158,11 +158,12 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
         // Compared to channelfw, quiesce is hit every time because
         // connections are lazy cleaned on deactivate
-        DefaultThreadFactory threadFactory = new DefaultThreadFactory("Shared TCPChannel NonBlocking Accept Thread");
+        DefaultThreadFactory threadFactory = new DefaultThreadFactory("Shared TCPChannel NonBlocking Accept Thread", true);
         sharedAcceptGroup = new MultiThreadIoEventLoopGroup(1, threadFactory, ioFactory);
 
         AutoScalingEventExecutorChooserFactory scaler = createThreadScaler(config);
-        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, null, scaler, ioFactory);
+        DefaultThreadFactory workerThreadFactory = new DefaultThreadFactory("TCPChannel NonBlocking Worker Thread", true);
+        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, workerThreadFactory, scaler, ioFactory);
         outboundConnections = new DefaultChannelGroup(childGroup.next());
 
         if (metricsWindow > 0 && TraceComponent.isAnyTracingEnabled() && NettyThreadMetrics.tc.isDebugEnabled()) {
@@ -239,7 +240,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     public MultiThreadIoEventLoopGroup getDedicatedAcceptGroup() {
         IoHandlerFactory ioFactory = createHandlerFactory();
-        DefaultThreadFactory threadFactory = new DefaultThreadFactory("Dedicated TCPChannel NonBlocking Accept Thread");
+        DefaultThreadFactory threadFactory = new DefaultThreadFactory("Dedicated TCPChannel NonBlocking Accept Thread", true);
         MultiThreadIoEventLoopGroup acceptGroup = new MultiThreadIoEventLoopGroup(1, threadFactory, ioFactory);
         // Channel is not yet known at bootstrap creation time; parked in pendingDedicatedGroups
         // until TCPUtils.open() calls registerDedicatedAcceptGroup() on successful bind.
