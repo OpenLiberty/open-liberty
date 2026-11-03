@@ -2,118 +2,118 @@ type: pipeline_definition
 product: Liberty
 name: Open Liberty Personal Build
 description: "Run a Personal Pipeline against an Open Liberty PR."
- triggers:
+# triggers:
 # - type: github
-#   description: "Runs an optimised Open Liberty Personal Pipeline, running FATs using the CI Orchestrator/Jenkins."
-#   triggerName: "ol-pbbeta"
-#   triggerRank: 50
-#   groups: ["LibertyDev"]
-#   keyword: "!build"
-#   baseRepo: "open-liberty"
-#   aliasKeywords:
-#     - "!pb"
-#     - "#pb"
-#     - "!pbbeta"
-#     - "#pbbeta"
-#     - "#build"
-#   propertyDefinitions:
-#     If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step.
-#     - name: fat.buckets.to.run
-#       defaultValue: ${PR Changes:fat.buckets.to.run}
-#       steps:
-#         - stepName: Compile Liberty Images
-#         - stepName: Compile FATs
-#         - stepName: Determine FATs Needed
-#         - stepName: Distributed Lite FATs
-#         - stepName: z/OS FATs
-#         - stepName: z/OS Unittests
-#      Allow user to override ebc.shortlist for only parent steps.
-#     - name: ebc.shortlist
-#       defaultValue: parentbuild-personal.yml
-#       steps:
-#         - stepName: Compile Liberty Images
-#         - stepName: Unittest Open Liberty
-#         - stepName: Compile FATs
-#     - name: create.im.repo
-#       defaultValue: ${PR Changes:create.im.repo}
-#       steps:
-#         - stepName: Compile Liberty Images
+  # description: "Runs an optimised Open Liberty Personal Pipeline, running FATs using the CI Orchestrator/Jenkins."
+  # triggerName: "ol-pbbeta"
+  # triggerRank: 50
+  # groups: ["LibertyDev"]
+  # keyword: "!build"
+  # baseRepo: "open-liberty"
+  # aliasKeywords:
+    # - "!pb"
+    # - "#pb"
+    # - "!pbbeta"
+    # - "#pbbeta"
+    # - "#build"
+  # propertyDefinitions:
+    # # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step.
+    # - name: fat.buckets.to.run
+      # defaultValue: ${PR Changes:fat.buckets.to.run}
+      # steps:
+        # - stepName: Compile Liberty Images
+        # - stepName: Compile FATs
+        # - stepName: Determine FATs Needed
+        # - stepName: Distributed Lite FATs
+        # - stepName: z/OS FATs
+        # - stepName: z/OS Unittests
+    # # Allow user to override ebc.shortlist for only parent steps.
+    # - name: ebc.shortlist
+      # defaultValue: parentbuild-personal.yml
+      # steps:
+        # - stepName: Compile Liberty Images
+        # - stepName: Unittest Open Liberty
+        # - stepName: Compile FATs
+    # - name: create.im.repo
+      # defaultValue: ${PR Changes:create.im.repo}
+      # steps:
+        # - stepName: Compile Liberty Images
 
- - type: manual
-   triggerName: "ol-pbbeta-manual"
-   description: "Runs an optimised Open Liberty Personal Pipeline, running FATs using the CI Orchestrator/Jenkins."
-   triggerRank: 50
-   groups: ["LibertyDev"]
-   propertyDefinitions:
-     - name: github_pr_user
-       isRequired: true
-       defaultValue: "Name of Open Liberty user or organization for checkout."
-       description: "Name of Open Liberty user or organization for checkout."
-     - name: github_pr_branch
-       isRequired: true
-       defaultValue: "Name of Open Liberty branch to checkout."
-       description: "Name of Open Liberty branch to checkout."
-     - name: github_pr_number
-       isRequired: true
-       defaultValue: "PR number in Open Liberty to checkout."
-       description: "PR number in Open Liberty to checkout."
-     - name: github_pr_api
-       defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${github_pr_number}"
-     # Allow user to override ebc.shortlist for only parent steps.
-     - name: ebc.shortlist
-       defaultValue: parentbuild-personal.yml
-       steps:
-         - stepName: Compile Liberty Images
-         - stepName: Unittest Open Liberty
-         - stepName: Compile FATs
-     - name: create.im.repo
-       defaultValue: ${PR Changes:create.im.repo}
-       steps:
-         - stepName: Compile Liberty Images
+# - type: manual
+  # triggerName: "ol-pbbeta-manual"
+  # description: "Runs an optimised Open Liberty Personal Pipeline, running FATs using the CI Orchestrator/Jenkins."
+  # triggerRank: 50
+  # groups: ["LibertyDev"]
+  # propertyDefinitions:
+    # - name: github_pr_user
+      # isRequired: true
+      # defaultValue: "Name of Open Liberty user or organization for checkout."
+      # description: "Name of Open Liberty user or organization for checkout."
+    # - name: github_pr_branch
+      # isRequired: true
+      # defaultValue: "Name of Open Liberty branch to checkout."
+      # description: "Name of Open Liberty branch to checkout."
+    # - name: github_pr_number
+      # isRequired: true
+      # defaultValue: "PR number in Open Liberty to checkout."
+      # description: "PR number in Open Liberty to checkout."
+    # - name: github_pr_api
+      # defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${github_pr_number}"
+    # # Allow user to override ebc.shortlist for only parent steps.
+    # - name: ebc.shortlist
+      # defaultValue: parentbuild-personal.yml
+      # steps:
+        # - stepName: Compile Liberty Images
+        # - stepName: Unittest Open Liberty
+        # - stepName: Compile FATs
+    # - name: create.im.repo
+      # defaultValue: ${PR Changes:create.im.repo}
+      # steps:
+        # - stepName: Compile Liberty Images
 
 # - type: github
-#   triggerName: "ol-fullpbbeta"
-#   description: "Runs an optimised Open Liberty Personal Pipeline, including building the IM and z/OS images, then running all FATs using the CI Orchestrator/Jenkins."
-#   triggerRank: 50
-#  groups: ["LibertyDev"]
-#   keyword: "!fullbuild"
-#   baseRepo: "open-liberty"
-#   aliasKeywords:
-#     - "#fullbuild"
-#     - "!fullpb"
-#     - "#fullpb"
-#     - "!fullpbbeta"
-#     - "#fullpbbeta"
-#   propertyDefinitions:
-#      Run all buckets.
-#     - name: fat.buckets.to.run
-#       defaultValue: all
-#       steps:
-#         - stepName: Compile Liberty Images
-#         - stepName: Compile FATs
-#         - stepName: Distributed Full FATs
-#         - stepName: z/OS FATs
-#         - stepName: z/OS Unittests
-#      Run IM buckets.
-#     - name: create.im.repo
-#       defaultValue: true
-#       steps:
-#         - stepName: Compile Liberty Images
-#      Run z/OS buckets.
-#     - name: spawn.zos
-#       defaultValue: true
-#       steps:
-#         - stepName: Compile Liberty Images
-#         - stepName: Compile FATs
-#         - stepName: z/OS FATs
-#         - stepName: z/OS Unittests
-#      Allow user to override ebc.shortlist for only parent steps.
-#     - name: ebc.shortlist
-#       defaultValue: parentbuild-personal.yml
-#       steps:
-#         - stepName: Compile Liberty Images
-#         - stepName: Unittest Open Liberty
-#         - stepName: Compile FATs
+  # triggerName: "ol-fullpbbeta"
+  # description: "Runs an optimised Open Liberty Personal Pipeline, including building the IM and z/OS images, then running all FATs using the CI Orchestrator/Jenkins."
+  # triggerRank: 50
+  # groups: ["LibertyDev"]
+  # keyword: "!fullbuild"
+  # baseRepo: "open-liberty"
+  # aliasKeywords:
+    # - "#fullbuild"
+    # - "!fullpb"
+    # - "#fullpb"
+    # - "!fullpbbeta"
+    # - "#fullpbbeta"
+  # propertyDefinitions:
+    # # Run all buckets.
+    # - name: fat.buckets.to.run
+      # defaultValue: all
+      # steps:
+        # - stepName: Compile Liberty Images
+        # - stepName: Compile FATs
+        # - stepName: Distributed Full FATs
+        # - stepName: z/OS FATs
+        # - stepName: z/OS Unittests
+    # # Run IM buckets.
+    # - name: create.im.repo
+      # defaultValue: true
+      # steps:
+        # - stepName: Compile Liberty Images
+    # # Run z/OS buckets.
+    # - name: spawn.zos
+      # defaultValue: true
+      # steps:
+        # - stepName: Compile Liberty Images
+        # - stepName: Compile FATs
+        # - stepName: z/OS FATs
+        # - stepName: z/OS Unittests
+    # # Allow user to override ebc.shortlist for only parent steps.
+    # - name: ebc.shortlist
+      # defaultValue: parentbuild-personal.yml
+      # steps:
+        # - stepName: Compile Liberty Images
+        # - stepName: Unittest Open Liberty
+        # - stepName: Compile FATs
 
 steps:
 - stepGroup: OL SHA
