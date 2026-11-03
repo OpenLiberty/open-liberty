@@ -44,7 +44,6 @@
         <arquillian.wlp.version>2.1.3</arquillian.wlp.version>
         <junit.version>5.10.0</junit.version>
         <sigtest.version>2.3</sigtest.version>
-        <shrinkwrap.resolver.version>3.3.7</shrinkwrap.resolver.version>
     </properties>
     
     <dependencyManagement>
