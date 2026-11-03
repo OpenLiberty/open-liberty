@@ -251,10 +251,10 @@ public class NettyChain extends AbstractHttpChain {
                 // (startInbound returned null, e.g. framework stopping), no callback will
                 // ever replay the change, so fall through to the normal path.
                 if (currentState == ChainState.STARTING && serverChannel != null) {
-                    // A deferred bind (initial startup path) is running on the Liberty
-                    // executor thread inside runWhenServerStarted.  That thread holds no
-                    // lock on NettyChain and will call channelFutureHandler() when it
-                    // finishes, transitioning state to STARTED or STOPPED.
+                    // A deferred bind (initial startup path) is queued in runWhenServerStarted
+                    // and runs on the thread that delivers the server-started signal.  That
+                    // thread holds no lock on NettyChain and will call channelFutureHandler()
+                    // when it finishes, transitioning state to STARTED or STOPPED.
                     // Calling stopAndWait() here would fire notifyStopped() without a
                     // matching notifyStarted(), spuriously removing all web apps from
                     // the virtual host.  Skip the stop and leave currentConfig untouched
@@ -348,6 +348,8 @@ public class NettyChain extends AbstractHttpChain {
                     Tr.exit(this, tc, "Failed to start Netty Channel: " + e.getMessage());
                 }
                 state.set(ChainState.STOPPED);
+                // Release any thread waiting in awaitBindResult().
+                notifyAll();
             }
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -361,10 +363,12 @@ public class NettyChain extends AbstractHttpChain {
      * state (STARTED or STOPPED), or the bind timeout expires.  Returns immediately if the chain
      * is not STARTING.
      *
-     * startNettyChannel() returns while the bind is still pending (the result arrives on
-     * channelFutureHandler()), so callers that must verify the final chain state, such as
-     * HttpEndpointImpl.resume(), call this first.  It is deliberately not folded into
-     * startNettyChannel() so config updates never block on the bind.
+     * Before the server-started signal the bind is deferred, so startNettyChannel() returns
+     * while the chain is still STARTING and the result arrives later on channelFutureHandler().
+     * Once the server has started (including on resume) the bind runs synchronously inside
+     * startNettyChannel(), so the chain is already STARTED or STOPPED on return and this method
+     * returns immediately.  Callers that must verify the final chain state, such as
+     * HttpEndpointImpl.resume(), call this first.
      *
      * The state is not changed on timeout: the bind may still complete later, and forcing STOPPED
      * would make channelFutureHandler() shut that channel down.  The caller sees the chain still

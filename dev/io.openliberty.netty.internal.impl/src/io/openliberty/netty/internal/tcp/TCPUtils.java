@@ -240,11 +240,13 @@ public class TCPUtils {
      * On success registers the channel and invokes openListener.
      * On terminal failure logs the error and invokes openListener with the failed future.
      *
-     * Outbound (connect) callers block until openListener fires, so every outbound exit
+     * Outbound (connect) callers may wait on openListener, so every outbound exit
      * must notify it, including the ones that return without a bind/connect result
      * (interrupted, channel already closed).  See notifyOutboundFailure().
-     * Inbound exits that return silently are left as is (existing behaviour): the channel
-     * was normally closed by NettyChain.stop(), which already notifies the virtual host.
+     * An interrupted inbound open also notifies it (see notifyOpenFailure()), otherwise the
+     * chain would stay STARTING.  The other inbound exits that return silently are left as is
+     * (existing behaviour): the channel was normally closed by NettyChain.stop(), which already
+     * notifies the virtual host.
      *
      * @return the terminal ChannelFuture, or null if the channel was closed before binding
      */
@@ -274,7 +276,8 @@ public class TCPUtils {
                 }
                 Thread.currentThread().interrupt();
                 // Outbound: release the caller blocked on the connect outcome.
-                notifyOutboundFailure(config, openListener, channel.newFailedFuture(ie));
+                // Inbound: report the failure so the chain does not stay STARTING forever.
+                notifyOpenFailure(config, openListener, channel.newFailedFuture(ie));
                 return null;
             }
 
@@ -307,7 +310,8 @@ public class TCPUtils {
                          + " due to: " + future.cause().getMessage());
             }
 
-            // If soReuseAddress is enabled (the default) and this was a BindException,
+            // If soReuseAddress is enabled (the default) and the bind failed with an IOException
+            // (java.net.BindException with NIO, Errors.NativeIoException with epoll/kqueue),
             // use a probe-socket to distinguish TIME_WAIT from a real active-listener
             // conflict — mirroring CHFW's TCPPort.finishInitServerSocket() pattern:
             //
@@ -318,7 +322,7 @@ public class TCPUtils {
             //                    remain → safe to retry with SO_REUSEADDR=true.
             //   2. Retry with SO_REUSEADDR=true only in the TIME_WAIT case.
             if (config.isInbound() && config.getSoReuseAddress()
-                && future.cause() instanceof java.net.BindException
+                && future.cause() instanceof IOException
                 && channel.isOpen()) {
 
                 boolean activeListenerDetected = false;
@@ -352,8 +356,8 @@ public class TCPUtils {
                 }
 
                 // Inbound only (the enclosing if requires config.isInbound()).  No caller is
-                // blocked waiting on a connect here, so the silent "return null" exits below
-                // intentionally do not call notifyOutboundFailure().
+                // blocked waiting on a connect here, so the silent "return null" exit below
+                // for a closed channel intentionally does not notify the listener.
                 if (!activeListenerDetected) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "No active listener detected on " + resolvedHost + ":" + inetPort
@@ -368,6 +372,7 @@ public class TCPUtils {
                             Tr.debug(tc, "open interrupted (reuseAddr retry) for " + config.getExternalName());
                         }
                         Thread.currentThread().interrupt();
+                        notifyOpenFailure(config, openListener, channel.newFailedFuture(ie));
                         return null;
                     }
                     if (future == null) {
@@ -477,18 +482,33 @@ public class TCPUtils {
      *
      * No-op for inbound channels: their silent exits are left unchanged.  The channel was
      * normally closed by NettyChain.stop(), which already notifies the virtual host, so
-     * reporting a failed future to the chain's listener is unnecessary.
+     * reporting a failed future to the chain's listener is unnecessary.  An interrupted
+     * inbound open is the exception, see notifyOpenFailure().
      */
     private static void notifyOutboundFailure(TCPConfigurationImpl config, ChannelFutureListener openListener,
                                               ChannelFuture failedFuture) {
-        if (config.isInbound() || openListener == null) {
+        if (config.isInbound()) {
+            return;
+        }
+        notifyOpenFailure(config, openListener, failedFuture);
+    }
+
+    /**
+     * Notify openListener of a failed open, for inbound and outbound channels alike.
+     *
+     * Used when open() is interrupted: nothing else will report the outcome, so an inbound
+     * chain (NettyChain.channelFutureHandler) would otherwise stay STARTING forever.
+     */
+    private static void notifyOpenFailure(TCPConfigurationImpl config, ChannelFutureListener openListener,
+                                          ChannelFuture failedFuture) {
+        if (openListener == null) {
             return;
         }
         try {
             openListener.operationComplete(failedFuture);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception dispatching openListener outbound failure callback for "
+                Tr.debug(tc, "Exception dispatching openListener failure callback for "
                              + config.getExternalName() + ": " + e.getMessage());
             }
         }
@@ -556,9 +576,19 @@ public class TCPUtils {
                             }
                             // Runs on a non-Netty-I/O thread (the ServerStarted thread, or the caller
                             // if the server is already started) — safe to block with await().
-                            // open() drives the full retry loop synchronously here, so this
+                            if (!config.isInbound()) {
+                                // Outbound: startOutbound() must not block its caller on the connect
+                                // (and retries), so hand the work to the Liberty executor and return.
+                                // The openListener is notified from that executor thread.
+                                framework.getExecutorService().execute(() -> open(framework, channel, config, inetHost,
+                                                                                  inetPort, openListener,
+                                                                                  config.getPortOpenRetries()));
+                                return null;
+                            }
+                            // Inbound: open() drives the full retry loop synchronously here, so this
                             // Callable does not return until the terminal bind outcome (success
-                            // or all retries exhausted).
+                            // or all retries exhausted).  Kept in-thread so that CICS does not
+                            // attach transactions for an executor task during startup.
                             return open(framework, channel, config, inetHost, inetPort, openListener,
                                         config.getPortOpenRetries());
                         }

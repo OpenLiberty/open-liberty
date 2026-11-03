@@ -1371,7 +1371,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Chain work processed, verifying states");
             }
-            // The Netty bind completes asynchronously; wait for the result before checking states.
+            // After server start the Netty bind completes inside processHttpChainWork, so this returns
+            // immediately; it only waits if a bind is still pending. Wait for the result before checking states.
             nettyChain.awaitBindResult();
             nettySecureChain.awaitBindResult();
             logChainStates();
