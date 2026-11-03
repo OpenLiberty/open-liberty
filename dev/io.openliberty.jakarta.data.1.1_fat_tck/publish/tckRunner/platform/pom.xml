@@ -97,6 +97,17 @@
 			<scope>system</scope>
 			<systemPath>${io.openliberty.org.jboss.weld5}</systemPath>
 		</dependency>
+		
+        <!-- TEMPORARY (testing only): debug arquillian-junit5-container jar.
+             Declared BEFORE the liberty managed arquillian dependency (which transitively brings in the standard
+             arquillian-junit5-container) so the debug classes take precedence on the classpath. -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit5</groupId>
+            <artifactId>arquillian-junit5-container-debug</artifactId>
+            <version>1.10.3.Final-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../deps/arquillian-junit5-container-1.10.3.Final-SNAPSHOT.jar</systemPath>
+        </dependency>
 
 		<!-- Test dependencies needed by Liberty Arquillian Plugin for Junit5 -->
 		<dependency>
@@ -113,11 +124,6 @@
 			<groupId>jakarta.tck</groupId>
 			<artifactId>sigtest-maven-plugin</artifactId>
 			<version>${sigtest.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.shrinkwrap.resolver</groupId>
-			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-			<version>${shrinkwrap.resolver.version}</version>
 		</dependency>
 		
 	</dependencies>
