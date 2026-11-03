@@ -1342,6 +1342,8 @@ public class Data_1_1_Servlet extends FATServlet {
                      g.giver.category);
 
         // reportingDates was eagerly loaded by @Fetching
+        assertEquals(true,
+                     Persistence.getPersistenceUtil().isLoaded(g, "reportingDates"));
         assertEquals(List.of(LocalDate.of(2026, 9, 30)),
                      g.reportingDates);
 
@@ -1382,12 +1384,16 @@ public class Data_1_1_Servlet extends FATServlet {
                      g.renewable);
 
         // recipient was eagerly loaded by the entity graph
+        assertEquals(true,
+                     Persistence.getPersistenceUtil().isLoaded(g, "recipient"));
         assertEquals("History Center of Olmsted County",
                      g.recipient.name);
         assertEquals(Grantee.Focus.EDUCATION,
                      g.recipient.focus);
 
         // reportingDates was eagerly loaded by @Fetching
+        assertEquals(true,
+                     Persistence.getPersistenceUtil().isLoaded(g, "reportingDates"));
         assertEquals(List.of(LocalDate.of(2026, 9, 30),
                              LocalDate.of(2026, 12, 31)),
                      g.reportingDates);
@@ -1400,6 +1406,55 @@ public class Data_1_1_Servlet extends FATServlet {
         // direct public field reads)
         assertEquals(false,
                      Persistence.getPersistenceUtil().isLoaded(g, "giver"));
+    }
+
+    /**
+     * Use a repository method annotated with both {@code @Fetching} and
+     * {@code @QueryOptions} where the latter includes a query hint that
+     * specifies a jakarta.persistence.loadgraph. Verify that the two
+     * mechanisms combine: the load graph loads one association and the
+     * {@code @Fetching} annotation eagerly loads the other association,
+     * while the element collection remains lazy because neither mechanism
+     * requests it.
+     */
+    @Test
+    public void testFetchingAddedToQueryOptionHintsLoadGraph() {
+        // TODO enable once EclipseLink issue tracked by #34901 is fixed
+        if (!isHibernatePersistence())
+            return;
+
+        // Grant 1005: NIH -> Mayo Clinic
+        Grant g = grants.withGiverAndRecipient(1005L)
+                        .orElseThrow();
+
+        assertEquals(1005L,
+                     g.id);
+        assertEquals("Clinical and Translational Science Award",
+                     g.title);
+        assertEquals(48200000,
+                     g.amount);
+        assertEquals(true,
+                     g.renewable);
+
+        // giver was eagerly loaded by @Fetching
+        assertEquals(true,
+                     Persistence.getPersistenceUtil().isLoaded(g, "giver"));
+        assertEquals("National Institutes of Health",
+                     g.giver.name);
+        assertEquals(Giver.Category.GOVERNMENT,
+                     g.giver.category);
+
+        // recipient was eagerly loaded by the load graph
+        assertEquals(true,
+                     Persistence.getPersistenceUtil().isLoaded(g, "recipient"));
+        assertEquals("Mayo Clinic",
+                     g.recipient.name);
+        assertEquals(Grantee.Focus.HEALTH,
+                     g.recipient.focus);
+
+        // reportingDates was not requested by @Fetching or the entity graph;
+        assertEquals(false,
+                     Persistence.getPersistenceUtil().isLoaded(g, "reportingDates"));
     }
 
     /**
@@ -3414,6 +3469,80 @@ public class Data_1_1_Servlet extends FATServlet {
 
         assertEquals(false,
                      fractions.greatestLessThan1(0).isPresent());
+    }
+
+    /**
+     * Use a repository method annotated QueryOptions that specifies a
+     * hint for jakarta.persistence.loadgraph. Verify that the requested
+     * association is eagerly loaded, while the other association and the
+     * element collection are lazily loaded and therefore unavailable after
+     * the stateless repository method returns the results.
+     */
+    @Test
+    public void testQueryOptionHintsLoadGraph() {
+        // TODO enable once EclipseLink issue tracked by #34901 is fixed
+        if (!isHibernatePersistence())
+            return;
+
+        // Grants from foundations, ordered by recipient focus and name:
+        // 1003: MHS -> History Center of Olmsted County (EDUCATION)
+        // 1002: RAF -> Quarry Hill Nature Center (ENVIRONMENT)
+        // 1004: RAF -> Mayo Clinic (HEALTH)
+        List<Grant> list = grants.withRecipientOnly(Giver.Category.FOUNDATION);
+
+        assertEquals(3,
+                     list.size());
+
+        assertEquals(List.of(1003L, 1002L, 1004L),
+                     list.stream()
+                                     .map(g -> g.id)
+                                     .toList());
+
+        assertEquals(List.of("Stoppel Farmstead Restoration Project",
+                             "Oak Savanna Restoration",
+                             "Rural Health Initiative"),
+                     list.stream()
+                                     .map(g -> g.title)
+                                     .toList());
+
+        // recipient was eagerly loaded by the load graph
+        assertEquals(List.of(true, true, true),
+                     list.stream()
+                                     .map(g -> Persistence.getPersistenceUtil()
+                                                     .isLoaded(g, "recipient"))
+                                     .toList());
+
+        assertEquals(List.of("History Center of Olmsted County",
+                             "Quarry Hill Nature Center",
+                             "Mayo Clinic"),
+                     list.stream()
+                                     .map(g -> g.recipient.name)
+                                     .toList());
+
+        assertEquals(List.of(Grantee.Focus.EDUCATION,
+                             Grantee.Focus.ENVIRONMENT,
+                             Grantee.Focus.HEALTH),
+                     list.stream()
+                                     .map(g -> g.recipient.focus)
+                                     .toList());
+
+        // giver and reportingDates were not requested by the load graph;
+        // PersistenceUtil.isLoaded is the reliable way to check this because
+        // accessing a public field on a lazy @ManyToOne proxy returns null
+        // rather than raising LazyInitializationException (Hibernate only
+        // intercepts initialization through bytecode-enhanced getters, not
+        // direct public field reads)
+        assertEquals(List.of(false, false, false),
+                     list.stream()
+                                     .map(g -> Persistence.getPersistenceUtil()
+                                                     .isLoaded(g, "giver"))
+                                     .toList());
+
+        assertEquals(List.of(false, false, false),
+                     list.stream()
+                                     .map(g -> Persistence.getPersistenceUtil()
+                                                     .isLoaded(g, "reportingDates"))
+                                     .toList());
     }
 
     /**

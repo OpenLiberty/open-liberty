@@ -24,8 +24,11 @@ import jakarta.data.repository.Delete;
 import jakarta.data.repository.Fetching;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
+import jakarta.data.repository.Is;
+import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 import jakarta.data.restrict.Restriction;
+import jakarta.persistence.QueryHint;
 import jakarta.persistence.query.QueryOptions;
 
 /**
@@ -66,6 +69,17 @@ public interface Grants extends DataRepository<Grant, Long> {
     void terminateAll();
 
     /**
+     * Finds a grant by id, eagerly loading the giver and recipient
+     * associations, but not the reportingDates element collection,
+     * which remains lazy.
+     */
+    @Find
+    @Fetching(_Grant.RECIPIENT)
+    @QueryOptions(hints = @QueryHint(name = "jakarta.persistence.loadgraph",
+                                     value = "Grant.withGiver"))
+    Optional<Grant> withGiverAndRecipient(@By(ID) long id);
+
+    /**
      * Finds a grant by id, eagerly loading the giver and reportingDates,
      * but not the recipient association, which remains lazy.
      */
@@ -83,4 +97,11 @@ public interface Grants extends DataRepository<Grant, Long> {
     @QueryOptions(entityGraph = "Grant.withRecipient")
     Optional<Grant> withRecipientAndReportingDates(@By(ID) long id);
 
+    @Find
+    @QueryOptions(hints = @QueryHint(name = "jakarta.persistence.loadgraph",
+                                     value = "Grant.withRecipient"))
+    @OrderBy(_Grant.RECIPIENT_FOCUS)
+    @OrderBy(_Grant.RECIPIENT_NAME)
+    List<Grant> withRecipientOnly //
+    (@By(_Grant.GIVER_CATEGORY) @Is Giver.Category category);
 }

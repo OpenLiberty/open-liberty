@@ -49,6 +49,8 @@ import jakarta.persistence.Version;
  * </ul>
  */
 @Entity
+@NamedEntityGraph(name = "Grant.withGiver",
+                  attributeNodes = @NamedAttributeNode("giver"))
 @NamedEntityGraph(name = "Grant.withRecipient",
                   attributeNodes = @NamedAttributeNode("recipient"))
 @Table(name = "Grants") // GRANT is a reserved SQL keyword
