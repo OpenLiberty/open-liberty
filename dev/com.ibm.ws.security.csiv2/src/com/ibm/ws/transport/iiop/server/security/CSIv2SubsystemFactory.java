@@ -172,13 +172,21 @@ public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory impleme
         initProperties.put(ENDPOINT_KEY, sb.toString());
     }
 
-    private static void bindOptions(String host, int port, String sslAliasName, Boolean soReuseAddr, StringBuilder sb) {
+    private static void bindOptions(String host, int port, String sslAliasName, Boolean soReuseAddr, boolean noProfile, StringBuilder sb) {
         sb.append("iiop --bind ").append(host).append(" --host ").append(host);
         if (port > 0) {
             sb.append(" --port ").append(port);
         }
         if (sslAliasName != null && sslAliasName.trim().isEmpty() == false) {
-            sb.append(" --no-profile --sslConfigName ").append(sslAliasName);
+            // An IOR needs at least one IIOP profile, because the CSIv2 IOR interceptor attaches
+            // TAG_CSI_SEC_MECH_LIST (which lists every SSL address) to a profile. If no profile
+            // exists (e.g. iiopPort=-1) clients get TRANSIENT: no usable profile.
+            // So exactly one acceptor must supply a profile. Suppress the profile on SSL acceptors
+            // whenever another acceptor already supplies one.
+            if (noProfile) {
+                sb.append(" --no-profile");
+            }
+            sb.append(" --sslConfigName ").append(sslAliasName);
         }
         sb.append(" --soReuseAddr ").append(soReuseAddr);
         sb.append(",");
@@ -188,6 +196,8 @@ public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory impleme
         Map<String, List<TransportAddress>> mapOfAddr = new HashMap<String, List<TransportAddress>>();
         List<TransportAddress> unsecured = new ArrayList<TransportAddress>();
         mapOfAddr.put(null, unsecured);
+        // A plain IIOP acceptor already supplies a profile; otherwise the first SSL acceptor must.
+        boolean profileSupplied = endpoints.stream().anyMatch(e -> e.getIiopPort() > 0);
         for (IIOPEndpoint ep : endpoints) {
             Boolean soReuseAddr = (Boolean) ep.getTcpOptions().get("soReuseAddr");
             if (soReuseAddr == null) {
@@ -195,7 +205,7 @@ public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory impleme
             }
             String host = ep.getHost();
             if (ep.getIiopPort() > 0) {
-                bindOptions(host, ep.getIiopPort(), null, soReuseAddr, sb);
+                bindOptions(host, ep.getIiopPort(), null, soReuseAddr, false, sb);
                 unsecured.add(new TransportAddress(host, (short) ep.getIiopPort()));
             }
             for (Map<String, Object> iiopsOptions : ep.getIiopsOptions()) {
@@ -203,7 +213,8 @@ public class CSIv2SubsystemFactory extends AbstractCsiv2SubsystemFactory impleme
                 if (sslAliasName == null)
                     sslAliasName = defaultAlias;
                 int iiopsPort = (Integer) iiopsOptions.get("iiopsPort");
-                bindOptions(host, iiopsPort, sslAliasName, soReuseAddr, sb);
+                bindOptions(host, iiopsPort, sslAliasName, soReuseAddr, profileSupplied, sb);
+                profileSupplied = true;
                 List<TransportAddress> secured = mapOfAddr.get(sslAliasName);
                 if (secured == null) {
                     secured = new ArrayList<TransportAddress>();

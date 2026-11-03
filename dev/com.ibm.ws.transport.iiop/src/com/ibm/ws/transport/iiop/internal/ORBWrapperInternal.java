@@ -114,6 +114,8 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
             policyManager.set_policy_overrides(policies.toArray(new Policy[policies.size()]), SetOverrideType.ADD_OVERRIDE);
             for (IIOPEndpoint endpoint : endpoints) {
                 Tr.audit(tc, "NAME_SERVER_AVAILABLE", "corbaloc:iiop:" + endpoint.getHost() + ":" + endpoint.getIiopPort() + "/NameService");
+                for (Map<String, Object> iiopsOptions : endpoint.getIiopsOptions())
+                    Tr.audit(tc, "NAME_SERVER_AVAILABLE", "corbaloc:iiops:" + endpoint.getHost() + ":" + iiopsOptions.get("iiopsPort") + "/NameService");
             }
         } catch (NoSuchMethodError e) {
 //        throw new IllegalStateException("CORBA usage requires Yoko CORBA spec classes in java.endorsed.dirs classpath", e);
@@ -131,6 +133,8 @@ public class ORBWrapperInternal extends ServerPolicySourceImpl implements ORBRef
             orb = null;
             for (IIOPEndpoint endpoint : endpoints) {
                 Tr.audit(tc, "NAME_SERVER_UNAVAILABLE", "corbaloc:iiop:" + endpoint.getHost() + ":" + endpoint.getIiopPort() + "/NameService");
+                for (Map<String, Object> iiopsOptions : endpoint.getIiopsOptions())
+                    Tr.audit(tc, "NAME_SERVER_UNAVAILABLE", "corbaloc:iiops:" + endpoint.getHost() + ":" + iiopsOptions.get("iiopsPort") + "/NameService");
             }
         }
         super.deactivate();

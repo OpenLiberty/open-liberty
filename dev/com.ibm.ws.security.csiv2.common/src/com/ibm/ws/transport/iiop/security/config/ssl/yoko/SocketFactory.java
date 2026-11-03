@@ -502,6 +502,22 @@ public class SocketFactory extends SocketFactoryHelper {
         return socket;
     }
 
+    /**
+     * Returns the default SSL config alias so that {@code Plugin_impl} can register the
+     * {@code iiops} corbaloc protocol, enabling direct SSL bootstrap lookups via
+     * {@code corbaname:iiops:host:port#name} without a prior plain-IIOP connection.
+     */
+    @Override
+    public String getDefaultSslConfigName() {
+        try {
+            return sslConfig.getSSLAlias();
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "getDefaultSslConfigName: could not determine default SSL alias", e);
+            return null;
+        }
+    }
+
     @Override
     public int[] tags() {
         return new int[] { TAG_CSI_SEC_MECH_LIST.value };
