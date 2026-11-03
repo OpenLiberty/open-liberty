@@ -29,6 +29,11 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 public final class CompressionUtils {
+
+    // Limits the size of the inflated data 
+    public static final long DEFAULT_MAX_INFLATED_SIZE =
+        SystemPropertyAction.getInteger("org.apache.cxf.compression-max-inflated-size", 10 * 1024 * 1024); // Liberty Change - CXF #3394
+
     private CompressionUtils() {
 
     }
@@ -38,11 +43,18 @@ public final class CompressionUtils {
     }
     public static InputStream inflate(byte[] deflatedToken, boolean nowrap)
         throws DataFormatException {
+        // Liberty Change start - CXF #3394
+        return inflate(deflatedToken, nowrap, DEFAULT_MAX_INFLATED_SIZE);
+    }
+    public static InputStream inflate(byte[] deflatedToken, boolean nowrap, long maxInflatedSize)
+        throws DataFormatException {
+        // Liberty Change end - CXF #3394
         Inflater inflater = new Inflater(true);
         inflater.setInput(deflatedToken);
 
         byte[] buffer = new byte[deflatedToken.length];
         int inflateLen;
+        long totalInflated = 0; // Liberty Change - CXF #3394
         ByteArrayOutputStream inflatedToken = new ByteArrayOutputStream();
         while (!inflater.finished()) {
             inflateLen = inflater.inflate(buffer, 0, deflatedToken.length);
@@ -52,6 +64,14 @@ public final class CompressionUtils {
                 }
                 break;
             }
+
+            // Liberty Change start - CXF #3394
+            totalInflated += inflateLen;
+            if (totalInflated > maxInflatedSize) {
+                throw new DataFormatException("Inflated data exceeds the maximum allowed size of "
+                    + maxInflatedSize + " bytes");
+            }
+            // Liberty Change end - CXF #3394
 
             inflatedToken.write(buffer, 0, inflateLen);
         }
