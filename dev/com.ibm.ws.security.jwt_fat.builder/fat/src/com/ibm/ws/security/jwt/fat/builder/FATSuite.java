@@ -31,6 +31,7 @@ import componenttest.rules.repeater.RepeatTests;
         JwtBuilderApiBasicTests.class,
         JwtBuilderApiWithLDAPBasicTests.class,
         JwkEndpointValidationUrlTests.class,
+        JwtBuilderAPIWorkloadIdentityTests.class,
 
         // Configuration Tests
         JwtBuilderAPIConfigTests.class,
