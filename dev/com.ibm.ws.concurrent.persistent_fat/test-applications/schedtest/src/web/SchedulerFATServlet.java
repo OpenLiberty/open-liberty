@@ -211,22 +211,21 @@ public class SchedulerFATServlet extends HttpServlet {
      */
     private void pollForTableEntry(String key, int expectedValue) throws Exception {
         Integer value = null;
-        Connection con = testDB.getConnection();
-        try {
-            PreparedStatement pstmt = con.prepareStatement("SELECT MYVALUE FROM MYTABLE WHERE MYKEY=?");
-            pstmt.setString(1, key);
-            for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
-                ResultSet result = pstmt.executeQuery();
-                if (result.next()) {
-                    value = result.getInt(1);
-                    if (value != null && value.equals(expectedValue))
-                        return;
-                } else
-                    value = null;
-            } ;
-        } finally {
-            con.close();
-        }
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
+            // Use a fresh connection on each attempt so that commits from other threads are observed
+            try (Connection con = testDB.getConnection();
+                            PreparedStatement pstmt = con.prepareStatement("SELECT MYVALUE FROM MYTABLE WHERE MYKEY=?")) {
+                pstmt.setString(1, key);
+                try (ResultSet result = pstmt.executeQuery()) {
+                    if (result.next()) {
+                        value = result.getInt(1);
+                        if (value != null && value.equals(expectedValue))
+                            return;
+                    } else
+                        value = null;
+                }
+            }
+        };
         if (value == null)
             throw new Exception("Entry with key " + key + " not found");
         else
@@ -238,22 +237,21 @@ public class SchedulerFATServlet extends HttpServlet {
      */
     private void pollForTableEntryMinimumValue(String key, int minimumValue) throws Exception {
         Integer value = null;
-        Connection con = testDB.getConnection();
-        try {
-            PreparedStatement pstmt = con.prepareStatement("SELECT MYVALUE FROM MYTABLE WHERE MYKEY=?");
-            pstmt.setString(1, key);
-            for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
-                ResultSet result = pstmt.executeQuery();
-                if (result.next()) {
-                    value = result.getInt(1);
-                    if (value != null && value >= minimumValue)
-                        return;
-                } else
-                    value = null;
-            } ;
-        } finally {
-            con.close();
-        }
+        for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
+            // Use a fresh connection on each attempt so that commits from other threads are observed
+            try (Connection con = testDB.getConnection();
+                            PreparedStatement pstmt = con.prepareStatement("SELECT MYVALUE FROM MYTABLE WHERE MYKEY=?")) {
+                pstmt.setString(1, key);
+                try (ResultSet result = pstmt.executeQuery()) {
+                    if (result.next()) {
+                        value = result.getInt(1);
+                        if (value != null && value >= minimumValue)
+                            return;
+                    } else
+                        value = null;
+                }
+            }
+        };
         if (value == null)
             throw new Exception("Entry with key " + key + " not found");
         else
