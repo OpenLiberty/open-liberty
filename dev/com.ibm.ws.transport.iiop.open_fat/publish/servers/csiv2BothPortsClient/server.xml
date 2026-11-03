@@ -1,0 +1,37 @@
+<server>
+    <include location="../fatTestCommon.xml"/>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>concurrent-1.0</feature>
+        <feature>test.iiop.secure.client-1.0</feature>
+        <feature>test.user.feature-1.0</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+    <!-- HTTP_default (8010) so the FAT framework's getHttpDefaultPort() routes @TestServlet requests here -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}"/>
+    <!--
+        The nameService points at the plain iiopPort on csiv2BothPortsServer.
+        This enables @Resource ORB injection in CSIv2BothPortsServlet so that the
+        IOR-inspection tests (testIorContainsTwoProfiles, testIorFirstProfileAdvertisesPlainPort,
+        testIorCsiv2ComponentAdvertisesSslPort) can call ClientUtil against a resolved EJB stub.
+        The full corbaname URL tests are unaffected: they bypass the nameService entirely.
+    -->
+    <orb id="defaultOrb"
+         nameService="corbaname:iiop:localhost:${bvt.prop.IIOP.secondary}/NameService">
+        <clientPolicy.clientContainerCsiv2>
+            <layers>
+                <!-- GSSUP is the default mechanism and needs credentials; these match the
+                     EJB server's quickStartSecurity (test-only values). -->
+                <authenticationLayer user="Bob" password="bobpwd"/>
+                <transportLayer sslRef="defaultSSLConfig"/>
+            </layers>
+        </clientPolicy.clientContainerCsiv2>
+    </orb>
+    <quickStartSecurity userName="Bob" userPassword="bobpwd"/>
+    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" clientAuthenticationSupported="true"/>
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires1/4/2099 -->  <!-- HashiCorpIgnore -->
+</server>
