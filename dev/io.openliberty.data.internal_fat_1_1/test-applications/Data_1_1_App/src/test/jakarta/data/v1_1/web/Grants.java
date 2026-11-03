@@ -66,6 +66,15 @@ public interface Grants extends DataRepository<Grant, Long> {
     void terminateAll();
 
     /**
+     * Finds a grant by id, eagerly loading the giver and reportingDates,
+     * but not the recipient association, which remains lazy.
+     */
+    @Find
+    @Fetching(_Grant.GIVER)
+    @Fetching(_Grant.REPORTING_DATES)
+    Optional<Grant> withGiverAndReportingDates(@By(ID) long id);
+
+    /**
      * Finds a grant by id, eagerly loading the recipient and reportingDates,
      * but not the giver association, which remains lazy.
      */

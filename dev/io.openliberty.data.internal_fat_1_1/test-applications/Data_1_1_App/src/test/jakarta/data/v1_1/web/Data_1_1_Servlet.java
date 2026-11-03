@@ -1309,12 +1309,58 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * A repository find method has two Fetching annotations: one requesting
+     * eager loading of an association and another requesting eager fetching
+     * of an element collection, both of which would normally be loaded lazily,
+     * while another association that does not have a Fetching annotation
+     * remains lazy and is not available outside of a persistence context.
+     */
+    @Test
+    public void testFetching2() {
+        // TODO enable once EclipseLink issue tracked by #34901 is fixed
+        if (!isHibernatePersistence())
+            return;
+
+        Grant g = grants.withGiverAndReportingDates(1002L)
+                        .orElseThrow();
+
+        assertEquals(1002L,
+                     g.id);
+        assertEquals("Oak Savanna Restoration",
+                     g.title);
+        assertEquals(1200,
+                     g.amount);
+        assertEquals(false,
+                     g.renewable);
+
+        // giver was eagerly loaded by @Fetching
+        assertEquals(true,
+                     Persistence.getPersistenceUtil().isLoaded(g, "giver"));
+        assertEquals("Rochester Area Foundation",
+                     g.giver.name);
+        assertEquals(Giver.Category.FOUNDATION,
+                     g.giver.category);
+
+        // reportingDates was eagerly loaded by @Fetching
+        assertEquals(List.of(LocalDate.of(2026, 9, 30)),
+                     g.reportingDates);
+
+        // recipient was not requested by @Fetching
+        // PersistenceUtil.isLoaded is the reliable way to check this because
+        // accessing a public field on a lazy @ManyToOne proxy returns null
+        // rather than raising LazyInitializationException (Hibernate only
+        // intercepts initialization through bytecode-enhanced getters, not
+        // direct public field reads)
+        assertEquals(false,
+                     Persistence.getPersistenceUtil().isLoaded(g, "recipient"));
+    }
+
+    /**
      * Use a repository method annotated with both {@code @Fetching} and
      * {@code @QueryOptions(entityGraph=...)} to verify that the two mechanisms
-     * combine: the {@code @Fetching} annotation eagerly loads the {@code giver}
-     * association and the entity graph eagerly loads the {@code recipient}
-     * association, while the {@code reportingDates} element collection remains
-     * lazy because neither mechanism requests it.
+     * combine: the {@code @Fetching} annotation eagerly loads one association
+     * and the entity graph eagerly loads an element collection, while
+     * another association remains lazy because neither mechanism requests it.
      */
     @Test
     public void testFetchingAddedToQueryOptionEntityGraph() {
