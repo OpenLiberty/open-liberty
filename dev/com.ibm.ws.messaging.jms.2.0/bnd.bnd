@@ -31,6 +31,8 @@ Export-Package: com.ibm.websphere.sib.api.jms,\
 
 Import-Package: \
   com.ibm.ws.ejbcontainer.mdb;resolution:=optional,\
+  com.ibm.ws.sib.mfp.impl,\
+  com.ibm.wsspi.kernel.service.jms,\
   !*.internal.*,\
   *
 

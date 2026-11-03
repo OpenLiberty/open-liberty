@@ -200,7 +200,8 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
         } else if (blockListConfig instanceof String[]) {
             BlockList = normalizePaths((String[]) blockListConfig);
         } else {
-            //Default is to block ${server.output.dir}/resources/security and ${server.output.dir}/resources/collective
+            //Default is to block ${server.output.dir}/resources/security, ${server.output.dir}/resources/collective,
+            //${server.config.dir}/resources/security and ${server.config.dir}/resources/collective
             BlockList = new ArrayList<String>();
 
             WsLocationAdmin wsLocation = getWsLocationAdmin();
@@ -214,8 +215,10 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
                                                                    "CWWKX7911E: OSGi service is not available."));
             }
 
-            BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)+ "resources/security"));
-            BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)+ "resources/collective"));
+            BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR) + "resources/security"));
+            BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR) + "resources/collective"));
+            BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR) + "resources/security"));
+            BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR) + "resources/collective"));
         }
 
         //START DEBUG
