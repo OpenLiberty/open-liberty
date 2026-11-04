@@ -35,6 +35,7 @@ import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import static org.junit.Assert.fail;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -91,6 +92,7 @@ public class FATSuite extends InitClass {
                 String message = CommonTest.maskHostnameAndPassword(e.getMessage());
                 Log.info(c, thisMethod, "Common setup failed, tests will not run: " + message, e);
                 throw (new Exception("Common setup failed, tests will not run: " + message, e));
+                fail("Common setup failed, tests will not run: " + message, e);
             }
 
             // The keytab file needs to be copied into the /tmp folder so we can include it in the other servers
