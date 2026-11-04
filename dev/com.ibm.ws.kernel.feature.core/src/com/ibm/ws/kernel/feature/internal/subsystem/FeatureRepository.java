@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1162,7 +1162,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     @Override
     public Collection<ProvisioningFeatureDefinition> getAutoFeatures() {
         if (autoFeatures == null) {
-            throw new IllegalStateException("Method called outside of provisioining operation");
+            throw new IllegalStateException("Method called outside of provisioning operation");
         }
 
         return asProvisioningFeatureDefinitionCollection(Collections.unmodifiableCollection(autoFeatures));
