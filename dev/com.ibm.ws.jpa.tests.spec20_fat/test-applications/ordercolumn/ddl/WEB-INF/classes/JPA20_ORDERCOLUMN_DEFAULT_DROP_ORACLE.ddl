@@ -1,0 +1,23 @@
+DROP TABLE ${schemaname}.AttrOColE;
+DROP TABLE ${schemaname}.AttrOColE_nonInsertAnnoElem;
+DROP TABLE ${schemaname}.AttrOColE_nonNullAnnoElem;
+DROP TABLE ${schemaname}.AttrOColE_nonUpdateAnnoElem;
+DROP TABLE ${schemaname}.AttrOColE_oNameTypeElem;
+DROP TABLE ${schemaname}.BONameE;
+DROP TABLE ${schemaname}.BONameXE;
+DROP TABLE ${schemaname}.DefOColE;
+DROP TABLE ${schemaname}.DefOColE_oColDefElem;
+DROP TABLE ${schemaname}.DefOColE_ovrOColDefElem;
+DROP TABLE ${schemaname}.Diff_Table_Name;
+DROP TABLE ${schemaname}.NTblOColE;
+DROP TABLE ${schemaname}.NTblOColE_oNameTypeElem;
+DROP TABLE ${schemaname}.OColE;
+DROP TABLE ${schemaname}.OColE_BONameE;
+DROP TABLE ${schemaname}.OColE_listElements;
+DROP TABLE ${schemaname}.OColE_UONameE;
+DROP TABLE ${schemaname}.UONameE;
+DROP TABLE ${schemaname}.XOColE;
+DROP TABLE ${schemaname}.XOColE_BONameXE;
+DROP TABLE ${schemaname}.XOColE_listElements;
+DROP TABLE ${schemaname}.XOColE_UONameE;
+

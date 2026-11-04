@@ -1,0 +1,1 @@
+CREATE TABLE ${schemaname}.JPA20QueryUnwrapEntity (id INTEGER NOT NULL, strData VARCHAR(255), version NUMERIC(32,0), PRIMARY KEY (id)) LOCK MODE ROW;

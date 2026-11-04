@@ -109,6 +109,7 @@ com.ibm.ws.jpa.tests.spec10.relationships.oneXone_jpa_2.2_fat
 com.ibm.ws.jpa.tests.spec10.relationships.oneXone_jpa_3.0_fat
 com.ibm.ws.jpa.tests.spec10.relationships.oneXone_jpa_3.1_fat
 com.ibm.ws.jpa.tests.spec10.relationships.oneXone_jpa_3.2_fat
+com.ibm.ws.jpa.tests.spec20_fat
 com.ibm.ws.jpa.tests.spec20_jpa_2.0_fat
 com.ibm.ws.jpa.tests.spec20_jpa_2.1_fat
 com.ibm.ws.jpa.tests.spec20_jpa_2.2_fat
