@@ -937,21 +937,33 @@ public class InstallKernelMap implements Map {
             }
 
             boolean isInstallServerFeature = (Boolean) this.get(InstallConstants.IS_INSTALL_SERVER_FEATURE);
-            if (!isInstallServerFeature) {
-                Collection<String> featuresAlreadyPresent = new ArrayList<String>();
-                for (ProvisioningFeatureDefinition feature : installedFeatures) {
-                    if (containsIgnoreCase(featureToInstall, feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
-                        alreadyInstalled += 1;
-                        if (feature.getIbmShortName() == null) {
-                            featuresAlreadyPresent.add(feature.getFeatureName());
-                        } else {
-                            featuresAlreadyPresent.add(feature.getIbmShortName());
-                        }
-                    }
+            
+            // Store the original size before any modifications for the "all already installed" check
+            int originalFeatureToInstallSize = featureToInstall.size();
+            
+            // Check for already installed features
+            Collection<String> featuresAlreadyPresent = new ArrayList<String>();
+            
+            for (ProvisioningFeatureDefinition feature : installedFeatures) {
+                if (containsIgnoreCase(featureToInstall, feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
+                    alreadyInstalled += 1;
+                    String featureName = feature.getIbmShortName() == null ? feature.getFeatureName() : feature.getIbmShortName();
+                    featuresAlreadyPresent.add(featureName);
                 }
-                if (alreadyInstalled == featureToInstall.size()) {
-                    throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
-                }
+            }
+            
+            // For installServerFeatures, filter out already-installed user features from the list to resolve
+            // This prevents the resolver from trying to fetch user features that are already present
+            if (isInstallServerFeature) {
+                Collection<String> filtered = filterOutInstalledUserFeatures(featureToInstall, installedFeatures);
+                featureToInstall.clear();
+                featureToInstall.addAll(filtered);
+            }
+            
+            // For installFeature (not installServerFeatures), throw error if all features are already installed
+            // Use the original size before user features were filtered out
+            if (!isInstallServerFeature && alreadyInstalled == originalFeatureToInstallSize) {
+                throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
             }
 
             boolean isFeatureUtility = (Boolean) this.get(InstallConstants.IS_FEATURE_UTILITY);
@@ -2436,6 +2448,75 @@ public class InstallKernelMap implements Map {
 
         return OK;
 
+    }
+
+    /**
+     * Filter out already-installed product extension features from the list of features to install.
+     * This prevents the resolver from attempting to fetch product extension features (user features
+     * and custom extensions) that are already present in the Liberty installation.
+     *
+     * Product extension features have a non-null bundle repository type (e.g., "usr" for the default
+     * user extension, or a custom extension name like "ibmProcessServer").
+     *
+     * @param featuresToInstall Collection of feature names to install
+     * @param installedFeatures Collection of already installed feature definitions
+     * @return Filtered collection with product extension features removed if they're already installed
+     */
+   Collection<String> filterOutInstalledUserFeatures(
+           Collection<String> featuresToInstall,
+           Collection<ProvisioningFeatureDefinition> installedFeatures) {
+       
+       // Collect names of installed product extension features
+       Collection<String> productExtensionFeaturesInstalled = new ArrayList<String>();
+       for (ProvisioningFeatureDefinition feature : installedFeatures) {
+           // Product extension features have a non-null bundle repository type
+           // This includes "usr" (default user extension) and custom extension names
+           String bundleRepoType = feature.getBundleRepositoryType();
+           if (bundleRepoType != null && !bundleRepoType.isEmpty()) {
+               if (feature.getIbmShortName() != null) {
+                   productExtensionFeaturesInstalled.add(feature.getIbmShortName());
+               }
+               productExtensionFeaturesInstalled.add(feature.getFeatureName());
+           }
+       }
+       
+       // If no product extension features are installed, return original list
+       if (productExtensionFeaturesInstalled.isEmpty()) {
+           return new ArrayList<String>(featuresToInstall);
+       }
+       
+       // Filter out installed product extension features
+       List<String> result = new ArrayList<String>();
+       for (String featureToCheck : featuresToInstall) {
+           boolean isInstalledProductExtensionFeature = false;
+           
+           // Handle various feature name formats:
+           // - "extensionName:featureName" (e.g., "usr:myFeature" or "ibmProcessServer:ibmProcessServer")
+           // - "featureName"
+           String featureNameOnly = featureToCheck;
+           if (featureToCheck.contains(":")) {
+               String[] parts = featureToCheck.split(":", 2);
+               if (parts.length == 2) {
+                   featureNameOnly = parts[1];
+               }
+           }
+           
+           // Check if this matches an installed product extension feature
+           for (String installedFeature : productExtensionFeaturesInstalled) {
+               if (featureToCheck.equalsIgnoreCase(installedFeature) ||
+                   featureNameOnly.equalsIgnoreCase(installedFeature)) {
+                   isInstalledProductExtensionFeature = true;
+                   fine("Skipping already installed product extension feature: " + featureToCheck);
+                   break;
+               }
+           }
+           
+           if (!isInstalledProductExtensionFeature) {
+               result.add(featureToCheck);
+           }
+       }
+        
+        return result;
     }
 
 }
