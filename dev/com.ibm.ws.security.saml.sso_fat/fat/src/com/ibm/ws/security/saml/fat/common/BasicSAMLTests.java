@@ -35,6 +35,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
@@ -250,7 +251,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
      */
 
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
+    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void basicSAMLTests_noIdAssertNoUser_IDPSignMisMatch_IDPEncrypt() throws Exception {
 
