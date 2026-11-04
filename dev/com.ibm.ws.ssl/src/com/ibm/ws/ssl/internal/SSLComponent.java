@@ -93,6 +93,13 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
 
     private ExtComponentContext componentContext;
 
+    private final CheckpointPhase checkpointPhase;
+
+    @Activate
+    public SSLComponent(@Reference(cardinality = ReferenceCardinality.OPTIONAL) CheckpointPhase checkpointPhase) {
+        this.checkpointPhase = checkpointPhase;
+    }
+
     /**
      * DS method to activate this component.
      *
@@ -339,6 +346,9 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
                                                              isServer,
                                                              transportSecurityEnabled,
                                                              repertoirePIDMap);
+                if (checkpointPhase != null) {
+                    SSLSocketFactory.getDefault();
+                }
             } catch (SSLException e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Exception processing SSL configuration; " + e);
