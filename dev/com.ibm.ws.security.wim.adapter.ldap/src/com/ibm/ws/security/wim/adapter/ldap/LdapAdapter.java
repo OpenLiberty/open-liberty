@@ -1735,6 +1735,11 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                 if (!LdapHelper.isUnderBases(dn, bases)) {
                     continue;
                 }
+                if (domainNameForAutomaticDiscoveryOfLDAPServers != null
+                        && dn.toLowerCase().contains(domainNameForAutomaticDiscoveryOfLDAPServers.toLowerCase())) {
+                    int pos = dn.toLowerCase().indexOf(domainNameForAutomaticDiscoveryOfLDAPServers.toLowerCase());
+                    dn = dn.substring(0, pos - 1);
+                }
                 List<String> grpTypes = iLdapConfigMgr.getGroupTypes();
                 Set<String> entityType = new HashSet<String>(groupTypes);
                 String entityTypeFilter = iLdapConfigMgr.getEntityTypesFilter(entityType);
@@ -2555,7 +2560,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                                 if (thisEntry == null) {
                                     continue;
                                 }
-                                String dynaMbrDN = LdapHelper.prepareDN(thisEntry.getName(), searchBase);
+                                String dynaMbrDN = LdapHelper.prepareDN(thisEntry.getName(), searchBase, iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServers());
                                 memberDNs.add(dynaMbrDN);
                             }
                         }
@@ -3380,7 +3385,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                 if (entryName == null || entryName.trim().length() == 0) {
                     continue;
                 }
-                grpList.add(LdapHelper.prepareDN(entryName, searchBase));
+                grpList.add(LdapHelper.prepareDN(entryName, searchBase, iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServers()));
             }
         }
         return grpList;
@@ -3429,7 +3434,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                 if (entryName == null || entryName.trim().length() == 0) {
                     continue;
                 }
-                String DN = LdapHelper.prepareDN(entryName, searchBase);
+                String DN = LdapHelper.prepareDN(entryName, searchBase, iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServers());
                 Attributes attrs = thisEntry.getAttributes();
                 String[] thisMbrAttrs = iLdapConfigMgr.getMemberAttribute(attrs.get(LDAP_ATTR_OBJECTCLASS));
                 if (thisMbrAttrs != null) {
