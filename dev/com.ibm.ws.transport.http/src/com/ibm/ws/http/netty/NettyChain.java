@@ -38,6 +38,7 @@ import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
 
 /**
  *
@@ -201,6 +202,16 @@ public class NettyChain extends AbstractHttpChain {
                     Tr.debug(this, tc, "This configuration differs and should cause an update ");
                 }
                 currentConfig = newConfig;
+                // If the state is not UNINITIALIZED (e.g. STARTED or STARTING with a bind in-flight),
+                // stopAndWait() must be called so the current/in-flight channel is properly closed
+                // and state transitions to STOPPED before startNettyChannel() initiates a new bind.
+                //
+                // Note: If STARTING, stop() will close the serverChannel and fire notifyStopped(),
+                // balancing the notifyStarted() that was already sent when startNettyChannel() began.
+                // The pending bind callback in TCPUtils / channelFutureHandler will see the channel
+                // is no longer current/open and discard it. If there are issues where stopping an
+                // in-flight deferred bind causes startup race conditions, ensure the closeFuture
+                // listener in stop() properly completes stopLock notification and state -> STOPPED.
                 if (state.get() != ChainState.UNINITIALIZED) {
                     stopAndWait();
                 }
@@ -236,12 +247,12 @@ public class NettyChain extends AbstractHttpChain {
 
                 bootstrap = nettyFramework.createTCPBootstrapInbound(tcpOptions);
                 HttpPipelineInitializer.HttpPipelineBuilder pipelineBuilder = new HttpPipelineInitializer.HttpPipelineBuilder(this)
-                    .with(ConfigElement.COMPRESSION, owner.getCompressionConfig())
-                    .with(ConfigElement.HTTP_OPTIONS, httpOptions)
-                    .with(ConfigElement.HEADERS, owner.getHeadersConfig())
-                    .with(ConfigElement.REMOTE_IP, owner.getRemoteIpConfig()) 
-                    .with(ConfigElement.SAMESITE, owner.getSamesiteConfig())
-                    .with(ConfigElement.TCP_OPTIONS, tcpOptions);
+                                .with(ConfigElement.COMPRESSION, owner.getCompressionConfig())
+                                .with(ConfigElement.HTTP_OPTIONS, httpOptions)
+                                .with(ConfigElement.HEADERS, owner.getHeadersConfig())
+                                .with(ConfigElement.REMOTE_IP, owner.getRemoteIpConfig())
+                                .with(ConfigElement.SAMESITE, owner.getSamesiteConfig())
+                                .with(ConfigElement.TCP_OPTIONS, tcpOptions);
 
                 // Add SSL options only if the chain is SSL-enabled
                 if (this.isHttps()) {
@@ -256,10 +267,75 @@ public class NettyChain extends AbstractHttpChain {
 
                 serverChannel = nettyFramework.startInbound(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
+                // NOTE: Do NOT move notifyStarted()/postEvent() into channelFutureHandler().
+                // Moving them there shifts the ENDPOINT_STARTED OSGi event timing, which
+                // causes WSATConfigServiceImpl to activate synchronously on the OSGi Start
+                // Level thread during startup, deadlocking the server (CWWKF0011I never fires).
+                // CHFW fires chainStarted() → CWWKT0016I BEFORE the port bind (CWWKO0219I)
+                // and this Netty path must preserve the same ordering.
+                // The "Connection refused" race on Linux CI is a pre-existing timing issue
+                // with waitToAccept=false and the test harness, not caused by this ordering.
                 VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                 String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
                 postEvent(topic, currentConfig, null);
 
+                // Only block waiting for the bind result when the server is already fully
+                // started — meaning the bind task was submitted to the executor immediately
+                // (not queued via runWhenServerStarted for later).
+                //
+                // During initial server startup the bind is deferred until the ServerStarted
+                // signal fires (waitToAccept=false path in TCPUtils).  In that case we must
+                // NOT wait here: the wait timeout (chainQuiesceTimeout = 30s) can expire
+                // before ServerStarted fires on slow/large servers, causing the channel to be
+                // incorrectly marked STOPPED and then immediately shut down when the bind
+                // eventually succeeds.
+                //
+                // On the post-startup path (isServerCompletelyStarted=true), the bind fires
+                // immediately on the executor thread and channelFutureHandler() will call
+                // notifyAll() — unblocking this wait — within milliseconds.  This is the
+                // path where the CWWKT0017I race can occur, so we block here to close the
+                // STARTING window that would otherwise allow a concurrent update() call to
+                // fire notifyStopped() without a matching notifyStarted().
+                if (NettyFrameworkImpl.isServerCompletelyStarted()) {
+                    Object retriesObj = tcpOptions.get("portOpenRetries");
+                    int portOpenRetries = 0;
+                    if (retriesObj instanceof Integer) {
+                        portOpenRetries = (Integer) retriesObj;
+                    } else if (retriesObj instanceof String) {
+                        try {
+                            portOpenRetries = Integer.parseInt((String) retriesObj);
+                        } catch (NumberFormatException ignored) {
+                        }
+                    }
+                    // 5s buffer for executor scheduling / probe latency; with portOpenRetries=0 a bare 1s is too short.
+                    long bindTimeoutMs = ((long) portOpenRetries + 1L) * 1000L + 5000L;
+                    long deadline = System.currentTimeMillis() + bindTimeoutMs;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "startNettyChannel: server started, waiting for bind result. state: [" + state.get() + "]");
+                    }
+                    while (state.get() == ChainState.STARTING) {
+                        long remaining = deadline - System.currentTimeMillis();
+                        if (remaining <= 0) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "Timed out after " + bindTimeoutMs + "ms waiting for bind result on " + endpointName + ", treating as failure");
+                            }
+                            state.set(ChainState.STOPPED);
+                            break;
+                        }
+                        wait(remaining);
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "startNettyChannel: bind deferred until server fully started for " + endpointName + ", returning without waiting");
+                    }
+                }
+
+            } catch (InterruptedException ie) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "startNettyChannel interrupted while waiting for bind to complete");
+                }
+                state.set(ChainState.STOPPED);
+                Thread.currentThread().interrupt();
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.exit(this, tc, "Failed to start Netty Channel: " + e.getMessage());
@@ -276,14 +352,19 @@ public class NettyChain extends AbstractHttpChain {
     private void channelFutureHandler(ChannelFuture future) {
         if (state.get() == ChainState.STOPPING || state.get() == ChainState.STOPPED) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Chain: " + endpointName + ", Current state: " + state.get() + ", is not starting so will not notify any virtual hosts and will shutdown the channel if active");
+                Tr.debug(this, tc, "Chain: " + endpointName + ", Current state: " + state.get()
+                                   + ", is not starting so will not notify any virtual hosts and will shutdown the channel if active");
             }
-            if(future.channel().isActive()) {
+            if (future.channel().isActive()) {
                 // Found active channel when it should be stopped/stopping
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Found active channel: " + future.channel() + ". Will attempt to stop it.");
                 }
                 nettyFramework.stop(future.channel());
+            }
+            // Ensure any thread waiting in startNettyChannel is unblocked.
+            synchronized (this) {
+                notifyAll();
             }
             return;
         }
@@ -294,7 +375,7 @@ public class NettyChain extends AbstractHttpChain {
             if (future.channel() != serverChannel) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Stale channel " + future.channel()
-                        + " fired callback but current serverChannel is " + serverChannel + ", closing stale channel...");
+                                       + " fired callback but current serverChannel is " + serverChannel + ", closing stale channel...");
                 }
                 if (future.channel().isActive()) {
                     nettyFramework.stop(future.channel());
@@ -320,7 +401,7 @@ public class NettyChain extends AbstractHttpChain {
                 }
                 state.set(ChainState.STOPPED);
             }
-            //Register chain for quiesce, NO_OP is passed as the task as there is no special 
+            //Register chain for quiesce, NO_OP is passed as the task as there is no special
             //quiesce action required at this time
             nettyFramework.registerEndpointQuiesce(future.channel(), QuiesceStrategy.NO_OP.getTask());
             notifyAll();
