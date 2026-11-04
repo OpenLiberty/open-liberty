@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.internal.archive.liberty;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +31,6 @@ import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.Resource;
 import com.ibm.ws.cdi.internal.interfaces.ResourceInjectionBag;
 import com.ibm.ws.container.service.annocache.Annotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annocache.CDIContainerAnnotations;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ClientModuleInfo;
@@ -452,15 +449,6 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
 
     //
 
-    @Override
-    public Set<String> getAnnotatedClasses(Set<String> annotationClassNames) throws CDIException {
-        if (AnnotationsBetaHelper.getLibertyBeta()) {
-            return getAnnotatedClassesPostBeta(annotationClassNames);
-        } else {
-            return getAnnotatedClassesPreBeta(annotationClassNames);
-        }
-    }
-
     /**
      * Answer the application name for retrieving annotations.
      *
@@ -501,7 +489,8 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         return annoAppName;
     }
 
-    public Set<String> getAnnotatedClassesPostBeta(Set<String> annotationClassNames) throws CDIException {
+    @Override
+    public Set<String> getAnnotatedClasses(Set<String> annotationClassNames) throws CDIException {
         // ArchiveType:
         //   MANIFEST_CLASSPATH
         //   EAR_LIB
@@ -517,7 +506,7 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         //   ON_DEMAND_LIB
         //   RUNTIME_EXTENSION
 
-        String methodName = "getAnnotatedClassesPostBeta";
+        String methodName = "getAnnotatedClasses";
 
         String appName = getAnnoAppName(); // throws CDIException
         // System.out.println(methodName + " App: " + appName);
@@ -632,37 +621,5 @@ public class CDIArchiveImpl extends AbstractCDIArchive implements CDIArchive {
         cdiContainerAnnotations.setClassLoader(useClassLoader);
 
         return cdiContainerAnnotations.getClassesWithSpecifiedInheritedAnnotations(annotationClassNames);
-    }
-
-    //
-
-    public Set<String> getAnnotatedClassesPreBeta(Set<String> annotationClassNames) throws CDIException {
-        Set<String> annotatedClassNames = new HashSet<String>();
-
-        Container container = getContainer();
-        if (getType() == ArchiveType.WEB_MODULE) {
-            container = getContainer(container, CDIUtils.WEB_INF_CLASSES);
-            if (container == null) {
-                return annotatedClassNames;
-            }
-        }
-
-        com.ibm.ws.container.service.annotations.ContainerAnnotations containerAnnotations;
-        try {
-            containerAnnotations = container.adapt(com.ibm.ws.container.service.annotations.ContainerAnnotations.class);
-        } catch (UnableToAdaptException e) {
-            throw new CDIException(e);
-        }
-
-        boolean useJandex = false;
-        if (application != null) {
-            useJandex = application.getUseJandex();
-        }
-
-        List<String> useAnnotationClassNames = new ArrayList<String>(annotationClassNames);
-
-        annotatedClassNames.addAll(containerAnnotations.getClassesWithSpecifiedInheritedAnnotations(useAnnotationClassNames, useJandex));
-
-        return annotatedClassNames;
     }
 }
