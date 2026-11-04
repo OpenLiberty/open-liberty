@@ -11,8 +11,18 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
+# The overlaid classes in src must not get Liberty RAS instrumentation (com.ibm.websphere.ras.Tr)
+# because this bundle does not import that package.
+instrument.disabled: true
+
 -include= jar:${fileuri;${repo;io.openliberty.yoko:yoko-core;1.6.2.20260723_ead0c0a13b}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--includeresource: @${repo;io.openliberty.yoko:yoko-core;1.6.2.20260723_ead0c0a13b}!/!META-INF/maven/*
+-includeresource: \
+  @${repo;io.openliberty.yoko:yoko-core;1.6.2.20260723_ead0c0a13b}!/!META-INF/maven/*, \
+  org/apache/yoko=${bin}/org/apache/yoko
 
--buildpath: io.openliberty.yoko:yoko-core;version=1.6.2.20260723_ead0c0a13b
+-buildpath: \
+  io.openliberty.yoko:yoko-core;version=1.6.2.20260723_ead0c0a13b, \
+  io.openliberty.yoko:yoko-util;version=1.6.2.20260723_ead0c0a13b, \
+  io.openliberty.yoko:yoko-spec-corba;version=1.6.2.20260723_ead0c0a13b, \
+  io.openliberty.yoko:yoko-rmi-impl;version=1.6.2.20260723_ead0c0a13b
