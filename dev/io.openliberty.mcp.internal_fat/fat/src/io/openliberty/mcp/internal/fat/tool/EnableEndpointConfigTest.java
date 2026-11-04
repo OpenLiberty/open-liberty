@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -30,6 +29,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.tool.enableEndpointAnnotatedApp.AnnotatedToolsBean;
 import io.openliberty.mcp.internal.fat.tool.enableEndpointApp.DynamicOnlyToolsBean;
+import io.openliberty.mcp.internal.fat.tool.enableEndpointNoToolsApp.NoToolsBean;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 /**
@@ -65,7 +65,7 @@ public class EnableEndpointConfigTest {
         WebArchive annotatedDefault = annotatedWar(ANNOTATED_DEFAULT);
         WebArchive annotatedFalse = annotatedWar(ANNOTATED_FALSE);
         WebArchive noTools = ShrinkWrap.create(WebArchive.class, NO_TOOLS + ".war")
-                                       .addAsWebResource(new StringAsset("no tools"), "index.html");
+                                       .addPackage(NoToolsBean.class.getPackage());
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, EAR_NAME + ".ear")
                                           .addAsModule(dynamicTrue)
