@@ -35,6 +35,7 @@ public interface MetaTypeFactory {
     public static final int LOCATION_DIR_TYPE = 1010;
     public static final int LOCATION_URL_TYPE = 1011;
     public static final int TOKEN_TYPE = 1012;
+    public static final int SCHEDULE_TYPE = 1013;
 
     ObjectClassDefinition createObjectClassDefinition(ObjectClassDefinitionProperties properties,
                                                       List<AttributeDefinition> requiredAttributes, List<AttributeDefinition> optionalAttributes);
