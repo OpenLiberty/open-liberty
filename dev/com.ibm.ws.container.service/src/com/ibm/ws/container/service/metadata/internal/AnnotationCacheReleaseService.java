@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,11 +53,11 @@ public class AnnotationCacheReleaseService implements ApplicationMetaDataListene
 
         // Which in turn gets the appName from AnnotationsImpl.setAppName()
         // There are two paths into that method.
-        // CDIArchiveImpl calls it inside getAnnotatedClassesPostBeta()
+        // CDIArchiveImpl calls it inside getAnnotatedClasses()
 
         // CDIArchiveImpl gets the name from ApplicationInfo.getDeploymentName()
 
-        // app manager calls it in EARDeployedAppInfo.hasAnnotationsPostBeta()
+        // app manager calls it in EARDeployedAppInfo.hasAnnotations()
         // That class goes through a chain of getters ending in com.ibm.ws.app.manager.internal.ApplicationConfig
         // which reads the server.xml.
         // This will match ApplicationInfo.getDeploymentName()
