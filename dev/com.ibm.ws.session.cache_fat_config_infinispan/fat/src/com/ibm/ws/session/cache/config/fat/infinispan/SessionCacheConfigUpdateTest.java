@@ -88,6 +88,9 @@ public class SessionCacheConfigUpdateTest extends FATServletClient {
         String rand = UUID.randomUUID().toString();
         Map<String, String> options = server.getJvmOptionsAsMap();
         options.put("-Dinfinispan.cluster.name", rand);
+        options.put("-Xms1024m", "");
+        options.put("-Xmx4096m", "");
+
         server.setJvmOptions(options);
         server.startServer();
 
