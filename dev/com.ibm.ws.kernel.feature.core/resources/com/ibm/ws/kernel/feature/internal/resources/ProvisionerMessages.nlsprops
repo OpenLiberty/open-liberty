@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2022 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -273,6 +273,11 @@ NO_RESOLVED_PLATFORM=CWWKF0055E: The {0} versionless features do not have a conf
 NO_RESOLVED_PLATFORM.explanation=Each type of versionless feature is required to have a configured platform. If javaee or jakartaee versionless features are configured, they require a corresponding javaee or jakartaee platform. If microProfile versionless features are configured, they require a microProfile platform.
 NO_RESOLVED_PLATFORM.useraction=Either add a platform element, a versioned feature, or an environment variable.
 
+# CWWKF0056E {0} = the feature file
+FEATURES_ERROR_READING_FEATURE=CWWKF0056E: The {0} feature definition file could not be read. The error is: {1}
+FEATURES_ERROR_READING_FEATURE.explanation=The feature definition file cannot be read, which prevents the feature from loading. The file might be corrupted or malformed.
+FEATURES_ERROR_READING_FEATURE.useraction=Reinstall the feature that caused the error.
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: The feature {0} already exists. It will not be reinstalled. To modify an existing feature, you need to manually uninstall it first.
@@ -392,6 +397,5 @@ FEATURES_ADDED_DELTA.useraction=No action is required.
 FEATURES_ADDED_CLIENT_DELTA=CWWKF1038I: The client added the {0} features to the existing feature set. 
 FEATURES_ADDED_CLIENT_DELTA.explanation=The client installed a set of new features in addition to previously installed features.
 FEATURES_ADDED_CLIENT_DELTA.useraction=No action is required. 
-
 
 
