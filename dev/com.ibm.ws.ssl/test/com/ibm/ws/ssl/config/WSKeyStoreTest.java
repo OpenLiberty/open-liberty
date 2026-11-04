@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -529,4 +529,109 @@ public class WSKeyStoreTest {
         }
     }
 
+    /**
+     * This test verifies scenarios where the path resolution returns
+     * a relative path initially, but subsequent resolution attempts 
+     * succeed in converting it to an absolute path. 
+     */
+    @Test
+    public void fileCheckFailsButResolutionIsSuccessful() throws Exception {
+        final String relativePath = "nonExistentKeyStoreTest.jks";
+        final String resolvedPath = new File("build/tmp", relativePath).getAbsolutePath();
+        final String keyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File keyStoreJKS = new File(keyStore);
+        final String keyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File keyStorePKCS12 = new File(keyStoreName);
+
+        mock.checking(new Expectations()
+        {
+            {
+                one(locMgr).resolveString(keyStore);
+                will(returnValue(keyStoreJKS.getAbsolutePath()));
+                one(locMgr).resolveString(keyStoreName);
+                will(returnValue(keyStorePKCS12.getAbsolutePath()));
+                one(locMgr).resolveString(relativePath);
+                will(returnValue(relativePath));
+                allowing(locMgr).resolveString(with(any(String.class)));
+                will(returnValue(resolvedPath));
+            }
+        });
+
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        props.put("location", relativePath);
+        props.put("type", "JKS");
+        props.put("password", "mypassword");
+        props.put("id", "keyStoreTest");
+
+        WSKeyStore keyStoreTest = new WSKeyStoreTestDoubleReturn("keyStoreTest", props, testConfigService);
+        String keyStoreTestLocation = keyStoreTest.getLocation();
+        assertEquals("Location should be resolved to absolute path", resolvedPath, keyStoreTestLocation);
+    }
+
+    /**
+     * This test verifies successful handle of the file system 
+     * caching when files are temporarily created and deleted. 
+     */
+    @Test
+    public void fileSystemCaching() throws Exception {
+        File tempKeyStore = new File("../com.ibm.ws.ssl/build/tmp/temp.jks");
+        tempKeyStore.createNewFile();
+        tempKeyStore.delete();
+
+        final String keyStore = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_FALLBACK_KEY_STORE_FILE;
+        final File keyStoreJKS = new File(keyStore);
+        final String keyStoreName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
+        final File keyStorePKCS12 = new File(keyStoreName);
+
+        mock.checking(new Expectations()
+        {
+            {
+                one(locMgr).resolveString(keyStore);
+                will(returnValue(keyStoreJKS.getAbsolutePath()));
+                one(locMgr).resolveString(keyStoreName);
+                will(returnValue(keyStorePKCS12.getAbsolutePath()));
+                allowing(locMgr).resolveString(with(any(String.class)));
+                will(returnValue(tempKeyStore.getAbsolutePath()));
+            }
+        });
+
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        props.put("location", "temp.jks");
+        props.put("type", "JKS");
+        props.put("password", "mypassword");
+        props.put("id", "keyStoreTest");
+
+        WSKeyStore keyStoreTest = new WSKeyStoreTestDoubleReturn("testKeyStore", props, testConfigService);
+
+        String keyStoreTestLocation = keyStoreTest.getLocation();
+        assertTrue("Location should be absolute path", new File(keyStoreTestLocation).isAbsolute());
+    }
+    /**
+     * This test verifies that absolute path conversion is enforced 
+     * even when the location resolution service returns a relative
+     * path.
+     */
+    @Test
+    public void pathResolutionWithRelativePathConversion() throws Exception{
+        final String relativePath = "nonExistentKeyStoreTest.jks";
+        final String resolvedRelativePath = "nonExistentKeyStoreTest.jks";
+
+        mock.checking(new Expectations() {
+            {
+                allowing(locMgr).resolveString(with(any(String.class)));
+                will(returnValue(resolvedRelativePath));
+            }
+        });
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        props.put("location", "temp.jks");
+        props.put("type", "JKS");
+        props.put("password", "mypassword");
+        props.put("id", "keyStoreTest");
+
+        WSKeyStore keyStoreTest = new WSKeyStoreTestDoubleReturn("testKeyStore", props, testConfigService);
+
+        String location = keyStoreTest.getLocation();
+        assertTrue("Location should be converted to absolute path", new File(location).isAbsolute());
+
+    }
 }
