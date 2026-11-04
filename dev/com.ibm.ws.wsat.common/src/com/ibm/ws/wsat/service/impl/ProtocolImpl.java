@@ -401,6 +401,11 @@ public class ProtocolImpl {
                              wrapper.getResponseEpr().getAddress().getValue());
                 }
                 ParticipantFactoryService.putRecoveryAddress(wrapper.getTxID(), wrapper.getPartID(), wrapper.getResponseEpr());
+
+                // If we are still replaying the logs of the originating server the transaction may not be
+                // known yet, so wait for replay to finish before concluding that it was never logged.
+                tranService.waitForReplayCompletion(wrapper.getRecoveryID());
+
                 if (!tranService.replayCompletion(wrapper.getTxID())) {
                     // Couldn't find the tran. Probably never got logged. Send a rollback
                     if (TC.isDebugEnabled()) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2025 IBM Corporation and others.
+ * Copyright (c) 2002, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -556,6 +556,17 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
     protected static void setRecoveryAgent(TxRecoveryAgentImpl recoveryAgent) {
         _recoveryAgent = recoveryAgent;
+    }
+
+    /**
+     * Blocks until replay of the recovery logs belonging to the given recovery identity has completed.
+     * Returns immediately if no such recovery is in progress.
+     */
+    public static void waitForReplayCompletion(String recoveryId) {
+        final TxRecoveryAgentImpl agent = _recoveryAgent;
+        if (agent != null && recoveryId != null && !recoveryId.isEmpty()) {
+            agent.waitForReplayCompletion(recoveryId);
+        }
     }
 
     // Used by liberty

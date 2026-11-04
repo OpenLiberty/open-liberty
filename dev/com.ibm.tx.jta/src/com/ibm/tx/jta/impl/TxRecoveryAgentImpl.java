@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2025 IBM Corporation and others.
+ * Copyright (c) 2002, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1094,6 +1094,32 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getRecoveryManager", _recoveryManager);
         return _recoveryManager;
+    }
+
+    /**
+     * Blocks until replay of the logs belonging to the given recovery identity has completed.
+     * Returns immediately if we are not (or are no longer) recovering that identity.
+     *
+     * @param recoveryId the recovery identity of the server whose logs are being replayed
+     */
+    public void waitForReplayCompletion(String recoveryId) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "waitForReplayCompletion", recoveryId);
+
+        final FailureScopeController fsc;
+        synchronized (this) {
+            fsc = failureScopeControllerTable.get(recoveryId);
+        }
+
+        if (fsc != null) {
+            final RecoveryManager rm = fsc.getRecoveryManager();
+            if (rm != null) {
+                rm.waitForReplayCompletion(recoveryId.equals(localRecoveryIdentity));
+            }
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "waitForReplayCompletion");
     }
 
     @Override
