@@ -1704,4 +1704,9 @@ public interface WIMMessageKey {
      * {1} federated repository attribute to a value greater than zero.
      */
     String FAILED_LOGIN_DELAY_DISABLED = "FAILED_LOGIN_DELAY_DISABLED";
+	
+	/**
+     * RANGE_ATTRIBUTE_PARSING=CWIML1043E: The Distinguished Name {0} failed to have its range attributes parsed with attribute range step of {1}.
+     */
+    String RANGE_ATTRIBUTE_PARSING = "RANGE_ATTRIBUTE_PARSING";
 }
