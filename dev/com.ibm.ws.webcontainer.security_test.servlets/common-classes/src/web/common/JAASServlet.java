@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,8 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.login.AppConfigurationEntry;
+import javax.security.auth.login.Configuration;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
@@ -56,12 +58,20 @@ public class JAASServlet extends BaseServlet {
         String loginPassword = req.getParameter("password");
         String testMethod = req.getParameter("testMethod");
         String realm = req.getParameter("realm");
+        String jaasContextEntry = req.getParameter("jaasContextEntry");
         if (loginUser == null || loginPassword == null || testMethod == null) {
             writeLine(sb, "Usage: ?testMethod=<method>&user=<user>&password=<password>&realm=<realm>");
         }
         writeLine(sb, "Passed in from URL: testMethod:[" + testMethod
                       + "] user:[" + loginUser + "] password:["
                       + loginPassword + "] realm:[" + realm + "]");
+
+        if (testMethod != null) {
+            if (testMethod.equals("jaasConfigFile")) {
+                //get and print loginModuleName
+                printLoginModuleNames(sb, jaasContextEntry);
+            }
+        }
 
         if (testMethod != null) {
             String[] method = testMethod.split(",");
@@ -77,6 +87,33 @@ public class JAASServlet extends BaseServlet {
             }
         }
 
+    }
+
+    private void printLoginModuleNames(StringBuffer sb, String jaasContextEntry) {
+        writeLine(sb, "printLoginModuleNames Entry");
+        try {
+            javax.security.auth.login.Configuration c = Configuration.getConfiguration();
+            if (c != null) {
+                writeLine(sb, "Current jaas security config=" + c.toString());
+                AppConfigurationEntry[] entries = c.getAppConfigurationEntry(jaasContextEntry);
+                writeLine(sb, "Getting entries for: " + jaasContextEntry);
+                if (entries != null) {
+                    for (int j = 0; j < entries.length; j++) {
+                        writeLine(sb, "Entry no." + j);
+                        String moduleName = entries[j].getLoginModuleName();
+                        writeLine(sb, "LoginModuleName: " + moduleName);
+                    }
+                } else {
+                    writeLine(sb, "Config entries=null");
+                }
+            } else {
+                writeLine(sb, "Current config=null");
+            }
+        } catch (Exception e) {
+            writeLine(sb, "Unexpected exception while getting loginModuleName : " + e.getMessage());
+            e.printStackTrace();
+        }
+        writeLine(sb, "printLoginModuleNames Exit");
     }
 
     private void callMethod(HttpServletRequest req, HttpServletResponse resp,

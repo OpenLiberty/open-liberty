@@ -1,0 +1,125 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets')
+}
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+def appBuildDir = "${buildDir}/test-application"
+def testServletsProject = project(':com.ibm.ws.webcontainer.security_test.servlets')
+
+/******************************************************************
+ ** authenticationService.war
+ ******************************************************************/
+task authenticationService_WAR(type: War, dependsOn: classes) {
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "authenticationService.war"
+
+  from ('test-applications/authenticationService/resources') {
+    include 'WEB-INF/**'
+  }
+  from ('build/classes/java/main') {
+    include 'web/AuthenticationServlet*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ** CustomLoginModule.jar
+ ** Library for the custom JAAS login module used by the
+ ** com.ibm.ws.security.authentication.fat.jaasloginmodule server.
+ ******************************************************************/
+task CustomLoginModule_JAR(type: Jar, dependsOn: classes) {
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "CustomLoginModule.jar"
+
+  from ('build/classes/java/main') {
+    include 'com/ibm/ws/security/authentication/fat/CustomLoginModule.class'
+    include 'com/ibm/ws/security/authentication/fat/CustomLoginModule$*.class'
+    include 'com/ibm/ws/security/authentication/fat/IdentityAssertionLoginModule*.class'
+  }
+}
+
+/******************************************************************
+ ** jaasloginmodule.ear
+ ******************************************************************/
+task jaasloginmodule_EAR(type: Zip, dependsOn: [':com.ibm.ws.webcontainer.security_test.servlets:basicauth',
+                                                ':com.ibm.ws.webcontainer.security_test.servlets:formlogin',
+                                                ':com.ibm.ws.webcontainer.security_test.servlets:formloginPageSessionFalse']) {
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "jaasloginmodule.ear"
+
+  from (new File(projectDir, 'publish/files/jaasloginmodule')) {
+    include '**'
+  }
+  from (new File(testServletsProject.buildDir, 'test-application')) {
+    include 'basicauth.zip', 'formlogin.zip', 'formloginPageSessionFalse.zip'
+    rename '(.*)\\.zip', '$1.war'
+  }
+}
+
+assemble.dependsOn authenticationService_WAR
+assemble.dependsOn CustomLoginModule_JAR
+assemble.dependsOn jaasloginmodule_EAR
+
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
+autoFVT.dependsOn authenticationService_WAR
+autoFVT.dependsOn CustomLoginModule_JAR
+autoFVT.dependsOn jaasloginmodule_EAR
+
+autoFVT.doLast {
+
+  /******************************************************************
+   * Setup server: com.ibm.ws.security.authentication.fat.noauthcache
+   ******************************************************************/
+  copy {
+    from file("${appBuildDir}/authenticationService.war")
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.authentication.fat.noauthcache/dropins')
+  }
+
+  /******************************************************************
+   * Setup server: com.ibm.ws.security.authentication.fat.jaasloginmodule
+   ******************************************************************/
+  def server = 'com.ibm.ws.security.authentication.fat.jaasloginmodule'
+  copy {
+    from file("${appBuildDir}/jaasloginmodule.ear")
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+  }
+  copy {
+    from file("${appBuildDir}/CustomLoginModule.jar")
+    into new File(autoFvtDir, 'publish/servers/' + server)
+  }
+
+  // Login modules named in wsjaas.conf (-Djava.security.auth.login.config) must be in the
+  // default JAAS directory (see the user action of message CWWKS1141E).
+  copy {
+    from file("${appBuildDir}/CustomLoginModule.jar")
+    into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security/jaas')
+  }
+
+  // CustomLoginModuleTest restores the original configuration from this file
+  copy {
+    from new File(projectDir, 'publish/servers/' + server + '/server.xml')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    rename 'server.xml', 'jaasloginmodule.server.xml.orig'
+  }
+}
