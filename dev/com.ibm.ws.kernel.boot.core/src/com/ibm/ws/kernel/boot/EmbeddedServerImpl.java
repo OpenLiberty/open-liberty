@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -50,7 +50,7 @@ import com.ibm.wsspi.kernel.embeddable.ServerException;
 public class EmbeddedServerImpl implements Server {
 
     /** Location manager and initial configuration */
-    protected final BootstrapConfig bootProps = new BootstrapConfig();
+    protected final BootstrapConfig bootProps;
 
     /** Lock ensuring only one VM is using the server directory/workarea (as a server) */
     protected final ServerLock testServerLock;
@@ -181,6 +181,36 @@ public class EmbeddedServerImpl implements Server {
      */
     public EmbeddedServerImpl(String serverName, File userDir, File outputDir, File logDir, ServerEventListener listener, HashMap<String, Properties> extraProductExtensions,
                               ExecutorService executor, String workareaDirStr) {
+        this(serverName, null, userDir, outputDir, logDir, listener, extraProductExtensions, executor, workareaDirStr);
+    }
+
+    /**
+     * @param serverName             ServerName: defaultServer will be used if this is null
+     * @param bootConfig             BootstrapConfig or subclass (such as ClientBootstrapConfig), may be null
+     * @param userDir                WLP_USER_DIR equivalent, may be null
+     * @param outputDir              WLP_OUTPUT_DIR equivalent, may be null
+     * @param logDir                 Server log file directory, may be null
+     * @param listener               ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
+     * @param extraProductExtensions HashMap of Properties, may be null
+     * @param executor               The executor service to use for start and stop operations
+     * @param workareaDirStr         Embedded workarea location, null for default
+     *
+     * @see {@link ServerEventListener}
+     */
+    public EmbeddedServerImpl(String serverName, BootstrapConfig bootConfig, File userDir, File outputDir, File logDir, ServerEventListener listener, HashMap<String, Properties> extraProductExtensions,
+                              ExecutorService executor, String workareaDirStr) {
+        if (bootConfig != null) {
+            BootstrapConfig newBootConfig;
+            try {
+                newBootConfig = bootConfig.getClass().getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                newBootConfig = new BootstrapConfig();
+            }
+            this.bootProps = newBootConfig;
+        } else {
+            this.bootProps = new BootstrapConfig();
+        }
+
         if (executor == null) {
             opQueue = Executors.newCachedThreadPool(new ThreadFactory() {
                 @Override
