@@ -230,6 +230,9 @@ assemble.dependsOn createFeatureResources
 
 task publishFeatureResources {
   dependsOn parent.subprojects.assemble
+  // build.image:updatePoms rewrites jars under build.image/wlp in place, which are the same
+  // bundles packaged into the ESAs here. Don't let them run concurrently.
+  mustRunAfter ':build.image:updatePoms'
 
   def featureFiles = fileTree(dir: project.projectDir, include: 'visibility/**/*.feature')
   inputs.files(featureFiles).ignoreEmptyDirectories().skipWhenEmpty()
