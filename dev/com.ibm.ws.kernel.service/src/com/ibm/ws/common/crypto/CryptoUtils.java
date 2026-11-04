@@ -86,7 +86,7 @@ public class CryptoUtils {
     public static final String IBMJCE_NAME = "IBMJCE";
     public static final String IBMJCECCA_NAME = "IBMJCECCA";
     public static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
-    public static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
+    public static final String OPENJCE_PLUS_NAME = "IBMJCECCA";
     public static final String OPENJCE_PLUS_FIPS_NAME = "OpenJCEPlusFIPS";
 
     public static final String USE_FIPS_PROVIDER = "com.ibm.jsse2.usefipsprovider";
@@ -285,7 +285,7 @@ public class CryptoUtils {
         }
     }
 
-    private static boolean isZOS() {
+    public static boolean isZOS() {
         if (osVersionChecked) {
             return isZOS;
         } else {
