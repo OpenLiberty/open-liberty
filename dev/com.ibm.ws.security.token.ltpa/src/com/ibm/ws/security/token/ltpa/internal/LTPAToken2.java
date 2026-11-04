@@ -36,6 +36,11 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
+import com.ibm.ws.security.token.ltpa.pqc.PQCConstants;
+import com.ibm.ws.security.token.ltpa.pqc.PQCSignatureHelper;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
 /**
  * Represents an LTPAToken that is delegatable. The token contains user data,
  * expiration time, along with the digital signature based on the data and the RSA key.
@@ -48,6 +53,11 @@ public class LTPAToken2 implements Token, Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final String DELIM = "%";
+    // PQC: Encryption algorithm constants (Issue #35556 - Task 2.6)
+    private static final String CIPHER_AES_CBC = "AES/CBC/PKCS5Padding";
+    private static final String CIPHER_AES_GCM = "AES/GCM/NoPadding";
+    private static final int GCM_IV_LENGTH = 12; // 96 bits recommended for GCM
+    private static final int GCM_TAG_LENGTH = 128; // 128 bits authentication tag
     private static final MessageDigest md1JCE;
     private static final MessageDigest md2JCE;
     private static final Object lockObj1;
@@ -61,6 +71,12 @@ public class LTPAToken2 implements Token, Serializable {
     private final byte[] sharedKey;
     private final LTPAPrivateKey privateKey;
     private final LTPAPublicKey publicKey;
+   
+    // PQC: ML-DSA keys (Issue #35556 - Task 2.7)
+    private final PrivateKey mldsaPrivateKey;
+    private final PublicKey mldsaPublicKey;
+    private final String cryptoMode;
+
     private String cipher = null;
     private long expirationDifferenceAllowed;
 
@@ -83,30 +99,15 @@ public class LTPAToken2 implements Token, Serializable {
      * @param sharedKey  The LTPA shared key
      * @param privateKey The LTPA private key
      * @param publicKey  The LTPA public key
-     */
-    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, long expDiffAllowed) throws InvalidTokenException {
-        checkTokenBytes(tokenBytes);
-        this.signature = null;
-        this.encryptedBytes = tokenBytes.clone();
-        this.sharedKey = sharedKey.clone();
-        this.privateKey = privateKey;
-        this.publicKey = publicKey;
-        this.expirationInMilliseconds = 0;
-        this.cipher = CryptoUtils.AES_CBC_CIPHER;
-        this.expirationDifferenceAllowed = expDiffAllowed;
-        decrypt();
-    }
-
-    /**
-     * An LTPA2 token constructor.
-     *
-     * @param tokenBytes The byte representation of the LTPA2 token
-     * @param sharedKey  The LTPA shared key
-     * @param privateKey The LTPA private key
-     * @param publicKey  The LTPA public key
      * @param attributes The list of attributes will be removed from the LTPA2 token
      */
-    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, long expDiffAllowed,
+     public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, long expDiffAllowed,
+                      String... attributes) throws InvalidTokenException, TokenExpiredException {
+        this(tokenBytes, sharedKey, privateKey, publicKey, null, null, PQCConstants.CRYPTO_MODE_CLASSICAL, expDiffAllowed, attributes);
+    }
+
+    public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey,
+                      PrivateKey mldsaPrivateKey, PublicKey mldsaPublicKey, String cryptoMode, long expDiffAllowed,
                       String... attributes) throws InvalidTokenException, TokenExpiredException {
         checkTokenBytes(tokenBytes);
         this.signature = null;
@@ -114,6 +115,9 @@ public class LTPAToken2 implements Token, Serializable {
         this.sharedKey = sharedKey.clone();
         this.privateKey = privateKey;
         this.publicKey = publicKey;
+        this.mldsaPrivateKey = mldsaPrivateKey;
+        this.mldsaPublicKey = mldsaPublicKey;
+        this.cryptoMode = cryptoMode != null ? cryptoMode : PQCConstants.CRYPTO_MODE_CLASSICAL;
         this.expirationInMilliseconds = 0;
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
@@ -130,18 +134,28 @@ public class LTPAToken2 implements Token, Serializable {
     /**
      * An LTPA2 token constructor.
      *
-     * @param accessID            The unique user identifier
-     * @param expirationInMinutes Expiration limit of the LTPA2 token in minutes
-     * @param sharedKey           The LTPA shared key
-     * @param privateKey          The LTPA private key
-     * @param publicKey           The LTPA public key
+     * @param tokenBytes The byte representation of the LTPA2 token
+     * @param sharedKey  The LTPA shared key
+     * @param privateKey The LTPA private key
+     * @param publicKey  The LTPA public key
      */
-    protected LTPAToken2(String accessID, long expirationInMinutes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey) {
+
+    protected LTPAToken2(String accessID, long expirationInMinutes, @Sensitive byte[] sharedKey,
+                         LTPAPrivateKey privateKey, LTPAPublicKey publicKey) {
+        this(accessID, expirationInMinutes, sharedKey, privateKey, publicKey, null, null, PQCConstants.CRYPTO_MODE_CLASSICAL);
+    }
+
+    protected LTPAToken2(String accessID, long expirationInMinutes, @Sensitive byte[] sharedKey,
+                         LTPAPrivateKey privateKey, LTPAPublicKey publicKey,
+                         PrivateKey mldsaPrivateKey, PublicKey mldsaPublicKey, String cryptoMode) {
         this.signature = null;
         this.encryptedBytes = null;
         this.sharedKey = sharedKey.clone();
         this.privateKey = privateKey;
         this.publicKey = publicKey;
+        this.mldsaPrivateKey = mldsaPrivateKey;
+        this.mldsaPublicKey = mldsaPublicKey;
+        this.cryptoMode = cryptoMode != null ? cryptoMode : PQCConstants.CRYPTO_MODE_CLASSICAL;
         this.userData = new UserData(accessID);
         setExpiration(expirationInMinutes);
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
@@ -162,6 +176,9 @@ public class LTPAToken2 implements Token, Serializable {
         this.sharedKey = sharedKey.clone();
         this.privateKey = privateKey;
         this.publicKey = publicKey;
+        this.mldsaPrivateKey = null;           
+        this.mldsaPublicKey = null;  
+        this.cryptoMode = PQCConstants.CRYPTO_MODE_CLASSICAL; 
         this.userData = userdata;
         setExpiration(expirationInMinutes);
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
@@ -173,6 +190,10 @@ public class LTPAToken2 implements Token, Serializable {
      * @throws TokenException
      */
     private final void encrypt() throws Exception {
+    // TODO: PQC #35556 - Task 2.6: Implement AES-GCM encryption
+    // Current: Uses AES-CBC
+    // Future: Check PQC config, use AES-GCM if enabled
+    // Format: [IV (12 bytes)][Ciphertext][Auth Tag (16 bytes)]
         String signStr = Base64Coder.toString(Base64Coder.base64Encode(signature));
         String ud = userData.toString();
 
@@ -210,6 +231,10 @@ public class LTPAToken2 implements Token, Serializable {
      */
     @FFDCIgnore({ BadPaddingException.class, Exception.class })
     private final void decrypt() throws InvalidTokenException {
+    // TODO: PQC #35556 - Task 2.6: Implement AES-GCM decryption
+    // Current: Uses AES-CBC
+    // Future: Detect format, use AES-GCM if detected
+    // Must verify authentication tag
         byte[] tokenData;
         try {
             tokenData = LTPAKeyUtil.decrypt(encryptedBytes.clone(), sharedKey, cipher);
@@ -271,9 +296,19 @@ public class LTPAToken2 implements Token, Serializable {
     private final void sign() throws Exception {
         String dataStr = this.getUserData().toString();
         byte[] data = Base64Coder.getBytes(dataStr);
-        byte[] signature = sign(data, this.privateKey);
+
+        byte[] signature;
+        if (PQCConstants.CRYPTO_MODE_HYBRID.equals(cryptoMode)) {
+            signature = PQCSignatureHelper.signHybrid(data, privateKey, mldsaPrivateKey, null);
+        } else if (PQCConstants.CRYPTO_MODE_PQC.equals(cryptoMode)) {
+            signature = PQCSignatureHelper.signMLDSA(data, mldsaPrivateKey, null);
+        } else {
+            signature = sign(data, this.privateKey);
+        }
+
         this.setSignature(signature);
     }
+
 
     private final byte[] sign(byte[] msg, LTPAPrivateKey privKey) throws Exception {
         byte[] data;
@@ -291,10 +326,18 @@ public class LTPAToken2 implements Token, Serializable {
     /**
      * Verify the token.
      */
+
     private final boolean verify() throws Exception {
         String dataStr = this.getUserData().toString();
         byte[] data = Base64Coder.getBytes(dataStr);
-        return verify(data, signature, publicKey);
+
+        if (PQCConstants.CRYPTO_MODE_HYBRID.equals(cryptoMode)) {
+            return PQCSignatureHelper.verifyHybrid(data, signature, publicKey, mldsaPublicKey, null);
+        } else if (PQCConstants.CRYPTO_MODE_PQC.equals(cryptoMode)) {
+            return PQCSignatureHelper.verifyMLDSA(data, signature, mldsaPublicKey, null);
+        } else {
+            return verify(data, signature, publicKey);
+        }
     }
 
     private final boolean verify(byte[] msg, byte[] signature, LTPAPublicKey pubKey) throws Exception {

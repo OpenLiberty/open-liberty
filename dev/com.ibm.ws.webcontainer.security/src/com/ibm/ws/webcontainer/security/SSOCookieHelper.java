@@ -43,5 +43,19 @@ public interface SSOCookieHelper {
 
     String getSSODomainName(HttpServletRequest req, List<String> ssoDomainList, boolean useURLDomain);
 
+    /**
+     * Retrieves and reassembles an SSO token from cookies.
+     * Handles both single cookies and fragmented cookies for large tokens (e.g., LTPA3 with PQC).
+     *
+     * @param req The HTTP servlet request
+     * @param cookieName The base cookie name (e.g., "LtpaToken2", "JWT")
+     * @return The reassembled token string, or null if no cookies found
+     */
+    String getSsoTokenFromCookies(HttpServletRequest req, String cookieName);
+
+    /**
+     * @deprecated Use {@link #getSsoTokenFromCookies(HttpServletRequest, String)} instead.
+     */
+    @Deprecated
     String getJwtSsoTokenFromCookies(HttpServletRequest req, String jwtCookieName);
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+    
+    <display-name>PQC LTPA Test Application</display-name>
+    
+    <servlet>
+        <servlet-name>PQCLTPATestServlet</servlet-name>
+        <servlet-class>com.ibm.ws.security.token.ltpa.pqc.servlet.PQCLTPATestServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>PQCLTPATestServlet</servlet-name>
+        <url-pattern>/PQCLTPATestServlet</url-pattern>
+    </servlet-mapping>
+    
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Protected Area</web-resource-name>
+            <url-pattern>/PQCLTPATestServlet</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>AllAuthenticated</role-name>
+        </auth-constraint>
+    </security-constraint>
+    
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>BasicRealm</realm-name>
+    </login-config>
+    
+    <security-role>
+        <role-name>AllAuthenticated</role-name>
+    </security-role>
+    
+</web-app>
