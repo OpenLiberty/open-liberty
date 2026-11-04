@@ -34,6 +34,7 @@ public abstract class ServerCommand {
     protected static final String INTROSPECT_JAVADUMP_COMMAND = "introspectJavadump";
     protected static final String JAVADUMP_COMMAND = "javadump";
     protected static final String PAUSE_COMMAND = "pause";
+    protected static final String COMP_STATUS_COMMAND = "compStatus";
     protected static final String RESUME_COMMAND = "resume";
 
     private final CharsetDecoder decoder = StandardCharsets.ISO_8859_1.newDecoder();

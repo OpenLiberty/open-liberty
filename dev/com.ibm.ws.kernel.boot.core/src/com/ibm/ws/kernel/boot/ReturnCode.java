@@ -58,6 +58,7 @@ public enum ReturnCode implements ExitCode {
     CLIENT_RUNNER_EXCEPTION(35),
     ERROR_SERVER_PAUSE(36),
     ERROR_SERVER_RESUME(37),
+    ERROR_SERVER_COMP_STATUS(38),
 
     // All "actions" should be < 0, these are not returned externally
     MESSAGE_ACTION(-1),
@@ -76,7 +77,8 @@ public enum ReturnCode implements ExitCode {
     INVALID(13),
     PACKAGE_WLP_ACTION(-15, "package.log"),
     PAUSE_ACTION(-16),
-    RESUME_ACTION(-17);
+    RESUME_ACTION(-17),
+    COMP_STATUS_ACTION(-18);
 
     final int val;
     final String logName;

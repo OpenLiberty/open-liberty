@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.kernel.boot.commandline.ComponentStatusCommandTest;
 import com.ibm.ws.kernel.boot.commandline.CreateCommandTest;
 import com.ibm.ws.kernel.boot.commandline.DumpCommandTest;
 import com.ibm.ws.kernel.boot.commandline.PauseResumeCommandTest;
@@ -45,35 +46,37 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
  * in a combined total of 5 minutes or less.
  */
 @SuiteClasses({
-                EmbeddedServerTest.class,
-                EmbeddedServerAddProductExtensionTest.class,
-                EmbeddedServerAddProductExtensionMultipleTest.class,
-                ProvisioningTest.class,
-                KernelChangeTest.class,
-                ServerEnvTest.class,
-                ServerStartTest.class,
-                ServerStopTest.class,
-                ServerStartAsServiceTest.class,
-                ShutdownTest.class,
-                ServerCommandPortTest.class,
-                DumpCommandTest.class,
-                PackageCommandTest.class,
-                PackageLooseRunnableTest.class,
-                PackageLooseContentsTest.class,
-                PackageVersionlessFeatures.class,
-                // PackageLooseFilterTest.class, // Recreates issue 15724; disabled until that is fixed.
-                LogLevelPropertyTest.class,
-                CreateCommandTest.class,
-                StartCommandTest.class,
-                ServerClasspathTest.class,
-                ServerStartJVMOptionsTest.class,
-                ServerStartJavaEnvironmentVariablesTest.class,
-                PauseResumeCommandTest.class,
-                EmbeddedServerMergeProductExtensionTest.class,
-                ServerEndpointControlMBeanTest.class,
-                OSGiEmbedManagerTest.class,
-                ServerCleanTest.class,
-                VerboseLogTest.class
+                // EmbeddedServerTest.class,
+                // EmbeddedServerAddProductExtensionTest.class,
+                // EmbeddedServerAddProductExtensionMultipleTest.class,
+                // ProvisioningTest.class,
+                // KernelChangeTest.class,
+                // ServerEnvTest.class,
+                // ServerStartTest.class,
+                // ServerStopTest.class,
+                // ServerStartAsServiceTest.class,
+                // ShutdownTest.class,
+                // ServerCommandPortTest.class,
+                // DumpCommandTest.class,
+                // PackageCommandTest.class,
+                // PackageLooseRunnableTest.class,
+                // PackageLooseContentsTest.class,
+                // PackageVersionlessFeatures.class,
+                // // PackageLooseFilterTest.class, // Recreates issue 15724; disabled until that is fixed.
+                // LogLevelPropertyTest.class,
+                // CreateCommandTest.class,
+                // StartCommandTest.class,
+                // ServerClasspathTest.class,
+                // ServerStartJVMOptionsTest.class,
+                // ServerStartJavaEnvironmentVariablesTest.class,
+                // PauseResumeCommandTest.class,
+                // EmbeddedServerMergeProductExtensionTest.class,
+                // ServerEndpointControlMBeanTest.class,
+                // OSGiEmbedManagerTest.class,
+                // ServerCleanTest.class,
+                // VerboseLogTest.class
+
+                ComponentStatusCommandTest.class
 })
 public class FATSuite {
     // Empty

@@ -174,6 +174,9 @@ public class LaunchArguments {
                     } else if (argToLower.equals("--resume")) {
                         returnValue = checkPreviousAction(returnValue, ReturnCode.RESUME_ACTION, arg);
                         action = setActionIfOk(returnValue, action, arg);
+                    } else if (argToLower.equals("--compstatus")) {
+                        returnValue = checkPreviousAction(returnValue, ReturnCode.COMP_STATUS_ACTION, arg);
+                        action = setActionIfOk(returnValue, action, arg);
                     } else if (argToLower.startsWith(MESSAGE_ACTION)) {
                         returnValue = checkPreviousAction(returnValue, ReturnCode.MESSAGE_ACTION, arg);
                         action = setActionIfOk(returnValue, action, arg);

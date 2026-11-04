@@ -1,0 +1,44 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <httpEndpoint id="default" httpPort="9081"/>
+    <httpEndpoint id="default2" httpPort="9082"/>
+    <httpEndpoint id="default3" httpPort="9083"/>
+    <httpEndpoint id="default4" httpPort="9084"/>
+    <httpEndpoint id="default5" httpPort="9085"/>
+    <httpEndpoint id="default6" httpPort="9086"/>
+    <httpEndpoint id="default7" httpPort="9087"/>
+    <httpEndpoint id="default8" httpPort="9088"/>
+    <httpEndpoint id="default9" httpPort="9089"/>
+    <httpEndpoint id="default10" httpPort="9090"/>
+    <httpEndpoint id="default11" httpPort="9091"/>
+    <httpEndpoint id="default12" httpPort="9092"/>
+    <httpEndpoint id="default13" httpPort="9093"/>
+    <httpEndpoint id="default14" httpPort="9094"/>
+    <httpEndpoint id="default15" httpPort="9095"/>
+    <httpEndpoint id="default16" httpPort="9096"/>
+    <httpEndpoint id="default17" httpPort="9097"/>
+    <httpEndpoint id="default18" httpPort="9098"/>
+    <httpEndpoint id="default19" httpPort="9099"/>
+    <httpEndpoint id="default20" httpPort="9100"/>
+    <httpEndpoint id="default21" httpPort="9101"/>
+    <httpEndpoint id="default22" httpPort="9102"/>
+    <httpEndpoint id="default23" httpPort="9103"/>
+    <httpEndpoint id="default24" httpPort="9104"/>
+    <httpEndpoint id="default25" httpPort="9105"/>
+    <httpEndpoint id="default26" httpPort="9106"/>
+    <httpEndpoint id="default27" httpPort="9107"/>
+    <httpEndpoint id="default28" httpPort="9108"/>
+    <httpEndpoint id="default29" httpPort="9109"/>
+    <httpEndpoint id="default30" httpPort="9110"/>
+</server>
