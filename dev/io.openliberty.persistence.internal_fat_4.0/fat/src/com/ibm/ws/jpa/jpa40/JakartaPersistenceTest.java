@@ -108,6 +108,16 @@ public class JakartaPersistenceTest {
             cel.add(loader);
         }
 
+        // When running the EclipseLink repeat phase, wire EclipseLinkLib as a
+        // commonLibraryRef so EclipseLink 5 JARs are visible to the app classloader.
+        if (AbstractFATSuite.repeatPhase != null
+                && AbstractFATSuite.repeatPhase.contains("eclipselink40")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("EclipseLinkLib");
+            cel.add(loader);
+        }
+
         ServerConfiguration sc = server.getServerConfiguration();
         sc.getApplications().add(appRecord);
         server.updateServerConfiguration(sc);
