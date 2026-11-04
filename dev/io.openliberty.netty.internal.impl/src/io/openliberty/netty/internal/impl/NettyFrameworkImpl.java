@@ -69,6 +69,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.ThreadPerTaskExecutor;
 import io.openliberty.channel.config.ChannelFrameworkConfig;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
@@ -163,7 +164,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
         AutoScalingEventExecutorChooserFactory scaler = createThreadScaler(config);
         DefaultThreadFactory workerThreadFactory = new DefaultThreadFactory("TCPChannel NonBlocking Worker Thread", true);
-        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, workerThreadFactory, ioFactory, scaler);
+        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, new ThreadPerTaskExecutor(workerThreadFactory), scaler, ioFactory);
         outboundConnections = new DefaultChannelGroup(childGroup.next());
 
         if (metricsWindow > 0 && TraceComponent.isAnyTracingEnabled() && NettyThreadMetrics.tc.isDebugEnabled()) {
