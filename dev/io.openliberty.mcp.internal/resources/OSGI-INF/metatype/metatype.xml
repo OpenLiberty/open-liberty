@@ -44,6 +44,12 @@
         type="String"
         ibm:type="duration(ms)"
         default="30s"/>
+    <AD name="%enableEndpoint.name"
+        description="%enableEndpoint.description"
+        id="enableEndpoint"
+        required="false"
+        type="String"
+        default="auto"/>
 	<AD name="%info.name"
 	    description="%info.description"
 	    id="info"

@@ -1,0 +1,21 @@
+<server description="MCP server for enableEndpoint config test">
+
+  <featureManager>
+    <feature>servlet-6.0</feature>
+    <feature>cdi-4.0</feature>
+    <feature>mcp-1.0</feature>
+  </featureManager>
+
+  <application location="enableEndpointTest.ear">
+    <!-- Dynamic (ToolManager) tools only: endpoint must be explicitly enabled -->
+    <mcp moduleName="dynamicTrue" enableEndpoint="true"/>
+    <!-- @Tool annotated methods: endpoint is opened by "auto" -->
+    <mcp moduleName="annotatedAuto" enableEndpoint="auto"/>
+    <!-- @Tool annotated methods, but endpoint explicitly disabled -->
+    <mcp moduleName="annotatedFalse" enableEndpoint="false"/>
+    <!-- dynamicAuto, annotatedDefault and noTools have no config, so they use the default ("auto") -->
+  </application>
+
+  <include location="../fatTestPorts.xml" />
+
+</server>

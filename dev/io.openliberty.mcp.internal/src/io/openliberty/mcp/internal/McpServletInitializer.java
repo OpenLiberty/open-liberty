@@ -24,6 +24,7 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.http.VirtualHost;
 
+import io.openliberty.mcp.internal.config.McpConfig.EnableEndpoint;
 import io.openliberty.mcp.internal.config.McpServerApplicationTracker;
 import io.openliberty.mcp.internal.config.McpServerConfigProps;
 import io.openliberty.mcp.internal.introspection.McpIntrospectorContextListener;
@@ -50,25 +51,36 @@ public class McpServletInitializer implements ServletContainerInitializer {
     public void onStartup(Set<Class<?>> c, ServletContext context) throws ServletException, IllegalStateException {
         try {
             ToolRegistry registry = ToolRegistry.get();
-            if (!registry.hasTools()) {
-                return;
-            }
-            // Register introspector context listener
-            context.addListener(new McpIntrospectorContextListener(registry));
 
             ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             String appName = getApplicationName(componentMetaData);
             String moduleName = getModuleName(componentMetaData);
 
-            McpServerConfigProps configProps = null;
+            McpServerConfigProps configProps = McpServerConfigProps.DEFAULT_CONFIG;
 
             if (appName != null) {
-                configProps = mcpAppTrackerService.run(tracker -> tracker.getConfigForModule(appName, moduleName)).get();
+                McpServerConfigProps resolved = mcpAppTrackerService.run(tracker -> tracker.getConfigForModule(appName, moduleName)).get();
+                if (resolved != null) {
+                    configProps = resolved;
+                }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Looking up MCP config for application: " + appName + ", module: " + moduleName +
-                                       ", found: " + (configProps));
+                                       ", found: " + configProps);
                 }
             }
+
+            EnableEndpoint enableEndpoint = configProps.enableEndpoint();
+
+            if (enableEndpoint == EnableEndpoint.FALSE) {
+                return;
+            }
+
+            if (enableEndpoint == EnableEndpoint.AUTO && !registry.hasAnnotatedTools()) {
+                return;
+            }
+
+            // Register introspector context listener
+            context.addListener(new McpIntrospectorContextListener(registry));
 
             registerEndpoint(context, configProps);
         } catch (IllegalStateException e) {
