@@ -33,7 +33,8 @@
         </appProperties>
     </application>
     
-    <logging traceSpecification="*=info:HEALTH=all:logservice=all=enabled:com.ibm.websphere.org.eclipse.microprofile.health.2.0.*=all=enabled"/>
+ <logging traceSpecification="*=info=enabled:ChannelFramework=all:ChannelFrameworkService=all:HTTPChannel=all:TCPChannel=all:com.ibm.ws.http.internal*=all:com.ibm.ws.transport.http*=all:io.openliberty.netty*=all:com.ibm.ws.channelfw*=all" maxFileSize="50" maxFiles="20" traceFormat="BASIC"/>
+
 
     <!-- this sections mirrors permissions.xml to apply the permissions to the Kafka client jar in the shared library -->
     <variable name="kafkaCodebase" value="${server.config.dir}/kafkaLib/kafka-clients-3.5.1.jar"/>

@@ -11,7 +11,8 @@
         <feature>jsonp-1.1</feature>
     </featureManager>
 	
-    <logging traceSpecification="*=info:HEALTH=all:logservice=all=enabled:io.openliberty.org.eclipse.microprofile.health.3.1.*=all=enabled"/>
+ <logging traceSpecification="*=info=enabled:ChannelFramework=all:ChannelFrameworkService=all:HTTPChannel=all:TCPChannel=all:com.ibm.ws.http.internal*=all:com.ibm.ws.transport.http*=all:io.openliberty.netty*=all:com.ibm.ws.channelfw*=all" maxFileSize="50" maxFiles="20" traceFormat="BASIC"/>
+
     <application location="DelayedHealthCheckApp.war"/>
     <webContainer deferServletLoad="false"/> 
 	
