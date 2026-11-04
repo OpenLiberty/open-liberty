@@ -30,7 +30,9 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.Mcp;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import io.openliberty.mcp.internal.fat.suite.BetaRepeatAction;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 
 /**
@@ -38,8 +40,12 @@ import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
  * when the runtime is not beta. The server behaves as if the minimum is 2025-03-26 and the maximum is 2025-11-25.
  * <p>
  * The beta behaviour is tested by {@link ProtocolVersionConfigBetaTest}.
+ * <p>
+ * This class is skipped in the repeat of {@code McpMainServerSuite} which runs on a beta runtime, where the
+ * attributes are honoured.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(BetaRepeatAction.ID)
 public class ProtocolVersionConfigNonBetaTest {
 
     // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
