@@ -1248,10 +1248,15 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      */
     private boolean setUnauthenticatedSubjectIfNeeded(Subject invokedSubject, Subject receivedSubject) {
         if ((invokedSubject == null) && (receivedSubject == null)) {
-            // create the unauthenticated subject and set as the invocation subject
-            SubjectManager sm = new SubjectManager();
-            sm.setInvocationSubject(unauthenticatedSubjectService.getUnauthenticatedSubject());
-            return true;
+            // Check if service is available before using it (may be null during shutdown)
+            if (unauthenticatedSubjectService != null) {
+                SubjectManager sm = new SubjectManager();
+                sm.setInvocationSubject(unauthenticatedSubjectService.getUnauthenticatedSubject());
+                return true;
+            }
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "UnauthenticatedSubjectService unavailable, skipping unauthenticated subject setup");
+            }
         }
         return false;
     }
