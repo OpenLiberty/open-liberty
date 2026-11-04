@@ -281,6 +281,20 @@ task autoFVT {
   dependsOn ':fattest.simplicity:jar'
   enabled = project.file('fat').exists()
 
+  inputs.dir(compileJava.destinationDir)
+  inputs.dir(buildDir)
+  inputs.file(project.file('ddl'))
+  inputs.dir(new File(project(':fattest.simplicity').projectDir, '/autoFVT-defaults'))
+  inputs.dir(new File(project(':fattest.simplicity').buildDir, '/autoFVT-defaults'))
+  inputs.dir(project.file('override/autoFVT/src/ant'))
+  inputs.dir(project(':fattest.simplicity').buildDir)
+  inputs.dir(project.file('publish/files'))
+  inputs.dir(new File(publishDir, 'files'))
+  inputs.dir(project.file('publish'))
+  inputs.dir(projectDir)
+  inputs.dir(new File(project.buildDir, 'gitRepos'))
+  outputs.dir(autoFvtDir)
+
   ext.getFeature = { line ->
     def fStart = line.indexOf('<feature>')
     if (fStart == -1)
@@ -441,7 +455,6 @@ task autoFVT {
       from gitReposDir
       into new File(autoFvtDir, 'publish/gitRepos/')
     }
-    delete gitReposDir
 
     /**
      * In a multi bundle / bnd environment these settings are specific to a particular bundle
@@ -899,7 +912,6 @@ build {
 }
 
 buildfat {
-  dependsOn cleanFat
   dependsOn assemble
   dependsOn build
   dependsOn zipProjectFVT
