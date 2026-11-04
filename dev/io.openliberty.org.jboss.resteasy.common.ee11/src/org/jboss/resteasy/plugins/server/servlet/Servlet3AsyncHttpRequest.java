@@ -303,7 +303,7 @@ public class Servlet3AsyncHttpRequest extends HttpServletInputMessage {
                     }
                     resume(new ServiceUnavailableException());
                 } finally {
-//               close(); // liberty Change
+                    close(); // Jim Test
                 }
             }
 
