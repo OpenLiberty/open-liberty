@@ -14,6 +14,7 @@ package com.ibm.ws.logstash.collector.tests;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -112,7 +113,10 @@ public class LogStashShutdownTest extends LogstashCollectorTest {
         loggingObj = serverConfig.getLogging();
         loggingObj.setTraceSpecification("*=info:logstashCollector=debug:com.ibm.ws.collector.*=debug:com.ibm.ws.logstash.collector.*=debug");
         server.updateServerConfiguration(serverConfig);
-        assertNotNull(waitForStringInContainerOutput("CWWKG0017I|CWWKG0018I"));
+        assertTrue("Server stopped unexpectedly before config update completed — check server logs for a JVM abort or crash",
+                   server.isStarted());
+        assertNotNull("Timed out waiting for CWWKG0017I/CWWKG0018I — server may have crashed after config update",
+                      waitForStringInContainerOutput("CWWKG0017I|CWWKG0018I"));
     }
 
     @AfterClass
