@@ -95,12 +95,14 @@ public class CrossFeatureJaegerTest {
         opentracingServer.useSecondaryHTTPPort();
 
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());
-        telemetryServer.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
+        telemetryServer.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "0"); // Wait no more than 100ms to send traces to the server. lowers the chance that verification races the exporter
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none"); //Disable logging
         telemetryServer.addEnvVar("OTEL_PROPAGATORS", "tracecontext, baggage, jaeger"); // Include the jaeger propagation headers
         telemetryServer.addEnvVar("IO_OPENLIBERTY_MICROPROFILE_TELEMETRY_INTERNAL_APPS_CROSSFEATURE_TELEMETRY_CROSSFEATURECLIENT_MP_REST_URL", getUrl(opentracingServer));
 
+        telemetryServer.addEnvVar("OTEL_TRACE_export_interval", "500"); //avoids waiting up to 5 seconds between exports
+        telemetryServer.addEnvVar("OTEL_EXPORTER_OTLP_TIMEOUT", "60000"); // this is the most important change as the failure is an exporter timeout, so give the OTLP path longer to respond
         opentracingServer.addEnvVar("JAEGER_ENDPOINT", jaegerContainer.getJaegerThriftUrl());
         opentracingServer.addEnvVar("JAEGER_SAMPLER_TYPE", "const"); // Trace every call
         opentracingServer.addEnvVar("JAEGER_SAMPLER_PARAM", "1"); // Trace every call
