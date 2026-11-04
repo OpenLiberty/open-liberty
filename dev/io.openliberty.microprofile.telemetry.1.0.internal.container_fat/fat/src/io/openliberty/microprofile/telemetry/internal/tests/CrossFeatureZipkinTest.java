@@ -17,6 +17,7 @@ import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
 import static io.opentelemetry.semconv.SemanticAttributes.URL_FULL;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -184,6 +185,7 @@ public class CrossFeatureZipkinTest {
             assertThat(server1, hasTag("otel.scope.name", "io.openliberty.microprofile.telemetry"));
             assertThat(client2, hasTag("otel.scope.name", "Client filter"));
         }
+        assertTrue("Force failure.", false);
     }
 
     /**
