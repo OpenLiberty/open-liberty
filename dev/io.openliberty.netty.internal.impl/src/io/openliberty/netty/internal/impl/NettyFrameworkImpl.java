@@ -114,9 +114,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     /** Holds dedicated groups before their channel is known (between bootstrap creation and successful bind). */
     private final Set<EventLoopGroup> pendingDedicatedGroups = ConcurrentHashMap.newKeySet();
 
-    /** Channels whose bind failed due to "Address already in use"; used to suppress spurious quiesce warnings. */
-    private final Set<Channel> bindFailedChannels = ConcurrentHashMap.newKeySet();
-
     private EventLoopGroup sharedAcceptGroup;
     private EventLoopGroup childGroup;
 
@@ -644,25 +641,14 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                     chan.pipeline().addFirst(new QuiesceHandler(quiesce));
                 }
             } else {
-                // If the channel is in bindFailedChannels it never became an active endpoint,
-                // so suppress the warning; otherwise emit it for genuinely unexpected cases.
-                if (!bindFailedChannels.remove(chan)) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                        Tr.warning(tc, "netty.quiesce.channel.not.endpoint");
-                    }
+                // Not an active endpoint (e.g. the bind failed or the channel already closed).
+                // This is not a notable condition: any bind failure is already reported, so
+                // the quiesce task is simply ignored.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Ignoring quiesce task for channel that is not a registered endpoint: " + chan);
                 }
             }
         }
-    }
-
-    /**
-     * Record that a channel's bind failed due to "Address already in use" so that
-     * {@link #registerEndpointQuiesce} can suppress the spurious not-an-endpoint warning.
-     *
-     * @param channel the channel whose bind failed
-     */
-    public void addBindFailedChannel(Channel channel) {
-        bindFailedChannels.add(channel);
     }
 
     /**
