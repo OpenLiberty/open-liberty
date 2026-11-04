@@ -83,9 +83,9 @@ public class McpConfigurationComponent {
             minimumProtocolVersion = parseProtocolVersion(properties, CFG_MINIMUM_PROTOCOL_VERSION);
             maximumProtocolVersion = parseProtocolVersion(properties, CFG_MAXIMUM_PROTOCOL_VERSION);
 
-            McpProtocolVersion effectiveMinimum = minimumProtocolVersion != null ? minimumProtocolVersion : McpProtocolVersion.defaultMinimum();
-            McpProtocolVersion effectiveMaximum = maximumProtocolVersion != null ? maximumProtocolVersion : McpProtocolVersion.defaultMaximum();
-            if (!effectiveMinimum.isBetween(McpProtocolVersion.oldest(), effectiveMaximum)) {
+            McpProtocolVersion effectiveMinimum = minimumProtocolVersion != null ? minimumProtocolVersion : McpServerConfigProps.defaultMinimum();
+            McpProtocolVersion effectiveMaximum = maximumProtocolVersion != null ? maximumProtocolVersion : McpServerConfigProps.defaultMaximum();
+            if (!McpServerConfigProps.isBetween(effectiveMinimum, McpServerConfigProps.defaultMinimum(), effectiveMaximum)) {
                 Tr.error(tc, "CWMCM0046E.protocol.version.range.invalid", effectiveMinimum.getVersion(), effectiveMaximum.getVersion());
                 minimumProtocolVersion = null;
                 maximumProtocolVersion = null;
@@ -112,9 +112,9 @@ public class McpConfigurationComponent {
             return null;
         }
         try {
-            return McpProtocolVersion.parseConfigValue(value.trim());
+            return McpServerConfigProps.parseProtocolVersion(value.trim());
         } catch (NoSuchElementException e) {
-            String supportedValues = McpProtocolVersion.LATEST + ", "
+            String supportedValues = McpServerConfigProps.LATEST + ", "
                                      + Arrays.stream(McpProtocolVersion.availableValues())
                                              .map(McpProtocolVersion::getVersion)
                                              .collect(Collectors.joining(", "));

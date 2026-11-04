@@ -101,12 +101,11 @@ public class McpProtocolVersionTest {
         assertEquals("2026-07-28", adapter.adaptToJson(McpProtocolVersion.V_2026_07_28));
     }
 
-    // Unit tests for the invariants of {@link McpProtocolVersion} that the beta
-    // {@code minimumProtocolVersion} and {@code maximumProtocolVersion} configuration depends on.
-
     /**
-     * latest() and oldest() rely on the declaration order, and isBetween() relies on the version strings sorting
-     * in date order.
+     * The versions must be declared newest first, because callers use the declaration order to compare
+     * versions (by ordinal) and to pick the newest available version (the first entry of
+     * {@link McpProtocolVersion#availableValues()}). This checks the declaration order against the release
+     * dates, so a version added in the wrong place fails here.
      */
     @Test
     public void testVersionsAreDeclaredNewestFirst() {
@@ -118,42 +117,24 @@ public class McpProtocolVersionTest {
     }
 
     /**
-     * The newest version must stay beta only, so the GA maximum has to be older than the latest version
-     * of a beta runtime.
+     * {@link McpProtocolVersion#latest()} is a fixed constant, not derived from {@code values()}. On a beta
+     * runtime every version is available, so it must equal the first available version. This fails if a newer
+     * version is declared without updating {@code latest()}.
      */
     @Test
-    public void testGaMaximumIsOlderThanLatest() {
+    public void testLatestMatchesAvailableValues() {
         System.setProperty(BETA_PROPERTY, "true");
-
-        assertTrue(McpProtocolVersion.GA_MAXIMUM.getVersion() + " should be older than " + McpProtocolVersion.latest().getVersion(),
-                   McpProtocolVersion.GA_MAXIMUM.getVersion().compareTo(McpProtocolVersion.latest().getVersion()) < 0);
-        assertTrue("The GA minimum should not be newer than the GA maximum",
-                   McpProtocolVersion.GA_MINIMUM.isBetween(McpProtocolVersion.oldest(), McpProtocolVersion.GA_MAXIMUM));
+        assertEquals(McpProtocolVersion.availableValues()[0], McpProtocolVersion.latest());
     }
 
     /**
-     * Every supported version can be configured by its version string, and "latest" selects the newest one.
-     * This covers versions which are added later without a change to the FAT.
+     * {@link McpProtocolVersion#latest()} is the beta version, so on a non-beta runtime it is not one of
+     * the available versions. Code which needs the newest version usable on the current runtime must take
+     * the first entry of {@link McpProtocolVersion#availableValues()} instead of calling {@code latest()}.
      */
     @Test
-    public void testParseConfigValue() {
-        System.setProperty(BETA_PROPERTY, "true");
-
-        for (McpProtocolVersion version : McpProtocolVersion.values()) {
-            assertEquals(version, McpProtocolVersion.parseConfigValue(version.getVersion()));
-        }
-        assertEquals(McpProtocolVersion.V_2026_07_28, McpProtocolVersion.parseConfigValue("latest"));
-    }
-
-    /**
-     * On a non-beta runtime the beta version is not the latest version, and it is not accepted by default.
-     */
-    @Test
-    public void testLatestAndAcceptedVersionsExcludeBetaOnNonBeta() {
+    public void testLatestIsNotAvailableOnNonBeta() {
         System.setProperty(BETA_PROPERTY, "false");
-        assertEquals(McpProtocolVersion.GA_MAXIMUM, McpProtocolVersion.latest());
-        assertEquals(McpProtocolVersion.GA_MINIMUM, McpProtocolVersion.oldest());
-        assertEquals(McpProtocolVersion.GA_MAXIMUM, McpProtocolVersion.defaultMaximum());
-        assertFalse(Arrays.asList(McpProtocolVersion.availableValues()).contains(McpProtocolVersion.V_2026_07_28));
+        assertFalse(Arrays.asList(McpProtocolVersion.availableValues()).contains(McpProtocolVersion.latest()));
     }
 }

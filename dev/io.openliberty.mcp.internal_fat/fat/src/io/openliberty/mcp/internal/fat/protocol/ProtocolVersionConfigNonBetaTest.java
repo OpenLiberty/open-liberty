@@ -37,7 +37,9 @@ import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 
 /**
  * Tests that the beta {@code minimumProtocolVersion} and {@code maximumProtocolVersion} attributes are ignored
- * when the runtime is not beta. The server behaves as if the minimum is 2025-03-26 and the maximum is 2025-11-25.
+ * when the runtime is not beta. The server behaves as if the minimum is 2025-03-26 and the maximum is 2025-11-25,
+ * so the beta version 2026-07-28 is never accepted. Valid, invalid and {@code latest} values are all ignored,
+ * and no configuration error is reported for them.
  * <p>
  * The beta behaviour is tested by {@link ProtocolVersionConfigBetaTest}.
  * <p>
@@ -57,6 +59,7 @@ public class ProtocolVersionConfigNonBetaTest {
     /** Configured with latest, which would only allow 2026-07-28 if it was not ignored */
     private static final String LATEST_APP = "protocolVersionNonBetaLatest";
 
+    /** The versions accepted on a non-beta runtime, which are also listed in the rejection message */
     private static final String ALL_VERSIONS = "2025-11-25, 2025-06-18, 2025-03-26";
 
     @BeforeClass
@@ -107,25 +110,25 @@ public class ProtocolVersionConfigNonBetaTest {
     }
 
     @Test
-    public void testUnknownVersionStillRejectedWithGaVersions() throws Exception {
+    public void testUnknownVersionStillRejected() throws Exception {
         assertEchoRejected(serverLifecycle.getServer(), RESTRICTED_APP, "2022-02-02", ALL_VERSIONS);
     }
 
     @Test
-    public void testVersionNewerThanGaMaximumIsRejected() throws Exception {
-        // 2026-07-28 is a valid protocol version, but it is above the maximum used when the runtime is not beta
+    public void testVersionNewerThanDefaultMaximumIsRejected() throws Exception {
+        // 2026-07-28 is a valid protocol version, but it is above 2025-11-25, the maximum used when the runtime is not beta
         assertEchoRejected(serverLifecycle.getServer(), RESTRICTED_APP, V_2026_07_28, ALL_VERSIONS);
     }
 
     @Test
-    public void testDeleteUsesGaRange() throws Exception {
+    public void testDeleteUsesDefaultRange() throws Exception {
         // The header is checked against the non-beta range, not the configured range of 2025-11-25 only
         assertDeleteRejected(serverLifecycle.getServer(), RESTRICTED_APP, V_2026_07_28, null, ALL_VERSIONS);
         assertDeleteRejected(serverLifecycle.getServer(), RESTRICTED_APP, "2022-02-02", null, ALL_VERSIONS);
     }
 
     @Test
-    public void testInitializeUsesGaMaximum() throws Exception {
+    public void testInitializeUsesDefaultMaximum() throws Exception {
         assertEquals(V_2025_11_25, initializeAndGetProtocolVersion(serverLifecycle.getServer(), RESTRICTED_APP, V_2025_11_25));
         assertEquals(V_2025_06_18, initializeAndGetProtocolVersion(serverLifecycle.getServer(), RESTRICTED_APP, V_2025_06_18));
         assertEquals(V_2025_11_25, initializeAndGetProtocolVersion(serverLifecycle.getServer(), RESTRICTED_APP, "2022-02-02"));

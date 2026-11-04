@@ -56,13 +56,24 @@ public interface McpConfig {
     McpProtocolVersion maximumProtocolVersion();
 
     /**
+     * Returns whether requests may use the given protocol version. A version is accepted if it is available
+     * on this runtime and is between the minimum and maximum protocol versions, inclusive.
+     *
+     * @param version the protocol version to check
+     * @return true if requests may use the version
+     */
+    default boolean isAccepted(McpProtocolVersion version) {
+        return version.isAvailable() && McpServerConfigProps.isBetween(version, minimumProtocolVersion(), maximumProtocolVersion());
+    }
+
+    /**
      * Returns the protocol versions which requests may use, newest first
      *
-     * @return the available protocol versions between the minimum and maximum, inclusive
+     * @return the protocol versions for which {@link #isAccepted(McpProtocolVersion)} is true
      */
     default List<McpProtocolVersion> acceptedProtocolVersions() {
-        return Arrays.stream(McpProtocolVersion.availableValues())
-                     .filter(v -> v.isBetween(minimumProtocolVersion(), maximumProtocolVersion()))
+        return Arrays.stream(McpProtocolVersion.values())
+                     .filter(this::isAccepted)
                      .toList();
     }
 }

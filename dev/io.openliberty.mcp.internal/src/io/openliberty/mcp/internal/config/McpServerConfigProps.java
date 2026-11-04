@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.config;
 
 import java.time.Duration;
+import java.util.NoSuchElementException;
 
 import io.openliberty.mcp.internal.McpProtocolVersion;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
@@ -36,6 +37,9 @@ public record McpServerConfigProps(boolean stateless,
                                    long asyncTimeoutMs,
                                    McpProtocolVersion minimumProtocolVersion,
                                    McpProtocolVersion maximumProtocolVersion) implements McpConfig {
+    /** Config value which selects the latest protocol version available on this runtime */
+    public static final String LATEST = "latest";
+
     public static final String FALLBACK_PATH = "/mcp";
     public static final int DEFAULT_ASYNC_TIMEOUT_MS = 30_000;
 
@@ -58,10 +62,10 @@ public record McpServerConfigProps(boolean stateless,
      */
     public McpServerConfigProps {
         if (minimumProtocolVersion == null) {
-            minimumProtocolVersion = McpProtocolVersion.defaultMinimum();
+            minimumProtocolVersion = defaultMinimum();
         }
         if (maximumProtocolVersion == null) {
-            maximumProtocolVersion = McpProtocolVersion.defaultMaximum();
+            maximumProtocolVersion = defaultMaximum();
         }
 
         // If serverInfo is null, use DEFAULT_SERVER_INFO
@@ -77,6 +81,56 @@ public record McpServerConfigProps(boolean stateless,
                                             serverInfo.description());
             }
         }
+    }
+
+    /**
+     * Parses a protocol version from a configuration value. In addition to the version strings
+     * understood by {@link McpProtocolVersion#parse(String)}, the special value {@value #LATEST} selects the
+     * newest version available on this runtime.
+     *
+     * @param value the configuration value
+     * @return the protocol version
+     * @throws NoSuchElementException if the value is not {@value #LATEST} or a supported protocol version
+     */
+    public static McpProtocolVersion parseProtocolVersion(String value) {
+        if (LATEST.equals(value)) {
+            return McpProtocolVersion.availableValues()[0];
+        }
+        return McpProtocolVersion.parse(value);
+    }
+
+    /**
+     * The minimum protocol version accepted when none is configured, or when the configuration is ignored
+     * because the runtime is not beta.
+     *
+     * @return the default minimum protocol version
+     */
+    public static McpProtocolVersion defaultMinimum() {
+        return McpProtocolVersion.V_2025_03_26;
+    }
+
+    /**
+     * The maximum protocol version accepted when none is configured, or when the configuration is ignored
+     * because the runtime is not beta. This is the newest version available on this runtime, so beta
+     * versions are excluded on a non-beta runtime.
+     *
+     * @return the default maximum protocol version
+     */
+    public static McpProtocolVersion defaultMaximum() {
+        return McpProtocolVersion.availableValues()[0];
+    }
+
+    /**
+     * Checks whether a protocol version is within the configured range.
+     *
+     * @param version the version to check
+     * @param min the minimum version (inclusive)
+     * @param max the maximum version (inclusive)
+     * @return true if the version is between min and max, inclusive
+     */
+    public static boolean isBetween(McpProtocolVersion version, McpProtocolVersion min, McpProtocolVersion max) {
+        // Versions are declared newest first, so a newer version has a lower ordinal
+        return version.ordinal() <= min.ordinal() && version.ordinal() >= max.ordinal();
     }
 
     @Override

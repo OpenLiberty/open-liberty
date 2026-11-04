@@ -23,7 +23,7 @@
     <mcp stateless="true" minimumProtocolVersion="2025-06-18"/>
   </application>
 
-  <!-- Only a maximum: minimum defaults to the oldest version -->
+  <!-- Only a maximum: minimum defaults to 2025-03-26 -->
   <application location="maximumOnlyApp.war">
     <mcp stateless="true" maximumProtocolVersion="2025-06-18"/>
   </application>
@@ -42,7 +42,6 @@
   <application location="invalidRangeApp.war">
     <mcp stateless="true" minimumProtocolVersion="2025-11-25" maximumProtocolVersion="2025-03-26"/>
   </application>
-
 
   <!-- "latest" as the minimum is newer than an older maximum: error is logged and the defaults are used -->
   <application location="latestMinimumOlderMaximumApp.war">

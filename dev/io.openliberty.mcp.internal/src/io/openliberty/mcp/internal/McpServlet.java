@@ -36,6 +36,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.mcp.internal.Capabilities.ServerCapabilities;
 import io.openliberty.mcp.internal.config.McpConfig;
+import io.openliberty.mcp.internal.config.McpServerConfigProps;
 import io.openliberty.mcp.internal.encoders.EncoderRegistries;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
@@ -623,7 +624,7 @@ public class McpServlet extends HttpServlet {
         McpProtocolVersion version;
         try {
             version = McpProtocolVersion.parse(params.getProtocolVersion());
-            if (!version.isBetween(mcpConfig.minimumProtocolVersion(), mcpConfig.maximumProtocolVersion())) {
+            if (!McpServerConfigProps.isBetween(version, mcpConfig.minimumProtocolVersion(), mcpConfig.maximumProtocolVersion())) {
                 // Client requested version is not configured
                 // Respond with our preferred version
                 version = mcpConfig.maximumProtocolVersion();

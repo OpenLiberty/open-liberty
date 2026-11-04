@@ -193,7 +193,7 @@ public class ProtocolVersionConfigBetaTest {
     }
 
     @Test
-    public void testMaximumOnlyDefaultsMinimumToOldest() throws Exception {
+    public void testMaximumOnlyDefaultsMinimumTo20250326() throws Exception {
         String supported = "2025-06-18, 2025-03-26";
         assertEchoAccepted(server, MAXIMUM_ONLY_APP, V_2025_03_26);
         assertEchoAccepted(server, MAXIMUM_ONLY_APP, V_2025_06_18);

@@ -88,23 +88,24 @@ public class McpTransport {
         if (!validReqAcceptHeader()) {
             throw new HttpResponseException(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }
-        List<McpProtocolVersion> acceptedVersions = mcpConfig.acceptedProtocolVersions();
+
         boolean headerPresent = req.getHeader(MCP_HEADER) != null;
         try {
             version = readProtocolVersionHeader();
         } catch (NoSuchElementException e) {
-            throw unsupportedProtocolVersion(acceptedVersions);
+            throw unsupportedProtocolVersion(mcpConfig.acceptedProtocolVersions());
         }
         // A header which names a version outside the configured range is always rejected
-        if (headerPresent && !acceptedVersions.contains(version)) {
-            throw unsupportedProtocolVersion(acceptedVersions);
+        if (headerPresent && !mcpConfig.isAccepted(version)) {
+            throw unsupportedProtocolVersion(mcpConfig.acceptedProtocolVersions());
         }
         this.mcpRequest = toRequest();
         // A missing header is interpreted as 2025-03-26, which may be outside the configured range.
         // The initialize request is exempt because it negotiates the version and does not need the header.
-        if (!headerPresent && mcpRequest.getRequestMethod() != RequestMethod.INITIALIZE && !acceptedVersions.contains(version)) {
-            throw unsupportedProtocolVersion(acceptedVersions);
+        if (!headerPresent && mcpRequest.getRequestMethod() != RequestMethod.INITIALIZE && !mcpConfig.isAccepted(version)) {
+            throw unsupportedProtocolVersion(mcpConfig.acceptedProtocolVersions());
         }
+
         this.appName = extractAppName();
         final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
 
@@ -134,13 +135,13 @@ public class McpTransport {
         if (header == null) {
             return;
         }
-        List<McpProtocolVersion> acceptedVersions = mcpConfig.acceptedProtocolVersions();
+
         try {
-            if (!acceptedVersions.contains(McpProtocolVersion.parse(header))) {
-                throw unsupportedProtocolVersion(acceptedVersions);
+            if (!mcpConfig.isAccepted(McpProtocolVersion.parse(header))) {
+                throw unsupportedProtocolVersion(mcpConfig.acceptedProtocolVersions());
             }
         } catch (NoSuchElementException e) {
-            throw unsupportedProtocolVersion(acceptedVersions);
+            throw unsupportedProtocolVersion(mcpConfig.acceptedProtocolVersions());
         }
     }
 
