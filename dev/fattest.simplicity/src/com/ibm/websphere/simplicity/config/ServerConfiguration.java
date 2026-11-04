@@ -332,10 +332,10 @@ public abstract class ServerConfiguration implements Cloneable {
     private CVEReportingElement cveReporting;
 
     @XmlElement(name = "requestTiming")
-    private RequestTimingElement requestTiming;
+    private ConfigElementList<RequestTimingElement> requestTimings;
 
     @XmlElement(name = "eventLogging")
-    private EventLoggingElement eventLogging;
+    private ConfigElementList<EventLoggingElement> eventLoggings;
 
     public ServerConfiguration() {
         this.description = "Generation date: " + new Date();
@@ -1195,23 +1195,33 @@ public abstract class ServerConfiguration implements Cloneable {
     }
 
     /**
-     * @return the requestTiming configuration for this server
+     * @return the list of requestTiming configurations for this server
      */
-    public RequestTimingElement getRequestTiming() {
-        if (this.requestTiming == null) {
-            this.requestTiming = new RequestTimingElement();
+    public ConfigElementList<RequestTimingElement> getRequestTimings() {
+        if (this.requestTimings == null) {
+            this.requestTimings = new ConfigElementList<RequestTimingElement>();
         }
-        return this.requestTiming;
+        return this.requestTimings;
     }
 
     /**
-     * @return the eventLogging configuration for this server
+     * @return the list of eventLogging configurations for this server
+     */
+    public ConfigElementList<EventLoggingElement> getEventLoggings() {
+        if (this.eventLoggings == null) {
+            this.eventLoggings = new ConfigElementList<EventLoggingElement>();
+        }
+        return this.eventLoggings;
+    }
+
+    /**
+     * @return the first eventLogging configuration for this server, creating one if empty
      */
     public EventLoggingElement getEventLogging() {
-        if (this.eventLogging == null) {
-            this.eventLogging = new EventLoggingElement();
+        if (getEventLoggings().isEmpty()) {
+            this.eventLoggings.add(new EventLoggingElement());
         }
-        return this.eventLogging;
+        return this.eventLoggings.get(0);
     }
 
     /**
@@ -1219,7 +1229,9 @@ public abstract class ServerConfiguration implements Cloneable {
      * feature runs with its defaults when the configuration is written out.
      */
     public void removeEventLogging() {
-        this.eventLogging = null;
+        if (this.eventLoggings != null) {
+            this.eventLoggings.clear();
+        }
     }
 
     private List<Field> getAllXmlElements() {
