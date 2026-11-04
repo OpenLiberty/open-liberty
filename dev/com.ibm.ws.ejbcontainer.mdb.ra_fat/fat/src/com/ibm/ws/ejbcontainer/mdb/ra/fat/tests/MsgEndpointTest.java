@@ -858,10 +858,16 @@ public class MsgEndpointTest extends FATServletClient {
         runTest("MsgEndpointWeb/MsgEndpoint_PCServlet");
     }
 
-    // Test utilizing two mdbs with the same activation spec with autoStart=false
+    // Test utilizing two mdbs with the same activation spec with autoStart=false.
+    // Also verifies that CNTR4116I is logged for each endpoint, not just the first
+    // one encountered when iterating over the shared activation spec's endpoint set.
     @Test
     public void testMultipleEndpointSameActSpec() throws Exception {
         runTest("MsgEndpointWeb/MsgEndpoint_PCServlet");
+        List<String> infoMessage1 = server.findStringsInLogsAndTrace("CNTR4116I.*EndpointBMTNonJMSAutoStartFalse[^D]");
+        assertFalse("Did not find expected CNTR4116I message for EndpointBMTNonJMSAutoStartFalse in logs", infoMessage1.isEmpty());
+        List<String> infoMessage2 = server.findStringsInLogsAndTrace("CNTR4116I.*EndpointBMTNonJMSAutoStartFalseDup");
+        assertFalse("Did not find expected CNTR4116I message for EndpointBMTNonJMSAutoStartFalseDup in logs", infoMessage2.isEmpty());
     }
 
     // Test to ensure that in the case of incorrect config where

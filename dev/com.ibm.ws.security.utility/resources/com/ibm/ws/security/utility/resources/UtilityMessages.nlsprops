@@ -118,6 +118,7 @@ If you are using IBM Semeru Runtimes, use version 11.0.29.0, 17.0.17.0, 21.0.9.0
 If you are using IBM SDK, use version 8.0.8.30 or higher.
 
 configureFIPS.zosNotAvailable=The securityUtility configureFIPS command is not supported on z/OS.
+configureFIPS.zosEvaluation=The securityUtility configureFIPS command on z/OS is for evaluation purposes only.
 
 configureFIPS.configureSemeru=Configuring FIPS 140-3 for IBM Semeru Runtimes.
 configureFIPS.configureIbmSdk=Configuring FIPS 140-3 for IBM SDK.

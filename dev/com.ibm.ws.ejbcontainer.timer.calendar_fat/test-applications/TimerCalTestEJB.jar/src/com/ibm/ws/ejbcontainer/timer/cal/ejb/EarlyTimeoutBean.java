@@ -93,8 +93,8 @@ public class EarlyTimeoutBean {
                 // This would also catch the case where server created timer too slowly
 
                 minAcceptableTime = beforeCreate.getTimeInMillis();
-                afterCreate.set(Calendar.MILLISECOND, 0); // round off milliseconds
-                maxAcceptableTime = afterCreate.getTimeInMillis() + 60 * 1000;
+                long afterMillis = afterCreate.getTimeInMillis() - afterCreate.get(Calendar.MILLISECOND); // round off milliseconds
+                maxAcceptableTime = afterMillis + 60 * 1000;
 
                 assertTrue("Next timeout not at least the time created: min=" + minAcceptableTime + ", actual=" + nextTimeout,
                            nextTimeout >= minAcceptableTime);
@@ -108,8 +108,8 @@ public class EarlyTimeoutBean {
             } else {
                 // What we are actually trying to test and will happen most of the time:
                 // timeout should go off exactly 1 minute from now
-                beforeCreate.set(Calendar.MILLISECOND, 0); // round off milliseconds
-                minAcceptableTime = beforeCreate.getTimeInMillis() + 60 * 1000;
+                long beforeMillis = beforeCreate.getTimeInMillis() - beforeCreate.get(Calendar.MILLISECOND); // round off milliseconds
+                minAcceptableTime = beforeMillis + 60 * 1000;
 
                 assertEquals("Next timeout not 1 minute from scheduled time:", minAcceptableTime, nextTimeout);
             }

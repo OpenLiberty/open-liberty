@@ -177,10 +177,7 @@ public class SecurityUtilityTLSProfilerTest {
      */
     private static void switchServerConfig(String configFileName) throws Exception {
         server.setMarkToEndOfLog();
-        // Copy from LibertyFATTestFiles/TLSProfilerTestServer/<name> into serverRoot/
-        server.copyFileToLibertyServerRoot(server.pathToAutoFVTTestFiles + "TLSProfilerTestServer", null, configFileName);
-        // Rename the copied file to server.xml so Liberty picks up the change
-        server.renameLibertyServerRootFile(configFileName, "server.xml");
+        server.updateServerConfiguration(new File(server.pathToAutoFVTTestFiles + "TLSProfilerTestServer/" + configFileName));
         assertNotNull("Config update did not complete after switching to " + configFileName,
                       server.waitForStringInLogUsingMark(CONFIG_UPDATE_MSG));
     }

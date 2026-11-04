@@ -583,7 +583,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         }
 
         Object setEEContextOnStartup = applicationInformation.getConfigProperty(SpringConstants.APP_SET_EE_CONTEXT_ON_STARTUP);
-        this.setEEContextOnStartup = Boolean.TRUE.equals(setEEContextOnStartup);
+        this.setEEContextOnStartup = Boolean.TRUE.equals(setEEContextOnStartup) || setEEContextOnStartup == null; // null is true because for springboot apps the default is true. This is most likely null if the app is in <server>/dropins/spring
     }
 
     private static SpringBootManifest getSpringBootManifest(ApplicationInformation<DeployedAppInfo> appInfo) throws UnableToAdaptException {

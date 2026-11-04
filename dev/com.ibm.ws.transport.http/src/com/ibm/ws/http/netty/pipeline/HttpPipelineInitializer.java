@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyChain;
@@ -210,19 +211,26 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     }
 
     /**
+     * Creates the HTTP/1.1 server codec used by every Netty inbound path: the plain
+     * HTTP/1.1 pipeline, the HTTP/1.1 branch of ALPN, and the h2c upgrade handler.
+     *
+     * @param config the HTTP channel configuration for the endpoint
+     * @return a new HttpServerCodec configured with the Liberty HTTP options
+     */
+    public static HttpServerCodec newHttpServerCodec(HttpChannelConfig config) {
+        return new HttpServerCodec(config.getLimitOfFieldSize(), 
+                                   config.getIncomingBodyBufferSize(),
+                                   config.getLimitOfFieldSize(), 
+                                   config.getLimitOnNumberOfHeaders());
+    }
+    /**
      * Utility method for building an HTTP1.1 pipeline
      *
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void setupHttp11Pipeline(ChannelPipeline pipeline) {
 
-        // 8192 is used instead 4096 of for the maxInitialLineLength to avoid io.netty.handler.codec.http.TooLongHttpLineException 
-        // Needed to pass JWT tests with long tokens
-        int maxLineLength = Integer.MAX_VALUE;
-        if(httpConfig.getMessageSizeLimit() != -1 && httpConfig.getMessageSizeLimit() < Integer.MAX_VALUE) {
-            maxLineLength = (int)httpConfig.getMessageSizeLimit();
-        }
-        HttpServerCodec sourceCodec = new HttpServerCodec(maxLineLength, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
+        HttpServerCodec sourceCodec = newHttpServerCodec(httpConfig);
         pipeline.addLast(CRLFValidationHandler.NAME, CRLFValidationHandler.INSTANCE);
         pipeline.addLast(NETTY_HTTP_SERVER_CODEC, sourceCodec);
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));

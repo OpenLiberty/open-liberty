@@ -165,6 +165,13 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
 
         public void setConfig(ApplicationConfig appConfig) {
             this.appConfig = appConfig;
+            // Republish the service properties so that trackers see configuration
+            // changes made after the services were registered.
+            if (isConfigured()) {
+                Map<String, ?> serviceProperties = appConfig.getServiceProperties();
+                appReg.setProperties(serviceProperties);
+                mbeanReg.setProperties(serviceProperties);
+            }
         }
 
         public void setTypeSupport(ApplicationTypeSupport appTypeSupport) {

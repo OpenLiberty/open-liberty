@@ -1,7 +1,6 @@
-purpose: >
-  FAT for the wsAtomicTransaction virtualHostRef configuration attribute.
-  Tests that the WS-AT web service WAB binds only to the configured virtual
-  host's ports (port-binding tests) and that EPR URLs published by the server
-  contain only the configured virtual host's port (EPR URL test). Also includes
-  an end-to-end two-server WS-AT transaction test with the coordinator server
-  configured with virtualHostRef.
+---
+# YML metadata file made use of by the Cognitive Ecosystem.
+# Reference Cognitive Metadata is available at: https://github.com/OpenLiberty/open-liberty/tree/integration/dev/build.example_fat/cognitiveMetadata.yml
+# description: Uncomment this field and add a description to give some notes about this bucket.
+# triageNotes: Uncomment this field if there are some short notes you would like Pipeline Monitors to see when triaging this bucket.
+functionalArea: Transactions

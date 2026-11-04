@@ -257,3 +257,11 @@ netty.ssl.handler.create.failed.useraction=Check the SSL configuration for the e
 h2.encode.header.failed=CWWKT0057E: The server failed to encode an HTTP/2 header: {0}
 h2.encode.header.failed.explanation=The server failed to encode an HTTP/2 pseudoheader for the response. The server closes the stream.
 h2.encode.header.failed.useraction=Check the server logs for related HTTP/2 errors. If the problem persists, collect diagnostic information and contact IBM Support.
+
+write.to.closed.connection=CWWKT0058E: The server cannot write to the inbound connection because the connection is closed.
+write.to.closed.connection.explanation=The remote client closed the connection before the server completes writing the response.
+write.to.closed.connection.useraction=No action is required. The server stops processing this request.
+
+wssp.header.non.sensitive.address=CWWKT0059W: The server received a request that has a $WSSP header from an address that is not a trusted sensitive header origin. The client address is {0}, and the client port is {1}.
+wssp.header.non.sensitive.address.explanation=The $WSSP header specifies the port that the client used to connect to a proxy or web server plug-in. The server received the header from an IP address that is not configured as a trusted sensitive header origin. Therefore, the server ignores the header when it resolves the port. For example, the server ignores the header when it builds redirect Location headers. The server issues this message only for the first request that has this condition.
+wssp.header.non.sensitive.address.useraction=If the request is from a trusted proxy or web server plug-in, add the client address that is shown in the message to the list in the trustedSensitiveHeaderOrigin attribute of the httpDispatcher element in the server.xml file. If the request is not from a trusted proxy or web server plug-in, no action is required. To see all requests that have this condition, enable HTTP channel debug tracing.

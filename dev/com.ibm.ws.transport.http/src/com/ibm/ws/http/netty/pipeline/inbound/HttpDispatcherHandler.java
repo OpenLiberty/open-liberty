@@ -50,6 +50,7 @@ import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.channel.error.HttpError;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageProvider;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageService;
+import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 
@@ -526,10 +527,15 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
 
         final ChannelPipeline p = ctx.pipeline();
-        CompletableFuture<Void> promise = null;
+        CompletableFuture<Void> promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+        if (promise == null) {
+            promise = new CompletableFuture<>();
+            ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
+        }
         try{
-            promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
-
+            if (promise.isCompletedExceptionally()) {
+                return;
+            }
             // Remove HTTP handlers that must not see post-101 bytes
             removeIfPresent(p, HttpServerCodec.class);
             removeIfPresent(p, HttpObjectAggregator.class);
@@ -604,7 +610,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 try {
                     upgrade.channelReadComplete(upgCtx);
                 } catch (Exception ignore) {}
-            } 
+            } else {
+                throw new IllegalStateException("101 upgrade handler was not installed");
+            }
 
             ctx.channel().attr(NettyHttpConstants.UPGRADED).set(Boolean.TRUE);
             ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(null);
@@ -631,19 +639,11 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 }
             }
 
+            promise.complete(null);
+        } catch (RuntimeException | Error failure) {
+            promise.completeExceptionally(failure);
+            throw failure;
         } finally{
-            try {
-                promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
-                if (promise == null){
-                    ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(CompletableFuture.completedFuture(null));
-                } else if(!promise.isDone()){
-                    promise.complete(null);
-                }
-            } catch (Throwable ignore) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "onUpgradeCommitted: callback not called due to promise exception.");
-                }
-            }
             upgradingNow = false;
         }
     }
@@ -713,9 +713,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             }
             sendErrorMessage(cause);
             return;
-        } else if (cause instanceof TimeoutException) {
+        } else if(cause instanceof TimeoutException){
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Idle timeout; closing channel");
+                Tr.debug(tc, "The connection closed due to idle timeout");
             }
             if (cause instanceof ReadTimeoutException
                 && ProtocolState.current(ctx.channel()) != NettyHttpConstants.ProtocolName.HTTP2
@@ -723,9 +723,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 sendErrorMessage(StatusCodes.REQ_TIMEOUT, cause).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
                 return;
             }
-        } else if(cause instanceof TooLongFrameException) {
+        } else if(cause instanceof TooLongFrameException || cause instanceof IllegalHttpBodyException) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "exceptionCaught encountered an TooLongFrameException : " + cause);
+                Tr.debug(tc, "exceptionCaught encountered an TooLongFrameException/IllegalHttpBodyException : " + cause);
             }
             sendErrorMessage(StatusCodes.ENTITY_TOO_LARGE, cause);
             return;

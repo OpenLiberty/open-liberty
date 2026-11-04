@@ -18,6 +18,7 @@ src: \
  test-applications/fat.common/DbServletApp.war/resources
 
 fat.project: true
+fat.minimum.java.level: 11
 
 tested.features: \
  batch-2.0,\

@@ -1,0 +1,5 @@
+---
+# YML metadata file made use of by the Cognitive Ecosystem.
+# Reference Cognitive Metadata is available at: https://github.com/OpenLiberty/open-liberty/tree/integration/dev/build.example_fat/cognitiveMetadata.yml
+# description: Verifies that eventLogging-1.0 logs BEGIN/END events for EJB async, remote, timer and MDB requests across EAR, standalone WAR and standalone JAR packaging, and that eventTypes filtering is honored.
+functionalArea: Observability

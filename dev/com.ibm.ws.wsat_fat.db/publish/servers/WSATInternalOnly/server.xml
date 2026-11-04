@@ -1,0 +1,34 @@
+<server>
+	<!-- Only the private, internal WS-AT feature (via the test-only wrapper wsatInternalTest-1.0)
+	     is enabled (installed by the test as a system feature). The public wsAtomicTransaction-1.2 feature must NOT be present. -->
+	<featureManager>
+		<feature>localConnector-1.0</feature>
+		<feature>wsatInternalTest-1.0</feature>
+		<feature>jndi-1.0</feature>
+		<feature>cdi-1.2</feature>
+		<feature>jdbc-4.1</feature>
+		<feature>servlet-3.1</feature>
+		<feature>txtest-1.0</feature>
+		<feature>jaxws-2.2</feature>
+	</featureManager>
+
+	<transaction recoverOnStartup="true" waitForRecovery="true"/>
+
+	<!-- fatTestCommon.xml enables timedexit-1.0, which the FAT framework requires. -->
+	<include location="../fatTestCommon.xml" />
+
+	<httpEndpoint httpPort="8091" httpsPort="9444" id="defaultHttpEndpoint"/>
+
+	<jdbcDriver id="derbyDriver">
+		<library name="derbyLib">
+			<file name="${shared.resource.dir}derby/derby.jar"/>
+		</library>
+	</jdbcDriver>
+
+	<dataSource id="derbyConnection0" jndiName="jdbc/wsatDataSource0" jdbcDriverRef="derbyDriver" type="javax.sql.XADataSource">
+		<properties.derby.embedded createDatabase="create" databaseName="memory:WsatInternalOnlyDatabase"/>
+	</dataSource>
+
+	<javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${server.config.dir}/dropins/assertion.war" className="java.security.AllPermission"/>
+</server>

@@ -584,7 +584,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     case NATIVE -> queryInfo.nativeQuery(eh, txStatus, args);
                     case LC_DELETE -> queryInfo.delete(args[0], eh);
                     case LC_UPDATE -> queryInfo.update(args[0], eh);
-                    case LC_UPDATE_MERGE -> queryInfo.findAndUpdate(args[0], eh);
                     case DETACH -> queryInfo.detach(args[0], (EntityManager) eh);
                     case MERGE -> queryInfo.merge(args[0], (EntityManager) eh);
                     case PERSIST -> queryInfo.persist(args[0], (EntityManager) eh);

@@ -15,23 +15,27 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import tests.AssertionTest;
+import tests.ConditionalPropagationTest;
 import tests.DBWithoutAssertionTest;
 import tests.EJBCDITest;
+import tests.InternalFeatureOnlyTest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	AssertionTest.class,
-	DBWithoutAssertionTest.class,
-	EJBCDITest.class,
+        AssertionTest.class,
+        ConditionalPropagationTest.class,
+        DBWithoutAssertionTest.class,
+        EJBCDITest.class,
+        InternalFeatureOnlyTest.class,
 })
 public class FATSuite {
     @ClassRule
-	public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
-	.andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-	.andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-	.andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-	.andWith(FeatureReplacementAction.EE11_FEATURES());
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
+            .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+            .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+            .andWith(FeatureReplacementAction.EE11_FEATURES());
 }

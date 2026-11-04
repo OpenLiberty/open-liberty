@@ -39,6 +39,7 @@ import io.openliberty.mcp.internal.fat.tool.ConfigurableMcpPathTest;
 import io.openliberty.mcp.internal.fat.tool.ConfigurableSessionTelemetryTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.DualConfigurableMcpPathTest;
+import io.openliberty.mcp.internal.fat.tool.DynamicMcpConfigTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateTest;
 import io.openliberty.mcp.internal.fat.tool.InvalidSessionTimeoutTest;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
@@ -64,6 +65,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 ConfigurableAsyncTimeoutTest.class,
                 CustomServerInfoTest.class,
                 DualConfigurableMcpPathTest.class,
+                DynamicMcpConfigTest.class,
                 DynamicMcpPathUpdateTest.class,
                 InvalidAsyncTimeoutTest.class,
                 InvalidSessionTimeoutTest.class,

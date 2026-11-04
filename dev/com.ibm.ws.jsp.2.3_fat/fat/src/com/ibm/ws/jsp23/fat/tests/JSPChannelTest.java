@@ -100,7 +100,7 @@ public class JSPChannelTest {
      *
      * @throws Exception if something goes horribly wrong
      */
-
+    @AllowedFFDC("java.security.PrivilegedActionException")
     @Test
     public void testIgnoreWriteAfterCommitTrue() throws Exception {
         Socket socket = null;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ public class FeatureErrors {
         allowedErrors.put("mpOpenApi-1.0", QUIESCE_FAILURES);
 
         allowedErrors.put("batchSMFLogging-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.jbatch.smflogging" });
-        
+
         allowedErrors.put("zosLocalAdapters-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.security.thread.zos",
                                                                  "CWWKE0702E: .* com.ibm.ws.webcontainer" });
 
@@ -58,6 +58,7 @@ public class FeatureErrors {
         allowedErrors.put("samlWeb-2.0", new String[] { "CWWKS5207W: .* inboundPropagation" });
         // pulls in the samlWeb-2.0 feature
         allowedErrors.put("wsSecuritySaml-1.1", new String[] { "CWWKS5207W: .* inboundPropagation" });
+        allowedErrors.put("more-1.0.5", new String[] { "CWWKS5207W: .* inboundPropagation" });
 
         // Ignore required config warnings for the 'collectiveMember-1.0' feature, and all features that include it
         String[] COLLECTIVE_MEMBER_WARNINGS = new String[] { "CWWKG0033W: .*collectiveTrust", "CWWKG0033W: .*serverIdentity" };

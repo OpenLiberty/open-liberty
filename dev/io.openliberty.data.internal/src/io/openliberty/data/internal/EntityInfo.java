@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.concurrent.CompletableFuture;
 
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -63,15 +62,6 @@ public class EntityInfo {
 
     // lower case attribute name --> properly cased/qualified JPQL attribute name
     final Map<String, String> attributeNames;
-
-    /**
-     * Names of attributes to use for entity update,
-     * or null if em.merge must be used instead.
-     * Excludes id and version.
-     * Excludes inner relation attributes, such as location.address
-     * when there is also a location.address.zipcode
-     */
-    public final SortedSet<String> attributeNamesForEntityUpdate;
 
     // properly cased/qualified JPQL attribute name --> type
     final SortedMap<String, Class<?>> attributeTypes;
@@ -116,7 +106,6 @@ public class EntityInfo {
                Class<?> recordClass,
                Map<String, List<Member>> attributeAccessors,
                Map<String, String> attributeNames,
-               SortedSet<String> attributeNamesForUpdate,
                SortedMap<String, Class<?>> attributeTypes,
                Map<String, Class<?>> collectionElementTypes,
                Map<Class<?>, List<String>> relationAttributeNames,
@@ -130,7 +119,6 @@ public class EntityInfo {
         this.entityClass = entityClass;
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
-        this.attributeNamesForEntityUpdate = attributeNamesForUpdate;
         this.attributeTypes = attributeTypes;
         this.collectionElementTypes = collectionElementTypes;
         this.relationAttributeNames = relationAttributeNames;
@@ -277,7 +265,6 @@ public class EntityInfo {
                 writer.println(indent + "    " + relationClass.getName() + ": " + relAttrNames);
             });
         }
-        writer.println(indent + "  attributes for entity update: " + attributeNamesForEntityUpdate);
     }
 
     /**

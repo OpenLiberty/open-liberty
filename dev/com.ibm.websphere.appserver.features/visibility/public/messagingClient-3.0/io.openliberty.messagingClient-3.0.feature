@@ -27,8 +27,7 @@ Subsystem-Name: Messaging Server 3.0 Client
  com.ibm.ws.messaging.security.common, \
  com.ibm.ws.messaging.jms.common.jakarta, \
  com.ibm.ws.messaging.jms.2.0.jakarta, \
- com.ibm.ws.messaging.comms.client, \
- io.openliberty.transport.config.internal
+ com.ibm.ws.messaging.comms.client
 kind=ga
 edition=base
 WLP-Activation-Type: parallel

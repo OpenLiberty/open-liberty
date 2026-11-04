@@ -284,7 +284,7 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
         if (message instanceof HttpBaseMessageImpl) {
             trailersNull = ((HttpBaseMessageImpl) message).getTrailersImpl() != null;
         } else
-            trailersNull = message.getTrailers() != null;
+            trailersNull = body != null && body.isStreamingEosObserved();
 
         if (!message.isChunkedEncodingSet()
             || !message.containsHeader(HttpHeaderKeys.HDR_TRAILER)
