@@ -29,6 +29,18 @@
 	</properties>
 
 	<dependencies>
+		<!-- TEMPORARY (testing only): debug arquillian-junit5-container jar.
+		     MUST remain the FIRST dependency. Maven orders the classpath by a pre-order walk of the dependency
+		     graph, so any dependency declared before this one (e.g. the TCK jar) that transitively brings in the
+		     stock arquillian-junit5-container would otherwise put the unpatched classes ahead of the debug ones.
+		     The standard dependency below is kept to supply the transitive dependencies. -->
+		<dependency>
+			<groupId>org.jboss.arquillian.junit5</groupId>
+			<artifactId>arquillian-junit5-container-debug</artifactId>
+			<version>1.9.6.Final-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/../deps/arquillian-junit5-container-1.9.6.Final-SNAPSHOT.jar</systemPath>
+		</dependency>
 		<!-- tck - data - external TCK -->
 		<dependency>
 			<groupId>${jakarta.data.groupid}</groupId>
@@ -59,17 +71,6 @@
 			<version>3.2</version>
 			<scope>system</scope>
 			<systemPath>${io.openliberty.persistence.3.2.thirdparty}</systemPath>
-		</dependency>
-		
-		<!-- TEMPORARY (testing only): debug arquillian-junit5-container jar.
-		     Declared BEFORE the standard container dependency so its classes take precedence on the classpath.
-		     The standard dependency below is kept to supply the transitive dependencies. -->
-		<dependency>
-			<groupId>org.jboss.arquillian.junit5</groupId>
-			<artifactId>arquillian-junit5-container-debug</artifactId>
-			<version>1.9.6.Final-SNAPSHOT</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/../deps/arquillian-junit5-container-1.9.6.Final-SNAPSHOT.jar</systemPath>
 		</dependency>
 		
 		<!-- The Liberty Arquillian plugin -->
