@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import jakarta.data.repository.Save;
  * Repository interface for the DirectedSegement entity, which is
  * a Java record with multiple of the same type of embeddable.
  */
-@Repository(dataStore = "java:module/env/jdbc/DerbyDataSourceRef")
+@Repository(dataStore = "java:module/env/jdbc/H2DataSourceRef")
 public interface Cylinders {
 
     @Find

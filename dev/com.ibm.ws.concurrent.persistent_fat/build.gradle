@@ -23,6 +23,7 @@ autoFVT {
 
 addRequiredLibraries {
 	dependsOn copyJdbcDrivers
+  dependsOn addH2Java8
 	dependsOn addJakartaTransformer
 	dependsOn copyTestContainers
 }

@@ -44,9 +44,6 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class PolicyAttachmentTest {
 
-    // Server Information
-    public static String server1Port = "8091";
-    
     // Basic URL
     @Server("policyattachments_client")
     public static LibertyServer client;
@@ -122,15 +119,9 @@ public class PolicyAttachmentTest {
         ShrinkHelper.exportDropinAppToServer(client, clientWar1);
         ShrinkHelper.exportDropinAppToServer(client, clientWar2);
         
-        // Make sure we don't fail because we try to start an
-        // already started server
-        try {
-            client.startServer();
-            server1.startServer();
-            assertNotNull("The server did not start", server1.waitForStringInLog("CWWKF0011I"));
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
+        client.startServer();
+        server1.startServer();
+        assertNotNull("The server did not start", server1.waitForStringInLog("CWWKF0011I"));
     }
 
     @AfterClass
@@ -254,8 +245,8 @@ public class PolicyAttachmentTest {
         System.out.println("service1 is with URI policy attachment config, service2 is with EndpointReference policy attachment config");
         System.out.println("This test is for " + clientName + " and " + serviceName + ", method is " + testMethod);
 
-        String resultURL = "http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort() + "/" + clientName + "/" + servletName + "?app=" + serviceName + "&method="
-                + testMethod;
+        String resultURL = "http://" + client.getHostname() + ":" + client.getHttpDefaultPort() + "/" + clientName + "/" + servletName + "?app=" + serviceName + "&method="
+                + testMethod + "&servicePort=" + server1.getHttpSecondaryPort();
 
         try {
             String result = executeApp(resultURL);

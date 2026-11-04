@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024,2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import test.jakarta.data.web.eclipselink.Animal.ScientificName;
  * Repository interface for the Animal entity which is a record
  * with an embeddable ID that is also a record.
  */
-@Repository(dataStore = "java:module/env/jdbc/DerbyDataSourceRef")
+@Repository(dataStore = "java:module/env/jdbc/H2DataSourceRef")
 public interface Animals extends CrudRepository<Animal, ScientificName> {
     long countByIdNotNull();
 

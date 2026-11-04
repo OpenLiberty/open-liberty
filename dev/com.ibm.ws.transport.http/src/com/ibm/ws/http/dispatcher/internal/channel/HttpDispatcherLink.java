@@ -770,9 +770,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         SocketAddress socket = this.nettyContext.channel().remoteAddress();
+        InetSocketAddress remoteSocket = null;
         if (socket instanceof InetSocketAddress) {
 
-            this.remoteAddress = ((InetSocketAddress) socket).getAddress();
+            remoteSocket = (InetSocketAddress) socket;
+            this.remoteAddress = remoteSocket.getAddress();
             this.isc.setRemoteAddr(remoteAddress);
 
         }
@@ -781,7 +783,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         boolean desensitizePrivatePortHeader = this.isc.getHttpConfig().desensitizePrivatePortHeader();
         boolean trustNonSensitive = HttpDispatcher.usePrivateHeaders(this.remoteAddress);
         boolean trustSensitive    = HttpDispatcher.usePrivateSensitiveHeaders(this.remoteAddress);
-        NettyHeaderUtils.filterPrivateHeaders(this.remoteAddress, nettyRequest.headers(), desensitizePrivatePortHeader, trustNonSensitive, trustSensitive);
+        NettyHeaderUtils.filterPrivateHeaders(remoteSocket, nettyRequest.headers(), desensitizePrivatePortHeader, trustNonSensitive, trustSensitive);
 
         //Add for Servlet 6.0
         //HttpDispatcherLink can be reused but ready(VirtualConnection) is always called to get a current VirtualConnection.
