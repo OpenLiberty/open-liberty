@@ -47,6 +47,8 @@ import org.apache.wss4j.policy.SP12Constants;
 import org.apache.wss4j.policy.model.AlgorithmSuite;
 import org.apache.wss4j.policy.model.AlgorithmSuite.AlgorithmSuiteType;
 import org.apache.xml.security.transforms.Transforms;
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 
 /**
  * Validate results corresponding to the processing of a Signature, EncryptedKey or
@@ -208,21 +210,60 @@ public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidat
         AlgorithmSuiteType algorithmSuiteType = algorithmPolicy.getAlgorithmSuiteType();
         String transportMethod =
             (String)result.get(WSSecurityEngineResult.TAG_ENCRYPTED_KEY_TRANSPORT_METHOD);
-        if (transportMethod != null
-            && !algorithmSuiteType.getSymmetricKeyWrap().equals(transportMethod)
-            && !algorithmSuiteType.getAsymmetricKeyWrap().equals(transportMethod)) {
+
+        // Liberty Change Start: FIPS 140-3 support - accept RSA-OAEP variants when FIPS Java build is active
+        // When running on a FIPS-capable Java build, the provider may upgrade the key-wrap algorithm
+        // to RSA-OAEP even if the policy specifies RSA 1.5. Accept rsa-oaep-mgf1p and rsa-oaep URI variants.
+        boolean transportMethodValid = true;
+        if (transportMethod != null) {
+            transportMethodValid = algorithmSuiteType.getSymmetricKeyWrap().equals(transportMethod)
+                || algorithmSuiteType.getAsymmetricKeyWrap().equals(transportMethod);
+
+            if (!transportMethodValid && CryptoUtils.isOpenJCEPlusAvailable()) {
+                String rsaOaepMgf1p = "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
+                String rsaOaep = "http://www.w3.org/2009/xmlenc11#rsa-oaep";
+                transportMethodValid = rsaOaepMgf1p.equals(transportMethod)
+                    || rsaOaep.equals(transportMethod);
+            }
+        }
+        if (!transportMethodValid) {
             ai.setNotAsserted(
                 "The Key transport method does not match the requirement"
             );
             return false;
         }
+        // Liberty Change End
 
         List<WSDataRef> dataRefs =
             CastUtils.cast((List<?>)result.get(WSSecurityEngineResult.TAG_DATA_REF_URIS));
         if (dataRefs != null) {
             for (WSDataRef dataRef : dataRefs) {
                 String encryptionAlgorithm = dataRef.getAlgorithm();
-                if (!algorithmSuiteType.getEncryption().equals(encryptionAlgorithm)) {
+          
+                // Liberty Change Start: FIPS 140-3 support - allow aes256-gcm/aes256-cbc when FIPS Java build is active
+                boolean encryptionAlgorithmValid = algorithmSuiteType.getEncryption().equals(encryptionAlgorithm);
+                if (!encryptionAlgorithmValid) {
+                    String suiteEncryption = algorithmSuiteType.getEncryption();
+                    // When FIPS 140-3 is enabled, accept aes256-gcm as the FIPS-required algorithm
+                    // even when the policy specifies a non-GCM suite such as Basic128 (aes128-cbc).
+                    if (CryptoUtils.isFips140_3Enabled()) {
+                        String aes256Gcm = "http://www.w3.org/2009/xmlenc11#aes256-gcm";
+                        encryptionAlgorithmValid = aes256Gcm.equals(encryptionAlgorithm);
+                    }
+                    // When running on a FIPS-capable Java build in non-FIPS mode, the RSA-OAEP
+                    // key-wrap update forces AES-256 symmetric encryption. Accept aes256-cbc when
+                    // the policy specifies any AES-CBC variant (e.g. aes128-cbc in Basic128).
+                    if (!encryptionAlgorithmValid && CryptoUtils.isOpenJCEPlusAvailable()) {
+                        String aes256Cbc = "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
+                        if (aes256Cbc.equals(encryptionAlgorithm)
+                            && suiteEncryption != null && suiteEncryption.contains("aes")
+                            && suiteEncryption.contains("cbc")) {
+                            encryptionAlgorithmValid = true;
+                        }
+                    }
+                }      
+                if (!encryptionAlgorithmValid) {
+                // Liberty Change End              
                     ai.setNotAsserted(
                         "The encryption algorithm does not match the requirement"
                     );
