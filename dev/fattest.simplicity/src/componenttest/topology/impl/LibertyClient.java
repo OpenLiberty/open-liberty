@@ -4075,7 +4075,11 @@ public class LibertyClient {
         }
 
         boolean isIBMJVM8 = (clientJavaInfo.majorVersion() == 8) && (clientJavaInfo.VENDOR == Vendor.IBM);
-        boolean isIBMJVMGreaterOrEqualTo11 = (clientJavaInfo.majorVersion() >= 11) && (clientJavaInfo.VENDOR == Vendor.IBM);
+        //boolean isIBMJVMGreaterOrEqualTo11 = (clientJavaInfo.majorVersion() >= 11) && (clientJavaInfo.VENDOR == Vendor.IBM);
+        //This is a temporary update to allow fipsPB pipeline to run with private Java using properties "jvmUnderTestPath", which returns vendor=OPENJ9 in JavaInfo
+        //Without the update, the test failed to execute due to "but no IBM java on liberty server to run with FIPS 140-3 enabled."
+        //Uncommit the update from PR when testing is complete.
+        boolean isIBMJVMGreaterOrEqualTo11 = (clientJavaInfo.majorVersion() >= 11) && (clientJavaInfo.VENDOR == Vendor.OPENJ9);
         if (GLOBAL_CLIENT_FIPS_140_3) {
             Log.info(c, methodName, "Liberty client is running JDK version: " + clientJavaInfo.majorVersion() + " and vendor: " + clientJavaInfo.VENDOR);
             if (isIBMJVM8) {
