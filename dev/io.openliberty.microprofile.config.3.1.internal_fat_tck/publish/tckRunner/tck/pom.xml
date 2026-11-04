@@ -45,6 +45,20 @@
 
     <dependencyManagement>
         <dependencies>
+              <dependency>
+        <groupId>org.jboss.arquillian.core</groupId>
+        <artifactId>arquillian-core-impl-base</artifactId>
+        <version>${arquillian.version}</version>
+                <systemPath>${project.basedir}/arquillian-core-impl-base-1.7.0.Alpha13.jar</systemPath>
+            <scope>system</scope>
+      </dependency>
+                    <dependency>
+        <groupId>org.jboss.arquillian.testng</groupId>
+        <artifactId>arquillian-testng-core</artifactId>
+        <version>${arquillian.version}</version>
+                <systemPath>${project.basedir}/arquillian-testng-core-1.7.0.Alpha13.jar</systemPath>
+            <scope>system</scope>
+      </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
