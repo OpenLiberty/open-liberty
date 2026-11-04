@@ -21,9 +21,40 @@ task copyTestPackages(type: Copy ) {
 		into ("${buildDir}/autoFVT/publish/packages.test")
 }
 
+task listPackageContents {
+	doLast {
+		println "\n" + "=" * 80
+		println "DEBUILD DIRECTORY CONTENTS:"
+		println "Path: ${project(':build.image').projectDir}/packaging/debuild/"
+		println "=" * 80
+		def debuildDir = file("${project(':build.image').projectDir}/packaging/debuild/")
+		if (debuildDir.exists() && debuildDir.isDirectory()) {
+			debuildDir.listFiles().each { f ->
+				println "  ${f.name}"
+			}
+		} else {
+			println "  [Directory does not exist or is not accessible]"
+		}
+		
+		println "\n" + "=" * 80
+		println "RPMBUILD DIRECTORY CONTENTS:"
+		println "Path: ${project(':build.image').projectDir}/packaging/rpmbuild/RPMS/noarch/"
+		println "=" * 80
+		def rpmbuildDir = file("${project(':build.image').projectDir}/packaging/rpmbuild/RPMS/noarch/")
+		if (rpmbuildDir.exists() && rpmbuildDir.isDirectory()) {
+			rpmbuildDir.listFiles().each { f ->
+				println "  ${f.name}"
+			}
+		} else {
+			println "  [Directory does not exist or is not accessible]"
+		}
+		println "=" * 80 + "\n"
+	}
+}
+
 if (isBuildOsNativePackages) {
 	task copyCurrentPackages(type: Copy ) {
-		dependsOn ':build.image:buildOsNativePackages'
+		dependsOn ':build.image:buildOsNativePackages', listPackageContents
 		into ("${buildDir}/autoFVT/publish")
 
 		into ("packages.current") {
@@ -32,11 +63,13 @@ if (isBuildOsNativePackages) {
 		}
 
 		into ("packages.current") {
+
 		from "${project(':build.image').projectDir}/packaging/rpmbuild/RPMS/noarch/"
 		    include ('*.rpm')
 		}
 	}
+
 	customizeAutoFVT.dependsOn copyCurrentPackages
 }
 
-customizeAutoFVT.dependsOn copyServerFolder, copyTestPackages
+customizeAutoFVT.dependsOn copyServerFolder, copyTestPackages, listPackageContents
