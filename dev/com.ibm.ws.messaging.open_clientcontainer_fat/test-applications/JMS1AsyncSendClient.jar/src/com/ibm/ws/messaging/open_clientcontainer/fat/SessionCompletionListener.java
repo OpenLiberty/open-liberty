@@ -45,8 +45,9 @@ public class SessionCompletionListener extends CompletionListenerBase {
     Util.TRACE_ENTRY();
     checkPause();
     try {
-      exceptionOnUnrelatedClose_ = false;
+      Util.CODEPATH();
       unrelatedSession_.close();
+      exceptionOnUnrelatedClose_ = false;
     } catch (JMSException e) {
       Util.TRACE("unrelated session close() raised exception:"+e.getClass().getName()+" "+e.getMessage());
       exceptionOnUnrelatedClose_ = true;
