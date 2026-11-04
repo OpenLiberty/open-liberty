@@ -46,7 +46,10 @@ public class DataSourceJaasTest extends FATServletClient {
     private static final String basicfat = "basicfat";
     private static final String dsdfat = "dsdfat";
 
-    private static final H2Database h2Database = H2Database.create("dbuser1", "dbpwd1")
+    // Always create the file-based H2 database and its users, even when database rotation selects another database,
+    // because some data sources are H2-only and connect to it directly.
+    @ClassRule
+    public static final H2Database h2Database = H2Database.create("dbuser1", "dbpwd1")
                     .withUser("dbuser2", "dbpwd2")
                     .withDatabaseName("jdbcfat");
 

@@ -173,12 +173,12 @@
 
     <!-- This datasource contains some configuration errors -->
     <dataSource id="dsfat11h2" jndiName="jdbc/dsfat11" jdbcDriverRef="H2Driver" connectionManagerRef="conMgr5" badProperty="badValue1" isolationLevel="TRANSACTION_READ_UNCOMMITTED" queryTimeout="11s" syncQueryTimeoutWithTransactionTimeout="false">
-      <properties.h2 url="${env.DB_URL}" badVendorProperty="badValue2" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="jdbc:h2:file:${h2.db.dir}/jdbcfat;AUTO_SERVER=TRUE" badVendorProperty="badValue2" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
  
     <dataSource id="dsfat12h2" jndiName="jdbc/dsfat12" containerAuthDataRef="derbyAuth2" jdbcDriverRef="H2Driver">
       <connectionManager enableContainerAuthForDirectLookups="true"/>
-      <properties.h2 url="${env.DB_URL}" user="dbuser2" password="{xor}Oz0vKDtt"/>
+      <properties.h2 url="jdbc:h2:file:${h2.db.dir}/jdbcfat;AUTO_SERVER=TRUE" user="dbuser2" password="{xor}Oz0vKDtt"/>
     </dataSource>
 
     <!-- The following two datasources test that you can define two data sources with nested child
@@ -189,7 +189,7 @@
 				<fileset dir="${shared.resource.dir}/h2Java8"/>
 			</library>
 		</jdbcDriver>
-		<properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+		<properties.h2 url="jdbc:h2:file:${h2.db.dir}/jdbcfat;AUTO_SERVER=TRUE" user="dbuser1" password="{xor}Oz0vKDtu"/>
 	</dataSource>
 	<dataSource id="db2WithNestedList" jndiName="jdbc/db2WithNestedList">
 		<jdbcDriver>
@@ -220,7 +220,7 @@
     </dataSource>
 
     <dataSource id="dsfatmca" jndiName="jdbc/dsfatmca" jdbcDriverRef="H2Driver" connectionManagerRef="conMgr5mca" jaasLoginContextEntryRef="myJAASLoginEntry" type="javax.sql.DataSource" connectionSharing="MatchOriginalRequest">
-      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="jdbc:h2:file:${h2.db.dir}/jdbcfat;AUTO_SERVER=TRUE" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
 <!-- ### jaas login module ### -->

@@ -257,6 +257,16 @@ public class DataSourceTestServlet extends FATServlet {
             //Ignore, server could have been restarted. Assume table is available.
         }
 
+        //Create table in the H2 database used by the mapping config alias data source.
+        //With database rotation, ds1 may not be H2, so this table must be created separately.
+        try (Connection con = dsmca.getConnection()) {
+            try (Statement st = con.createStatement()) {
+                st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
+            }
+        } catch (SQLException e) {
+            //Ignore, server could have been restarted or the table may already exist (H2 rotation).
+        }
+
     }
 
     /**
