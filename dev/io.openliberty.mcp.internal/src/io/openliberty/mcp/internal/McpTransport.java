@@ -93,17 +93,17 @@ public class McpTransport {
         try {
             version = readProtocolVersionHeader();
         } catch (NoSuchElementException e) {
-            throw unsupportedProtocolVersion(mcpConfig.acceptedProtocolVersions());
+            throw unsupportedProtocolVersion(mcpConfig);
         }
         // A header which names a version outside the configured range is always rejected
         if (headerPresent && !mcpConfig.isAccepted(version)) {
-            throw unsupportedProtocolVersion(mcpConfig.acceptedProtocolVersions());
+            throw unsupportedProtocolVersion(mcpConfig);
         }
         this.mcpRequest = toRequest();
         // A missing header is interpreted as 2025-03-26, which may be outside the configured range.
         // The initialize request is exempt because it negotiates the version and does not need the header.
         if (!headerPresent && mcpRequest.getRequestMethod() != RequestMethod.INITIALIZE && !mcpConfig.isAccepted(version)) {
-            throw unsupportedProtocolVersion(mcpConfig.acceptedProtocolVersions());
+            throw unsupportedProtocolVersion(mcpConfig);
         }
 
         this.appName = extractAppName();
@@ -138,17 +138,17 @@ public class McpTransport {
 
         try {
             if (!mcpConfig.isAccepted(McpProtocolVersion.parse(header))) {
-                throw unsupportedProtocolVersion(mcpConfig.acceptedProtocolVersions());
+                throw unsupportedProtocolVersion(mcpConfig);
             }
         } catch (NoSuchElementException e) {
-            throw unsupportedProtocolVersion(mcpConfig.acceptedProtocolVersions());
+            throw unsupportedProtocolVersion(mcpConfig);
         }
     }
 
-    private static HttpResponseException unsupportedProtocolVersion(List<McpProtocolVersion> acceptedVersions) {
-        String supportedValues = acceptedVersions.stream()
-                                                 .map(McpProtocolVersion::getVersion)
-                                                 .collect(Collectors.joining(", "));
+    private static HttpResponseException unsupportedProtocolVersion(McpConfig mcpConfig) {
+        String supportedValues = mcpConfig.acceptedProtocolVersions().stream()
+                                          .map(McpProtocolVersion::getVersion)
+                                          .collect(Collectors.joining(", "));
         String exceptionMessage = Tr.formatMessage(tc, "unsupported.mcp.http.version", supportedValues);
         return new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, exceptionMessage);
     }
