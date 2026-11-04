@@ -106,10 +106,12 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
         this.configAdmin = configAdmin;
 
         try {
+            Tr.debug(tc, ">>ConfigurationAdminImpl.setConfigAdmin before entry to listConfigurations: filterString= service.factoryPid=com.ibm.ws.app.manager)");
             Configuration[] configuredApps = configAdmin.listConfigurations("(service.factoryPid=com.ibm.ws.app.manager)");
             if (configuredApps != null) {
                 for (Configuration c : configuredApps) {
                     Dictionary<String, Object> properties = c.getProperties();
+                    Tr.debug(tc, ">>AppTrackerImpl.setConfigAdmin: Configuration PID=" + c.getPid() + ", name=" + properties.get("name") + ", location=" + properties.get("location"));
 
                     String appName;
 
@@ -124,6 +126,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
 
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Adding app found by configAdmin: " + appName);
+                    Tr.debug(tc, ">>ConfigurationAdminImpl.setConfigAdmin Adding app found by configAdmin: " + appName);
 
                     configAdminMap.put(appName, ApplicationState.INSTALLED);
                 }
