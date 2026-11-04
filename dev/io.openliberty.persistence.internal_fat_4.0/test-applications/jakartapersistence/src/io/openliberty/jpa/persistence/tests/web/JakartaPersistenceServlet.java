@@ -10,24 +10,31 @@
 package io.openliberty.jpa.persistence.tests.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 
 import jakarta.annotation.Resource;
+import jakarta.persistence.EntityAgent;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.openliberty.jpa.persistence.tests.models.EmployeeDirectSkills;
+import io.openliberty.jpa.persistence.tests.models.EmployeeWithSkills;
 import io.openliberty.jpa.persistence.tests.models.Product;
 import io.openliberty.jpa.persistence.tests.models.SimpleEmployee;
+import io.openliberty.jpa.persistence.tests.models.Skill;
 
 /**
  * Basic smoke-tests for JPA 4.0 / Hibernate 8 on Liberty using
@@ -229,6 +236,281 @@ public class JakartaPersistenceServlet extends FATServlet {
         assertEquals("getResultCount() should return 2 for products priced over 100.0", 2L, expensiveCount);
     }
 
+    @Test
+    public void testQueryGetSingleResultOrNull() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        SimpleEmployee emp = new SimpleEmployee("UniqueEmployee", 95_000L);
+        em.persist(emp);
+        tx.commit();
+
+        // 1. Found case -> returns entity
+        SimpleEmployee found = em.createQuery(
+            "SELECT e FROM SimpleEmployee e WHERE e.name = :name", SimpleEmployee.class)
+            .setParameter("name", "UniqueEmployee")
+            .getSingleResultOrNull();
+        assertNotNull("expected entity to be found", found);
+        assertEquals("UniqueEmployee", found.getName());
+
+        // 2. Not found case -> returns null instead of NoResultException
+        SimpleEmployee notFound = em.createQuery(
+            "SELECT e FROM SimpleEmployee e WHERE e.name = :name", SimpleEmployee.class)
+            .setParameter("name", "NonExistentEmployee")
+            .getSingleResultOrNull();
+        assertNull("expected null when no match found", notFound);
+    }
+
+    @Test
+    public void testPersistenceUnitUtilAndEntityState() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        SimpleEmployee emp = new SimpleEmployee("StateTestEmp", 60_000L);
+        em.persist(emp);
+        assertTrue("entity should be managed during active transaction", em.contains(emp));
+        tx.commit();
+
+        Long id = emp.getId();
+
+        // PersistenceUnitUtil inspection works on detached or managed entities
+        Object identifier = em.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(emp);
+        assertEquals(id, identifier);
+        assertTrue(em.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(emp));
+
+        tx.begin();
+        SimpleEmployee managed = em.find(SimpleEmployee.class, id);
+        assertTrue("entity should be managed after find", em.contains(managed));
+        em.detach(managed);
+        assertFalse("entity should not be managed after detach", em.contains(managed));
+        tx.commit();
+    }
+
+    @Test
+    public void testBulkUpdateAndClear() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        em.persist(new SimpleEmployee("EmpA", 40_000L));
+        em.persist(new SimpleEmployee("EmpB", 45_000L));
+        tx.commit();
+
+        tx.begin();
+        int updatedCount = em.createQuery(
+            "UPDATE SimpleEmployee e SET e.salary = e.salary + 5000 WHERE e.salary < :threshold")
+            .setParameter("threshold", 50_000L)
+            .executeUpdate();
+        assertEquals("expected 2 employees updated", 2, updatedCount);
+        tx.commit();
+
+        em.clear();
+
+        tx.begin();
+        List<SimpleEmployee> updatedList = em.createQuery(
+            "SELECT e FROM SimpleEmployee e ORDER BY e.name", SimpleEmployee.class)
+            .getResultList();
+        assertEquals(45_000L, updatedList.get(0).getSalary());
+        assertEquals(50_000L, updatedList.get(1).getSalary());
+        tx.commit();
+    }
+
+    // -----------------------------------------------------------------------
+    // EntityAgent + @ElementCollection
+    // -----------------------------------------------------------------------
+
+    /* Verifies EntityAgent.insert writes @ElementCollection rows declared inside an @Embeddable.
+       Fails with size 0 if the provider silently skips the collection table. */
+    @Ignore("Reference issue: https://hibernate.atlassian.net/browse/HHH-20997")
+    @Test
+    public void testEntityAgentInsertWithElementCollection() throws Exception {
+        cleanup(EmployeeWithSkills.class);
+
+        EmployeeWithSkills emp = new EmployeeWithSkills("AgentInsert",
+                Arrays.asList(new Skill("Java", 3), new Skill("JPA", 2), new Skill("OSGi", 1)));
+
+        tx.begin();
+        try (EntityAgent agent = em.getEntityManagerFactory().createEntityAgent()) {
+            agent.insert(emp);
+        }
+        tx.commit();
+
+        assertNotNull("id should be assigned after EntityAgent.insert", emp.getId());
+
+        List<Skill> skills = em.createQuery(
+                "SELECT s FROM EmployeeWithSkills e JOIN e.skillSet.skills s WHERE e.id = :id",
+                Skill.class)
+                .setParameter("id", emp.getId())
+                .getResultList();
+
+        assertEquals("JPQL must return 3 skills after EntityAgent.insert", 3, skills.size());
+        assertTrue(skills.stream().map(Skill::getName).collect(java.util.stream.Collectors.toList())
+                .containsAll(Arrays.asList("Java", "JPA", "OSGi")));
+    }
+
+    /* Verifies EntityAgent.update rewrites the @ElementCollection inside an @Embeddable.
+       Fails with size 2 (old rows) if the provider ignores the collection table on update. */
+    @Ignore("Reference issue: https://hibernate.atlassian.net/browse/HHH-20997")
+    @Test
+    public void testEntityAgentUpdateWithElementCollection() throws Exception {
+        cleanup(EmployeeWithSkills.class);
+
+        tx.begin();
+        EmployeeWithSkills emp = new EmployeeWithSkills("AgentUpdate",
+                Arrays.asList(new Skill("Skill1", 1), new Skill("Skill2", 2)));
+        em.persist(emp);
+        tx.commit();
+
+        Long id = emp.getId();
+
+        em.clear();
+        emp.setSkills(Arrays.asList(new Skill("Skill1", 1), new Skill("Skill2", 2), new Skill("Skill3", 3)));
+
+        tx.begin();
+        try (EntityAgent agent = em.getEntityManagerFactory().createEntityAgent()) {
+            agent.update(emp);
+        }
+        tx.commit();
+
+        List<Skill> skills = em.createQuery(
+                "SELECT s FROM EmployeeWithSkills e JOIN e.skillSet.skills s WHERE e.id = :id",
+                Skill.class)
+                .setParameter("id", id)
+                .getResultList();
+
+        assertEquals("JPQL must return 3 skills after EntityAgent.update", 3, skills.size());
+        assertTrue(skills.stream().map(Skill::getName).anyMatch("Skill3"::equals));
+    }
+
+    /* Verifies EntityAgent.upsert rewrites the @ElementCollection inside an @Embeddable.
+       Fails with size 2 (old rows) if the provider ignores the collection table on upsert. */
+    @Ignore("Reference issue: https://hibernate.atlassian.net/browse/HHH-20997")
+    @Test
+    public void testEntityAgentUpsertWithElementCollection() throws Exception {
+        cleanup(EmployeeWithSkills.class);
+
+        tx.begin();
+        EmployeeWithSkills emp = new EmployeeWithSkills("AgentUpsert",
+                Arrays.asList(new Skill("Python", 2), new Skill("SQL", 3)));
+        em.persist(emp);
+        tx.commit();
+
+        Long id = emp.getId();
+
+        em.clear();
+        emp.setSkills(Arrays.asList(new Skill("Python", 2), new Skill("SQL", 3), new Skill("Kotlin", 1)));
+
+        tx.begin();
+        try (EntityAgent agent = em.getEntityManagerFactory().createEntityAgent()) {
+            agent.upsert(emp);
+        }
+        tx.commit();
+
+        List<Skill> skills = em.createQuery(
+                "SELECT s FROM EmployeeWithSkills e JOIN e.skillSet.skills s WHERE e.id = :id",
+                Skill.class)
+                .setParameter("id", id)
+                .getResultList();
+
+        assertEquals("JPQL must return 3 skills after EntityAgent.upsert", 3, skills.size());
+        assertTrue(skills.stream().map(Skill::getName).collect(java.util.stream.Collectors.toList())
+                .containsAll(Arrays.asList("Python", "SQL", "Kotlin")));
+    }
+
+    /* Control: verifies EntityAgent.insert works correctly when @ElementCollection is declared
+       directly on the @Entity, not nested inside an @Embeddable. Expected to pass. */
+    @Test
+    public void testEntityAgentInsertDirectElementCollection() throws Exception {
+        cleanup(EmployeeDirectSkills.class);
+
+        EmployeeDirectSkills emp = new EmployeeDirectSkills("DirectInsert",
+                Arrays.asList(new Skill("Java", 3), new Skill("JPA", 2), new Skill("OSGi", 1)));
+
+        tx.begin();
+        try (EntityAgent agent = em.getEntityManagerFactory().createEntityAgent()) {
+            agent.insert(emp);
+        }
+        tx.commit();
+
+        assertNotNull("id should be assigned after EntityAgent.insert", emp.getId());
+
+        List<Skill> skills = em.createQuery(
+                "SELECT s FROM EmployeeDirectSkills e JOIN e.skills s WHERE e.id = :id",
+                Skill.class)
+                .setParameter("id", emp.getId())
+                .getResultList();
+
+        assertEquals("EntityAgent.insert must write @ElementCollection declared directly on @Entity",
+                3, skills.size());
+        assertTrue(skills.stream().map(Skill::getName).collect(java.util.stream.Collectors.toList())
+                .containsAll(Arrays.asList("Java", "JPA", "OSGi")));
+    }
+
+    /* Control: verifies EntityAgent.update works correctly when @ElementCollection is declared
+       directly on the @Entity, not nested inside an @Embeddable. Expected to pass. */
+    @Test
+    public void testEntityAgentUpdateDirectElementCollection() throws Exception {
+        cleanup(EmployeeDirectSkills.class);
+
+        tx.begin();
+        EmployeeDirectSkills emp = new EmployeeDirectSkills("DirectUpdate",
+                Arrays.asList(new Skill("Skill1", 1), new Skill("Skill2", 2)));
+        em.persist(emp);
+        tx.commit();
+
+        Long id = emp.getId();
+
+        em.clear();
+        emp.setSkills(Arrays.asList(new Skill("Skill1", 1), new Skill("Skill2", 2), new Skill("Skill3", 3)));
+
+        tx.begin();
+        try (EntityAgent agent = em.getEntityManagerFactory().createEntityAgent()) {
+            agent.update(emp);
+        }
+        tx.commit();
+
+        List<Skill> skills = em.createQuery(
+                "SELECT s FROM EmployeeDirectSkills e JOIN e.skills s WHERE e.id = :id",
+                Skill.class)
+                .setParameter("id", id)
+                .getResultList();
+
+        assertEquals("EntityAgent.update must write @ElementCollection declared directly on @Entity",
+                3, skills.size());
+        assertTrue(skills.stream().map(Skill::getName).anyMatch("Skill3"::equals));
+    }
+
+    /* Control: verifies EntityAgent.upsert works correctly when @ElementCollection is declared
+       directly on the @Entity, not nested inside an @Embeddable. Expected to pass. */
+    @Test
+    public void testEntityAgentUpsertDirectElementCollection() throws Exception {
+        cleanup(EmployeeDirectSkills.class);
+
+        tx.begin();
+        EmployeeDirectSkills emp = new EmployeeDirectSkills("DirectUpsert",
+                Arrays.asList(new Skill("Python", 2), new Skill("SQL", 3)));
+        em.persist(emp);
+        tx.commit();
+
+        Long id = emp.getId();
+
+        em.clear();
+        emp.setSkills(Arrays.asList(new Skill("Python", 2), new Skill("SQL", 3), new Skill("Kotlin", 1)));
+
+        tx.begin();
+        try (EntityAgent agent = em.getEntityManagerFactory().createEntityAgent()) {
+            agent.upsert(emp);
+        }
+        tx.commit();
+
+        List<Skill> skills = em.createQuery(
+                "SELECT s FROM EmployeeDirectSkills e JOIN e.skills s WHERE e.id = :id",
+                Skill.class)
+                .setParameter("id", id)
+                .getResultList();
+
+        assertEquals("EntityAgent.upsert must write @ElementCollection declared directly on @Entity",
+                3, skills.size());
+        assertTrue(skills.stream().map(Skill::getName).collect(java.util.stream.Collectors.toList())
+                .containsAll(Arrays.asList("Python", "SQL", "Kotlin")));
+    }
+
     // -----------------------------------------------------------------------
     // Helpers
     // -----------------------------------------------------------------------
@@ -238,4 +520,5 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.createQuery("DELETE FROM " + entityClass.getSimpleName() + " e").executeUpdate();
         tx.commit();
     }
+
 }

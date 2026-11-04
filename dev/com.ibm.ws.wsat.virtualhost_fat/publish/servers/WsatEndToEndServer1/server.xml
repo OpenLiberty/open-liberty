@@ -1,0 +1,58 @@
+<server>
+    <featureManager>
+        <feature>wsAtomicTransaction-1.2</feature>
+        <feature>jaxws-2.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>localConnector-1.0</feature>
+    </featureManager>
+
+    <!--
+        Coordinator server: two HTTP endpoints.
+        Application traffic uses the default-host port (HTTP_default).
+        WS-AT protocol traffic is restricted to wsatHost (HTTP_secondary)
+        via virtualHostRef — so EPRs published to server2 contain HTTP_secondary.
+    -->
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Second endpoint for WS-AT protocol traffic.
+         Uses HTTP_tertiary (8050) to avoid clashing with WsatEndToEndServer2
+         which also listens on HTTP_secondary (8030). -->
+    <httpEndpoint id="wsatEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_tertiary}"
+                  httpsPort="-1"/>
+
+    <!-- Restrict default_host to the primary port only -->
+    <virtualHost id="default_host">
+        <hostAlias>*:${bvt.prop.HTTP_default}</hostAlias>
+    </virtualHost>
+
+    <!-- WS-AT WAB and EPRs bound to wsatHost (tertiary port) -->
+    <virtualHost id="wsatHost">
+        <hostAlias>*:${bvt.prop.HTTP_tertiary}</hostAlias>
+    </virtualHost>
+
+    <wsAtomicTransaction virtualHostRef="wsatHost"/>
+
+    <!-- Derby in-memory database for testCoordinator application -->
+    <jdbcDriver id="DerbyDB" libraryRef="DerbyRef"/>
+    <library id="DerbyRef">
+        <fileset dir="${shared.resource.dir}derby" includes="derby.jar"/>
+    </library>
+    <dataSource id="TestDB" jdbcDriverRef="DerbyDB" jndiName="jdbc/TestDB"
+                type="javax.sql.XADataSource">
+        <properties.derby.embedded createDatabase="create"
+                                   databaseName="memory:database"/>
+    </dataSource>
+
+    <javaPermission codebase="${shared.resource.dir}derby/derby.jar"
+                    className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/dropins/testCoordinator.war"
+                    className="java.security.AllPermission"/>
+
+    <logging traceSpecification="Transaction=all:wsat=all"
+             traceFileName="trace.log" maxFileSize="200" maxFiles="5"
+             traceFormat="BASIC"/>
+</server>

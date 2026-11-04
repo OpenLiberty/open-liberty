@@ -51,7 +51,7 @@ public class McpMonitorMXBeanAccessTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/" + APP_NAME);
+    public McpClient client = McpClient.builder(server, "/" + APP_NAME).build();
 
     /** Calls the {@code add} tool which succeeds (status "ok", no error type). */
     private static final String ADD_REQUEST = """

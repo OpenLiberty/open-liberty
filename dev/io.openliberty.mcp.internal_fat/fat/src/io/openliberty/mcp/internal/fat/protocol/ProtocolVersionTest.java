@@ -45,7 +45,7 @@ import io.openliberty.mcp.internal.fat.utils.TestConstants;
 public class ProtocolVersionTest {
 
     @Rule
-    public McpClient client = new McpClient(server, "/protocolVersionTest");
+    public McpClient client = McpClient.builder(server, "/protocolVersionTest").build();
 
     @Server("mcp-server")
     public static LibertyServer server;

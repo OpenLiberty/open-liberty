@@ -79,3 +79,7 @@ jndi.url.create.exception.useraction=Geben Sie einen g\u00fcltigen Wert f\u00fcr
 jndi.decode.failed=CWWKN0011E: Beim Decodieren des {0}-Kennworts ist ein Fehler aufgetreten. Vergewissern Sie sich, dass das Kennwort ordnungsgem\u00e4\u00df codiert wird. Ausnahme: {1}
 jndi.decode.failed.explanation=Das Kennwort ist nicht ordnungsgem\u00e4\u00df codiert.
 jndi.decode.failed.useraction=Vergewissern Sie sich, dass das Kennwort ordnungsgem\u00e4\u00df codiert wird. Suchen Sie in der Ausnahme nach Einzelheiten.
+
+jndi.decode.warning=CWWKN0012W: Der Wert f\u00fcr den JNDI-Namen \u201e {0} \u201c konnte nicht dekodiert werden, da das Passwort nicht korrekt kodiert ist.
+jndi.decode.warning.explanation=Die JNDI-Umgebungsabfrage ist fehlgeschlagen, da der Passwortwert f\u00fcr den JNDI-Namen nicht in einem unterst\u00fctzten Kodierungsformat vorliegt. Der Server kann den Wert nicht dekodieren, sodass die Abfrage nicht abgeschlossen werden kann.
+jndi.decode.warning.useraction=Kodieren Sie das Passwort f\u00fcr den JNDI-Namen mithilfe des Befehls \u201e securityUtility \u201c und aktualisieren Sie die JNDI-Konfiguration mit dem kodierten Wert. Weitere Informationen finden Sie in der Ausnahmemeldung.

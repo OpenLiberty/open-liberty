@@ -1,0 +1,61 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <feature>componenttest-2.0</feature>
+    <feature>jdbc-4.3</feature>
+    <feature>servlet-6.1</feature>
+    <feature>jndi-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="H2SecurityTestApp.war">
+    <classloader commonLibraryRef="H2Lib"/>
+  </application>
+
+  <library id="H2Lib">
+    <file name="${shared.resource.dir}/h2/h2.jar"/>
+  </library>
+
+  <!-- AES file-encrypted database.
+       When H2 CIPHER is active, Liberty must pass the compound "<filePassword> <userPassword>"
+       value as the JDBC password, along with the user the database was created with. -->
+  <dataSource id="h2ds-cipher-aes" jndiName="jdbc/h2ds-cipher-aes">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="${env.DB_URL_CIPHER_AES}" user="${env.DB_USER}" password="${env.DB_PASSWORD_CIPHER_AES}"/>
+  </dataSource>
+
+  <!-- Pre-hashed password database -->
+  <dataSource id="h2ds-password-hash" jndiName="jdbc/h2ds-password-hash">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="${env.DB_URL_PASSWORD_HASH}" user="${env.DB_USER}" password="${env.DB_PASSWORD_PASSWORD_HASH}"/>
+  </dataSource>
+
+  <!-- ALLOW_LITERALS=NONE database -->
+  <dataSource id="h2ds-allow-literals-none" jndiName="jdbc/h2ds-allow-literals-none">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="${env.DB_URL_ALLOW_LITERALS}" user="${env.DB_USER}" password="${env.DB_PASSWORD}"/>
+  </dataSource>
+
+  <!-- FILE_LOCK=SOCKET database -->
+  <dataSource id="h2ds-file-lock-socket" jndiName="jdbc/h2ds-file-lock-socket">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="${env.DB_URL_FILE_LOCK}" user="${env.DB_USER}" password="${env.DB_PASSWORD}"/>
+  </dataSource>
+
+  <javaPermission codeBase="${shared.resource.dir}/h2/h2.jar"
+                  className="java.security.AllPermission"/>
+
+</server>

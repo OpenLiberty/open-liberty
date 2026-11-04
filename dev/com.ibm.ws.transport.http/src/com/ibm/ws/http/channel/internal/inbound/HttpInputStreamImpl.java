@@ -61,6 +61,8 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private ArrayList<WsByteBuffer> postDataBuffer;
     protected boolean firstReadCompleteforMulti = false;
     protected boolean readChannelComplete = false;
+    //Flag to indicate read path has observed end-of-body in Netty streaming
+    private volatile boolean streamingEosObserved = false;
     private int postDataIndex = 0;
     protected long bytesReadFromStore = 0L;
 
@@ -104,7 +106,13 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
     /* call from dispatcher handler when headers are parsed and auto-read off */
     public void nettyConfigureStreaming(BodyQueue queue, ChannelHandlerContext context, String contentEncoding, long contentLength, boolean chunked){
-        
+        // A null queue would leave streaming=false while all other Netty state is
+        // configured on a Netty connection.  The caller provides a non-null
+        // queue, so fail fast here rather than allow a silent wrong-path read later.
+        if (queue == null) {
+            throw new IllegalArgumentException("BodyQueue must not be null when configuring Netty streaming mode");
+        }
+
         this.context = context;
         this.autoRead = (context != null) && context.channel().config().isAutoRead();
         
@@ -112,6 +120,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         this.decompressor = new HttpContentDecompressor();
 
         this.readChannelComplete = false;
+        this.streamingEosObserved = false;
         this.rawBytesRead = 0L;
 
         this.remainingContentLength = contentLength;
@@ -122,10 +131,8 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         this.decodedBytesRead = 0L;          
         this.decodedBytesProduced = 0L;
 
-        if(queue != null){
-            this.queue = queue;
-            this.streaming = true;
-        }
+        this.queue = queue;
+        this.streaming = true;
     }
 
     /*
@@ -256,8 +263,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "checkMultiReadBuffer, requires more data, checking readRemainingFromChannel.");
                 }
-                //get remaining from channel now as read needs more than the stored
-                readRemainingFromChannel(waitForInput);
+                //get remaining from the source now as read needs more than the stored
+                if (streaming) {
+                    readRemainingFromNettyQueue(waitForInput);
+                } else {
+                    readRemainingFromChannel(waitForInput);
+                }
             }
             if (postDataBuffer.size() > postDataIndex) {
                 this.buffer = postDataBuffer.get(postDataIndex);
@@ -302,6 +313,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         readRemainingFromChannel(true);
     }
 
+    /**
+     * Legacy Channel Framework path. Reads all remaining body data from the channel
+     * into {@code postDataBuffer} for multi-read. A {@code false} return from the
+     * underlying read unambiguously means end of body on this path.
+     * For Netty streaming, use {@link #readRemainingFromNettyQueue(boolean)}.
+     */
     private void readRemainingFromChannel(boolean waitForInput) throws IOException {
         if (!readChannelComplete) {
 
@@ -318,8 +335,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                                  + " ,index ->" + postDataIndex);
                 }
                 postDataIndex++;
-            
-                if(!streaming)
+
                 this.bytesRead += this.buffer.remaining(); // record the new amount of data read from the channel
 
                 this.buffer.release(); // release any buffers read
@@ -332,6 +348,43 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             readChannelComplete = true;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "readRemainingFromChannel, all buffer read and stored from channel , now read it from store");
+            }
+        }
+    }
+
+    /**
+     * Netty streaming path. Reads all currently available body fragments from the
+     * queue into {@code postDataBuffer} for multi-read. A {@code false} return does
+     * not always mean end of body — the queue may simply have no data ready yet.
+     * For Legacy Channel Framework, use {@link #readRemainingFromChannel(boolean)}.
+     */
+    private void readRemainingFromNettyQueue(boolean waitForInput) throws IOException {
+        if (!readChannelComplete) {
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "readRemainingFromNettyQueue, data not completely read during first read");
+            }
+            int localIx = postDataIndex;
+            while (fillFromStreamingNetty(waitForInput)) {
+                postDataBuffer.add(postDataIndex, this.buffer.duplicate());
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "readRemainingFromNettyQueue, buffer ->" + postDataBuffer.get(postDataIndex)
+                                 + " ,size ->" + postDataBuffer.size()
+                                 + " ,index ->" + postDataIndex);
+                }
+                postDataIndex++;
+
+                this.buffer.release(); // release any buffers read
+                this.buffer = null;
+            }
+            postDataIndex = localIx;
+            if (!waitForInput && !readChannelComplete) {
+                return;
+            }
+            readChannelComplete = true;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "readRemainingFromNettyQueue, all buffer read and stored from queue , now read it from store");
             }
         }
     }
@@ -493,6 +546,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         if (!checkBuffer()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.exit(tc, "read(byte[],int,int), EOF");
+            }
+            // App has consumed all bytes and received the EOF signal.
+            if (streaming) {
+                markStreamingEosObserved();
             }
             return -1;
         }
@@ -686,6 +743,21 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             return false;
         }
 
+        // If the purge lifecycle has started, the application cannot read further
+        // body data — the queue is being drained by the purge path.
+        // This check at entry handles the fast path; the wait loop also re-checks
+        // after each wakeup so a reader already inside awaitChange() sees the
+        // ownership transition immediately when drainAndRelease() signals.
+        if (queue.isPurging()) {
+            // Release any partially-consumed stream buffer so that ownership
+            // ends cleanly; the purge path owns remaining queue fragments.
+            if (this.buffer != null) {
+                this.buffer.release();
+                this.buffer = null;
+            }
+            return false;
+        }
+
         if (waitForInput && context != null && context.executor().inEventLoop()){
             throw new IllegalStateException("Blocking request read on event loop group thread");
         }
@@ -705,12 +777,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             streamingTransferInProgress = true; 
             ByteBuf fragment = queue.poll();
             if (fragment == null){
-                streamingTransferInProgress = false; 
+                streamingTransferInProgress = false;
                 if (queue.isEos()){
                     this.readChannelComplete = true;
                     if (this.context != null){
-                        ReadFlowHandler.setBodyReadWanted(this.context, false);
-                        ReadFlowHandler.markRequestConsumed(this.context);
+                        ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
+                        ReadFlowHandler.markRequestConsumed(this.context.channel());
                     }
                     return false;
                 }
@@ -720,7 +792,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     if (context != null
                             && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get())) {
                         try {
-                            ReadFlowHandler.setBodyReadWanted(context, false);
+                            ReadFlowHandler.setBodyReadWanted(context.channel(), false);
                         } catch (Throwable ignore) {
                         }
                         return false;
@@ -737,7 +809,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 }
 
                 if(!readRequested && !autoRead && queue.wantsInput() && context != null){
-                    ReadFlowHandler.setBodyReadWanted(context, true);
+                    ReadFlowHandler.setBodyReadWanted(context.channel(), true);
                     readRequested = true;
                 }
 
@@ -750,7 +822,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     if(inputShutdownPending){
                         if(this.context!=null){
                             try{
-                                ReadFlowHandler.setBodyReadWanted(this.context, false);
+                                ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
                             } catch (Throwable ignore){}
                         }
                         return false;
@@ -759,6 +831,17 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 } catch (InterruptedException ie){
                     Thread.currentThread().interrupt();
                     throw new IOException("Interrupted while waiting for request body", ie);
+                }
+
+                // Re-check purge flag after every wakeup. drainAndRelease() calls
+                // signalChange() so this reader wakes up and exits here even if it
+                // was already inside the wait when the purge started.
+                if (queue.isPurging()) {
+                    if (this.buffer != null) {
+                        this.buffer.release();
+                        this.buffer = null;
+                    }
+                    return false;
                 }
 
                 //Signal received; run loop again
@@ -833,11 +916,24 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
     }
 
+    /**
+     * @return true once end-of-body has been observed on the Netty streaming read path,
+     *         meaning any request trailers have been received and attached to the message.
+     */
+    public boolean isStreamingEosObserved() {
+        return streamingEosObserved;
+    }
+
+    protected void markStreamingEosObserved() {
+        this.streamingEosObserved = true;
+    }
+
     private void completeStreamingFixedLengthRequest() {
         this.readChannelComplete = true;
+        markStreamingEosObserved();
         if (this.context != null){
-            ReadFlowHandler.setBodyReadWanted(this.context, false);
-            ReadFlowHandler.markRequestConsumed(this.context);
+            ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
+            ReadFlowHandler.markRequestConsumed(this.context.channel());
         }
         if(!queue.isEos()){
             queue.signalEos();
@@ -870,12 +966,22 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
         if(this.context != null){
             try{
-                ReadFlowHandler.setBodyReadWanted(this.context, false);
+                ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
             } catch(Throwable ignore){}
         }
 
         if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
             Tr.debug(tc, "signaled EOS to waiting body readers");
         }
+    }
+
+    /**
+     * Returns the {@link BodyQueue} backing this stream, or {@code null} if
+     * not in Netty streaming mode. Used by the purge lifecycle to drain
+     * already-buffered fragments when the application has finished its
+     * response without consuming the body.
+     */
+    public BodyQueue getBodyQueue() {
+        return this.queue;
     }
 }

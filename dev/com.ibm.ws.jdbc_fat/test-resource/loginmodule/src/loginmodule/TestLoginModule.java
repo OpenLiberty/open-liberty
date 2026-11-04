@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,7 @@ public class TestLoginModule implements LoginModule {
 
     private void setPasswordCredentialInSubject(Callback[] callbacks) {
         ManagedConnectionFactory managedConnectionFactory = ((WSManagedConnectionFactoryCallback) callbacks[0]).getManagedConnectionFacotry();
-        PasswordCredential passwordCredential = new PasswordCredential("dbuser1", "dbuser1pwd".toCharArray());
+        PasswordCredential passwordCredential = new PasswordCredential("dbuser1", "dbpwd1".toCharArray());
         passwordCredential.setManagedConnectionFactory(managedConnectionFactory);
         subject.getPrivateCredentials().add(passwordCredential);
     }

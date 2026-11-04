@@ -14,10 +14,10 @@
 
   <featureManager>
     <feature>componenttest-2.0</feature>
-    <feature>concurrent-3.2</feature>
+    <feature>concurrent-3.1</feature>
     <feature>data-1.1</feature>
     <feature>persistenceContainer-4.0</feature>
-    <feature>servlet-6.2</feature>
+    <feature>servlet-6.1</feature>
     <feature>xmlBinding-4.0</feature> <!-- required by Hibernate -->
   </featureManager>
 

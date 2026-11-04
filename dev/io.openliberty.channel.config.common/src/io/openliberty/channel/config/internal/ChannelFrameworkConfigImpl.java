@@ -223,10 +223,9 @@ public class ChannelFrameworkConfigImpl implements ChannelFrameworkConfig {
             // Use default value
         }
 
-        // If running in beta mode and quiesceTimeout is explicitly configured on the server element,
+        // If quiesceTimeout is explicitly configured on the server element,
         // it overrides chainQuiesceTimeout
-        boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
-        if (isBeta && serverElementConfig.isQuiesceTimeoutExplicitlyConfigured()) {
+        if (serverElementConfig.isQuiesceTimeoutExplicitlyConfigured()) {
 
             long serverQuiesceTimeout = serverElementConfig.getQuiesceTimeoutMillis();
 

@@ -90,10 +90,10 @@ public class ToolTest extends FATServletClient {
     }
 
     @Rule
-    public McpClient client = new McpClient(server, "/toolTest");
+    public McpClient client = McpClient.builder(server, "/toolTest").build();
 
     @Rule
-    public McpClient progressClient = new McpClient(server, "/progressTest");
+    public McpClient progressClient = McpClient.builder(server, "/progressTest").build();
 
     @BeforeClass
     public static void setup() throws Exception {

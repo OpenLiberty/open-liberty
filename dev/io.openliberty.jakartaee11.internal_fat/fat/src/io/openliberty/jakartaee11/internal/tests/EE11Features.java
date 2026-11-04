@@ -221,7 +221,9 @@ public class EE11Features {
 
         // Add back EE-11
         features.addAll(JakartaEE11Action.EE11_FEATURE_SET);
-        features.add("data-1.1"); // tolerates EE-11
+        features.add("data-1.1"); // temporarily tolerates EE-11 for betas
+        features.add("dataContainer-1.1"); // temporarily tolerates EE-11 for betas
+        features.add("persistenceContainer-4.0"); // temporarily tolerates EE-11 for betas
 
         // Value-add features which aren't compatible
         features.remove("openid-2.0"); // stabilized
@@ -263,6 +265,9 @@ public class EE11Features {
             // depend on previous EE versions and now uses wmqMessagingClient-3.0 for EE9
             features.remove("wmqJmsClient-1.1");
             features.remove("wmqJmsClient-2.0");
+
+            // EE10 only
+            features.remove("more-1.0.5");
 
             // heritage API features
             features.remove("heritageAPIs-1.0");
@@ -318,6 +323,8 @@ public class EE11Features {
 
         // remove noship features
         features.remove("data-1.1");
+        features.remove("dataContainer-1.1");
+        features.remove("persistenceContainer-4.0");
         features.remove("jcacheContainer-1.1");
         features.remove("netty-1.0");
         features.remove("noShip-1.0");

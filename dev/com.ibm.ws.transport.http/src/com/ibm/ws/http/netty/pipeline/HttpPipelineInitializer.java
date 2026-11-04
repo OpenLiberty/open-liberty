@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyChain;
@@ -40,6 +41,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpMessage;
+import io.netty.handler.codec.http.HttpServerUpgradeHandler;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
@@ -76,7 +78,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String HTTP_AGGREGATOR_HANDLER_NAME = "objectAggregator";
     public static final String HTTP_REQUEST_HANDLER_NAME = "requestHandler";
     public static final String HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME = "h2cUpgradeHandler";
-    public static final String HTTP1_PROTOCOL_HANDLER_NAME = "http1ProtocolHandler";
+    public static final String SERVLET_UPGRADE_HANDLER_NAME = "ServletUpgradeHandler";
     public static final String WRITE_TIMEOUT_HANDER_NAME = "writeTimeoutHandler";
 
     public static final long maxContentLength = Long.MAX_VALUE;
@@ -145,6 +147,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));
         addPreDispatcherHandlers(pipeline, true);
         pipeline.channel().attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
+        pipeline.channel().attr(NettyHttpConstants.SSL_HANDLER).set(handler);
         // Turn off half closure with H2
         pipeline.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, false);
     }
@@ -154,6 +157,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         pipeline.addFirst(HTTP_SSL_HANDLER_NAME, handler);
         pipeline.channel().attr(NettyHttpConstants.IS_SECURE).set(Boolean.TRUE);
+        pipeline.channel().attr(NettyHttpConstants.SSL_HANDLER).set(handler);
         setupHttp11Pipeline(pipeline);
     }
 
@@ -207,33 +211,36 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     }
 
     /**
+     * Creates the HTTP/1.1 server codec used by every Netty inbound path: the plain
+     * HTTP/1.1 pipeline, the HTTP/1.1 branch of ALPN, and the h2c upgrade handler.
+     *
+     * @param config the HTTP channel configuration for the endpoint
+     * @return a new HttpServerCodec configured with the Liberty HTTP options
+     */
+    public static HttpServerCodec newHttpServerCodec(HttpChannelConfig config) {
+        return new HttpServerCodec(config.getLimitOfFieldSize(), 
+                                   config.getIncomingBodyBufferSize(),
+                                   config.getLimitOfFieldSize(), 
+                                   config.getLimitOnNumberOfHeaders());
+    }
+    /**
      * Utility method for building an HTTP1.1 pipeline
      *
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void setupHttp11Pipeline(ChannelPipeline pipeline) {
 
-        // 8192 is used instead 4096 of for the maxInitialLineLength to avoid io.netty.handler.codec.http.TooLongHttpLineException 
-        // Needed to pass JWT tests with long tokens
-        int maxLineLength = Integer.MAX_VALUE;
-        if(httpConfig.getMessageSizeLimit() != -1 && httpConfig.getMessageSizeLimit() < Integer.MAX_VALUE) {
-            maxLineLength = (int)httpConfig.getMessageSizeLimit();
-        }
-        HttpServerCodec sourceCodec = new HttpServerCodec(maxLineLength, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
+        HttpServerCodec sourceCodec = newHttpServerCodec(httpConfig);
         pipeline.addLast(CRLFValidationHandler.NAME, CRLFValidationHandler.INSTANCE);
         pipeline.addLast(NETTY_HTTP_SERVER_CODEC, sourceCodec);
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
         addPreDispatcherHandlers(pipeline, false);
-        pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, HTTP1_PROTOCOL_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
-            @Override
-            protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
-                establishHttp1Protocol(ctx, Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.IS_SECURE).get()));
-                ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
-            }
-        });
-        // Turn off auto read for HTTP/1.1
+        // Turn off auto read for HTTP/1.1 before publishing the protocol change.
         pipeline.channel().config().setAutoRead(false);
+        boolean secure = Boolean.TRUE.equals(pipeline.channel().attr(NettyHttpConstants.IS_SECURE).get());
+        ProtocolState.establish(pipeline.channel(), ProtocolName.HTTP1,
+            secure ? ProtocolSource.TLS_HTTP1 : ProtocolSource.CLEARTEXT_HTTP1);
     }
 
     /**
@@ -260,18 +267,16 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // Turn off auto read for H1
                 ctx.channel().config().setAutoRead(false);
 
-                TimeoutHandler timeoutHandler = pipeline.get(TimeoutHandler.class);
-
                 // Add H1 handlers
-                // TODO we should decide if the TimeoutHandler is optional or not for this check
+                // The h2c pipeline installs TimeoutHandler before it can reach this fallback.
                 if(pipeline.get(ReadFlowHandler.class) == null){
-                    pipeline.addBefore((timeoutHandler != null) ? TimeoutHandler.NAME : HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
+                    pipeline.addAfter(TimeoutHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
                 }
                 if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
-                    pipeline.addBefore(ReadFlowHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                    pipeline.addBefore(TimeoutHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 }
 
-                establishHttp1Protocol(ctx, false);
+                ProtocolState.establish(ctx.channel(), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Pipeline before H1 fallback after no H2C: "+ ctx.pipeline());
@@ -287,14 +292,15 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 }
 
                 // Remove non-H1 handlers
-                if (pipeline.get("h2cUpgradeHandler") != null) {
-                    pipeline.remove("h2cUpgradeHandler");
+                if (pipeline.get(HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME) != null) {
+                    pipeline.remove(HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME);
                 }
-                if (pipeline.get("HttpServerUpgradeHandler#0") != null) {
-                    pipeline.remove("HttpServerUpgradeHandler#0");
+                HttpServerUpgradeHandler upgradeHandler = pipeline.get(HttpServerUpgradeHandler.class);
+                if (upgradeHandler != null) {
+                    pipeline.remove(upgradeHandler);
                 }
-                if (pipeline.get("upgradeCheckHandler") != null) {
-                    pipeline.remove("upgradeCheckHandler");
+                if (pipeline.get(NO_UPGRADE_OCURRED_HANDLER_NAME) != null) {
+                    pipeline.remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
                 }
 
             }
@@ -310,11 +316,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 super.userEventTriggered(ctx, evt);
             }
         });
-    }
-
-    private static void establishHttp1Protocol(ChannelHandlerContext context, boolean secure) {
-        ProtocolSource source = secure ? ProtocolSource.TLS_HTTP1 : ProtocolSource.CLEARTEXT_HTTP1;
-        ProtocolState.establish(context.channel(), ProtocolName.HTTP1, source);
     }
 
     /**

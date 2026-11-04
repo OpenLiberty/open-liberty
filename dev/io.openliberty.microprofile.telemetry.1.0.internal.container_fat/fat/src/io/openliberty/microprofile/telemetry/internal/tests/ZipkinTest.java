@@ -62,6 +62,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 /**
  * Test exporting traces to a Zipkin server
  */
+@SuppressWarnings("deprecation")
 @RunWith(FATRunner.class)
 public class ZipkinTest {
 

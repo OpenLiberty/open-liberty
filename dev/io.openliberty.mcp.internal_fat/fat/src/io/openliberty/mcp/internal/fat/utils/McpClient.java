@@ -20,13 +20,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 import javax.net.ssl.SSLContext;
 
@@ -37,34 +39,44 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpRequest;
 
 /**
- * A client for testing the MCP server, which takes care of setting up a session, passing
- * through the correct headers on each request and deleting the session after the test.
- * <p>
- * This class must be initialized as a JUnit test rule in a field in the test class:
+ * A client for testing the MCP server. Handles session setup, standard header
+ * propagation, and session teardown.
+ *
+ * <h2>Creating a client</h2>
+ * Use the {@link Builder} to construct an instance:
  *
  * <pre>{@code
+ * // As a JUnit @Rule (session opened before each test, closed after):
  * @Rule
- * public McpClient client = new McpClient(server, "/[whatever your root file is named]");
+ * public McpClient client = McpClient.builder(server, "/myApp").build();
+ *
+ * // Manually managed (e.g. when you need multiple sessions):
+ * try (McpClient client = McpClient.builder(server, "/myApp").build()) {
+ *     client.initialize();
+ *     client.callMCP(jsonRequest);
+ * }
  * }</pre>
  *
- * <p>
- * Then within your test method, you can use the client to make requests:
+ * <h2>Making requests</h2>
+ * <ul>
+ *   <li>{@link #callMCP(String)} — standard call; applies all client-level auth and session
+ *       headers, expects HTTP 200 with a response body.</li>
+ *   <li>{@link #callMCPRaw(String)} — full control over expected status code,
+ *       per-call auth override, and custom endpoint path. Use for negative/exceptional test
+ *       cases.</li>
+ *   <li>{@link #callMCPNotification(String)} — sends a notification, expects HTTP 202 with
+ *       no response body.</li>
+ *   <li>{@link #listAllTools()} — convenience method that follows pagination to return all tools.</li>
+ * </ul>
  *
- * <pre>{@code
- * String jsonResponse = client.callMCP(jsonRequest);
- * }</pre>
- *
- * <p>
- * <b>HTTPS support:</b> pass an {@link SSLContext} to one of the secure constructors (e.g.
- * {@link #McpClient(LibertyServer, String, StateMode, String, SSLContext)}) to make all MCP
- * calls and discovery requests over TLS. When an {@code SSLContext} is present the client
- * uses {@link java.net.http.HttpClient} instead of the plain Apache HTTP client, so it can
- * handle self-signed certificates.
+ * <h2>HTTPS</h2>
+ * Pass an {@link SSLContext} via {@link Builder#sslContext(SSLContext)} to make all requests
+ * over TLS. When set, the client uses the secure port and the supplied context to trust
+ * self-signed certificates.
  */
-public class McpClient extends ExternalResource {
+public class McpClient extends ExternalResource implements AutoCloseable {
 
     private static final Class<?> c = McpClient.class;
 
@@ -77,15 +89,15 @@ public class McpClient extends ExternalResource {
 
     /** Non-null when this client speaks HTTPS. */
     private final SSLContext sslContext;
-    private final java.net.http.HttpClient secureHttpClient;
+    private final HttpClient httpClient;
 
     /**
-     * Optional fallback HTTP client used for {@link #fetchJson} and {@link #fetchAccessToken}
-     * when this client has no {@link #secureHttpClient}. This allows plain-HTTP MCP clients
-     * to follow discovery URLs that point to HTTPS endpoints (e.g. Keycloak) without
-     * switching the MCP transport to HTTPS.
+     * Optional fallback HTTP client used for {@link #getDiscoveryHttpClient()} when this
+     * client has no {@link SSLContext}. Allows plain-HTTP MCP clients to follow discovery
+     * URLs that point to HTTPS endpoints (e.g. Keycloak) without switching the MCP
+     * transport to HTTPS.
      */
-    private java.net.http.HttpClient discoveryHttpClient;
+    private HttpClient discoveryHttpClient;
 
     private static final String DEFAULT_MCP_PATH = "/mcp";
     private final String path;
@@ -93,179 +105,178 @@ public class McpClient extends ExternalResource {
     private String sessionId;
 
     public static enum StateMode {
-        // STATEFUL - Uses sessions and session IDs to maintain state across requests
+        /** Uses sessions and session IDs to maintain state across requests. */
         STATEFUL,
-        // STATELESS - Each request is independent with no session information e.g. authentication will be required for each request
+        /** Each request is independent with no session information. */
         STATELESS
     }
 
     // -------------------------------------------------------------------------
-    // Constructors (plain HTTP)
+    // Builder
     // -------------------------------------------------------------------------
 
-    public McpClient(LibertyServer server, String contextRoot) {
-        this(server, contextRoot, DEFAULT_MCP_PATH, StateMode.STATEFUL, null, null, null, null);
-    }
-
     /**
-     * @param server the {@link LibertyServer} instance used to send requests
-     * @param contextRoot the contextRoot for MCP app.
-     * @param mode whether to expect the server to be in stateful or stateless mode
-     */
-    public McpClient(LibertyServer server, String contextRoot, StateMode mode) {
-        this(server, contextRoot, DEFAULT_MCP_PATH, mode, null, null, null, null);
-    }
-
-    public McpClient(LibertyServer server, String contextRoot, String path) {
-        this(server, contextRoot, path, StateMode.STATEFUL, null, null, null, null);
-    }
-
-    /**
-     * @param server the {@link LibertyServer} instance used to send requests
-     * @param contextRoot the contextRoot for MCP app.
-     * @param path The full request endpoint path e.g {@code path + "/mcp"}.
-     */
-    public McpClient(LibertyServer server, String contextRoot, String path, StateMode mode) {
-        this(server, contextRoot, path, mode, null, null, null, null);
-    }
-
-    /**
-     * Use this constructor if you have the StateMode and bearerToken
-     */
-    public McpClient(LibertyServer server, String contextRoot, StateMode mode, String bearerToken) {
-        this(server, contextRoot, DEFAULT_MCP_PATH, mode, bearerToken, null, null, null);
-    }
-
-    /**
-     * Use this constructor if you have the StateMode, username and password
-     */
-    public McpClient(LibertyServer server, String contextRoot, StateMode mode, String username, String password) {
-        this(server, contextRoot, DEFAULT_MCP_PATH, mode, null, username, password, null);
-    }
-
-    // Constructors (HTTPS — provide an SSLContext)
-    /**
-     * Creates an HTTPS-capable client with a bearer token.
+     * Returns a new {@link Builder} for the given server and context root.
      *
-     * <p>All MCP calls, JSON fetch requests, and token requests made through this client
-     * will use TLS with the supplied {@code sslContext}, which must trust both the Liberty
-     * server certificate and any third-party certificate (e.g. Keycloak) in the chain.
-     *
-     * @param server the Liberty server
-     * @param contextRoot the context root of the MCP application
-     * @param mode whether the server is in stateful or stateless mode
-     * @param bearerToken the Bearer token to include in MCP calls, or {@code null}
-     * @param sslContext the SSL context used to trust self-signed certificates
+     * @param server      the Liberty server to target
+     * @param contextRoot the context root of the MCP application (leading {@code /} optional)
      */
-    public McpClient(LibertyServer server, String contextRoot, StateMode mode, String bearerToken, SSLContext sslContext) {
-        this(server, contextRoot, DEFAULT_MCP_PATH, mode, bearerToken, null, null, sslContext);
+    public static Builder builder(LibertyServer server, String contextRoot) {
+        return new Builder(server, contextRoot);
     }
 
     /**
-     * Creates an HTTPS-capable client with no bearer token (for unauthenticated calls).
+     * Fluent builder for {@link McpClient}.
      *
-     * @param server the Liberty server
-     * @param contextRoot the context root of the MCP application
-     * @param mode whether the server is in stateful or stateless mode
-     * @param sslContext the SSL context used to trust self-signed certificates
+     * <p>Only {@code server} and {@code contextRoot} are required. All other options have
+     * sensible defaults: stateful mode, no authentication, plain HTTP, default MCP path.
      */
-    public McpClient(LibertyServer server, String contextRoot, StateMode mode, SSLContext sslContext) {
-        this(server, contextRoot, DEFAULT_MCP_PATH, mode, null, null, null, sslContext);
+    public static final class Builder {
+        private final LibertyServer server;
+        private final String contextRoot;
+        private String path = DEFAULT_MCP_PATH;
+        private StateMode mode = StateMode.STATEFUL;
+        private String username;
+        private String password;
+        private String bearerToken;
+        private SSLContext sslContext;
+
+        private Builder(LibertyServer server, String contextRoot) {
+            this.server = server;
+            this.contextRoot = contextRoot;
+        }
+
+        /** Sets the MCP endpoint path (default: {@code /mcp}). */
+        public Builder path(String path) {
+            this.path = path;
+            return this;
+        }
+
+        /** Sets whether the server is in stateful or stateless mode (default: {@link StateMode#STATEFUL}). */
+        public Builder mode(StateMode mode) {
+            this.mode = mode;
+            return this;
+        }
+
+        /** Configures Basic Authentication credentials applied to every request. */
+        public Builder basicAuth(String username, String password) {
+            this.username = username;
+            this.password = password;
+            return this;
+        }
+
+        /** Configures a Bearer token applied to every request. */
+        public Builder bearerToken(String token) {
+            this.bearerToken = token;
+            return this;
+        }
+
+        /**
+         * Configures TLS. When set, all MCP requests and discovery requests are made over HTTPS
+         * using the supplied context to trust self-signed certificates.
+         */
+        public Builder sslContext(SSLContext sslContext) {
+            this.sslContext = sslContext;
+            return this;
+        }
+
+        /** Builds and returns a new {@link McpClient}. */
+        public McpClient build() {
+            if (bearerToken != null && username != null) {
+                throw new IllegalStateException("McpClient.Builder: basicAuth and bearerToken are mutually exclusive — set one or the other, not both.");
+            }
+            return new McpClient(this);
+        }
     }
 
-    // Primary constructor
-
-    /**
-     * @param server the {@link LibertyServer} instance used to send requests
-     * @param path the base endpoint path for MCP. The full request path will be {@code path + "/mcp"}.
-     * @param mode whether to expect the server to be in stateful or stateless mode
-     * @param bearerToken optional Bearer token
-     * @param username for basic auth
-     * @param password for basic auth
-     * @param sslContext when non-null, all MCP requests are made over HTTPS using this context
-     */
-    public McpClient(LibertyServer server, String contextRoot, String path, StateMode mode,
-                     String bearerToken, String username, String password, SSLContext sslContext) {
+    private McpClient(Builder b) {
         super();
-        this.server = server;
-        this.contextRoot = contextRoot.startsWith("/") ? contextRoot : "/" + contextRoot;
-        this.path = path.startsWith("/") ? path : "/" + path;
-        this.mode = mode;
-        this.bearerToken = bearerToken;
-        this.username = username;
-        this.password = password;
-        this.sslContext = sslContext;
-        this.secureHttpClient = sslContext == null ? null
-                        : java.net.http.HttpClient.newBuilder().sslContext(sslContext).build();
+        this.server = b.server;
+        this.contextRoot = b.contextRoot.startsWith("/") ? b.contextRoot : "/" + b.contextRoot;
+        this.path = b.path.startsWith("/") ? b.path : "/" + b.path;
+        this.mode = b.mode;
+        this.username = b.username;
+        this.password = b.password;
+        this.bearerToken = b.bearerToken;
+        this.sslContext = b.sslContext;
+        this.httpClient = sslContext == null
+                          ? HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build()
+                          : HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).sslContext(sslContext).build();
     }
 
+    // -------------------------------------------------------------------------
     // URL helpers
+    // -------------------------------------------------------------------------
 
     private String getMcpPath() {
         return contextRoot + path;
     }
 
     private String getMcpUrl() {
-        if (secureHttpClient != null) {
+        if (sslContext != null) {
             return "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + getMcpPath();
         }
         return "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + getMcpPath();
     }
 
+    /** Returns the {@link LibertyServer} this client targets. */
+    public LibertyServer getServer() {
+        return server;
+    }
+
+    /** Returns the context root of the MCP application (always starts with {@code /}). */
+    public String getContextRoot() {
+        return contextRoot;
+    }
+
     /** Returns {@code true} when this client makes MCP requests over HTTPS. */
     public boolean isSecure() {
-        return secureHttpClient != null;
+        return sslContext != null;
     }
 
     /**
-     * Returns the {@link SSLContext} used by this client, or {@code null} if this is a plain
-     * HTTP client. Useful when creating a new authenticated client that should use the same
-     * TLS configuration.
+     * Returns the {@link SSLContext} used by this client, or {@code null} if plain HTTP.
+     * Useful when creating a new authenticated client that should share the same TLS config.
      */
     public SSLContext getSslContext() {
         return sslContext;
     }
 
     /**
-     * Sets a fallback {@link java.net.http.HttpClient} used for discovery requests when this client has no {@link SSLContext}.
-     *
-     * <p>This is useful when MCP calls go over plain HTTP but the discovery chain includes
-     * HTTPS endpoints (e.g. a Keycloak token server). By supplying a client that trusts
-     * those certificates, JSON fetches can follow the full discovery chain without changing
-     * the MCP transport.
+     * Sets a fallback {@link HttpClient} used for discovery requests when this
+     * client is plain HTTP but the discovery chain includes HTTPS endpoints (e.g. Keycloak).
      *
      * @param client the HTTP client to use for discovery requests
-     * @return this client (for fluent chaining)
+     * @return {@code this} for fluent chaining
      */
-    public McpClient withDiscoveryClient(java.net.http.HttpClient client) {
+    public McpClient withDiscoveryClient(HttpClient client) {
         this.discoveryHttpClient = client;
         return this;
     }
 
+    /**
+     * Returns the appropriate {@link HttpClient} for discovery requests.
+     * Priority: discovery client > this client's HTTP client.
+     */
+    public HttpClient getDiscoveryHttpClient() {
+        return discoveryHttpClient != null ? discoveryHttpClient : httpClient;
+    }
+
     // -------------------------------------------------------------------------
-    // Lifecycle (ExternalResource)
+    // Lifecycle (ExternalResource / AutoCloseable)
     // -------------------------------------------------------------------------
 
     /**
-     * Initialize the MCP client by sending an initialize request and setting up the session.
-     * This method can be called directly when you need to reinitialize after session deletion.
+     * Sends the MCP {@code initialize} request and stores the resulting session ID.
+     * Called automatically when used as a JUnit {@code @Rule}; call manually when
+     * managing the lifecycle yourself.
      *
      * @throws Exception if initialization fails
      */
     public void initialize() throws Exception {
-        try {
-            before();
-        } catch (Throwable t) {
-            if (t instanceof Exception) {
-                throw (Exception) t;
-            }
-            throw new Exception("Initialization failed", t);
-        }
-    }
+        // Clear any stale session ID so it is not sent on the initialize request.
+        sessionId = null;
 
-    /** {@inheritDoc} */
-    @Override
-    protected void before() throws Throwable {
         String request = """
                         {
                           "jsonrpc": "2.0",
@@ -289,67 +300,74 @@ public class McpClient extends ExternalResource {
                         }
                         """;
 
-        HttpRequest httpRequest = new HttpRequest(server, getMcpPath())
-                                                                       .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                       .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
-                                                                       .jsonBody(request)
-                                                                       .method("POST");
-        if (username != null && password != null) {
-            httpRequest.basicAuth(username, password);
-        }
-        String response = httpRequest.run(String.class);
+        HttpResponse<String> response = post(getMcpUrl(), request);
 
+        if (response.statusCode() != 200) {
+            throw new Exception("initialize failed with HTTP " + response.statusCode() + ": " + response.body());
+        }
+
+        // Validate the JSON-RPC envelope and required initialize result fields
         String expectedResponse = """
                         {
                           "jsonrpc": "2.0",
                           "id": "1",
                           "result": {
-                            "protocolVersion": "2025-11-25",
+                            "protocolVersion": "2025-11-25"
                           }
                         }
                         """;
-        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.LENIENT);
+        JSONAssert.assertEquals(expectedResponse, response.body(), JSONCompareMode.LENIENT);
 
-        sessionId = httpRequest.getResponseHeader(MCP_SESSION_ID);
+        JSONObject json = new JSONObject(response.body());
+        assertNull("initialize response must not contain a JSON-RPC error field", json.opt("error"));
+
+        JSONObject result = json.getJSONObject("result");
+        assertNotNull("initialize result must contain 'serverInfo'", result.opt("serverInfo"));
+        assertNotNull("initialize result must contain 'capabilities'", result.opt("capabilities"));
+
+        sessionId = response.headers().firstValue(MCP_SESSION_ID).orElse(null);
         switch (mode) {
-            case STATEFUL -> assertNotNull(sessionId);
-            case STATELESS -> assertNull(sessionId);
+            case STATEFUL -> assertNotNull("Mcp-Session-Id header must be present in stateful mode", sessionId);
+            case STATELESS -> assertNull("Mcp-Session-Id header must be absent in stateless mode", sessionId);
         }
 
-        String contentType = httpRequest.getResponseHeader("Content-Type");
-        assertThat(contentType, containsString(VALUE_APPLICATION_JSON));
+        String contentType = response.headers().firstValue("Content-Type").orElse(null);
+        assertThat("Content-Type must be application/json", contentType, containsString(VALUE_APPLICATION_JSON));
 
         // Notify the server that initialization was successful
-        String notification = """
-                         {
-                           "jsonrpc": "2.0",
-                           "method": "notifications/initialized"
-                         }
-                        """;
+        callMCPNotification("""
+                        {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/initialized"
+                        }
+                        """);
+    }
 
-        callMCPNotification(notification);
+    /** {@inheritDoc} — delegates to {@link #initialize()}. */
+    @Override
+    protected void before() throws Throwable {
+        initialize();
     }
 
     /**
-     * Indicates that the session should not be deleted when the test completes.
-     * This is useful for tests that explicitly delete the session themselves or
-     * when the application is undeployed before the test completes.
+     * Implements {@link AutoCloseable}: deletes the MCP session if stateful and not already
+     * deleted. Call manually when managing the lifecycle outside of a JUnit {@code @Rule}.
      */
-    public void skipSessionDeletion() {
-        this.sessionDeleted = true;
-    }
-
     @Override
-    protected void after() {
-        if (mode.equals(StateMode.STATEFUL) && !sessionDeleted) {
+    public void close() {
+        if (mode.equals(StateMode.STATEFUL) && !sessionDeleted && sessionId != null) {
             try {
-                new HttpRequest(server, getMcpPath()).requestProp(MCP_SESSION_ID, sessionId)
-                                                     .method("DELETE")
-                                                     .run(String.class);
+                deleteSession();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    /** {@inheritDoc} — delegates to {@link #close()}. */
+    @Override
+    protected void after() {
+        close();
     }
 
     public String getSessionId() {
@@ -357,330 +375,123 @@ public class McpClient extends ExternalResource {
     }
 
     /**
-     * Mark the session as deleted without actually deleting it.
-     * This is useful when the session has already been invalidated (e.g., by server config changes)
-     * and you want to prevent the cleanup code from trying to delete it.
+     * Marks the session as already deleted so that the automatic teardown does not attempt
+     * to delete it again. Use this when the session has been invalidated externally (e.g.
+     * by a server config change or explicit {@link #deleteSession()} call).
      */
     public void markSessionDeleted() {
         this.sessionDeleted = true;
     }
 
-    /**
-     * Initialize a new session. This is useful when you need to re-establish a session
-     * after it has been invalidated (e.g., by server config changes).
-     */
-    public void initializeSession() throws Exception {
-        sessionDeleted = false;
-        try {
-            before();
-        } catch (Throwable t) {
-            if (t instanceof Exception) {
-                throw (Exception) t;
-            } else {
-                throw new RuntimeException(t);
-            }
-        }
-    }
-
-    /**
-     * Clean up the current session. This is useful when you need to manually clean up
-     * a session that was initialized with initializeSession().
-     * Failures are silently ignored since the session may have already expired.
-     */
-    public void cleanupSession() {
-        try {
-            after();
-        } catch (Exception e) {
-            // Ignore as session may have already expired
-        }
-    }
-
-    public void deleteSession() {
+    /** Sends a DELETE request for the current session and marks it as deleted. */
+    public void deleteSession() throws Exception {
         if (mode.equals(StateMode.STATEFUL)) {
-            try {
-                new HttpRequest(server, getMcpPath())
-                                                     .requestProp(MCP_SESSION_ID, sessionId)
-                                                     .method("DELETE")
-                                                     .run(String.class);
-
-                this.sessionDeleted = true;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            HttpRequest deleteRequest = HttpRequest.newBuilder()
+                            .uri(URI.create(getMcpUrl()))
+                            .header(MCP_SESSION_ID, sessionId)
+                            .DELETE()
+                            .build();
+            HttpResponse<String> response = httpClient.send(deleteRequest, BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                throw new Exception("deleteSession failed with HTTP " + response.statusCode() + ": " + response.body());
             }
+            this.sessionDeleted = true;
         }
     }
 
-    public void deleteSession(String mcpSessionId) {
+    /**
+     * Sends a DELETE request for the given session ID. Does not mark this client's session
+     * as deleted — use this only when deleting a session belonging to another client (e.g.
+     * to test cross-session deletion behaviour).
+     */
+    public void deleteSession(String mcpSessionId) throws Exception {
         if (mode.equals(StateMode.STATEFUL)) {
-            try {
-                new HttpRequest(server, getMcpPath())
-                                                     .requestProp(MCP_SESSION_ID, mcpSessionId)
-                                                     .method("DELETE")
-                                                     .run(String.class);
-
-                this.sessionDeleted = true;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+            HttpRequest deleteRequest = HttpRequest.newBuilder()
+                            .uri(URI.create(getMcpUrl()))
+                            .header(MCP_SESSION_ID, mcpSessionId)
+                            .DELETE()
+                            .build();
+            HttpResponse<String> response = httpClient.send(deleteRequest, BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                throw new Exception("deleteSession(" + mcpSessionId + ") failed with HTTP " + response.statusCode() + ": " + response.body());
             }
         }
     }
 
     // -------------------------------------------------------------------------
-    // Plain HTTP request plumbing
+    // Core HTTP plumbing
     // -------------------------------------------------------------------------
 
     /**
-     * Sets up and runs a HTTP request.
-     * Only attaches a sessionId if Stateful mode is enabled.
+     * Sends a POST to {@code url} with the standard MCP headers, the client's session ID,
+     * and client-level auth credentials (Basic or Bearer). Does not validate the status code.
      */
-    private String setupAndRunRequest(final HttpRequest request, String jsonRequestBody) throws Exception {
-        request.requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-               .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
-               .jsonBody(jsonRequestBody)
-               .method("POST");
-
-        if (mode.equals(StateMode.STATEFUL)) {
-            if (sessionId == null) {
-                throw new IllegalStateException("In stateful mode but don't have a sessionId, did you forget to use @Rule?");
-            }
-            request.requestProp(MCP_SESSION_ID, sessionId);
-        }
-        return request.run(String.class);
-    }
-
-    private String setupAndRunRequest(final HttpRequest request, String jsonRequestBody, String aSessionID) throws Exception {
-        request.requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-               .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
-               .jsonBody(jsonRequestBody)
-               .method("POST");
-
-        if (mode.equals(StateMode.STATEFUL)) {
-            if (sessionId == null) {
-                throw new IllegalStateException("In stateful mode but don't have a sessionId, did you forget to use @Rule?");
-            }
-            request.requestProp(MCP_SESSION_ID, aSessionID);
-        }
-        return request.run(String.class);
-    }
-
-    // HTTPS request plumbing
-
-    /**
-     * Sends a POST to the MCP endpoint over HTTPS and returns the raw response.
-     * Requires this client to have been constructed with an {@link SSLContext}.
-     *
-     * @param jsonBody     the JSON-RPC request body
-     * @param token        the Bearer token, or {@code null} for an unauthenticated call
-     * @param expectedCode the HTTP status code that must be returned
-     * @return the full {@link HttpResponse}
-     * @throws Exception if the request fails or the response status does not match
-     */
-    private HttpResponse<String> postMcpHttps(String jsonBody, String token, int expectedCode) throws Exception {
-        java.net.http.HttpRequest.Builder builder = java.net.http.HttpRequest.newBuilder()
-                        .uri(URI.create(getMcpUrl()))
+    private HttpResponse<String> post(String url, String jsonBody) throws Exception {
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                        .uri(URI.create(url))
                         .header(ACCEPT, VALUE_ACCEPT_DEFAULT)
                         .header(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                         .header("Content-Type", VALUE_APPLICATION_JSON)
-                        .POST(java.net.http.HttpRequest.BodyPublishers.ofString(jsonBody));
-        if (token != null) {
-            builder.header("Authorization", "Bearer " + token);
+                        .POST(HttpRequest.BodyPublishers.ofString(jsonBody));
+
+        if (mode == StateMode.STATEFUL && sessionId != null) {
+            builder.header(MCP_SESSION_ID, sessionId);
         }
 
-        HttpResponse<String> response = secureHttpClient.send(builder.build(), BodyHandlers.ofString());
-        if (response.statusCode() != expectedCode) {
-            System.out.println("[McpClient] postMcpHttps(" + getMcpUrl() + ") -> HTTP "
-                               + response.statusCode() + " (expected " + expectedCode + ")\nBody: " + response.body());
+        if (bearerToken != null) {
+            builder.header("Authorization", "Bearer " + bearerToken);
+        } else if (username != null && password != null) {
+            String encoded = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
+            builder.header("Authorization", "Basic " + encoded);
         }
-        assertEquals("Unexpected HTTP status from HTTPS MCP call", expectedCode, response.statusCode());
-        return response;
+
+        return httpClient.send(builder.build(), BodyHandlers.ofString());
     }
 
+    // -------------------------------------------------------------------------
     // Public call methods
+    // -------------------------------------------------------------------------
 
     /**
-     * Call MCP server endpoint with a given JSON-RPC request body and return the response as a string.
-     * The request includes required headers: Accept, MCP-Protocol-Version, and Mcp-Session-Id.
-     * This method expects a successful response (200 OK) with a response body.
+     * Sends a standard MCP POST request. Applies all client-level auth and session headers.
+     * Expects HTTP 200 with a response body.
+     *
+     * @param jsonRequestBody the JSON-RPC request body
+     * @return the response body as a string
+     * @throws Exception if the request fails or the response status is not 200
      */
     public String callMCP(String jsonRequestBody) throws Exception {
-        final HttpRequest request = new HttpRequest(server, getMcpPath());
-        return setupAndRunRequest(request, jsonRequestBody);
-    }
-
-    public String callMCPWithSessionID(String jsonRequestBody, String aSessionID) throws Exception {
-        final HttpRequest request = new HttpRequest(server, getMcpPath());
-        return setupAndRunRequest(request, jsonRequestBody, aSessionID);
-    }
-
-    public String callMCPwithBasicAuth(String jsonRequestBody, String user, String password) throws Exception {
-        final HttpRequest request = new HttpRequest(server, getMcpPath()).basicAuth(user, password);
-        return setupAndRunRequest(request, jsonRequestBody);
-    }
-
-    /**
-     * Calls the MCP endpoint with the bearer token supplied at construction time.
-     *
-     * <p>Works over both HTTP and HTTPS — when an {@link SSLContext} was provided the call
-     * is made over TLS; otherwise the plain HTTP path is used.
-     */
-    public String callMCPWithBearerToken(String jsonRequestBody) throws Exception {
-        if (secureHttpClient != null) {
-            return postMcpHttps(jsonRequestBody, bearerToken, 200).body();
+        if (mode == StateMode.STATEFUL && sessionId == null) {
+            throw new IllegalStateException("In stateful mode but don't have a sessionId, did you forget to use @Rule or call initialize()?");
         }
-        final HttpRequest request = new HttpRequest(server, getMcpPath())
-                        .requestProp("Authorization", "Bearer " + bearerToken);
-        return setupAndRunRequest(request, jsonRequestBody);
-    }
-
-    /**
-     * Calls MCP without an access token, where authentication is expected.
-     *
-     * Expected response when OIDC bearer authentication is active:
-     * statusCode=401
-     * WWW-Authenticate=Bearer realm="oauth", error="invalid_token", error_description="Check access token"
-     *
-     * <p>Works over both HTTP and HTTPS.
-     *
-     * @param jsonRequestBody JSON-RPC request body
-     * @return detailed authentication error response including status, headers and body
-     * @throws Exception if the request fails unexpectedly
-     */
-    public McpDetailedAuthResponse callMCP401AuthErrorExpected(String jsonRequestBody) throws Exception {
-        if (secureHttpClient != null) {
-            HttpResponse<String> response = postMcpHttps(jsonRequestBody, null, 401);
-            return new McpDetailedAuthResponse(
-                            response.statusCode(),
-                            response.headers().firstValue("WWW-Authenticate").orElse(null),
-                            response.headers().firstValue("Content-Type").orElse(null),
-                            response.body());
+        HttpResponse<String> response = post(getMcpUrl(), jsonRequestBody);
+        if (response.statusCode() != 200) {
+            throw new Exception("Unexpected HTTP status expected:<200> but was:<" + response.statusCode() + ">\nBody: " + response.body());
         }
-        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(401);
-        String responseBody = setupAndRunRequest(request, jsonRequestBody);
-        return new McpDetailedAuthResponse(
-                        request.getResponseCode(),
-                        request.getResponseHeader("WWW-Authenticate"),
-                        request.getResponseHeader("Content-Type"),
-                        responseBody);
-    }
-
-    public String callMCPAuthorisationErrorExpected(String jsonRequestBody) throws Exception {
-        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(403);
-        return setupAndRunRequest(request, jsonRequestBody);
+        return response.body();
     }
 
     /**
-     * Calls the MCP endpoint expecting an HTTP 403 Forbidden response and returns a
-     * {@link McpDetailedAuthResponse} containing the status code, {@code Content-Type} header and
-     * response body. Use this variant when the test needs to assert the exact shape of the 403
-     * response (e.g. plain-text body, no JSON-RPC envelope).
+     * Sends an MCP notification. Expects HTTP 202 with no response body.
      *
-     * @param jsonRequestBody JSON-RPC request body
-     * @return detailed response including status, content-type header and body
-     * @throws Exception if the request fails unexpectedly
-     */
-    public McpDetailedAuthResponse callMCPAuthorisationErrorDetailed(String jsonRequestBody) throws Exception {
-        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(403);
-        String responseBody = setupAndRunRequest(request, jsonRequestBody);
-        return new McpDetailedAuthResponse(
-                        request.getResponseCode(),
-                        request.getResponseHeader("WWW-Authenticate"),
-                        request.getResponseHeader("Content-Type"),
-                        responseBody);
-    }
-
-    public String callMCPwithBasicAuth_AuthorisationErrorExpected(String jsonRequestBody, String user, String password) throws Exception {
-        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(403)
-                        .basicAuth(user, password);
-        return setupAndRunRequest(request, jsonRequestBody);
-    }
-
-    /**
-     * Calls the MCP endpoint with the bearer token supplied at construction time, expecting a 403.
-     *
-     * <p>Works over both HTTP and HTTPS.
-     */
-    public String callMCPWithBearerTokenAuthorisationErrorExpected(String jsonRequestBody) throws Exception {
-        if (secureHttpClient != null) {
-            return postMcpHttps(jsonRequestBody, bearerToken, 403).body();
-        }
-        final HttpRequest request = new HttpRequest(server, getMcpPath())
-                        .requestProp("Authorization", "Bearer " + bearerToken).expectCode(403);
-        return setupAndRunRequest(request, jsonRequestBody);
-    }
-
-    /**
-     * Call MCP server with a custom endpoint, and an expected response code
-     */
-    public String callMCPCustomized(String jsonRequestBody, String appendPath, int expectedCode) throws Exception {
-        final HttpRequest request = new HttpRequest(server, contextRoot + appendPath).expectCode(expectedCode);
-        return setupAndRunRequest(request, jsonRequestBody);
-    }
-
-    /**
-     * Call MCP server notification endpoint, and provide a 202 expected response code. No response body is returned
-     * If a response body is returned, or a response code that is not 202, and exception is thrown
+     * @param jsonRequestBody the JSON-RPC notification body (no {@code id} field)
+     * @throws Exception if the request fails or the response is not 202
      */
     public void callMCPNotification(String jsonRequestBody) throws Exception {
-        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(202);
-        String response = setupAndRunRequest(request, jsonRequestBody);
-        assertNull("Notification request received a response", response);
-    }
-
-    public String callMCPNotificationWithBasicAuth(String jsonRequestBody, String user, String password) throws Exception {
-        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(202).basicAuth(user, password);
-        String response = setupAndRunRequest(request, jsonRequestBody);
-        assertNull("Notification request received a response", response);
-        return response;
-    }
-
-    public String callMCPNotificationWithBasicAuthForbiddenErrorExpected(String jsonRequestBody, String user, String password)
-                    throws Exception {
-        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(403).basicAuth(user, password);
-        String response = setupAndRunRequest(request, jsonRequestBody);
-        return response;
+        HttpResponse<String> response = post(getMcpUrl(), jsonRequestBody);
+        if (response.statusCode() != 202) {
+            throw new Exception("Unexpected HTTP status for notification expected:<202> but was:<" + response.statusCode() + ">\nBody: " + response.body());
+        }
+        String body = response.body();
+        if (body != null && !body.isEmpty()) {
+            throw new Exception("Notification request received a response body: " + body);
+        }
     }
 
     /**
-     * Sends an MCP request with Basic Authentication credentials and asserts
-     * that the server responds with the expected HTTP status code.
-     *
-     * This is used for negative security tests where we want to verify that:
-     *
-     * - 401 Unauthorized is returned when authentication fails (wrong credentials)
-     * - 403 Forbidden is returned when authentication succeeds but authorization fails (wrong role)
-     */
-    public void callMCPExpectingStatus(String jsonRequestBody,
-                                       String user,
-                                       String password,
-                                       int expectedCode)
-                    throws Exception {
-        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(expectedCode).basicAuth(user, password);
-        setupAndRunRequest(request, jsonRequestBody);
-    }
-
-    /**
-     * Sends an MCP request without any authentication credentials and asserts
-     * that the server responds with the expected HTTP status code.
-     *
-     * This is mainly used to verify that unauthenticated requests are rejected
-     * correctly, for example:
-     *
-     * - 401 Unauthorized when a tool requires authentication
-     * - 403 Forbidden when a tool is explicitly denied
-     */
-    public void callMCPExpectingStatus(String jsonRequestBody,
-                                       int expectedCode)
-                    throws Exception {
-        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(expectedCode);
-        setupAndRunRequest(request, jsonRequestBody);
-    }
-
-    /**
-     * Returns the list of all tools. Takes the multiple paginated responses and combines them into a single
-     * tools list response.
+     * Returns the list of all tools, merging paginated responses into a single tools list.
      */
     public String listAllTools() throws Exception {
-
         JSONArray allTools = new JSONArray();
         String cursor = null;
         String lastResponse = null;
@@ -721,7 +532,7 @@ public class McpClient extends ExternalResource {
 
             cursor = result.optString("nextCursor", null);
             if (cursor != null) {
-                assertTrue(!cursor.isEmpty());
+                org.junit.Assert.assertTrue(!cursor.isEmpty());
             }
         } while (cursor != null);
 
@@ -736,27 +547,161 @@ public class McpClient extends ExternalResource {
         return combinedResponse.toString();
     }
 
-    public record McpDetailedAuthResponse(int statusCode, String wwwAuthenticate, String contentType, String body) {}
-
-    public void setSessionDeleted(boolean deleted) {
-        this.sessionDeleted = deleted;
-    }
-
+    // -------------------------------------------------------------------------
+    // Raw / low-level call method
+    // -------------------------------------------------------------------------
 
     /**
-     * Returns the appropriate {@link java.net.http.HttpClient} for discovery requests.
+     * Returns a {@link RawCall} builder for sending a low-level MCP POST request with full
+     * caller control over the expected HTTP status code, per-call authentication, and endpoint
+     * path. Chain options then call {@link RawCall#run()} to execute.
      *
-     * <p>Priority: discovery client > secure client (HTTPS) > plain default client.
+     * <p>Use this for negative tests and other cases that do not fit the standard happy path.
+     *
+     * <p>Example — expect a 401 with no credentials:
+     * <pre>{@code
+     * McpDetailedAuthResponse r = client.callMCPRaw(body).expectedStatus(401).run();
+     * }</pre>
+     *
+     * <p>Example — per-call credentials on an existing session:
+     * <pre>{@code
+     * client.callMCPRaw(body).basicAuth("testuser", "password").expectedStatus(403).run();
+     * }</pre>
+     *
+     * @param jsonRequestBody the JSON-RPC request body
+     * @return a {@link RawCall} builder ready to be configured and executed
      */
-    public java.net.http.HttpClient getDiscoveryHttpClient() {
-        if (discoveryHttpClient != null) {
-            return discoveryHttpClient;
-        }
-        if (secureHttpClient != null) {
-            return secureHttpClient;
-        }
-        return java.net.http.HttpClient.newHttpClient();
+    public RawCall callMCPRaw(String jsonRequestBody) {
+        return new RawCall(jsonRequestBody);
     }
+
+    // -------------------------------------------------------------------------
+    // RawCall
+    // -------------------------------------------------------------------------
+
+    /**
+     * Fluent builder for a single low-level MCP request. Obtain via
+     * {@link McpClient#callMCPRaw(String)}; configure options; call {@link #run()} to execute.
+     */
+    public final class RawCall {
+        private final String jsonRequestBody;
+        private int expectedStatus = 200;
+        private boolean anyStatus = false;
+        private String mcpPath;
+        private String sessionIdOverride;
+        private String basicAuthUsername;
+        private String basicAuthPassword;
+
+        private RawCall(String jsonRequestBody) {
+            this.jsonRequestBody = jsonRequestBody;
+        }
+
+        /** Expected HTTP status code (default: 200). */
+        public RawCall expectedStatus(int code) {
+            this.expectedStatus = code;
+            return this;
+        }
+
+        /** Accept any HTTP status code — disables the status assertion entirely. */
+        public RawCall anyStatus() {
+            this.anyStatus = true;
+            return this;
+        }
+
+        /**
+         * Overrides the MCP path for this single call, replacing the client's configured
+         * path. Useful for testing a different endpoint within the same application.
+         */
+        public RawCall mcpPath(String path) {
+            this.mcpPath = path;
+            return this;
+        }
+
+        /** Override the session ID header for this single call only. */
+        public RawCall sessionId(String sessionId) {
+            this.sessionIdOverride = sessionId;
+            return this;
+        }
+
+        /**
+         * Override the Basic Auth credentials for this single call only.
+         * Use when the call must be made on an existing session but with different credentials,
+         * e.g. testing that a cross-user request is rejected.
+         */
+        public RawCall basicAuth(String username, String password) {
+            this.basicAuthUsername = username;
+            this.basicAuthPassword = password;
+            return this;
+        }
+
+        /**
+         * Executes the request and returns the detailed response.
+         *
+         * @return a {@link McpDetailedAuthResponse} with status code, headers, and body
+         * @throws Exception if the HTTP call fails or the status does not match the expectation
+         */
+        public McpDetailedAuthResponse run() throws Exception {
+            String url = mcpPath != null
+                         ? (sslContext != null
+                            ? "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort()
+                            : "http://" + server.getHostname() + ":" + server.getHttpDefaultPort())
+                           + contextRoot + mcpPath
+                         : getMcpUrl();
+
+            HttpRequest.Builder builder = HttpRequest.newBuilder()
+                            .uri(URI.create(url))
+                            .header(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                            .header(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
+                            .header("Content-Type", VALUE_APPLICATION_JSON)
+                            .POST(HttpRequest.BodyPublishers.ofString(jsonRequestBody));
+
+            // sessionIdOverride takes precedence over the client's session ID
+            if (sessionIdOverride != null) {
+                builder.header(MCP_SESSION_ID, sessionIdOverride);
+            } else if (mode == StateMode.STATEFUL && sessionId != null) {
+                builder.header(MCP_SESSION_ID, sessionId);
+            }
+
+            // Per-call basicAuth override takes precedence over client-level credentials.
+            if (basicAuthUsername != null && basicAuthPassword != null) {
+                String encoded = Base64.getEncoder()
+                                .encodeToString((basicAuthUsername + ":" + basicAuthPassword).getBytes(StandardCharsets.UTF_8));
+                builder.header("Authorization", "Basic " + encoded);
+            } else if (bearerToken != null) {
+                builder.header("Authorization", "Bearer " + bearerToken);
+            } else if (username != null && password != null) {
+                String encoded = Base64.getEncoder()
+                                .encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
+                builder.header("Authorization", "Basic " + encoded);
+            }
+
+            HttpResponse<String> response = httpClient.send(builder.build(), BodyHandlers.ofString());
+
+            if (!anyStatus && response.statusCode() != expectedStatus) {
+                throw new Exception("[McpClient] callMCPRaw(" + url + ") -> HTTP "
+                                    + response.statusCode() + " (expected " + expectedStatus + ")\nBody: " + response.body());
+            }
+
+            return new McpDetailedAuthResponse(
+                            response.statusCode(),
+                            response.headers().firstValue("WWW-Authenticate").orElse(null),
+                            response.headers().firstValue("Content-Type").orElse(null),
+                            response.body());
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Response record
+    // -------------------------------------------------------------------------
+
+    /**
+     * Detailed response data returned by {@link RawCall#run()}.
+     */
+    public record McpDetailedAuthResponse(int statusCode, String wwwAuthenticate, String contentType, String body) {}
+
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
 
     private static String urlEncode(String value) {
         return URLEncoder.encode(value, StandardCharsets.UTF_8);

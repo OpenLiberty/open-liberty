@@ -46,4 +46,14 @@
             <property name="hibernate.dialect.oracle.value_lob_enabled" value="false"/>
         </properties>
     </persistence-unit>
+    <persistence-unit name="JakartaPersistenceUnitH2">
+        <jta-data-source>jdbc/H2DataSource</jta-data-source>
+        <class>io.openliberty.jpa.persistence.tests.models.DateTimeEntity</class>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.logging.parameters" value="true"/>
+        </properties>
+    </persistence-unit>
+
 </persistence>

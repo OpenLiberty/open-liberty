@@ -70,6 +70,7 @@ import io.opentelemetry.semconv.SemanticAttributes;
 /**
  * Test mpTelemetry running with the OpenTelemetry Java Agent enabled
  */
+@SuppressWarnings("deprecation")
 @RunWith(FATRunner.class)
 @MaximumJavaLevel(javaLevel = 20)
 @SkipIfSysProp(OS_ZOS) //Agent250 crashes on ZOS because it tries to read /proc as UTF-8

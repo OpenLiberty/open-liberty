@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal;
 
-import java.util.Arrays;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -79,6 +79,9 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     private static final TraceComponent tc = Tr.register(HttpRequestMessageImpl.class, HttpMessages.HTTP_TRACE_NAME,
             HttpMessages.HTTP_BUNDLE);
 
+    /** Ensures the non-sensitive $WSSP warning message is issued only once */
+    private static final AtomicBoolean wsspWarningIssued = new AtomicBoolean(false);
+
     /** Serialization ID field */
     private static final long serialVersionUID = 5759292362534888246L;
 
@@ -117,9 +120,6 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     private transient Map<String, String[]> queryParams = null;
     /** Marked true if this object was populated from a serialized stream */
     private transient boolean deserialized = false;
-    private static final byte[] DEFAULT_ALLOWED_HTTP_PORT = {'8', '0'};
-    private static final byte[] DEFAULT_ALLOWED_HTTPS_PORT = {'4', '4', '3'};
-
 
     /**
      * Default constructor with no service context.
@@ -2234,62 +2234,47 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         if (!isWASPrivateHeader) {
             rc = super.filterAdd(key, value, isWASPrivateHeader);
         } else if (!this.deserialized) {
-            rc = isPrivateHeaderTrusted(key);
-            // Found non trusted $WSSP header which by default is trusted if values are 80/443
-            if (!rc && HttpHeaderKeys.HDR_$WSSP.equals(key)) {
-                // Treat the header as a sensitive header
-                if (getServiceContext().getHttpConfig().desensitizePrivatePortHeader()) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "HTTPRequestMessageImpl.filterAdd() $WSSP header is foced to be unsensitive...");
-                    }
-                    HttpServiceContextImpl hisc = getServiceContext();
-                    InetAddress remoteAddr = null;
-                    if (hisc != null) {
-                        remoteAddr = hisc.getRemoteAddr();
-                    }
-                    return HttpDispatcher.usePrivateHeaders(remoteAddr);
+            HttpServiceContextImpl hisc = getServiceContext();
+            InetAddress remoteAddr = null;
+            if (hisc != null) {
+                remoteAddr = hisc.getRemoteAddr();
+            }
+            // BNFHeadersImpl only calls filterAdd(..., true) with keys from HttpHeaderKeys.match(),
+            // which always returns HttpHeaderKeys singletons — the cast is always safe.
+            HttpHeaderKeys hkey = (HttpHeaderKeys) key;
+
+            // both the config flag and the value are only consulted for $WSSP, so for
+            // every other $WS* header we touch neither.
+            boolean isWssp = (HttpHeaderKeys.HDR_$WSSP == key);
+            boolean desensitizePrivatePortHeader = isWssp
+                                                   && hisc != null
+                                                   && hisc.getHttpConfig() != null
+                                                   && hisc.getHttpConfig().desensitizePrivatePortHeader();
+
+            rc = HttpDispatcher.isPrivateHeaderTrusted(remoteAddr, hkey, isWssp ? value : null, desensitizePrivatePortHeader);
+
+            if (!rc) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "filterAdd: WAS private header [" + key.getName()
+                            + "] not permitted from [" + remoteAddr + "]");
                 }
-                else if ((Arrays.equals(value, DEFAULT_ALLOWED_HTTP_PORT) || Arrays.equals(value, DEFAULT_ALLOWED_HTTPS_PORT))) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "HTTPRequestMessageImpl.filterAdd() $WSSP header is not trusted but value passed is allowed. Trusting header...");
+
+                if (isWssp) {
+                    // The $WSSP value comes from a peer that is not trusted, so it is deliberately not logged.
+                    int clientPort = (hisc != null) ? hisc.getRemotePort() : -1;
+
+                    // warn only for the first request, but trace every request
+                    if (wsspWarningIssued.compareAndSet(false, true)) {
+                        Tr.warning(tc, "wssp.header.non.sensitive.address", remoteAddr, clientPort);
                     }
-                    return true;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "filterAdd: $WSSP header received from non-sensitive address: clientAddress=" + remoteAddr
+                                     + ", clientPort=" + clientPort);
+                    }
                 }
             }
         }
         return rc;
-    }
-
-    /**
-     * Check the to see if the current remote host is allowed to send a private
-     * header
-     *
-     * @see HttpDispatcher.usePrivateHeaders()
-     *
-     * @param key WAS private header
-     * @return true if the remote host is allowed to send key
-     */
-    private boolean isPrivateHeaderTrusted(HeaderKeys key) {
-        HttpServiceContextImpl hisc = getServiceContext();
-        InetAddress remoteAddr = null;
-        if (hisc != null) {
-            remoteAddr = hisc.getRemoteAddr();
-        }
-
-        boolean trusted = HttpDispatcher.usePrivateHeaders(remoteAddr, key.getName());
-
-        if (!trusted) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                if (remoteAddr != null) {
-                    Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted for host "
-                            + remoteAddr.getHostAddress());
-                } else {
-                    Tr.debug(tc, "isPrivateHeaderTrusted: " + key.getName() + " is not trusted for this host");
-                }
-            }
-            return false;
-        }
-        return true;
     }
 
     /**

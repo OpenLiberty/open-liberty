@@ -39,6 +39,7 @@ import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Fetching;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.First;
 import jakarta.data.repository.Insert;
@@ -68,6 +69,22 @@ public interface Fractions {
                     """)
     List<String> alphabetized(@Param("isReduced") boolean reduced,
                               Limit limit);
+
+    @Query("""
+                      FROM Fraction
+                     WHERE name = ?1
+                    """)
+    @Select(_Fraction.NUMERATOR)
+    @Select(_Fraction.DENOMINATOR)
+    Optional<Ratio> asRatioOfNumeratorToDenominator(String name);
+
+    @Query("""
+                      FROM Fraction
+                     WHERE name LIKE ?1 AND reduced = ?2
+                    """)
+    @OrderBy(value =_Fraction.DENOMINATOR, descending = true)
+    @OrderBy(value =_Fraction.NUMERATOR)
+    List<Slope> asSlopesIfReduced(String namePattern, boolean isReduced);
 
     @Find
     @First(10)
@@ -325,10 +342,29 @@ public interface Fractions {
     @Insert
     void supply(Collection<Fraction> list);
 
+    @JakartaQuery("""
+                     FROM Fraction
+                    WHERE name LIKE ?1 AND reduced = ?2
+                    ORDER BY numerator DESC, denominator DESC
+                    """)
+    @Select(_Fraction.NUMERATOR)
+    @Select(_Fraction.DENOMINATOR)
+    Ratio[] toRatiosIfReduced(String namePattern, boolean isReduced);
+
+    @JakartaQuery("FROM Fraction WHERE name = ?1")
+    Slope toSlope(String name);
+
     @Find
     @OrderBy(_Fraction.DENOMINATOR)
     @OrderBy(value = _Fraction.NUMERATOR, descending = true)
     Stream<Fraction> where(Restriction<Fraction> filter);
+
+    @Find
+    @OrderBy(_Fraction.DECIMAL_TRUNCATED)
+    List<Fraction> whereTruncated //
+    (
+     @By(_Fraction.DECIMAL_TRUNCATED) //
+     Between<? extends Comparable<? extends Number>> bounds);
 
     @Find
     @OrderBy(_Fraction.DENOMINATOR)
@@ -367,6 +403,14 @@ public interface Fractions {
     (@By(_Fraction.NUMERATOR) In<Integer> numerators,
      @Is int denominator,
      Sort<Fraction> sort);
+
+    @Find
+    @Fetching(_Fraction.DECIMAL) // unnecessary, but intentionally included
+    Optional<Fraction> withoutRoundedValues(int numerator, int denominator);
+
+    @Find
+    @Fetching(_Fraction.ROUNDED)
+    Optional<Fraction> withRoundedValues(int numerator, int denominator);
 
     @JakartaQuery("WHERE name = :name")
     @QueryOptions(lockMode = LockModeType.PESSIMISTIC_WRITE,

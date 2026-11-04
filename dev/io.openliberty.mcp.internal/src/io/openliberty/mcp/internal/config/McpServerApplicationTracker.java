@@ -44,7 +44,6 @@ import com.ibm.wsspi.application.Application;
            immediate = true)
 public class McpServerApplicationTracker {
     private static final TraceComponent tc = Tr.register(McpServerApplicationTracker.class);
-    private boolean isTracingAndDebugEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
 
     /**
      * Map from mcp PID to its corresponding McpConfigurationComponent. When an application arrives referencing mcp PIDs,
@@ -72,7 +71,7 @@ public class McpServerApplicationTracker {
 
     @Activate
     protected void activate() {
-        if (isTracingAndDebugEnabled) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "McpServerApplicationTracker activated");
         }
     }
@@ -119,7 +118,7 @@ public class McpServerApplicationTracker {
         String appName = (String) appProps.get("name");
         String[] mcpPids = (String[]) appProps.get("mcp");
 
-        if (isTracingAndDebugEnabled) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Application added. Name=" + appName + ", PID=" + appPid +
                                ", mcpPIDs=" + Arrays.toString(mcpPids));
         }
@@ -141,7 +140,7 @@ public class McpServerApplicationTracker {
         String appName = (String) appProps.get("name");
         String[] mcpPids = (String[]) appProps.get("mcp");
 
-        if (isTracingAndDebugEnabled) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Application updated. Name=" + appName + ", PID=" + appPid +
                                ", mcpPIDs=" + Arrays.toString(mcpPids));
         }
@@ -163,7 +162,7 @@ public class McpServerApplicationTracker {
     protected void removeApp(Map<String, Object> appProps) {
         String appPid = (String) appProps.get("service.pid");
 
-        if (isTracingAndDebugEnabled) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Application removed. PID=" + appPid);
         }
 

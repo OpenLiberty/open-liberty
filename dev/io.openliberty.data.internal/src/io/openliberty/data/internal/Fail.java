@@ -24,8 +24,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import io.openliberty.data.internal.Util;
-
 import com.ibm.websphere.ras.annotation.Sensitive;
 
 import jakarta.data.Limit;

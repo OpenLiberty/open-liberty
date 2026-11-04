@@ -1,0 +1,42 @@
+#*******************************************************************************
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WsLogHandler FAT Test Bundle
+Bundle-Description: FAT test bundle for wildcard WsLogHandler routing; version=${bVersion}
+Bundle-SymbolicName: com.ibm.ws.logging.osgi.fat.wsloghandler; singleton:=true
+
+IBM-Web-Extension-Processing-Disabled: true
+
+Web-ContextPath: /wsLogHandler
+
+Import-Package: \
+    org.objectweb.asm.*;resolution:=optional, \
+    !*.internal.*, \
+    *
+
+Export-Package: \
+    com.ibm.ws.logging.osgi.fat.wsloghandler
+
+-includeresource: \
+    OSGI-INF/metatype=test-bundles/com.ibm.ws.logging.osgi.fat.wsloghandler/resources/OSGI-INF/metatype, \
+    OSGI-INF/l10n=test-bundles/com.ibm.ws.logging.osgi.fat.wsloghandler/resources/OSGI-INF/l10n, \
+    OSGI-INF/permissions.perm=test-bundles/com.ibm.ws.logging.osgi.fat.wsloghandler/resources/OSGI-INF/permissions.perm, \
+    WEB-INF=test-bundles/com.ibm.ws.logging.osgi.fat.wsloghandler/resources/WEB-INF
+
+-dsannotations: \
+    com.ibm.ws.logging.osgi.fat.wsloghandler.WsLogHandlerConfigReader, \
+    com.ibm.ws.logging.osgi.fat.wsloghandler.WsLogHandlerEndpoint
+
+instrument.disabled: true

@@ -49,7 +49,7 @@ public class TelemetryOperationsTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/" + APP_NAME);
+    public McpClient client = McpClient.builder(server, "/" + APP_NAME).build();
 
     private static final String BASIC_TOOL_REQUEST = """
                       {
@@ -137,12 +137,12 @@ public class TelemetryOperationsTest extends FATServletClient {
         captureMetrics();
 
         // Create two new clients to cause the lifecycle methods to be called
-        McpClient clientA = new McpClient(server, APP_NAME);
-        clientA.initialize();
-        clientA.deleteSession();
-        McpClient clientB = new McpClient(server, APP_NAME);
-        clientB.initialize();
-        clientB.deleteSession();
+        try (McpClient clientA = McpClient.builder(server, APP_NAME).build()) {
+            clientA.initialize();
+        }
+        try (McpClient clientB = McpClient.builder(server, APP_NAME).build()) {
+            clientB.initialize();
+        }
 
         FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testInitializeAndInitializedMetrics");
     }
@@ -183,8 +183,11 @@ public class TelemetryOperationsTest extends FATServletClient {
 
     @Test
     public void testToolCallDuration() throws Exception {
+        int waitMs = 300;
+        int toleranceMs = 20; // Accounts for OS timer resolution and scheduling jitter
+
         long startTime = System.nanoTime();
-        String response = client.callMCP(WAITING_TOOL_REQUEST.formatted(300));
+        String response = client.callMCP(WAITING_TOOL_REQUEST.formatted(waitMs));
         Duration clientCallDuration = Duration.ofNanos(System.nanoTime() - startTime);
         String expectedResponseString = """
                         {"id":3,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "OK"}], "isError": false}}
@@ -193,7 +196,7 @@ public class TelemetryOperationsTest extends FATServletClient {
 
         Duration metricDuration = getDurationMetric("waitingTool");
 
-        assertThat(metricDuration, greaterThanOrEqualTo(Duration.ofMillis(300)));
+        assertThat(metricDuration, greaterThanOrEqualTo(Duration.ofMillis(waitMs - toleranceMs)));
         assertThat(metricDuration, lessThanOrEqualTo(clientCallDuration));
     }
 
@@ -230,11 +233,9 @@ public class TelemetryOperationsTest extends FATServletClient {
                         }
                         """;
 
-        try {
-            // Invalid session ID will cause an error
-            client.callMCPWithSessionID(cancelRequestWithError, "fakeSessionId");
-        } catch (Exception e) {
-        }
+        // Send the notification with an invalid session ID — status is not asserted since
+        // the server may return 404 or similar, but the error metric should still be recorded.
+        client.callMCPRaw(cancelRequestWithError).sessionId("fakeSessionId").anyStatus().run();
 
         FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testCancelRequestErrorMetrics");
     }

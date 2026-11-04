@@ -49,7 +49,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.internal.HttpChain.ChainState;
+import com.ibm.ws.http.internal.AbstractHttpChain.ChainState;
 import com.ibm.ws.http.logging.internal.AccessLogger;
 import com.ibm.ws.http.logging.internal.DisabledLogger;
 import com.ibm.ws.http.netty.NettyChain;
@@ -583,8 +583,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     private void logChainStates(){
         if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-            HttpChain httpChain = getCurrentHttpChain();
-            HttpChain httpsChain = getCurrentHttpsChain();
+            AbstractHttpChain httpChain = getCurrentHttpChain();
+            AbstractHttpChain httpsChain = getCurrentHttpsChain();
 
             Tr.debug(this, tc, "Chain states after resume - HTTP: " + ChainState.printState(httpChain.getChainState())
                 + ", HTTPS: " + ChainState.printState(httpsChain.getChainState()));
@@ -1404,8 +1404,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             Tr.entry(this, tc, "verifyResumedChainStates");
         }
 
-        HttpChain httpChain = getCurrentHttpChain();
-        HttpChain httpsChain = getCurrentHttpsChain();
+        AbstractHttpChain httpChain = getCurrentHttpChain();
+        AbstractHttpChain httpsChain = getCurrentHttpsChain();
 
         int httpChainState = ChainState.UNINITIALIZED.val;
         int httpsChainState = ChainState.UNINITIALIZED.val;
@@ -1498,10 +1498,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         return info;
     }
     
-    private synchronized HttpChain getCurrentHttpChain() {
+    private synchronized AbstractHttpChain getCurrentHttpChain() {
         return useNetty ? nettyChain: httpChain;
     }
-    private synchronized HttpChain getCurrentHttpsChain() {
+    private synchronized AbstractHttpChain getCurrentHttpsChain() {
         return useNetty ? nettySecureChain: httpSecureChain;
     }
 

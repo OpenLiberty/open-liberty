@@ -15,7 +15,6 @@
  */
 package com.ibm.ws.webcontainer31.osgi.srt;
 
-import java.io.IOException;
 import javax.servlet.http.HttpUpgradeHandler;
 
 import com.ibm.websphere.ras.Tr;
@@ -146,24 +145,7 @@ public class SRTConnectionContext31 extends SRTConnectionContext
 
                 try
                 {
-                    try{
-                        ((SRTServletResponse31) _response).finishKeepConnection();
-                    }catch(IOException ioe){
-                        String msg = ioe.getMessage();
-                        if (msg != null && msg.contains("Stream is closed")) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc,
-                                         "finishConnection: ignoring expected 'Stream is closed' while finishing upgrade response");
-                            }
-                            // Do NOT rethrow – treat as benign
-                        } else {
-                            // Anything else is still unexpected
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "finishConnection: unexpected IOException while finishing upgrade response", ioe);
-                            }
-                            throw ioe;
-                        }
-                    }
+                    ((SRTServletResponse31) _response).finishKeepConnection();
                     
                     // close the current httpinput and httpoutput streams as the response is written out. 
                     if(dispatcherLink != null)

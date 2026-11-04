@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,15 +13,16 @@
 package com.ibm.ws.webcontainer.monitor;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.AsyncEvent;
 import javax.servlet.AsyncListener;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
-import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.servlet.event.ApplicationEvent;
 import com.ibm.websphere.servlet.event.ApplicationListener;
 import com.ibm.websphere.servlet.event.ServletErrorEvent;
@@ -41,8 +42,10 @@ import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
+import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 import com.ibm.wsspi.webcontainer.util.ServletUtil;
+import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
 
 public class WebAppMonitorListener
@@ -50,71 +53,46 @@ public class WebAppMonitorListener
         protected static final Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer");
 	private static final String CLASS_NAME="com.ibm.ws.webcontainer.WebAppPmiListener";
 
-	J2EEName _appName = null;
 	private static final String defaultJ2eeNameStr = "defaultJ2eeNameStr"; //TODO: how does this default effect proper registration;
-	boolean areAppAggregatesInited = false;
 
-	// instace of WebAppPerf
-	WebAppPerf appPmi = null;
-
-	// track state of appPmi object to avoid "instanceof" checks
-	// in checkAppCounters
-        // 4@539186A
-	private static final int APP_PMI_NULL = 0;
-	private static final int APP_PMI_SMF = 1;
-	private static final int APP_PMI_WEB = 2;
-        private int appPmiState = APP_PMI_NULL;
+	// Per-app PMI modules keyed by module name (also the StatsInstance name). This listener is
+	// registered once as a global listener and shared by every web app, so per-app state must
+	// not live in scalar fields.
+	private final ConcurrentHashMap<String, WebAppPerf> appModules = new ConcurrentHashMap<String, WebAppPerf>();
 
 
         public WebAppMonitorListener() {
         }
 
-        public void onApplicationAvailableForService(ApplicationEvent evt) {
-		if (areAppAggregatesInited == false) {
-			initializeAppCounters(getAppName());
-			areAppAggregatesInited = true;
-		}
+	public void onApplicationAvailableForService(ApplicationEvent evt) {
+		String modName = getModuleName(evt.getServletContext());
+		if (modName != null)
+			initializeAppCounters(modName);
 	}
 
 	public void onApplicationUnavailableForService(ApplicationEvent evt) {
-                checkAppCounters(); // @539186A
+	               WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
                 if (appPmi != null)
 			appPmi.onApplicationUnavailableForService();
 	}
 
 	public void onApplicationStart(ApplicationEvent evt) {
-		
 		WebApp webApp = (WebApp) evt.getSource();
-		
-		ModuleMetaData mmd = (WebModuleMetaData)webApp.getModuleMetaData();
-		_appName = mmd.getJ2EEName();
-		//register as a listener
-
-//		ServletContextEventSource evtSource =
-//			(ServletContextEventSource) evt.getServletContext().getAttribute(ServletContextEventSource.ATTRIBUTE_NAME);
-//		evtSource.addServletErrorListener(this);
-//		evtSource.addServletListener(this);
-//		evtSource.addServletInvocationListener(this);
-
-		//initialize aggregates for this app
-		if (areAppAggregatesInited == false) {
-			initializeAppCounters(mmd.getName());
-			areAppAggregatesInited = true;
-		}
-
+		ModuleMetaData mmd = (WebModuleMetaData) webApp.getModuleMetaData();
+		WebAppPerf appPmi = initializeAppCounters(mmd.getName());
 		if (appPmi != null)
 			appPmi.onApplicationStart();
 	}
 
 	public void onApplicationEnd(ApplicationEvent evt) {
-                checkAppCounters(); // @539186A
+		              WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 		if (appPmi != null) {
 			appPmi.onApplicationEnd();
 		}
 	}
 
 	public void onServletStartService(ServletInvocationEvent evt) {
-                checkAppCounters(); // @539186A
+                WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 
 		if (appPmi != null)
 		{
@@ -127,7 +105,7 @@ public class WebAppMonitorListener
 	}
 
 	public void onServletFinishService(ServletInvocationEvent evt) {
-                checkAppCounters(); // @539186A
+                WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 
 		if (appPmi != null){
 			HttpServletRequest hReq = evt.getRequest();
@@ -138,122 +116,116 @@ public class WebAppMonitorListener
 		}
 	}
 
-	public void onServletStartInit(ServletEvent evt)
-	{
-		if (isStatisticsEnabled(evt)){
+	public void onServletStartInit(ServletEvent evt) {
+		if (isStatisticsEnabled(evt)) {
 			Object obj = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-			String j2eeNameStr=null;
-			if (obj instanceof WebComponentMetaData){
-				WebComponentMetaData cmd =
-					(WebComponentMetaData) ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-				J2EEName j2eeName = cmd.getJ2EEName();
-				j2eeNameStr = cmd.getName();
-			}
-			if (j2eeNameStr==null){
-				j2eeNameStr = defaultJ2eeNameStr;
-			}
-
-                        checkAppCounters(); // @539186A
+			String j2eeNameStr = (obj instanceof WebComponentMetaData)
+					? ((WebComponentMetaData) obj).getName()
+					: defaultJ2eeNameStr;
+			WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 			if (appPmi != null)
 				appPmi.onServletStartInit(j2eeNameStr, evt.getServletName());
 		}
 	}
 
 	public void onServletFinishInit(ServletEvent evt) {
-                checkAppCounters(); // @539186A
+                WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 
 		if (appPmi != null)
 			appPmi.onServletFinishInit(evt.getServletName());
 	}
 
 	public void onServletStartDestroy(ServletEvent evt) {
-                checkAppCounters(); // @539186A
+                WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 
 		if (appPmi != null)
 			appPmi.onServletStartDestroy(evt.getServletName());
 	}
 
 	public void onServletFinishDestroy(ServletEvent evt) {
-                checkAppCounters(); // @539186A
+                WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 
 		if (appPmi != null)
 			appPmi.onServletFinishDestroy(evt.getServletName());
 	}
 
 	public void onServletUnloaded(ServletEvent evt) {
-                checkAppCounters(); // @539186A
+                WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 		if (appPmi != null)
 			appPmi.onServletUnloaded(evt.getServletName());
 	}
 
 	public void onServletAvailableForService(ServletEvent evt) {
-                checkAppCounters(); // @539186A
+                WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 
 		if (appPmi != null)
 			appPmi.onServletAvailableForService(evt.getServletName());
 	}
 
 	public void onServletUnavailableForService(ServletEvent evt) {
-                checkAppCounters(); // @539186A
+                WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 
 		if (appPmi != null)
 			appPmi.onServletUnavailableForService(evt.getServletName());
 	}
 
 	public void onServletInitError(ServletErrorEvent evt) {
-                checkAppCounters(); // @539186A
+                WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 		if (appPmi != null)
 			appPmi.onServletInitError(evt.getServletName());
 	}
 
 	public void onServletServiceError(ServletErrorEvent evt) {
-                checkAppCounters(); // @539186A
+                WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 
 		if (appPmi != null)
 			appPmi.onServletServiceError(evt.getServletName());
 	}
 
 	public void onServletServiceDenied(ServletErrorEvent evt) {
-                checkAppCounters(); // @539186A
+                WebAppPerf appPmi = getOrCreateAppPerf(evt.getServletContext()); // @539186A
 		if (appPmi != null)
 			appPmi.onServletServiceDenied(evt.getServletName());
 	}
 
 	public void onServletDestroyError(ServletErrorEvent evt) {
-                checkAppCounters(); // @539186A
+                WebAppPerf appPmi = getOrCreateAppPerf((evt != null) ? evt.getServletContext() : null); // @539186A
 
 		if (evt != null && evt.getServletName() != null && appPmi != null) {
 			appPmi.onServletDestroyError(evt.getServletName());
 		}
 	}
 
-	// This method initialize the module instance and register it.
-	public void initializeAppCounters(String appName) {
- 
-	    
-			if (StatsFactory.isPMIEnabled()) {
-				synchronized(this) {
-                    appPmi = new WebAppModule (appName, true); // @539186C
-                    appPmiState = APP_PMI_WEB; // @539186A
-			    }    
-			}    
-        
-    }
+	// Returns the module name of the web app that owns the given ServletContext, or null if it
+	// cannot be determined (e.g. FileServletWrapper events, which carry a null context).
+	// WebAppConfig.getModuleName() is the same value mmd.getName() returns in onApplicationStart.
+	private String getModuleName(ServletContext ctx) {
+		if (ctx instanceof IServletContext) {
+			WebAppConfig cfg = ((IServletContext) ctx).getWebAppConfig();
+			if (cfg != null)
+				return cfg.getModuleName();
+		}
+		return null;
+	}
 
-        // 19@539186A
-        public void checkAppCounters() {
-  
-                                	     if (appPmiState != APP_PMI_WEB) {
-                                             synchronized (this) {
-                                        	     if (appPmiState != APP_PMI_WEB) {
-                                                     appPmi = new WebAppModule(getAppName(), true);
-                                                     appPmiState = APP_PMI_WEB;
-                                        	     }    
-                                        	 }    
-                                        }      
+	// Initializes (or replaces) the PMI module for the given app and returns it.
+	// Returns null if PMI is not enabled.
+	public WebAppPerf initializeAppCounters(String appName) {
+		if (!StatsFactory.isPMIEnabled())
+			return null;
+		WebAppPerf appPmi = new WebAppModule(appName, true);
+		appModules.put(appName, appPmi);
+		return appPmi;
+	}
 
-                        
-                
+	// 19@539186A
+	// Returns the PMI module for the web app that owns the given ServletContext, creating it
+	// if PMI is enabled but none exists yet.
+	public WebAppPerf getOrCreateAppPerf(ServletContext ctx) {
+		String modName = getModuleName(ctx);
+		if (modName == null)
+			return null;
+		return appModules.computeIfAbsent(modName, name -> new WebAppModule(name, true));
 	}
 
 	public boolean isStatisticsEnabled(ServletEvent evt){
@@ -278,20 +250,16 @@ public class WebAppMonitorListener
 		}
 	}
 
-	public String getAppName() {
-		return _appName.toString();
-	}
-
 	@Override
 	public void onComplete(AsyncEvent asyncEvent) throws IOException {
-        checkAppCounters(); // @539186A
+		ServletRequest request = asyncEvent.getSuppliedRequest();
+		if (request==null){
+			request = asyncEvent.getAsyncContext().getRequest();
+		}
+		WebAppPerf appPmi = getOrCreateAppPerf(request.getServletContext()); // @539186A
 
 		if (appPmi != null)
 		{
-			ServletRequest request = asyncEvent.getSuppliedRequest();
-			if (request==null){
-				request = asyncEvent.getAsyncContext().getRequest();
-			}
 			
 			long responseTime = ((WSAsyncEvent)asyncEvent).getElapsedTime();
 			

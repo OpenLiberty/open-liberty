@@ -13,7 +13,9 @@
 package test.jakarta.data.v1_1.web;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+import jakarta.data.metamodel.BasicAttribute;
 import jakarta.data.metamodel.BooleanAttribute;
 import jakarta.data.metamodel.ComparableAttribute;
 import jakarta.data.metamodel.NavigableAttribute;
@@ -43,6 +45,7 @@ public interface _Fraction {
     String NAME = "name";
     String NUMERATOR = "numerator";
     String REDUCED = "reduced";
+    String ROUNDED = "rounded";
 
     NavigableAttribute<Fraction, Decimal> decimal = //
                     NavigableAttribute.of(Fraction.class, DECIMAL, Decimal.class);
@@ -82,4 +85,10 @@ public interface _Fraction {
 
     BooleanAttribute<Fraction> reduced = //
                     BooleanAttribute.of(Fraction.class, REDUCED, boolean.class);
+
+    @SuppressWarnings("unchecked")
+    BasicAttribute<Fraction, List<BigDecimal>> rounded = //
+                    (BasicAttribute<Fraction, List<BigDecimal>>) //
+                    (BasicAttribute<?, ?>) //
+                    BasicAttribute.of(Fraction.class, ROUNDED, List.class);
 }

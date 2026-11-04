@@ -80,9 +80,19 @@ public class Util {
                             Update.class.getSimpleName());
 
     /**
+     * Query hint and map key for a fetch graph.
+     */
+    public static final String FETCHGRAPH = "jakarta.persistence.fetchgraph";
+
+    /**
      * Query hint and map key for a load graph.
      */
-    static final String LOADGRAPH = "jakarta.persistence.loadgraph";
+    public static final String LOADGRAPH = "jakarta.persistence.loadgraph";
+
+    /**
+     * Query hint and map key for a lock scope.
+     */
+    public static final String LOCK_SCOPE = "jakarta.persistence.lock.scope";
 
     /**
      * List of valid prefixes for Query by Method Name methods of a stateful
@@ -202,16 +212,6 @@ public class Util {
                            java.util.Calendar.class, // deprecated in JPA 3.2
                            java.util.Date.class, // deprecated in JPA 3.2
                            ZonedDateTime.class); // would be useful if it worked
-
-    /**
-     * Valid types for when a repository method computes an update count
-     */
-    public static final Set<Class<?>> UPDATE_COUNT_TYPES = //
-                    Set.of(boolean.class, Boolean.class,
-                           int.class, Integer.class,
-                           long.class, Long.class,
-                           void.class, Void.class,
-                           Number.class);
 
     /**
      * Valid types for jakarta.persistence.Version, except for

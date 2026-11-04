@@ -69,8 +69,7 @@ public class DataJPAEclipseLinkServlet extends FATServlet {
     /**
      * Verify that JPQL can be used to EXTRACT the DATE from a LocalDateTime.
      */
-    // TODO enable once EclipseLink 34899 is fixed to run EXTRACT(DATE FROM...) on H2
-    // @Test
+    @Test
     public void testExtractDate() {
         rebates.reset();
 
@@ -114,8 +113,7 @@ public class DataJPAEclipseLinkServlet extends FATServlet {
     /**
      * Verify that JPQL can be used to EXTRACT the TIME from a LocalDateTime.
      */
-    // TODO enable once EclipseLink 34899 is fixed to run EXTRACT(TIME FROM...) on H2
-    // @Test
+    @Test
     public void testExtractTime() {
         rebates.reset();
 

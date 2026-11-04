@@ -94,7 +94,7 @@
 	</wsdl:binding>
 	<wsdl:service name="HelloImplWSATAssertionService">
 		<wsdl:port binding="tns:HelloImplWSATAssertionServiceSoapBinding" name="HelloImplWSATAssertionPort">
-			<soap:address location="http://localhost:8010/wsatassertion/HelloImplWSATAssertionService" />
+			<soap:address location="http://localhost/wsatassertion/HelloImplWSATAssertionService" />
 		</wsdl:port>
 	</wsdl:service>
 </wsdl:definitions>

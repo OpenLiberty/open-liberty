@@ -17,6 +17,7 @@ src: \
 	test-applications/implicit/resources
 
 fat.project: true
+fat.minimum.java.level: 11
 
 # Not 100% sure what this means, just put it in to have the test pass.
 tested.features: \

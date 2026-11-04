@@ -48,7 +48,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, ENDPOINT);
+    public McpClient client = McpClient.builder(server, ENDPOINT).build();
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -687,7 +687,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                        }
                        """;
 
-       McpClient.McpDetailedAuthResponse response = client.callMCPAuthorisationErrorDetailed(request);
+       McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).anyStatus().run();
        Log.info(ToolErrorHandlingTest.class, "testToolThrowsToolCallUnauthorizedException", response.toString());
 
        assertEquals(403, response.statusCode());

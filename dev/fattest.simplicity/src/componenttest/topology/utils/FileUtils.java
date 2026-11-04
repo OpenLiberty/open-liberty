@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
@@ -49,12 +50,7 @@ public class FileUtils {
                     if (child.isDirectory()) {
                         recursiveDelete(child);
                     } else {
-                        try {
-                            Files.delete(child.toPath());
-                        } catch (IOException ioe) {
-                            Log.error(c, methodName, ioe, "Failed to delete file " + child);
-                            throw ioe;
-                        }
+                        deleteWithRetry(child, methodName);
                     }
                 }
             }
@@ -65,13 +61,59 @@ public class FileUtils {
             if (enableLogging) {
                 Log.info(c, methodName, "Deleting " + file);
             }
+            deleteWithRetry(file, methodName);
+        }
+    }
+
+    /**
+     * Delete a single file or empty directory, retrying on {@link FileSystemException}
+     * to tolerate transient Windows file-handle release delays (e.g. a server process
+     * that has logically stopped but whose OS handle on a lock file has not yet been
+     * fully released by the kernel). On POSIX systems {@code Files.delete} never throws
+     * {@code FileSystemException} for an open file (unlink succeeds regardless), so the
+     * retry path is unreachable on Linux/Mac and no OS guard is needed.
+     *
+     * @param file       the file or empty directory to delete
+     * @param methodName caller method name used in log messages
+     * @throws IOException if the file cannot be deleted after all retries
+     */
+    private static void deleteWithRetry(File file, String methodName) throws IOException {
+        final int MAX_ATTEMPTS = 4;
+        final long RETRY_DELAY_MS = 500;
+
+        IOException lastException = null;
+
+        for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+            if (attempt > 1) {
+                Log.info(c, methodName,
+                         "Sleep " + RETRY_DELAY_MS + " (ms)" +
+                         " for delete attempt " + attempt + " of " + MAX_ATTEMPTS);
+                try {
+                    Thread.sleep(RETRY_DELAY_MS);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt(); // Preserve the thread interrupt status.
+                    break;
+                }
+            }
+
             try {
                 Files.delete(file.toPath());
+                return; // success
+
+            } catch (FileSystemException fse) {
+                // Windows: file handle not yet released by OS. Log and retry.
+                Log.error(c, methodName, fse, "Failed to delete " + file.getAbsolutePath() + ": " + fse.getMessage());
+                lastException = fse;
+
             } catch (IOException ioe) {
-                Log.error(c, methodName, ioe, "Failed to delete file or directory " + file);
+                // Non-transient failure (permissions, no such file, etc.) — rethrow immediately.
+                Log.error(c, methodName, ioe, "Failed to delete " + file.getAbsolutePath() + ": " + ioe.getMessage());
                 throw ioe;
             }
         }
+
+        Log.error(c, methodName, lastException, "Failed to delete after " + MAX_ATTEMPTS + " attempts: " + file.getAbsolutePath());
+        throw lastException;
     }
 
     /**

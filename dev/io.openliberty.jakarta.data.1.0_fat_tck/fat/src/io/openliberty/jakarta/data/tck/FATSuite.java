@@ -15,6 +15,7 @@ package io.openliberty.jakarta.data.tck;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.junit.ClassRule;
@@ -25,15 +26,11 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import com.ibm.websphere.simplicity.log.Log;
-
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.topology.database.H2Database;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
-import componenttest.topology.impl.JavaInfo;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -51,39 +48,26 @@ public class FATSuite extends TestContainerSuite {
 
     public static String JNOSQL_VERSION = "1.1.12";
 
+    private static final H2Database h2Database = H2Database.create("dbuser1", "dbpwd1")
+                    .withDatabaseName("testdb");
+
     @ClassRule
-    public static JdbcDatabaseContainer<?> relationalDatabase = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> relationalDatabase = DatabaseContainerFactory.createH2(Optional.of(h2Database));
 
     @ClassRule
     public static MongoDBContainer noSQLDatabase = new MongoDBContainer(mongoDBImage);
 
     public static boolean shouldRunSignatureTests() {
-        boolean result = false;
-        String reason = "";
-
-        try {
-            if (!TestModeFilter.shouldRun(TestMode.FULL)) {
-                reason = "Signature test is not run in " + TestModeFilter.FRAMEWORK_TEST_MODE + " mode.";
-                return result = false;
-            }
-
-            if (System.getProperty("os.name", "unknown").toLowerCase().contains("windows")) {
-                reason = "signature test plugin not supported on Windows.";
-                return result = false;
-            }
-
-            if (JavaInfo.JAVA_VERSION != 17 && JavaInfo.JAVA_VERSION != 21) {
-                reason = "signature test not supported on non-LTS java versions: " + JavaInfo.JAVA_VERSION;
-                return result = false;
-            }
-
-            //default option
-            reason = "signature test can run as configured";
-            return result = true;
-
-        } finally {
-            Log.info(FATSuite.class, "shouldRunSignatureTests", "Return: " + result + ", because " + reason);
-        }
+        /*
+         * The Jakarta Data 1.0 TCK uses org.jboss.shrinkwrap.resolver.api.maven.Maven
+         * resolver to append the signature plugin to the signature test artifact
+         * before it is deployed to the server.
+         * The Shrinkwrap Maven resolver does not honor custom repository settings.xml
+         * and pulls directly from Maven Central leading to failures due to rate limits.
+         *
+         * Signature testings is covered in the 1.1 TCK where this resolver was removed.
+         */
+        return false;
     }
 
     public static Map<String, Level> getLoggingConfig() {
@@ -109,6 +93,8 @@ public class FATSuite extends TestContainerSuite {
                 return ""; // All tests passing on Derby
             case DerbyClient:
                 return ""; // Derby client currently not tested during DB Rotation
+            case H2:
+                return ""; // All tests passing on H2
             case Oracle:
                 return ""; // All tests passing on Oracle
             case Postgres:

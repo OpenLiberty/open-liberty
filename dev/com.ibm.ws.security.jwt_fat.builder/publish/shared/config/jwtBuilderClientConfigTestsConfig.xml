@@ -790,4 +790,12 @@
 		keyManagementKeyAlias="rs256"
         contentEncryptionAlgorithm="A256GCM" />        
                                             
+	<!-- jwkRotationTime / jwkMaxKeys FAT test config -->
+	<jwtBuilder
+		id="jwkMaxKeys_3_rotationTime_1m"
+		issuer="testIssuer"
+		jwkEnabled="true"
+		jwkRotationTime="1m"
+		jwkMaxKeys="3" />
+
 </server>

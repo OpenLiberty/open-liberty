@@ -147,9 +147,21 @@ public abstract class SipConnLink extends BaseConnection implements TCPReadCompl
 		logConnection();
 		// 1. in case outbound messages queued while trying to connect, send
 		// them now
+		boolean alreadyConnected;
 		synchronized (m_outMessages) {
+			alreadyConnected = isConnected();
 			super.connectionEstablished();
 			sendPendingMessages();
+		}
+
+		if (alreadyConnected) {
+			// Already connected — do not re-register the read listener.
+			// Re-registering while a write is in flight races with the
+			// async writeCtx.write() and can cause out-of-order delivery.
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "connectionEstablished", "already connected, skip read registration");
+			}
+			return;
 		}
 
 		// 2. prepare for reading inbound messages

@@ -1,0 +1,30 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="WsLogHandler FAT Test Server - Wildcard IDs, dynamic update">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>wsLogHandler-1.0</feature>
+    </featureManager>
+
+    <!-- Updated routerThing relative to WsLogHandlerWildcardServer/server.xml:
+           Removed:   CWLFA*  (plain prefix)
+                      CWLFD*E (level-qualified ERROR)
+           Narrowed:  CWLFB*W -> CWLFB02*W (prefix now includes number range; only CWLFB02xxW matches)
+           Retained:  CWLFC*A (level-qualified AUDIT, unchanged)
+           Added:     CWLFG*  (new plain prefix, any level)
+                      CWLFH*I (new level-qualified INFO) -->
+    <wsLogHandler routerThing="CWLFB02*W,CWLFC*A,CWLFG*,CWLFH*I" />
+
+</server>

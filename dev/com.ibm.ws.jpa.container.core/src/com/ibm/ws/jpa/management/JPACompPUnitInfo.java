@@ -275,6 +275,46 @@ final class JPACompPUnitInfo extends AbstractJPACompPUnitInfo {
         return ivPUnitInfo.getDefaultToOneFetchType();
     }
 
+    /**
+     * Returns the package names listed by {@code <package-descriptor>} elements.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version will implement it correctly.
+     */
+    public List<String> getManagedPackageDescriptors() {
+        return ivPUnitInfo.getManagedPackageDescriptors();
+    }
+
+    /**
+     * Returns the JPMS module names listed by {@code <module-descriptor>} elements.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version will implement it correctly.
+     */
+    public List<String> getManagedModuleDescriptors() {
+        return ivPUnitInfo.getManagedModuleDescriptors();
+    }
+
+    /**
+     * Returns all package descriptors belonging to the persistence unit.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version will implement it correctly.
+     */
+    public List<String> getAllPackageDescriptors() {
+        return ivPUnitInfo.getAllPackageDescriptors();
+    }
+
+    /**
+     * Returns all module descriptors belonging to the persistence unit.
+     * Added for jakarta.persistence.spi.PersistenceUnitInfo compatibility (JPA 4.0).
+     * Note: no @Override - javax.persistence.spi.PersistenceUnitInfo does not have this method;
+     * the jakarta-namespace transformed version will implement it correctly.
+     */
+    public List<String> getAllModuleDescriptors() {
+        return ivPUnitInfo.getAllModuleDescriptors();
+    }
+
     // --------------------------------------------------------------------------
     //
     // internal  methods

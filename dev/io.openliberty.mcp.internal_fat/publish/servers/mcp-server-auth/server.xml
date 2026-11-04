@@ -8,7 +8,11 @@
   </featureManager>
 
   <include location="../fatTestPorts.xml" />
-  
+
+  <keyStore
+    id="defaultKeyStore"
+    password="keyspass" />
+
 	<basicRegistry id="basic" realm="BasicRealm">
 	
 	     <user name="testuser" password="testpassword"/>

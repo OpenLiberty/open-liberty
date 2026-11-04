@@ -83,7 +83,7 @@ public class OidcTests extends FATServletClient {
     }
 
     private void testUnauthroizedToolCallAssertion(String toolName) throws Exception {
-        McpClient client = new McpClient(server, "/oidcTests", StateMode.STATELESS);
+        McpClient client = McpClient.builder(server, "/oidcTests").mode(StateMode.STATELESS).build();
         String request = String.format("""
                           {
                           "jsonrpc": "2.0",
@@ -96,7 +96,7 @@ public class OidcTests extends FATServletClient {
                         }
                         """, toolName);
 
-        McpDetailedAuthResponse mcpResponse = client.callMCP401AuthErrorExpected(request);
+        McpDetailedAuthResponse mcpResponse = client.callMCPRaw(request).expectedStatus(401).run();
         assertEquals(401, mcpResponse.statusCode());
 
         String wwwAuthenticate = mcpResponse.wwwAuthenticate();
@@ -110,7 +110,7 @@ public class OidcTests extends FATServletClient {
         String accessToken = getAccessToken(TEST_USER_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token should not be null", accessToken);
 
-        McpClient client = new McpClient(server, "/oidcTests", StateMode.STATELESS, accessToken);
+        McpClient client = McpClient.builder(server, "/oidcTests").mode(StateMode.STATELESS).bearerToken(accessToken).build();
 
         String request = """
                         {
@@ -124,7 +124,7 @@ public class OidcTests extends FATServletClient {
                         }
                         """;
 
-        String response = client.callMCPWithBearerToken(request);
+        String response = client.callMCP(request);
         String expectedResponseString = """
                         {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}], "isError": false}}
                         """;
@@ -137,7 +137,7 @@ public class OidcTests extends FATServletClient {
         String accessToken = getAccessToken(TEST_ADMIN_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token should not be null", accessToken);
 
-        McpClient client = new McpClient(server, "/oidcTests", StateMode.STATELESS, accessToken);
+        McpClient client = McpClient.builder(server, "/oidcTests").mode(StateMode.STATELESS).bearerToken(accessToken).build();
 
         String request = """
                         {
@@ -151,7 +151,7 @@ public class OidcTests extends FATServletClient {
                         }
                         """;
 
-        String response = client.callMCPWithBearerToken(request);
+        String response = client.callMCP(request);
         String expectedResponseString = """
                         {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}], "isError": false}}
                         """;
@@ -164,7 +164,7 @@ public class OidcTests extends FATServletClient {
         String accessToken = getAccessToken(TEST_ADMIN_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token should not be null", accessToken);
 
-        McpClient client = new McpClient(server, "/oidcTests", StateMode.STATELESS, accessToken);
+        McpClient client = McpClient.builder(server, "/oidcTests").mode(StateMode.STATELESS).bearerToken(accessToken).build();
 
         String request = """
                         {
@@ -178,7 +178,7 @@ public class OidcTests extends FATServletClient {
                         }
                         """;
 
-        String response = client.callMCPWithBearerToken(request);
+        String response = client.callMCP(request);
         String expectedResponseString = """
                         {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}], "isError": false}}
                         """;
@@ -191,7 +191,7 @@ public class OidcTests extends FATServletClient {
         String accessToken = getAccessToken(TEST_USER_USERNAME, TEST_PASSWORD);
         assertNotNull("Access token should not be null", accessToken);
 
-        McpClient client = new McpClient(server, "/oidcTests", StateMode.STATELESS, accessToken);
+        McpClient client = McpClient.builder(server, "/oidcTests").mode(StateMode.STATELESS).bearerToken(accessToken).build();
 
         String request = """
                         {
@@ -205,7 +205,7 @@ public class OidcTests extends FATServletClient {
                         }
                         """;
 
-        client.callMCPWithBearerTokenAuthorisationErrorExpected(request);
+        client.callMCPRaw(request).expectedStatus(403).run();
     }
 
     /**

@@ -200,9 +200,7 @@ public class LTPAValidationKeyTests {
                 } else {
                     fipsServerXml = new File(server.pathToAutoFVTTestFiles + DEFAULT_FIPS_SERVER2_XML);
                 }
-                File serverXml = new File(server.pathToAutoFVTTestFiles + DEFAULT_SERVER_XML);
-                Files.copy(fipsServerXml.toPath(), serverXml.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                server.copyFileToLibertyServerRoot(DEFAULT_SERVER_XML);
+                server.updateServerConfiguration(fipsServerXml);
             }
 
             // Transform the application for EE9+ that was copied

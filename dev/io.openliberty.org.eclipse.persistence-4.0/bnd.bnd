@@ -14,10 +14,10 @@ Bundle-SymbolicName: io.openliberty.org.eclipse.persistence-4.0; singleton:=true
 
 Bundle-Activator: io.openliberty.jakarta.persistence.internal.JakartaPersistenceActivator
 
-javac.source: 21
-javac.target: 21
+javac.source: 17
+javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Import-Package: \
   com.ibm.ws.threadContext, \

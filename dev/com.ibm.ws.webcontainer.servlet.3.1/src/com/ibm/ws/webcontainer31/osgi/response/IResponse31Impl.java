@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import javax.servlet.ServletOutputStream;
 import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.websphere.servlet31.response.IResponse31;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamConnectWeb;
+import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
 import com.ibm.ws.webcontainer.osgi.response.IResponseImpl;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -71,6 +72,11 @@ public class IResponse31Impl extends IResponseImpl implements IResponse31
       {
           this.response.getBody().flushHeaders();
       }
+
+    public boolean isUsingNetty() {
+        // The response body is lazy; checking it here would change the legacy finish path.
+        return tcc instanceof NettyTCPConnectionContext;
+    }
     
     /**
      * Sets the length of the content body in the response In HTTP servlets, this method sets the HTTP Content-Length header.
