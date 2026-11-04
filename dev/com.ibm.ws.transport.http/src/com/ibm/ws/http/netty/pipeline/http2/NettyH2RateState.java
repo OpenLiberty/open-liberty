@@ -9,7 +9,10 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.http2;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
@@ -18,7 +21,7 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 
 /**
- * Tracks per-connection HTTP/2 rate and flow-control state for the Netty transport 
+ * Tracks per-connection HTTP/2 rate and flow-control state for the Netty transport
  */
 public class NettyH2RateState {
 
@@ -33,12 +36,44 @@ public class NettyH2RateState {
     /** Stream IDs currently tracked as having a low remote flow-control window. */
     private final Set<Integer> lowWindowStreams = new HashSet<>();
 
-    private long    queuedBytesCount         = 0L;
+    /**
+     * Bytes that were parked on streams reset by the deferred-write timeout.
+     * They are never given back, so a peer that keeps letting writes time out
+     * moves the connection towards maxQueuedBytes (legacy handleWriteTimeout parity).
+     */
+    private long    timedOutBytes            = 0L;
     private boolean queuedBytesLimitExceeded = false;
+
+    /**
+     * Outbound DATA bytes Netty's remote flow controller is holding, per stream, as reported by
+     * LibertyUpgradeCodec.ParkedBytesReporter. These are Netty's own counts
+     * ({@code StreamState.pendingBytes()}), not predictions. Streams with 0 are not kept.
+     */
+    private final Map<Integer, Long> parkedBytesByStream = new HashMap<>();
+
+    /** Sum of {@link #parkedBytesByStream}. */
+    private long parkedBytes = 0L;
+
+    /** Told whenever a stream's parked bytes change (the encoder wrapper, for its write timeouts). */
+    private ParkedBytesListener parkedBytesListener;
+
+    /**
+     * Notified when a stream's parked byte count changes.
+     */
+    public interface ParkedBytesListener {
+        /**
+         * @param streamId  the stream whose parked bytes changed
+         * @param oldParked the previous count
+         * @param newParked the new count; 0 = nothing left in the flow controller (written, or dropped
+         *                      because the stream was reset or closed)
+         */
+        void parkedBytesChanged(int streamId, long oldParked, long newParked);
+    }
+
     private int upgradeStreamId     = -1;
 
     /**
-     * Result of a  tryIncrementQueuedBytes call.
+     * Result of a checkQueuedBytes call.
      */
     public enum QueuedBytesResult {
         /** Bytes accounted; within limit. */
@@ -162,54 +197,116 @@ public class NettyH2RateState {
     }
 
     /**
-     * Attempt to increment the queued outbound bytes that are
-     * about to be parked in Netty's flow-control queue.
+     * Record a stream's parked byte count. Called by the flow controller (through
+     * LibertyUpgradeCodec.ParkedBytesReporter) every time that count changes: a frame is queued or
+     * merged, bytes are written out, or queued frames are dropped on reset/close.
+     * <p>
+     * Event loop only, like everything else in this class.
      *
-     * @return SUCCESS if within limit; FIRST_TO_EXCEED if this call crossed the
-     *         threshold (caller should send GOAWAY); ALREADY_EXCEEDED if a prior
-     *         call already crossed it (caller should fail silently)
+     * @param streamId the stream
+     * @param parked   the flow controller's pending bytes for that stream, after the change
      */
-    public QueuedBytesResult tryIncrementQueuedBytes(long bytes) {
+    public void parkedBytesChanged(int streamId, long parked) {
+        Long previous = parked == 0 ? parkedBytesByStream.remove(streamId)
+                                    : parkedBytesByStream.put(streamId, parked);
+        long old = previous == null ? 0L : previous;
+        if (old == parked) {
+            return; // a window-only change
+        }
+        parkedBytes += parked - old;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "parkedBytesChanged: stream " + streamId + " " + old + " -> " + parked
+                         + ", connection total " + parkedBytes);
+        }
+        if (parkedBytesListener != null) {
+            parkedBytesListener.parkedBytesChanged(streamId, old, parked);
+        }
+    }
+
+    public void parkedBytesListener(ParkedBytesListener listener) {
+        this.parkedBytesListener = listener;
+    }
+
+    /** @return bytes the remote flow controller holds across all streams */
+    public long getParkedBytes() {
+        return parkedBytes;
+    }
+
+    /** @return bytes the remote flow controller holds for {@code streamId} */
+    public long getParkedBytes(int streamId) {
+        Long parked = parkedBytesByStream.get(streamId);
+        return parked == null ? 0L : parked;
+    }
+
+    /** @return the streams that currently have parked bytes (a live, read-only view) */
+    public Set<Integer> getStreamsWithParkedBytes() {
+        return Collections.unmodifiableSet(parkedBytesByStream.keySet());
+    }
+
+    /**
+     * Check what the flow controller holds right now (plus timed-out bytes) against maxQueuedBytes.
+     * Used after a flush, when whatever is still held really is parked.
+     *
+     * @see #checkQueuedBytes(long)
+     */
+    public QueuedBytesResult checkQueuedBytes() {
+        return checkQueuedBytes(parkedBytes);
+    }
+
+    /**
+     * Check a parked byte count (plus timed-out bytes) against maxQueuedBytes.
+     * <p>
+     * Pass the current total ({@link #checkQueuedBytes()}), or, before a frame is queued, a lower
+     * bound on what will still be parked after the next flush. Either way the count is never higher
+     * than what will really be parked, so a trip is never a false positive.
+     *
+     * @param parkedBytes bytes that are, or will certainly be, held in the remote flow controller
+     * @return SUCCESS if within the limit (or the check is disabled); FIRST_TO_EXCEED the first time
+     *         the limit is crossed (caller sends GOAWAY); ALREADY_EXCEEDED on every call after that
+     */
+    public QueuedBytesResult checkQueuedBytes(long parkedBytes) {
         if (maxQueuedBytes <= 0) {
             return QueuedBytesResult.SUCCESS; // check disabled
         }
         if (queuedBytesLimitExceeded) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "tryIncrementQueuedBytes: REJECTED - limit already exceeded, current: "
-                             + queuedBytesCount);
-            }
             return QueuedBytesResult.ALREADY_EXCEEDED;
         }
-        long newTotal = queuedBytesCount + bytes;
-        if (newTotal > maxQueuedBytes) {
+        long total = parkedBytes + timedOutBytes;
+        if (total > maxQueuedBytes) {
             queuedBytesLimitExceeded = true;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "tryIncrementQueuedBytes: LIMIT EXCEEDED - would be " + newTotal
-                             + " bytes, limit is " + maxQueuedBytes
-                             + ", rejecting " + bytes + " bytes");
+                Tr.debug(tc, "checkQueuedBytes: LIMIT EXCEEDED - parked " + parkedBytes
+                             + " + timed out " + timedOutBytes + " = " + total
+                             + " > " + maxQueuedBytes);
             }
             return QueuedBytesResult.FIRST_TO_EXCEED;
-        }
-        queuedBytesCount = newTotal;
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "tryIncrementQueuedBytes: added " + bytes
-                         + " bytes, total queued: " + queuedBytesCount);
         }
         return QueuedBytesResult.SUCCESS;
     }
 
     /**
-     * Decrement the queued-bytes counter when a previously accounted frame has
-     * been written or discarded.
+     * @return true once checkQueuedBytes has returned FIRST_TO_EXCEED
      */
-    public void decrementQueuedBytes(long bytes) {
-        queuedBytesCount -= bytes;
-        if (queuedBytesCount < 0) {
-            queuedBytesCount = 0; // Safety check
+    public boolean isQueuedBytesLimitExceeded() {
+        return queuedBytesLimitExceeded;
+    }
+
+    /**
+     * Record bytes that were parked on a stream when its write timeout fired. They stay charged to
+     * the connection for its lifetime (legacy handleWriteTimeout parity), even after the reset drops
+     * them from the flow controller.
+     */
+    public void addTimedOutBytes(long bytes) {
+        if (bytes <= 0) {
+            return;
         }
+        timedOutBytes += bytes;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "decrementQueuedBytes: -" + bytes
-                         + ", total now: " + queuedBytesCount);
+            Tr.debug(tc, "addTimedOutBytes: +" + bytes + ", total timed out: " + timedOutBytes);
         }
+    }
+
+    public long getTimedOutBytes() {
+        return timedOutBytes;
     }
 }
