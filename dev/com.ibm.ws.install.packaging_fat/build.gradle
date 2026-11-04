@@ -21,9 +21,17 @@ task copyTestPackages(type: Copy ) {
 		into ("${buildDir}/autoFVT/publish/packages.test")
 }
 
-if (isBuildOsNativePackages) {
+def debPackagesExist() {
+	def debuildDir = file("${project(':build.image').projectDir}/packaging/debuild")
+	if (!debuildDir.exists() || !debuildDir.isDirectory()) {
+		return false
+	}
+	def debFiles = debuildDir.listFiles({ dir, name -> name.endsWith('.deb') } as FilenameFilter)
+	return debFiles != null && debFiles.length > 0
+}
+
+if (debPackagesExist()) {
 	task copyCurrentPackages(type: Copy ) {
-		dependsOn ':build.image:buildOsNativePackages'
 		into ("${buildDir}/autoFVT/publish")
 
 		into ("packages.current") {
