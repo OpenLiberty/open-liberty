@@ -1,0 +1,44 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.logging/resources/com/ibm/ws/zos/logging/internal/resources/ZosLoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Logging
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: Command processing (com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops)
+#0051-0100: Native code (com.ibm.zos.native/resources/com/ibm/ws/zos/native/native_messages.nlsprops)
+#0101-0150: core (com.ibm.ws.zos.core/resources/com/ibm/ws/zos/core/internal/resources/CoreMessages.nlsprops)
+#0251-0300: logging (here)
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the server name 
+KERNEL_SHUTDOWN_PRINT=CWWKB0251I: L''extension du noyau z/OS pour le serveur {0} est en cours d''arr\u00eat.
+KERNEL_SHUTDOWN_PRINT.explanation= Le serveur entre dans la phase finale du traitement de la proc\u00e9dure d'arr\u00eat.
+KERNEL_SHUTDOWN_PRINT.useraction= Aucune action de l'utilisateur n'est requise. Pour l'automatisation du syst\u00e8me, vous pouvez utiliser ce message comme d\u00e9clencheur pour indiquer que le serveur a \u00e9t\u00e9 arr\u00eat\u00e9. Apr\u00e8s ce message, plus aucun autre message ne sera achemin\u00e9 vers la macro WTO.
+
+DDNAME_TOO_LONG=CWWKB0252W: Le nom symbolique du journal des messages sp\u00e9cifi\u00e9 ne comporte pas entre 1 et 8 caract\u00e8res. Le nom par d\u00e9faut MSGLOG est utilis\u00e9.
+DDNAME_TOO_LONG.explanation= Le nom symbolique doit comporter entre 1 et 8 caract\u00e8res. Si le nom indiqu\u00e9 n'est pas admis, le nom par d\u00e9faut MSGLOG est utilis\u00e9.
+DDNAME_TOO_LONG.useraction= Indiquez un nom symbolique de journal des messages comportant entre 1 et 8 caract\u00e8res.

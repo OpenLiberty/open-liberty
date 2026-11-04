@@ -1,0 +1,66 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.local/resources/com.ibm.ws.zos.channel.local.internal.resources/ZMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Local Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0301-0350: Local Channel Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+#{1}
+NATIVE_SERVICE_LCOM_FAILURE=CWWKB0301E: Procedura rodzima ({0}) otrzyma\u0142a z komunikacji lokalnej kod przyczyny niepowodzenia ({1}).
+NATIVE_SERVICE_LCOM_FAILURE.explanation=Serwer sterowa\u0142 metod\u0105 rodzim\u0105, kt\u00f3ra wywo\u0142a\u0142a przywo\u0142an\u0105 us\u0142ug\u0119 komunikacji lokalnej.  Kod przyczyny z us\u0142ugi komunikacji lokalnej wskazuje przyczyn\u0119 niepowodzenia.
+NATIVE_SERVICE_LCOM_FAILURE.useraction=Przy u\u017cyciu kodu przyczyny komunikacji lokalnej okre\u015bl przyczyn\u0119 niepowodzenia.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0302E: Procedura rodzima zako\u0144czy\u0142a si\u0119 niepowodzeniem, us\u0142uga WebSphere Application Server ({0}), kod powrotu ({1}), us\u0142uga komunikacji lokalnej ({2}), kod powrotu ({3}), numer RSN ({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=Serwer sterowa\u0142 metod\u0105 rodzim\u0105, kt\u00f3ra zako\u0144czy\u0142a si\u0119 niepowodzeniem.  Udost\u0119pniono docelow\u0105 us\u0142ug\u0119 serwera WebSphere Application Server i kod powrotu.  Udost\u0119pniono r\u00f3wnie\u017c docelow\u0105 us\u0142ug\u0119 komunikacyjn\u0105 z kodami powrotu i przyczyny.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=U\u017cyj kod\u00f3w powrotu i przyczyny, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia.
+
+#{0}
+#{1}
+NATIVE_SERVICE_PC=CWWKB0303E: Procedura rodzima ({0}) otrzyma\u0142a nieoczekiwany kod powrotu ({1}) od swojej autoryzowanej us\u0142ugi PC.
+NATIVE_SERVICE_PC.explanation=Serwer sterowa\u0142 metod\u0105 rodzim\u0105 w celu przeprowadzenia wywo\u0142ania autoryzowanej us\u0142ugi.  Otrzyma\u0142 niezerowy kod powrotu od autoryzowanego wywo\u0142ania programu (Program Call - PC).
+NATIVE_SERVICE_PC.useraction=Przejrzyj dzienniki serwera i \u015brodowisko wykonawcze, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia kodu rodzimego.
+
+# Do not use 304-305 - deleted prior to WOLA Beta driver.
+
+#{0} 
+INVALID_NATIVE_REQUESTTYPE=CWWKB0306W: Us\u0142uga komunikacji lokalnej odebra\u0142a nieznany rodzimy typ \u017c\u0105dania ({0}).
+INVALID_NATIVE_REQUESTTYPE.explanation=Odebrano \u017c\u0105danie komunikacji lokalnej o nieznanym typie.  \u017b\u0105danie zostanie zignorowane.
+INVALID_NATIVE_REQUESTTYPE.useraction=W\u0142\u0105cz \u015bledzenie rodzime, aby okre\u015bli\u0107 przyczyn\u0119 nieznanego typu \u017c\u0105dania.
+
+#{0} is an integer
+#{1} is an integer
+ANGEL_VERSION_INCOMPATIBLE=CWWKB0307E: Proces Angel w tym systemie nie jest zgodny z lokaln\u0105 us\u0142ug\u0105 komunikacyjn\u0105. Bie\u017c\u0105ca wersja procesu Angel to {0}, a wymagana jest wersja {1}.
+ANGEL_VERSION_INCOMPATIBLE.explanation=Lokalna us\u0142uga komunikacyjna jest u\u017cywana do komunikowania si\u0119 z klientami dzia\u0142aj\u0105cymi w tym samym systemie co instancja us\u0142ugi.  Proces Angel musi dzia\u0142a\u0107 na minimalnym wymaganym poziomie dla lokalnej us\u0142ugi komunikacyjnej.  Minimalny wymagany poziom zosta\u0142 podany w komunikacie.
+ANGEL_VERSION_INCOMPATIBLE.useraction=Przejrzyj kod JCL u\u017cyty do uruchomienia procesu Angel, aby sprawdzi\u0107, z kt\u00f3rego katalogu jest on \u0142adowany.  Wersja produktu w tym katalogu musi mie\u0107 ten sam poziom poprawki PTF co ta instancja serwera lub wy\u017cszy.

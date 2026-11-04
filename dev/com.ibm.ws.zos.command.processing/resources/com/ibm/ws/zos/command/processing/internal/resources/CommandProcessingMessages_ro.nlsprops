@@ -1,0 +1,101 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Command Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: command processing
+# -------------------------------------------------------------------------------------------------
+
+STOP_COMMAND_RECEIVED=CWWKB0001I: Comanda de oprire primit\u0103 pentru server {0}.
+STOP_COMMAND_RECEIVED.explanation=Serverul a primit o comand\u0103 de oprire.  Serverul va \u00eencepe s\u0103-\u015fi opreasc\u0103 activitatea.
+STOP_COMMAND_RECEIVED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} is target command
+#{1} is completion status
+MODIFY_COMMAND_COMPLETED=CWWKB0002I: MODIFY COMMAND {0} COMPLETED {1}.
+MODIFY_COMMAND_COMPLETED.explanation=Serverul a finalizat procesarea comenzii indicate. \u00cen cazul \u00een care comanda nu s-a finalizat cu succes, mesajele anterioare vor indica motivul.
+MODIFY_COMMAND_COMPLETED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} is native error code
+NATIVE_ERROR_COMMAND_RECEIVED=CWWKB0003E: Procesarea comenzii a primit un cod de eroare {0} dintr-un apel nativ.
+NATIVE_ERROR_COMMAND_RECEIVED.explanation=Serverul a apelat codul nativ pentru un serviciu legat de procesarea unei comenzi.  Codul nativ a \u00eent\u00e2lnit problema identificat\u0103 de codul de eroare afi\u015fat.
+NATIVE_ERROR_COMMAND_RECEIVED.useraction=Examina\u0163i istoricele serverului pentru a determina motivul pentru e\u015fuarea codului nativ.
+
+#{0} is command response from the command handler
+MODIFY_COMMAND_HANDLER_MSG=CWWKB0004I: {0}
+MODIFY_COMMAND_HANDLER_MSG.explanation=Serverul a primit o comand\u0103 de modificare de procesat.  Acesta este mesajul de r\u0103spuns al comenzii de la rutina de tratare a comenzii.  Mesajul CWWKB0005I identific\u0103 rutina de tratare a comenzii.
+MODIFY_COMMAND_HANDLER_MSG.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} is the command handler completion status
+#{1} is the modify command handler name
+MODIFY_COMMAND_HANDLER_DONE=CWWKB0005I: COMMAND RESPONSES COMPLETED {0} FROM {1}.
+MODIFY_COMMAND_HANDLER_DONE.explanation=Serverul a primit o comand\u0103 de modificare de procesat.  Acest mesaj indic\u0103 faptul c\u0103 rutina de tratare a comenzii a finalizat de procesat comanda.
+MODIFY_COMMAND_HANDLER_DONE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} is target command
+MODIFY_COMMAND_UNKNOWN=CWWKB0006W: MODIFY COMMAND {0} WAS NOT KNOWN TO ANY ACTIVE COMMAND HANDLER.
+MODIFY_COMMAND_UNKNOWN.explanation=Serverul a finalizat procesarea comenzii indicate.  Nici o rutin\u0103 de tratare activ\u0103 a comenzii nu a raportat procesarea comenzii. 
+MODIFY_COMMAND_UNKNOWN.useraction=Verifica\u0163i sintaxa comenzii pentru a v\u0103 asigura c\u0103 este corect\u0103 \u015fi apoi relansa\u0163i comanda.
+
+#{0} is the modify command handler name
+MODIFY_HANDLER_ERROR=CWWKB0007E: ERROR RECEIVED FROM COMMAND HANDLER {0}.
+MODIFY_HANDLER_ERROR.explanation=Serverul a primit o comand\u0103 de modificare de procesat.  Acest mesaj indic\u0103 faptul c\u0103 rutina de tratare a comenzii a \u00eent\u00e2lnit o eroare \u00een timp ce procesa comanda.
+MODIFY_HANDLER_ERROR.useraction=Examina\u0163i istoricele serverului pentru a determina motivul pentru eroarea Rutinei de tratare a comenzii.
+
+#{0} is command response related message 
+MODIFY_NLSBUILDMSG_FAILED=CWWKB0008E: {0}.
+MODIFY_NLSBUILDMSG_FAILED.explanation=Serverul a \u00eencercat s\u0103 lanseze un mesaj de r\u0103spuns al comenzii.  Nu a putut rezolva mesajul cu bundle-ul s\u0103u de mesaje.  
+MODIFY_NLSBUILDMSG_FAILED.useraction=Examina\u0163i istoricele serverului pentru a determina motivul pentru o eroare a Rutinei de tratare a comenzii \u00eenrudit\u0103.
+
+
+MESSAGE_TRANSLATE_ERROR=CWWKB0009E: A COMMAND RESPONSE COULD NOT BE TRANSLATED TO NATIVE ENCODING.
+MESSAGE_TRANSLATE_ERROR.explanation=Serverul a \u00eencercat s\u0103 emit\u0103 un mesaj de r\u0103spuns de comand\u0103.  Nu a reu\u015fit s\u0103 traduc\u0103 r\u0103spunsul mesajului \u00een codarea nativ\u0103 ("Cp1047").
+MESSAGE_TRANSLATE_ERROR.useraction=Examina\u0163i istoricele serverului pentru a determina motivul pentru eroare.
+
+COMMAND_TRANSLATE_ERROR=CWWKB0010E: Format incorect al comenzii de modificare primite. 
+COMMAND_TRANSLATE_ERROR.explanation=Serverul a primit o comand\u0103 de modificare.  Nu a putut traduce textul comenzii de la codarea nativ\u0103 ("Cp1047").
+COMMAND_TRANSLATE_ERROR.useraction=Examina\u0163i istoricele serverului pentru a determina motivul pentru eroare.
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_HDR=CWWKB0011I: \u00ceNCEPUTUL INFORMA\u0162IILOR DE AJUTOR DE LA {0}.
+MODIFY_COMMAND_HANDLER_HELP_HDR.explanation=Acest mesaj reprezint\u0103 \u00eenceputul informa\u0163iilor de ajutor de la rutina de tratare a comenzii indicate.
+MODIFY_COMMAND_HANDLER_HELP_HDR.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} is the help text from a command handler
+MODIFY_COMMAND_HANDLER_HELP_TXT=CWWKB0012I: ''{0}''
+MODIFY_COMMAND_HANDLER_HELP_TXT.explanation=Sunt afi\u015fate informa\u0163iile de ajutor de la handler-ul de comand\u0103 indicat.
+MODIFY_COMMAND_HANDLER_HELP_TXT.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_END=CWWKB0013I: SF\u00c2R\u015eITUL INFORMA\u0162IILOR DE AJUTOR DE LA {0}.
+MODIFY_COMMAND_HANDLER_HELP_END.explanation=Acest mesaj reprezint\u0103 sf\u00e2r\u015fitul informa\u0163iilor de ajutor de la rutina de tratare a comenzii indicate.
+MODIFY_COMMAND_HANDLER_HELP_END.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+FILE_DELETE_UNSUCCESSFUL=CWWKB0014W: FI\u015eIERUL PID NU A PUTUT FI \u015eTERS.
+FILE_DELETE_UNSUCCESSFUL.explanation=Server-ul a \u00eencercat s\u0103 \u015ftearg\u0103 fi\u015fierul pid \u00een timpul opririi server-ului.  Nu a putut \u015fterge fi\u015fierul pid specificat de {0}.
+FILE_DELETE_UNSUCCESSFUL.useraction=Examina\u0163i \u00eenregistr\u0103rile \u00een istoric ale server-ului dac\u0103 server-ul s-a oprit corespunz\u0103tor.

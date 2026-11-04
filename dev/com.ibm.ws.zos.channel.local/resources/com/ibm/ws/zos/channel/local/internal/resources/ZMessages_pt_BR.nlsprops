@@ -1,0 +1,66 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.local/resources/com.ibm.ws.zos.channel.local.internal.resources/ZMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Local Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0301-0350: Local Channel Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+#{1}
+NATIVE_SERVICE_LCOM_FAILURE=CWWKB0301E: A rotina nativa ({0}) recebeu um c\u00f3digo de raz\u00e3o de falha ({1}) da Comunica\u00e7\u00e3o Local.
+NATIVE_SERVICE_LCOM_FAILURE.explanation=O servidor conduziu um m\u00e9todo nativo que chamou o servi\u00e7o de Comunica\u00e7\u00e3o Local referenciado.  O c\u00f3digo de raz\u00e3o do servi\u00e7o de Comunica\u00e7\u00e3o Local indica o motivo da falha.
+NATIVE_SERVICE_LCOM_FAILURE.useraction=Use o c\u00f3digo de raz\u00e3o da Comunica\u00e7\u00e3o Local para determinar o motivo da falha.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0302E: A rotina nativa falhou, servi\u00e7o do WebSphere Application Server ({0}) RC({1}), servi\u00e7o de Comunica\u00e7\u00e3o Local ({2}) RC({3}) RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=O servidor conduziu um m\u00e9todo nativo que falhou.  O servi\u00e7o de destino do WebSphere Application Server e o c\u00f3digo de retorno s\u00e3o fornecidos.  O servi\u00e7o de destino de Comunica\u00e7\u00e3o Local com c\u00f3digos de retorno e de raz\u00e3o tamb\u00e9m s\u00e3o fornecidos.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=Use os c\u00f3digos de retorno e de raz\u00e3o para determinar o motivo da falha.
+
+#{0}
+#{1}
+NATIVE_SERVICE_PC=CWWKB0303E: A rotina nativa ({0}) recebeu um c\u00f3digo de retorno inesperado ({1}) de seu servi\u00e7o de PC autorizado.
+NATIVE_SERVICE_PC.explanation=O servidor conduziu um m\u00e9todo nativo para executar uma chamada de servi\u00e7o autorizada.  Ele recebeu um c\u00f3digo de retorno n\u00e3o zero da Chamada do Programa (PC) autorizada.
+NATIVE_SERVICE_PC.useraction=Examine os logs do servidor e o ambiente de tempo de execu\u00e7\u00e3o para determinar o motivo da falha do c\u00f3digo nativo.
+
+# Do not use 304-305 - deleted prior to WOLA Beta driver.
+
+#{0} 
+INVALID_NATIVE_REQUESTTYPE=CWWKB0306W: A Comunica\u00e7\u00e3o Local recebeu um tipo de solicita\u00e7\u00e3o nativa desconhecido ({0}).
+INVALID_NATIVE_REQUESTTYPE.explanation=Uma solicita\u00e7\u00e3o de comunica\u00e7\u00e3o local foi recebida com um tipo de solicita\u00e7\u00e3o desconhecido.  A solicita\u00e7\u00e3o ser\u00e1 ignorada.
+INVALID_NATIVE_REQUESTTYPE.useraction=Ative o rastreio nativo para determinar a causa do tipo de solicita\u00e7\u00e3o desconhecido.
+
+#{0} is an integer
+#{1} is an integer
+ANGEL_VERSION_INCOMPATIBLE=CWWKB0307E: O processo angel neste sistema n\u00e3o \u00e9 compat\u00edvel com o servi\u00e7o de comunica\u00e7\u00e3o local. A vers\u00e3o angel atual \u00e9 {0}, mas a vers\u00e3o angel necess\u00e1ria \u00e9 {1}.
+ANGEL_VERSION_INCOMPATIBLE.explanation=O servi\u00e7o de comunica\u00e7\u00e3o local \u00e9 usado para se comunicar com clientes em execu\u00e7\u00e3o no mesmo sistema que esta inst\u00e2ncia do servidor.  O processo angel deve ser executado no n\u00edvel obrigat\u00f3rio m\u00ednimo para o servi\u00e7o de comunica\u00e7\u00e3o local.  O n\u00edvel obrigat\u00f3rio m\u00ednimo \u00e9 exibido na mensagem.
+ANGEL_VERSION_INCOMPATIBLE.useraction=Examine a JCL que voc\u00ea usou para iniciar o processo angel para ver de qual diret\u00f3rio ele est\u00e1 sendo carregado.  A vers\u00e3o do produto nesse diret\u00f3rio deve estar no mesmo n\u00edvel de PTF, ou superior, que o n\u00edvel de PTF desta inst\u00e2ncia do servidor.

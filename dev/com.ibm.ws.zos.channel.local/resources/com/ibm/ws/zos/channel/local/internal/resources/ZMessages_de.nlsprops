@@ -1,0 +1,66 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.local/resources/com.ibm.ws.zos.channel.local.internal.resources/ZMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Local Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0301-0350: Local Channel Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+#{1}
+NATIVE_SERVICE_LCOM_FAILURE=CWWKB0301E: Die native Routine ({0}) hat einen Fehlerursachencode ({1}) \u00fcber die lokale Kommunikation empfangen.
+NATIVE_SERVICE_LCOM_FAILURE.explanation=Der Server hat eine native Methode gestartet, die den referenzierten lokalen Kommunikationsservice aufgerufen hat. Der Ursachencode des lokalen Kommunikationsservice gibt die Ursache f\u00fcr den Fehler an.
+NATIVE_SERVICE_LCOM_FAILURE.useraction=Bestimmen Sie die Ursache f\u00fcr den Fehler mithilfe des Ursachencodes des Service Lokale Kommunikation.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0302E: Die native Routine ist fehlgeschlagen. WebSphere Application Server-Service ({0}), RC ({1}), lokaler Kommunikationsservice ({2}), RC({3}), RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=Der Server hat eine native Methode gestartet, die fehlgeschlagen ist. Der WebSphere Application Server-Zielservice und der R\u00fcckgabecode sind angegeben. Der lokale Zielkommunikationsservice mit R\u00fcckgabe- und Ursachencode ist ebenfalls angegeben.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=Bestimmen Sie die Ursache f\u00fcr den Fehler mithilfe der R\u00fcckgabe- und Ursachencodes.
+
+#{0}
+#{1}
+NATIVE_SERVICE_PC=CWWKB0303E: Die native Routine ({0}) hat einen nicht erwarteten R\u00fcckgabecode ({1}) von seinem Service f\u00fcr berechtigte Programmaufrufe empfangen.
+NATIVE_SERVICE_PC.explanation=Der Server hat eine native Methode zum Ausf\u00fchren eines berechtigten Serviceaufrufs gestartet. Er hat einen R\u00fcckgabecode ungleich null vom berechtigten Programmaufruf empfangen.
+NATIVE_SERVICE_PC.useraction=Untersuchen Sie die Serverprotokolle und die Laufzeitumgebung, um die Ursache f\u00fcr den Fehler im nativen Code zu bestimmen.
+
+# Do not use 304-305 - deleted prior to WOLA Beta driver.
+
+#{0} 
+INVALID_NATIVE_REQUESTTYPE=CWWKB0306W: Der lokale Kommunikationsservice hat eine native Anforderungen mit einem unbekannten Typ ({0}) empfangen.
+INVALID_NATIVE_REQUESTTYPE.explanation=Es wurde eine lokale Kommunikationsanforderungen mit einem unbekannten Anforderungstyp empfangen. Die Anforderung wird ignoriert.
+INVALID_NATIVE_REQUESTTYPE.useraction=Aktivieren Sie die native Traceverarbeitung, um die Ursache f\u00fcr den unbekannten Anforderungstyp zu bestimmen.
+
+#{0} is an integer
+#{1} is an integer
+ANGEL_VERSION_INCOMPATIBLE=CWWKB0307E: Der Angel-Prozess auf diesem System ist mit dem lokalen Kommunikationsservice nicht kompatibel. Die aktuelle Angel-Version ist {0}, aber die erforderliche Angel-Version ist {1}.
+ANGEL_VERSION_INCOMPATIBLE.explanation=Der lokale Kommunikationsservice wird verwendet, um mit Clients zu kommunizieren, die auf demselben System wie diese Serverinstanz ausgef\u00fchrt werden. Der Angel-Prozess muss mit einer f\u00fcr den lokalen Kommunikationsservice erforderlichen Mindestversion ausgef\u00fchrt werden. Die erforderliche Mindestversion ist in der Nachricht angegeben.
+ANGEL_VERSION_INCOMPATIBLE.useraction=Pr\u00fcfen Sie die JCL, die Sie zum Starten des Angel-Prozesses verwendet haben, um festzustellen, aus welchem Verzeichnis die JCL geladen wird. Die Version des Produkts in diesem Verzeichnis muss mindestens dieselbe PTF-Version haben wie diese Serverinstanz.

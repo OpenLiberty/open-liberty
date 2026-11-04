@@ -1,0 +1,3 @@
+<server>
+    <resourceAdapter id="ola" location="${wlp.install.dir}/lib/ola.rar"/>
+</server>

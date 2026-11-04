@@ -1,0 +1,8 @@
+<server>
+
+  <!-- merge syncToOSThreadContext into default instance -->
+  <contextService id="DefaultContextService">
+    <syncToOSThreadContext/>
+  </contextService>
+
+</server>

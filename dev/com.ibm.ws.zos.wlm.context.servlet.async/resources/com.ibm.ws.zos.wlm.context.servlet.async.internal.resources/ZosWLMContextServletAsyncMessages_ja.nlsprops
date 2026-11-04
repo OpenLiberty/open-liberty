@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.connect/resources/com.ibm.ws.zos.connect.internal.resources/ZosConnectMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Connect
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0601-0650: CWWKB: z/OS WLM asynchronous servlet context propagation.
+# ------------------------------------------------------------------------------------------------- 
+
+DEACTIVATE_ENCLAVE_DELETED=CWWKB0601W: \u975e\u540c\u671f\u30b5\u30fc\u30d6\u30ec\u30c3\u30c8\u306e\u30b3\u30f3\u30c6\u30ad\u30b9\u30c8\u4f1d\u642c\u30b5\u30fc\u30d3\u30b9\u306f\u3001\u30a2\u30af\u30c6\u30a3\u30d6\u306a\u975e\u540c\u671f\u4f5c\u696d\u304c\u307e\u3060\u9032\u884c\u4e2d\u3067\u3042\u308b\u9593\u306b\u30b7\u30e3\u30c3\u30c8\u30c0\u30a6\u30f3\u3057\u3066\u3044\u307e\u3059\u3002ID \u30c8\u30fc\u30af\u30f3\u304c {0} \u306e WLM \u30a8\u30f3\u30af\u30ec\u30fc\u30d6\u306f\u524a\u9664\u3055\u308c\u307e\u3057\u305f\u3002
+DEACTIVATE_ENCLAVE_DELETED.explanation= WLM \u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u3001\u30b5\u30fc\u30d6\u30ec\u30c3\u30c8\u30fb\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u3001\u307e\u305f\u306f\u4e21\u65b9\u306e\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u304c\u4f7f\u7528\u53ef\u80fd\u3067\u306a\u3044\u305f\u3081\u3001\u975e\u540c\u671f\u30b5\u30fc\u30d6\u30ec\u30c3\u30c8\u306e\u30b3\u30f3\u30c6\u30ad\u30b9\u30c8\u4f1d\u642c\u30b5\u30fc\u30d3\u30b9\u306f\u30b7\u30e3\u30c3\u30c8\u30c0\u30a6\u30f3\u3057\u3066\u3044\u307e\u3059\u3002
+DEACTIVATE_ENCLAVE_DELETED.useraction=WLM \u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u3001\u30b5\u30fc\u30d6\u30ec\u30c3\u30c8\u30fb\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u3001\u307e\u305f\u306f\u4e21\u65b9\u306e\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u304c\u3001\u4f5c\u696d\u304c\u307e\u3060\u9032\u884c\u4e2d\u3067\u3042\u308b\u9593\u306b\u69cb\u6210\u30d5\u30a1\u30a4\u30eb\u304b\u3089\u524a\u9664\u3055\u308c\u306a\u304b\u3063\u305f\u3053\u3068\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002

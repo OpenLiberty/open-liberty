@@ -1,0 +1,116 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.wola/resources/com.ibm.ws.zos.channel.wola.internal.resources/ZWOLAChannelMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WOLA Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0501-0550: WOLA Channel
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the first part of the WOLA group name.
+#{1} is the second part of the name.
+#{2} is the third part of the name.
+WOLA_SERVER_REGISTERED=CWWKB0501I: Canalul WebSphere Optimized Local Adapter s-a \u00eenregistrat cu serverul de profil Liberty utiliz\u00e2nd numele urm\u0103tor: {0} {1} {2}
+WOLA_SERVER_REGISTERED.explanation=Serverul de profil Liberty a \u00eenregistrat WebSphere Optimized Local Adapter. Acum pot fi f\u0103cute apeluri \u00eentre aplica\u0163iile de limb\u0103 nativ\u0103 \u015fi mediul serverului de profil Liberty.
+WOLA_SERVER_REGISTERED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} the key for part of the WOLA group name, for which the value contains at least one lowercase character
+#{1} the value for the part of the WOLA group name referred to by {0}, as given, containing at least one lowercase character
+#{2} the correct value referred to by {1}, now all uppercase
+WOLA_LOWERCASE_GROUP_NAME=CWWKB0502W: Partea {0} a numelui de grup WebSphere Optimized Local Adapter din configura\u0163ia zosLocalAdapters este setat\u0103 la {1}, care con\u0163ine cel pu\u0163in un caracter liter\u0103 mic\u0103. Valoarea va fi schimbat\u0103 la {2}.
+WOLA_LOWERCASE_GROUP_NAME.explanation=Subsistemul de securitate z/OS converte\u015fte caracterele liter\u0103 mic\u0103 la litere mari, ceea ce poate cauza o nepotrivire cu configura\u0163ia dumneavoastr\u0103.
+WOLA_LOWERCASE_GROUP_NAME.useraction=Nu utiliza\u0163i caractere liter\u0103 mic\u0103 \u00een valorile wolaGroup, wolaName2 \u015fi wolaName3 din configura\u0163ia zosLocalAdapters. Pentru informa\u0163ii suplimentare despre conven\u0163iile de numire, consulta\u0163i documenta\u0163ia System Authorization Facility (SAF).
+
+#{0} is the first part of the WOLA group name.
+#{1} is the second part of the name.
+#{2} is the third part of the name.
+WOLA_SERVER_UNAVAILABLE=CWWKB0503E: Canalul de adaptor local optimizat WebSphere(R) care utilizeaz\u0103 numele {0} {1} {2} a fost indisponibil pentru folosire cu serverul Liberty. Verifica\u0163i c\u0103 nu exist\u0103 alte servere Liberty care utilizeaz\u0103 aceea\u015fi configura\u0163ie zosLocalAdapters ca unul de pe acest server.
+WOLA_SERVER_UNAVAILABLE.explanation=Serverul Liberty nu a putut utiliza numele specificat \u00een configura\u0163ia zosLocalAdapters pentru \u00eenregistrarea adaptoarelor locale optimizate WebSphere. Acest nume ar putea fi utilizat de un alt server Liberty.
+WOLA_SERVER_UNAVAILABLE.useraction=Verifica\u0163i-v\u0103 mediul pentru a v\u0103 asigura c\u0103 niciun alt server Liberty nu utilizeaz\u0103 aceea\u015fi configura\u0163ie zosLocalAdapters ca cea de pe acest server. 
+
+# ------------------------------------------------------------------------------------------------
+# OTMA Message Parsing section for WOLA
+# ------------------------------------------------------------------------------------------------
+
+#{0} The segment number in question
+OTMA_RESP_MSG_PARSE_ERR=CWWKB0504E: Lungimea segmentului mesajului de r\u0103spuns OTMA specificat\u0103 pentru segmentul {0} nu se potrive\u015fte cu dimensiunea real\u0103 a segmentului.
+OTMA_RESP_MSG_PARSE_ERR.explanation=A ap\u0103rut o eroare la parsarea unui Mesaj de r\u0103spuns OTMA care este primit de la IMS. Dimensiunea indicat\u0103 \u00een antet nu se potrive\u015fte cu dimensiunea real\u0103 a datelor de mesaj.
+OTMA_RESP_MSG_PARSE_ERR.useraction=Verifica\u0163i aplica\u0163ia \u015fi asigura\u0163i-v\u0103 c\u0103 genereaz\u0103 mesaje valide \u00een format OTMA.
+
+#{0} is the Total Message Length identified by headers
+#{1] is the actual header message length
+OTMA_RESP_HEADER_SHORT=CWWKB0505E: Lungimea mesajului de r\u0103spuns OTMA specificat\u0103 {0} este mai mic\u0103 dec\u00e2t lungimea buffer-lui de mesaj real {1}.
+OTMA_RESP_HEADER_SHORT.explanation=A ap\u0103rut o eroare la parsare \u015fi s-a primit mesajul de r\u0103spuns OTMA de la IMS. Dimensiunea indicat\u0103 \u00een antet nu se potrive\u015fte cu dimensiunea real\u0103 a datelor de mesaj.
+OTMA_RESP_HEADER_SHORT.useraction=Verifica\u0163i aplica\u0163ia \u015fi asigura\u0163i-v\u0103 c\u0103 lungimile anteturilor segmentelor de mesaje care sunt specificate se potrivesc cu lungimea datelor din mesaje.
+
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the segment number in this message
+OTMA_REQ_HEADER_INVALID=CWWKB0506E: Lungimea segmentului de cerere OTMA {0} pentru num\u0103rul de segmente {1} nu este valid\u0103.
+OTMA_REQ_HEADER_INVALID.explanation=A ap\u0103rut o eroare la parsarea unui Mesaj de cerere OTMA. Fie lungimea mesajului care este specificat\u0103 \u00een antetul segmentului de mesaj este mai mare dec\u00e2t 32768 fie este mai mic\u0103 dec\u00e2t lungimea minim\u0103. 
+OTMA_REQ_HEADER_INVALID.useraction=Verifica\u0163i aplica\u0163ia \u015fi asigura\u0163i-v\u0103 c\u0103 lungimile anteturilor segmentelor de mesaje care sunt specificate sunt valide. De asemenea, asigura\u0163i-v\u0103 c\u0103 lungimea mesajului de r\u0103spuns OTMA egaleaz\u0103 num\u0103rul total de octe\u0163i care este specificat \u00een lungimile anteturilor
+
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the actual number of bytes left in the buffer
+#{2} is the segment number being processed
+OTMA_REQ_HEADER_SHORT=CWWKB0507E: Lungimea Antetului segmentului de cerere OTMA de {0} dep\u0103\u015fe\u015fte lungimea buffer-ului r\u0103mas de {1} pentru segmentul {2}.
+OTMA_REQ_HEADER_SHORT.explanation=A ap\u0103rut o eroare la parsarea unui Mesaj de cerere OTMA. Lungimea specificat\u0103 \u00een antetul segmentului este mai mare dec\u00e2t dec\u00e2t num\u0103rul de octe\u0163i care sunt l\u0103sa\u0163i \u00een buffer-ul de date. 
+OTMA_REQ_HEADER_SHORT.useraction=Verifica\u0163i aplica\u0163ia \u015fi asigura\u0163i-v\u0103 c\u0103 lungimile anteturilor segmentelor de mesaje care sunt specificate sunt valide. De asemenea, asigura\u0163i-v\u0103 c\u0103 lungimea mesajului de r\u0103spuns OTMA egaleaz\u0103 num\u0103rul total de octe\u0163i care este specificat \u00een lungimile anteturilor
+ 
+#{0} is the length specified by the OTMA Segment Header 
+#{1} is the segment number being processed
+OTMA_RESP_MSG_SEG_SMALL=CWWKB0508E: Lungimea antetului de r\u0103spuns OTMA specificat\u0103 {0} dep\u0103\u015fe\u015fte dimensiunea buffer-ului de intrare pentru segmentul de mesaj {1}. 
+OTMA_RESP_MSG_SEG_SMALL.explanation=Antetul specificat pentru segmentul de r\u0103spuns este mai mare dec\u00e2t num\u0103rul de octe\u0163i l\u0103sa\u0163i \u00een bufferul de mesaje. 
+OTMA_RESP_MSG_SEG_SMALL.useraction=Verifica\u0163i aplica\u0163ia pentru a v\u0103 asigura c\u0103 lungimile anteturilor de mesaje se potrivesc cu dimensiunea buffer-ului.
+
+#{0} is the segment count from the segment header array
+#{1} is the number of elements in the header array
+OTMA_RESP_COUNT_INVALID=CWWKB0509E: Num\u0103rul de mesaje de r\u0103spuns OTMA care este specificat {0} nu se potrive\u015fte cu num\u0103rul real de segmente {1}. 
+OTMA_RESP_COUNT_INVALID.explanation=Antetul specificat pentru segmentul de r\u0103spuns este mai mare dec\u00e2t num\u0103rul de octe\u0163i l\u0103sa\u0163i \u00een bufferul de mesaje. 
+OTMA_RESP_COUNT_INVALID.useraction=Verifica\u0163i aplica\u0163ia pentru a v\u0103 asigura c\u0103 lungimile anteturilor de mesaje se potrivesc cu dimensiunea buffer-ului.
+
+
+#{0} is the segment count from the segment header array
+#{1} is the max number of segments configured for the connection
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED=CWWKB0510E: Num\u0103rul segmentelor de cerere OTMA de {0} dep\u0103\u015fe\u015fte maximul permis num\u0103rul de segmente {1} . 
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED.explanation=Num\u0103rul segmentelor de cerere este mai mare dec\u00e2t valoarea maxim\u0103 a num\u0103rului configurat curent permis de segmente. 
+OTMA_MAX_REQ_SEGMENTS_EXCEEDED.useraction=Verifica\u0163i configura\u0163ia specifica\u0163iei de conexiune \u015fi asigura\u0163i-v\u0103 c\u0103 num\u0103rul maxim de segmente este setat corect.
+
+#{0} is the 3rd entry in the response code int array returned from the call to OTMA send receive when response code[1] = 44 and response code[0] = 0 this is the number of segments IMS actually returned
+#{1} is the 2nd entry in the response code int array returned from the call to OTMA send receive when response code[1] = 44 and response code[0] = 0 this is the number of segments IMS wanted to return
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED=CWWKB0511E: Num\u0103rul segmentelor de r\u0103spuns OTMA de {0} dep\u0103\u015fe\u015fte num\u0103rul maxim permis de segmente {1}.
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED.explanation=Num\u0103rul segmentelor de r\u0103spuns este mai mare dec\u00e2t num\u0103rul maxim configurat curent permis de segmente. IMS trimite \u00eenapoi num\u0103rul maxim de segmente \u015fi concateneaz\u0103 \u00een segmentul final acele segmente de r\u0103spuns care dep\u0103\u015fesc maximul permis. 
+OTMA_MAX_RESP_SEGMENTS_EXCEEDED.useraction=Verifica\u0163i configura\u0163ia specifica\u0163iei de conexiune \u015fi asigura\u0163i-v\u0103 c\u0103 num\u0103rul maxim de segmente este setat corect.
+
+# ------------------------------------------------------------------------------------------------
+# OK back to generic WOLA messages
+# ------------------------------------------------------------------------------------------------
+
+#{0} is the WOLA group name, a string of length 1-8
+#{1} is a registration count, an integer >= 500
+WOLA_GROUP_REGISTRATION_COUNT=CWWKB0512I: Grupul WOLA {0} con\u0163ine {1} \u00eenregistr\u0103ri.
+WOLA_GROUP_REGISTRATION_COUNT.explanation=Exist\u0103 mai mult de 500 de \u00eenregistr\u0103ri \u00een grupul WOLA. Num\u0103rul de \u00eenregistr\u0103ri este afi\u015fat \u00een mesaj.
+WOLA_GROUP_REGISTRATION_COUNT.useraction=Nu este necesar\u0103 nicio ac\u0163iune.

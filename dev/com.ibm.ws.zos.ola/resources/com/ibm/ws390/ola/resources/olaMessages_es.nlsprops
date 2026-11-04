@@ -1,0 +1,305 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# DISCLAIMER OF WARRANTIES:  The following [enclosed] code is sample
+# code created by IBM Corporation.  This sample code is not part of
+# any standard or IBM product and is provided to you solely for the
+# purpose of assisting you in the development of your applications.
+# The code is provided "AS IS", without warranty of any kind.  IBM
+# shall not be liable for any damages arising out of your use of the
+# sample code, even if they have been advised of the possibility of
+# such damages.
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+# 4) %%SERVICETEXT%% - (Is substitued by a text description which  
+#        is done by the book generation tool) 
+#    - for the complete text description see: include/private/bborabnd.mac 
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+#-----------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.zos.ola/resources/com/ibm/ws390/ola/resources/olaMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WOLA Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0351-0400: WOLA Resource Adapter
+# -------------------------------------------------------------------------------------------------
+
+# Messages for DISPLAY,ADAPTER command.
+
+#{0} is the registration type, a single character.
+#{1} is the job name of the Liberty server, a text string between 1-8 characters
+#{2} is the registration name of the Liberty server, a text string between 1-12 characters
+CWWKB0351I=CWWKB0351I: TIPO: {0} NOMBRE TRABAJO: {1} NOMBRE: {2}
+CWWKB0351I.explanation=Primera l\u00ednea de respuesta a un mandato de listado de registro detallado.
+CWWKB0351I.useraction=Ninguno
+#-----------------------------------------------------------------------
+
+#{0} is the job number corresponding to the registration which is being described
+#{1} is either 'true' or 'false'
+#{2} is a number >= 0.
+CWWKB0352I=CWWKB0352I:  N\u00daMERO TRABAJO: {0} ACTIVO: {1} CONEXIONES ACTIVAS: {2}
+CWWKB0352I.explanation=Segunda l\u00ednea de respuesta a un mandato de listado de registro detallado.
+CWWKB0352I.useraction=Ninguno
+#-----------------------------------------------------------------------
+
+#{0} is a number >= 0.
+#{1} is a number >= 0.
+#{2} is a number >= 0 (representing the state of the registration)
+#{3} is a number >= 0
+CWWKB0353I=CWWKB0353I: M\u00cdN-CON: {0} M\u00c1X-CON: {1} ESTADO: {2} NIVEL DE RASTREO: {3}
+CWWKB0353I.explanation=La tercera l\u00ednea da respuesta a un mandato de listado de registro detallado.
+CWWKB0353I.useraction=Ninguno
+#-----------------------------------------------------------------------
+
+CWWKB0354I=CWWKB0354I: Nombre         Nombre trabajo  SWT TL M\u00edn  M\u00e1x  Act  Estado
+CWWKB0354I.explanation=Respuesta de cabecera de un mandato de listado de registro en tablas.
+CWWKB0354I.useraction=Ninguno
+#-----------------------------------------------------------------------
+
+#{0} is a string, corresponding to 'Name' in message CWWKB0354I
+#{1} is a string, corresponding to 'Jobname' in message CWWKB0354I
+#{2} is a three digit number, corresponding to "SWT" in message CWWKB0354I
+#{3} is a two digit number, corresponding to "TL" in message CWWKB0354I
+#{4} is a number, corresponding to 'Min' in message CWWKB0354I
+#{5} is a number, corresponding to 'Max' in message CWWKB0354I
+#{6} is a number, corresponding to 'Active'	in message CWWKB0354I
+#{7} is a number, corresponding to 'State' in message CWWKB0354I
+CWWKB0355I=CWWKB0355I: {0} {1} {2} {3} {4} {5} {6} {7}
+CWWKB0355I.explanation=La respuesta de fila RGE para el mandato con tabla: MODIFY,DISPLAY,ADAPTER,RGE,*
+CWWKB0355I.useraction=Ninguno
+#-----------------------------------------------------------------------
+
+#{0} is a number
+#{1} is a number >= 0
+#{2} is a string from 1-8 characters.
+CWWKB0356I=CWWKB0356I: ESTADO: VER:{0} M\u00c1X-CON:{1} NOMBRE GRUPO WOLA: {2}
+CWWKB0356I.explanation=Respuesta al mandato: MODIFY DISPLAY,ADAPTER,STATUS
+CWWKB0356I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0357I=CWWKB0357I: MOSTRANDO REGISTROS PARA EL SERVIDOR:
+CWWKB0357I.explanation=Respuesta al mandato: MODIFY DISPLAY,ADAPTER,REGISTRATIONS
+CWWKB0357I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0358I=CWWKB0358I: MOSTRANDO REGISTROS PARA GRUPO WOLA:
+CWWKB0358I.explanation=Respuesta al mandato: MODIFY DISPLAY,ADAPTER,GROUPRGES
+CWWKB0358I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0359I=CWWKB0359I: POSIBLES MANDATOS PARA EL ADAPTADOR: (EJEMPLO: DISPLAY,ADAPTER,STATUS)
+CWWKB0359I.explanation=Respuesta a un mandato ADAPTER o a un mandato HELP desconocido
+CWWKB0359I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} is a string (an option name)
+#{1} is a description (of the option in #0)
+CWWKB0360I=CWWKB0360I: {0} - {1}
+CWWKB0360I.explanation=Muestra un mandato o una opci\u00f3n de b\u00fasqueda y su descripci\u00f3n
+CWWKB0360I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} is a string which the user supplied
+CWWKB0361I=CWWKB0361I: OPCI\u00d3N O SE\u00d1AL NO V\u00c1LIDO: {0}
+CWWKB0361I.explanation=Muestra un mensaje de error para una opci\u00f3n o un s\u00edmbolo no v\u00e1lido
+CWWKB0361I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0362I=CWWKB0362I: EXPLICACI\u00d3N: VALOR BOOLEANO NO V\u00c1LIDO: SE ESPERABA TRUE/FALSE O 0/1
+CWWKB0362I.explanation=Muestra un error para un valor booleano no v\u00e1lido
+CWWKB0362I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0363I=CWWKB0363I: EXPLICACI\u00d3N: VALOR NUM\u00c9RICO NO V\u00c1LIDO
+CWWKB0363I.explanation=Muestra un error para un valor num\u00e9rico no v\u00e1lido
+CWWKB0363I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0364I=CWWKB0364I: EXPLICACI\u00d3N: NOMBRE DE ATRIBUTO NO V\u00c1LIDO
+CWWKB0364I.explanation=Muestra un error para un nombre de atributo no v\u00e1lido cuando se realiza una b\u00fasqueda
+CWWKB0364I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0365I=CWWKB0365I: EXPLICACI\u00d3N: NO DEBE INCLUIR M\u00c1S DE UN =
+CWWKB0365I.explanation=Muestra un error para una opci\u00f3n de b\u00fasqueda con m\u00e1s de 1 signo =
+CWWKB0365I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0366I=CWWKB0366I: OPCIONES DE B\u00daSQUEDA V\u00c1LIDAS:
+CWWKB0366I.explanation=Muestra una cabecera de una lista de opciones de b\u00fasqueda v\u00e1lidas y sus tipos
+CWWKB0366I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0367I=CWWKB0367I: {0}
+CWWKB0367I.explanation=Muestra una opci\u00f3n de b\u00fasqueda y su tipo
+CWWKB0367I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0368I=CWWKB0368I: {0} MUESTRA EL ESTADO OLA
+CWWKB0368I.explanation=Una descripci\u00f3n para el mandato STATUS
+CWWKB0368I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0369I=CWWKB0369I: {0} MUESTRA REGISTROS PARA EL SERVIDOR ACTUAL
+CWWKB0369I.explanation=Una descripci\u00f3n para el mandato STATUS
+CWWKB0369I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0370I=CWWKB0370I: {0} MUESTRA REGISTROS PARA UN NOMBRE DE SERVIDOR DETERMINADO
+CWWKB0370I.explanation=Una descripci\u00f3n para el mandato STATUS
+CWWKB0370I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0371I=CWWKB0371I: {0} MUESTRA REGISTROS PARA GRUPO WOLA
+CWWKB0371I.explanation=Una descripci\u00f3n para el mandato STATUS
+CWWKB0371I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0372I=CWWKB0372I: {0} CONSULTE DISPLAY,ADAPTER,SEARCHRGES,HELP PARA OBTENER INFORMACI\u00d3N
+CWWKB0372I.explanation=Una descripci\u00f3n para el mandato STATUS
+CWWKB0372I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} is a string (a server name supplied by the user)
+CWWKB0373I=CWWKB0373I: SERVIDOR NO ENCONTRADO CON EL NOMBRE {0}
+CWWKB0373I.explanation=Un mensaje de error para el mandato DISPLAY,ADAPTER,REGISTRATIONS,servername
+CWWKB0373I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0374I=CWWKB0374I: ESTE REGISTRO NO TIENE NING\u00daN DESCRIPTOR DE CONEXI\u00d3N
+CWWKB0374I.explanation=Un mensaje que se visualiza para obtener una vista RGE detallada sin descriptor de conexi\u00f3n
+CWWKB0374I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0375I=CWWKB0375I: ID                  LSCB        Estado
+CWWKB0375I.explanation=Una cabecera para la vista de tabla de los descriptores de conexi\u00f3n
+CWWKB0375I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} is a hexidecimal integer, corresponding to "ID" in message CWWKB0375I
+#{1} is a hexidecimal integer, corresponding to "LSCB" in message CWWKB0375I
+#{2} is a string describing connection state, corresponding to "State" in message CWWKB0375I
+CWWKB0376I=CWWKB0376I: {0} {1} {2}
+CWWKB0376I.explanation=Una fila de visualizaci\u00f3n de descriptores de conexiones para un registro
+CWWKB0376I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0377I=CWWKB0377I: 
+CWWKB0377I.explanation=Una fila de espacio en blanco
+CWWKB0377I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} Is a string
+CWWKB0378I=CWWKB0378I: {0} DESPU\u00c9S DE TODO EL MANDATO, SE MOSTRAR\u00c1 INFORMACI\u00d3N AMPLIADA
+CWWKB0378I.explanation=Una descripci\u00f3n para el mandato DETAILS
+CWWKB0378I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0379I=CWWKB0379I: El archivo RAR de los Adaptadores locales optimizados que utiliza este servidor debe actualizarse.
+CWWKB0379I.explanation=Con este paquete de servicios se proporciona un archivo RAR actualizado para el componente Adaptadores locales optimizados (OLA) de WebSphere Application Server para z/OS.  Es posible que la versi\u00f3n instalada actualmente no sea compatible con este paquete de servicios.
+CWWKB0379I.useraction=Sustituya el archivo RAR de los Adaptadores locales optimizados (OLA) instalado en esta instancia de servidor por el que se entrega con el nivel de servicio instalado actualmente de WebSphere Application Server para z/OS.  Encontrar\u00e1 las instrucciones de instalaci\u00f3n en el Information Center de WebSphere Application Server para z/OS.
+#-----------------------------------------------------------------------
+CWWKB0380E=CWWKB0380E: Se ha detectado un error al realizar la resincronizaci\u00f3n de transacciones con el registro de OLA {0}. 
+CWWKB0380E.explanation=WebSphere Application Server para z/OS solicita la resincronizaci\u00f3n de transacciones con el nombre de registro de Adaptadores locales optimizados identificado en el mensaje.  El proceso de resincronizaci\u00f3n no se ha realizado a causa de una excepci\u00f3n.
+CWWKB0380E.useraction=Cuando efect\u00fae una resincronizaci\u00f3n con CICS, aseg\u00farese de que el servidor de enlace del Adaptador local optimizado correspondiente al nombre de registro se haya iniciado.  Busque en las anotaciones de error de WebSphere Application Server para z/OS y FFDC si existe una excepci\u00f3n asociada con esta operaci\u00f3n de resincronizaci\u00f3n.  Si el problema contin\u00faa, p\u00f3ngase en contacto con el siguiente nivel de soporte.
+#-----------------------------------------------------------------------
+CWWKB0381E=CWWKB0381E: Se ha generado una excepci\u00f3n cuado {0} una transacci\u00f3n con registro OLA {1}
+CWWKB0381E.explanation=WebSphere Application Server para z/OS ha intentado realizar una transacci\u00f3n de compromiso de dos fases y ha detectado un error al establecer comunicaci\u00f3n con el registro de los Adaptadores locales optimizados.  Este mensaje puede suprimirse si aparecen errores repetidos en el mismo registro.
+CWWKB0381E.useraction=Aseg\u00farese de que el registro de los Adaptadores locales optimizados que se indique en el mensaje se haya iniciado.  Durante la resincronizaci\u00f3n al iniciar el servidor, este mensaje no indica necesariamente que se haya producido un error, debido a la naturaleza de los protocolos de compromiso de dos fases y terminaci\u00f3n an\u00f3mala de presunci\u00f3n.  Compruebe si en las anotaciones de error de WebSphere Application Server para z/OS y FFDC existen detalles sobre la excepci\u00f3n que ha ocasionado la emisi\u00f3n de este mensaje.  La excepci\u00f3n puede contener el XID de transacci\u00f3n que identifica la transacci\u00f3n y la operaci\u00f3n espec\u00edficas que han fallado.  Si el problema contin\u00faa, p\u00f3ngase en contacto con el siguiente nivel de soporte.
+#-----------------------------------------------------------------------
+#{0} Is a string representing an IMS OTMA XCF group ID
+#{1} Is a string representing an IMS OTMA XCF server name
+CWWKB0382I=CWWKB0382I: DETALLES PARA IMS {0} / {1}
+CWWKB0382I.explanation=Muestra el ID de grupo XCF y el nombre de servidor XCF utilizado por OTMA del sistema IMS al que est\u00e1 conectado WebSphere Application Server para z/OS.  Los nombres de cliente individual aparecer\u00e1n despu\u00e9s utilizando el mensaje CWWKB0383I.
+CWWKB0382I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} Is a string representing a Liberty server name
+#{1} Is a string representing an IMS OTMA client name
+CWWKB0383I=CWWKB0383I: {0} {1}
+CWWKB0383I.explanation=Muestra el nombre de servidor de WebSphere Application Server for z/OS y el nombre de cliente deOTMA que se utilizan para conectarse al sistema IMS identificado por el mensaje CWWKB0382I anterior.
+CWWKB0383I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0384I=CWWKB0384I: LA AGRUPACI\u00d3N DE NOMBRES OTMA NO EXISTE
+CWWKB0384I.explanation=No se ha creado a\u00fan la agrupaci\u00f3n de nombres OTMA de este sistema y no se puede visualizar mediante el mandato de visualizaci\u00f3n.
+CWWKB0384I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0385I=CWWKB0385I: {0} MUESTRA LA AGRUPACI\u00d3N DE NOMBRES OTMA
+CWWKB0385I.explanation=Descripci\u00f3n del mandato OTMANAMES.
+CWWKB0385I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} Is a number >= 0
+CWWKB0386I=CWWKB0386I: M\u00c1X NOMBRES POR IMS {0}
+CWWKB0386I.explanation=Muestra el n\u00famero m\u00e1ximo de nombres de clientes OTMA que puede utilizar WebSphere Application Server para z/OS para conectar con cada sistema IMS.
+CWWKB0386I.useraction=Ninguno
+#-----------------------------------------------------------------------
+#{0} Is a string
+#{1} is a hexidecimal number (a timestamp in STCK format)
+CWWKB0387I=CWWKB0387I: DEFINIDO POR {0} A {1}
+CWWKB0387I.explanation=Muestra el nombre de grupo del daemon de WebSphere Application Server para z/OS que establece el n\u00famero m\u00e1ximo de nombres de clientes OTMA. Los nombres de clientes OTMA pueden utilizarse para ver los sistemas IMS a los que est\u00e1 conectada la instancia de WebSphere Application Server para z/OS.  Tambi\u00e9n se muestra la hora a la que se ha establecido el n\u00famero m\u00e1ximo de nombres de clientes OTMA, en formato STCK.  El n\u00famero m\u00e1ximo de nombres de cliente de OTMA se visualiz\u00f3 utilizando el mensaje CWWKB0386I.
+CWWKB0387I.useraction=Ninguno
+#-----------------------------------------------------------------------
+CWWKB0388W=CWWKB0388W: El archivo RAR de los Adaptadores locales optimizados funciona en modalidad proxy y no participar\u00e1 en las transacciones locales o globales.
+CWWKB0388W.explanation=Cuando el archivo RAR de los Adaptadores locales optimizados se instala en una plataforma distinta a z/OS, funciona en modalidad proxy y se comunica con un servidor WebSphere Application Server para z/OS que tiene el EJB proxy instalado.  Cuando se ejecutan en esta modalidad, las transacciones no reciben soporte.  El adaptador de recursos ignorar\u00e1 los mensajes de protocolo de transacciones que reciba.
+CWWKB0388W.useraction=Ninguna.  Este mensaje se env\u00eda la primera vez que el adaptador de recursos intenta incluirse en una transacci\u00f3n mientras est\u00e1 en  modalidad proxy.
+#-----------------------------------------------------------------------
+CWWKB0389E=CWWKB0389E: Se ha encontrado un error al intentar procesar una solicitud de trabajo remoto de WOLA (WebSphere Optimized Local Adapter) en el destino de Enterprise Java Bean identificada con el nombre JNDI de {0}. La excepci\u00f3n encontrada es {1}.
+CWWKB0389E.explanation=Se ha encontrado un error al intentar procesar una solicitud de trabajo remoto de WOLA (WebSphere Optimized Local Adapter) en el destino de Enterprise Java Bean.
+CWWKB0389E.useraction=Compruebe que el nombre JNDI (Java Naming and Directory Interface) proporcionado sea correcto. Compruebe que el destino de Enterprise Java Bean est\u00e9 en un \u00e1mbito que el llamante pueda ver y al que pueda llegar. Consulte los registros de WebSphere Application Server para z/OS y la captura de datos en primer error (FFDC) para ver si hay una excepci\u00f3n asociada con la llamada remota de Enterprise Java Bean.
+#-----------------------------------------------------------------------
+#{0} is a string representing a transaction identifier (XID)
+CWWKB0390E=CWWKB0390E: El XID de transacci\u00f3n para la solicitud err\u00f3nea es: {0}
+CWWKB0390E.explanation=WebSphere Application Server for z/OS ha informado de una solicitud fallida de resoluci\u00f3n de transacci\u00f3n de adaptadores locales optimizados para WebSphere (WOLA) en el mensaje CWWKB0381E.  Este mensaje contiene el identificador transaccional de la solicitud que ha fallado.
+CWWKB0390E.useraction=No se requiere ninguna acci\u00f3n.  La informaci\u00f3n de este mensaje puede ser \u00fatil al resolver el error notificado en el mensaje CWWKB0381E.
+#-----------------------------------------------------------------------
+#{0} is a string representing a registration name
+CWWKB0391E=CWWKB0391E: No se ha podido localizar el nombre de registro solicitado {0}
+CWWKB0391E.explanation=EL nombre de registro solicitado no se ha podido encontrar mediante el adaptador de recursos.
+CWWKB0391E.useraction=Aseg\u00farese de que el nombre de registro se ha especificado correctamente, ya sea en las propiedades ConnectionFactory, o en el ConnectionSpecImpl proporcionado en la solicitud getConnection.
+#-----------------------------------------------------------------------
+CWWKB0392W=CWWKB0392W: No se ha especificado el nombre de OTMA Client.
+CWWKB0392W.explanation=El nombre de OTMA Client se debe especificar en ConnectionSpec o en el archivo server.xml
+CWWKB0392W.useraction=Aseg\u00farese de que se haya definido un nombre de OTMA Client en ConnectionSpec a trav\u00e9s de ConnectionSpecImpl.setOTMAClientName(), o en el archivo server.xml.
+#-----------------------------------------------------------------------
+#{0} is a string representing the name of an OTMA Client
+#{1} is a integer representing the maximum allowable length of an OTMA name
+CWWKB0393W=CWWKB0393W: El nombre de OTMA Client especificado ({0}) est\u00e1 en blanco, tiene m\u00e1s de {1} caracteres o contiene caracteres distintos de A-Z, 0-9, @, \# y $
+CWWKB0393W.explanation=La longitud del nombre de OTMA Client debe estar entre 1 y la longitud indicada en el mensaje, y el nombre del cliente debe estar formado solamente por los caracteres A-Z, 0-9, @, \# o $
+CWWKB0393W.useraction=Proporcione un nombre de OTMA Client con una longitud que est\u00e9 dentro del l\u00edmite y que utilice solamente los caracteres permitidos.
+#-----------------------------------------------------------------------
+#{0} is a string representing an OTMA Client name
+CWWKB0394I=CWWKB0394I: Se utilizar\u00e1 el nombre de OTMA Client ({0}).
+CWWKB0394I.explanation=El nombre de OTMA Client especificado es el nombre de OTMA Client que se utilizar\u00e1. Puede que procediera del archivo server.xml, de ConnectionSpec o puede que sea el valor predeterminado.
+CWWKB0394I.useraction=No se requiere ninguna acci\u00f3n.
+#-----------------------------------------------------------------------
+#{0} is a string representing an OTMA name type, Server, or Group
+#{1} is a string representing the name of an OTMA Server, or OTMA Group
+#{2} is an integer representing the maximum allowable length of an OTMA name
+CWWKB0395E=CWWKB0395E: El nombre especificado de OTMA {0} ({1}) est\u00e1 en blanco, tiene m\u00e1s de {2} caracteres o contiene caracteres distintos de A-Z, 0-9, @, \# y $
+CWWKB0395E.explanation=La longitud del nombre de OTMA indicado debe estar entre 1 y la longitud especificada en el mensaje, y el nombre debe estar formado solamente por los caracteres A-Z, 0-9, @, \# o $
+CWWKB0395E.useraction=Proporcione un nombre de OTMA con una longitud que est\u00e9 dentro del l\u00edmite y que utilice solamente los caracteres permitidos. 
+#-----------------------------------------------------------------------
+CWWKB0396E=CWWKB0396E: El nombre de OTMA Group y el nombre de OTMA Server deben especificarse en ConnectionFactory o en ConnectionSpec
+CWWKB0396E.explanation=No se ha especificado ning\u00fan valor para el nombre de OTMA Group o el nombre de OTMA Server, o ambos. 
+CWWKB0396E.useraction=Aseg\u00farese de que el nombre de OTMA Group y el nombre de OTMA Server se hayan especificado en ConnectionFactory o en ConnectionSpec.
+#-----------------------------------------------------------------------
+#{0} is a string representing the Maximum configured Receive Message size
+#{1} is a string representing the Max Number of segments configured
+#{2} is a string representing the Reconfigured maximum receive message size 
+CWWKB0397W=CWWKB0397W: El tama\u00f1o de recepci\u00f3n de configuraci\u00f3n m\u00e1ximo de OTMA especificado {0} es mayor que el tama\u00f1o de mensaje m\u00e1ximo permitido para {1} segmentos m\u00e1ximos configurados. El tama\u00f1o de mensaje de recepci\u00f3n m\u00e1ximo se cambia a {2}.
+CWWKB0397W.explanation=El tama\u00f1o de mensaje de recepci\u00f3n m\u00e1ximo configurado es mayor que el tama\u00f1o del mensaje que el n\u00famero m\u00e1ximo de segmentos configurados puede manejar. Cada segmento s\u00f3lo puede contener 32 k de datos.
+CWWKB0397W.useraction=Revise la configuraci\u00f3n y aseg\u00farese de que la longitud de mensaje m\u00e1xima y el n\u00famero m\u00e1ximo de segmentos se han configurado correctamente. 

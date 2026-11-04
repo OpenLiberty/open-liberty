@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.wlm.ejb/resources/com.ibm.ws.zos.wlm.ejb.internal.resources/ZosWlmEjbMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB  z/OS WLM EJB (MDB) classification
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0701-0750 z/OS WLM EJB (MDB) classification
+# -------------------------------------------------------------------------------------------------
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED=CWWKB0701W: A(z) {1} aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1shoz kapcsol\u00f3d\u00f3 transactionClass attrib\u00fatum {0} \u00e9rt\u00e9ke az mdbClassification konfigur\u00e1ci\u00f3s elem alatt {2} \u00e9rt\u00e9kre csonkol\u00e1sra ker\u00fclt. Az \u00e9rt\u00e9k csonkol\u00e1sra ker\u00fclt, mert t\u00fall\u00e9pte a maxim\u00e1lisan megengedett {3} karakter m\u00e9retet.
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.explanation=Az eml\u00edtett konfigur\u00e1lt transactionClass attrib\u00fatum \u00e9rt\u00e9ke az mdbClassification konfigur\u00e1ci\u00f3s elem alatt csonkol\u00e1sra ker\u00fclt a maxim\u00e1lisan megengedett karakterhosszra. Vegye figyelembe, hogy ha a megjelen\u0151 aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s egy helyettes\u00edt\u0151 karakter, akkor akk\u00e9nt is lett megadva, vagy nem ker\u00fclt megad\u00e1sra, \u00e9s az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl alkalmaz\u00e1sra.
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.useraction=Ellen\u0151rizze, hogy a transactionClass attrib\u00fatum az mdbClassification konfigur\u00e1ci\u00f3s elem alatt nem tartalmaz-e a maxim\u00e1lisan megengedettn\u00e9l hosszabb \u00e9rt\u00e9ket.
+
+MDB_CONFIG_INVALID_ACTIVATION_SPEC=CWWKB0702W: A(z) {1} tranzakci\u00f3oszt\u00e1lyhoz kapcsol\u00f3d\u00f3 jmsActivationSpec attrib\u00fatum {0} \u00e9rt\u00e9ke az mdbClassification konfigur\u00e1ci\u00f3s elem alatt \u00e9rv\u00e9nytelen. Az mdbClassification elem figyelmen k\u00edv\u00fcl marad.
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.explanation=Az eml\u00edtett konfigur\u00e1lt jmsActivationSpec attrib\u00fatum \u00e9rt\u00e9ke az mdbClassification konfigur\u00e1ci\u00f3s elem alatt nem lehet \u00fcres karaktersorozat vagy sz\u00f3k\u00f6z\u00f6k sorozata. Vegye figyelembe, hogy ha a megjelen\u0151 tranzakci\u00f3oszt\u00e1ly \u00fcres karaktersorozat, akkor akk\u00e9nt is lett megadva, vagy nem ker\u00fclt megad\u00e1sra, \u00e9s az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl alkalmaz\u00e1sra.
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.useraction=Ellen\u0151rizze, hogy a jmsActivationSpec attrib\u00fatum az mdbClassification konfigur\u00e1ci\u00f3s elem alatt \u00e9rv\u00e9nyes \u00e9rt\u00e9ket tartalmaz-e.

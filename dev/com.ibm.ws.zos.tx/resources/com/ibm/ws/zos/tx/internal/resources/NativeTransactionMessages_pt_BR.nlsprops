@@ -1,0 +1,129 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.tx/resources/com.ibm.ws.zos.tx.internal.resources/NativeTransactionMessages.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB zOS Native Transaction Manager Extension
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0101-0200: zOS Native Transaction Manager Extension
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the invoked service name
+#{1} is the service's return code.
+#{2} is the additional debug information relevant to the service call.
+INVALID_RRS_SERVICE_RC=CWLIB0101E: O servi\u00e7o do sistema {0} falhou com o c\u00f3digo de retorno {1}. Informa\u00e7\u00f5es relevantes: {2}
+INVALID_RRS_SERVICE_RC.explanation=A chamada do servi\u00e7o indicado falhou. O c\u00f3digo de retorno \u00e9 um n\u00famero inteiro hexadecimal.
+INVALID_RRS_SERVICE_RC.useraction=Para obter informa\u00e7\u00f5es adicionais sobre o c\u00f3digo de retorno, consulte a Programa\u00e7\u00e3o MVS: manual de Recupera\u00e7\u00e3o de Recurso. Se o problema persistir, entre em contato com o seu pr\u00f3ximo n\u00edvel de suporte.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+#{3} is the list of outstanding transaction global transaction IDs.
+OUTSTANDING_TRANS_RM_UNREGISTERED=CWLIB0102W: O gerenciador de recursos com o nome {0} e o identificador de token {1} teve o registro cancelado no sistema. Havia {2} transa\u00e7\u00f5es pendentes quando o gerenciador de recursos teve o registro cancelado. Essas transa\u00e7\u00f5es possuem os IDs de transa\u00e7\u00e3o global a seguir: {3}
+OUTSTANDING_TRANS_RM_UNREGISTERED.explanation=Havia transa\u00e7\u00f5es pendentes no momento em que o gerenciador de recursos teve o registro cancelado. Todos os recursos pendentes passar\u00e3o pelo processamento de recupera\u00e7\u00e3o na pr\u00f3xima vez em que o servidor for reiniciado.
+OUTSTANDING_TRANS_RM_UNREGISTERED.useraction=Assegure-se de que todas as configura\u00e7\u00f5es necess\u00e1rias para executar o trabalho transacional com recursos com capacidade RRS est\u00e3o no local. Revise os logs do servidor para obter informa\u00e7\u00f5es adicionais. Se o problema persistir, entre em contato com o seu pr\u00f3ximo n\u00edvel de suporte.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+RM_RESTART_COMPLETE=CWLIB0103I: O gerenciador de recursos {0} com o ID de token correspondente de {1} foi reiniciado com sucesso com os Servi\u00e7os de Recupera\u00e7\u00e3o de Recursos (RRS). N\u00famero de unidades de recupera\u00e7\u00e3o n\u00e3o resolvidas: {2}
+RM_RESTART_COMPLETE.explanation=O gerenciador de recursos especificado foi reiniciado com RRS. Todas as unidades de recupera\u00e7\u00e3o relatadas n\u00e3o resolvidas passar\u00e3o pela recupera\u00e7\u00e3o.
+RM_RESTART_COMPLETE.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token 
+RM_RECOVERY_COMPLETE=CWLIB0104I: O processamento de recupera\u00e7\u00e3o para gerenciador de recursos {0} com ID de token correspondente de {1} foi conclu\u00eddo.
+RM_RECOVERY_COMPLETE.explanation=O processamento de recupera\u00e7\u00e3o para o gerenciador de recursos especificado foi conclu\u00eddo. Todas as unidades de recupera\u00e7\u00e3o relatadas n\u00e3o resolvidas foram recuperadas.
+RM_RECOVERY_COMPLETE.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_WAIT_FOR_SUSPENDED_CTX=CWLIB0105I: O gerenciador de contexto nativo RRS est\u00e1 esperando que o token de contexto suspenso {0} conclua a unidade de trabalho a seguir: {1}
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.explanation=O gerenciador de contexto nativo RRS est\u00e1 sendo encerrado.  O gerenciador de contexto est\u00e1 esperando que todas as unidades de trabalho com contexto nativo associado sejam conclu\u00eddas.
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.  O gerenciador de contexto nativo RRS continuar\u00e1 a termina\u00e7\u00e3o depois que todas as unidades de trabalho forem conclu\u00eddas.
+
+#{0} is the context token (hex bytes)
+#{1} is a thread ID
+#{2} is a unit of work identifier
+CTXMGR_WAIT_FOR_ACTIVE_CTX=CWLIB0106I: O gerenciador de contexto nativo RRS est\u00e1 esperando que o token de contexto {0} no encadeamento {1} conclua a unidade de trabalho ativa a seguir: {2}
+CTXMGR_WAIT_FOR_ACTIVE_CTX.explanation=O gerenciador de contexto nativo RRS est\u00e1 sendo encerrado.  O gerenciador de contexto est\u00e1 esperando que todas as unidades de trabalho com contexto nativo associado sejam conclu\u00eddas.
+CTXMGR_WAIT_FOR_ACTIVE_CTX.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.  O gerenciador de contexto nativo RRS continuar\u00e1 a termina\u00e7\u00e3o depois que todas as unidades de trabalho forem conclu\u00eddas.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_TERMINATING_CTX_WITH_WORK=CWLIB0107I: O gerenciador de contexto nativo RRS est\u00e1 terminando o token de contexto {0} que est\u00e1 atualmente associado \u00e0 unidade de trabalho a seguir: {1}
+CTXMGR_TERMINATING_CTX_WITH_WORK.explanation=O gerenciador de contexto nativo RRS est\u00e1 sendo encerrado, ap\u00f3s esperar que o trabalho ativo seja colocado em modo quiesce.  O gerenciador de contexto est\u00e1 terminando contexto identificado nessa mensagem.  O contexto est\u00e1 associado a uma unidade de trabalho e a unidade de trabalho voltar\u00e1.
+CTXMGR_TERMINATING_CTX_WITH_WORK.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.  Um ou mais gerenciadores de recursos podem relatar um erro se estavam processando o trabalho no momento em que o contexto foi encerrado.
+
+#{0} is the resource manager name
+#{1} is the number of non-restart transactions waiting to complete
+#{2} is the number of milliseconds to wait
+TM_DEACTIVATE_WAITING_FOR_TRANS=CWLIB0108I: O gerenciador de recurso {0} est\u00e1 esperando que as transa\u00e7\u00f5es {1} sejam conclu\u00eddas.  Ele esperar\u00e1 por no m\u00e1ximo {2} milissegundos.
+TM_DEACTIVATE_WAITING_FOR_TRANS.explanation=O gerenciador de recursos nativo RRS est\u00e1 sendo encerrado.  Ainda havia transa\u00e7\u00f5es ativas que estavam usando recursos RRS nativos, como conex\u00f5es de banco de dados do tipo 2.  O gerenciador de recursos nativo esperar\u00e1 que as transa\u00e7\u00f5es sejam conclu\u00eddas antes de encerrar.
+TM_DEACTIVATE_WAITING_FOR_TRANS.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.  O gerenciador de recursos retomar\u00e1 o encerramento depois que as transa\u00e7\u00f5es forem conclu\u00eddas ou depois que o tempo de espera especificado tiver decorrido.  Se o tempo de espera m\u00e1ximo tiver decorrido, a mensagem CWLIB0102W indicar\u00e1 quais transa\u00e7\u00f5es ainda estavam ativadas.
+
+#{0} is the RRS unit of recovery identifier (URID).
+#{1} is an Xid
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE=CWLIB0109E: A se\u00e7\u00e3o de transa\u00e7\u00e3o representada por RRS URID {0} n\u00e3o pode ser resolvida porque a inst\u00e2ncia do NativeTransactionManager que criou a ramifica\u00e7\u00e3o foi desativada.  O servidor deve ser reiniciado para permitir que essa transa\u00e7\u00e3o seja conclu\u00edda.  A se\u00e7\u00e3o de transa\u00e7\u00e3o Xid \u00e9: {1}
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.explanation=O servi\u00e7o do gerenciador de transa\u00e7\u00f5es nativo RRS parou e n\u00e3o est\u00e1 mais conectado ao RRS.  A se\u00e7\u00e3o de transa\u00e7\u00e3o n\u00e3o pode ser conclu\u00edda porque o RRS n\u00e3o pode ser notificado do resultado.  O servidor deve ser reiniciado para permitir que o gerenciador de transa\u00e7\u00e3o seja ressincronizado com RRS e resolva a transa\u00e7\u00e3o.
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.useraction=Inicie novamente o servidor.
+ 
+#{0} is a unit of work identifier
+#{1} is the context token (hex bytes)
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK=CWLIB0110W: A unidade de trabalho {0} est\u00e1 sendo encerrada e a unidade de recupera\u00e7\u00e3o RRS associada operando sob o token de contexto {1} possui interesses de recurso n\u00e3o resolvidos. A unidade de recupera\u00e7\u00e3o RRS foi recuperada.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.explanation=A unidade de recupera\u00e7\u00e3o RRS foi considerada tendo interesses de recursos pendentes no fim da unidade de trabalho.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.useraction=Verifique se os recursos com capacidade RRS sendo usados n\u00e3o est\u00e3o operando fora de um escopo de transa\u00e7\u00e3o. Se o problema persistir, entre em contato com o seu pr\u00f3ximo n\u00edvel de suporte.
+
+#{0} The configured resource manager prefix.
+INVALID_CONFIGURED_RMNAME_PREFIX=CWLIB0111W: O prefixo do gerenciador de recursos configurado {0} \u00e9 inv\u00e1lido. O prefixo do gerenciador de recursos padr\u00e3o \u00e9 usado.
+INVALID_CONFIGURED_RMNAME_PREFIX.explanation=O prefixo do gerenciador de recursos configurado deve ser 1 a 8 caracteres e pode conter apenas caracteres alfanum\u00e9ricos (a-z,A-Z,0-9) e nacionais (@,$,#).
+INVALID_CONFIGURED_RMNAME_PREFIX.useraction=Verifique se o prefixo do gerenciador de recursos configurado segue os requisitos de tamanho e caractere. Se o problema persistir, entre em contato com o seu pr\u00f3ximo n\u00edvel de suporte.
+
+#{0} The configured resource manager prefix.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED=CWLIB0112W: A atualiza\u00e7\u00e3o da configura\u00e7\u00e3o para definir o prefixo do gerenciador de recursos configurado para {0} n\u00e3o \u00e9 permitida em tempo de execu\u00e7\u00e3o. A atualiza\u00e7\u00e3o \u00e9 ignorada.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.explanation=A atualiza\u00e7\u00e3o da configura\u00e7\u00e3o para definir o prefixo do gerenciador de recursos configurado em tempo de execu\u00e7\u00e3o \u00e9 ignorado.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.useraction=Configure o prefixo do gerenciador de recursos antes da inicializa\u00e7\u00e3o do servidor ou antes da configura\u00e7\u00e3o do recurso zosTransaction-1.0. Se o problema persistir, entre em contato com o seu pr\u00f3ximo n\u00edvel de suporte.
+
+#{0} The configured resource manager prefix.
+#{1} The Internal authorization check return code.
+#{2} The SAF return code.
+#{3} The RACF return code.
+#{4} The RACF reason code.
+RMNAME_PREFIX_AUTH_CHECK_FAILED=CWLIB0113E: A verifica\u00e7\u00e3o de autoriza\u00e7\u00e3o que valida os privil\u00e9gios de usu\u00e1rio com rela\u00e7\u00e3o ao nome do prefixo do gerenciador de recursos configurado de {0} falhou. INTERNAL_RC: {1} SAF_RC: {2}, RACF_RC: {3}, RACF_RSN: {4}
+RMNAME_PREFIX_AUTH_CHECK_FAILED.explanation=A verifica\u00e7\u00e3o de autoriza\u00e7\u00e3o que valida os privil\u00e9gios de usu\u00e1rio com rela\u00e7\u00e3o ao nome do prefixo do gerenciador de recursos configurado falhou com os c\u00f3digos de retorno mencionados.
+RMNAME_PREFIX_AUTH_CHECK_FAILED.useraction=Verifique se o prefixo do gerenciador de recursos configurado segue os requisitos de nome, tamanho e caractere. Verifique se o nome do prefixo n\u00e3o foi configurado com erro. Verifique se o usu\u00e1rio recebeu privil\u00e9gios para utilizar o nome do prefixo. Se o problema persistir, entre em contato com o seu pr\u00f3ximo n\u00edvel de suporte.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) being ended.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR=CWLIB0114W: O encadeamento {0} est\u00e1 sendo finalizado. A unidade RRS de recupera\u00e7\u00e3o associada ao token de contexto {1} tem interesses de recursos n\u00e3o resolvidos. O gerenciador de contexto nativo est\u00e1 finalizando o contexto.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.explanation=O encadeamento especificado est\u00e1 sendo finalizado e a unidade de recupera\u00e7\u00e3o RRS associada ao contexto tem interesses n\u00e3o resolvidos. As tentativas de recuperar a unidade de recupera\u00e7\u00e3o RRS falharam.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.useraction=Verifique se os gerenciadores de recursos com capacidade de RRS que est\u00e3o sendo usados n\u00e3o est\u00e3o operando fora de um escopo de transa\u00e7\u00e3o. Um ou mais de seus gerenciadores de recursos pode relatar um erro se estava processando o trabalho no momento em que o contexto terminou. Se o problema persistir, entre em contato com o seu pr\u00f3ximo n\u00edvel de suporte.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) associated with the UR whose outstanding interests were rolled back.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED=CWLIB0115W: O encadeamento {0} est\u00e1 sendo finalizado. A unidade RRS de recupera\u00e7\u00e3o associada ao token de contexto {1} tem interesses de recursos n\u00e3o resolvidos. A unidade de recupera\u00e7\u00e3o RRS foi recuperada e o token de contexto foi reutilizado.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.explanation=O encadeamento especificado est\u00e1 sendo finalizado e foi descoberto que a unidade de recupera\u00e7\u00e3o RRS tem interesses de recursos pendentes.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.useraction=Verifique se os gerenciadores de recursos com capacidade de RRS que est\u00e3o sendo usados n\u00e3o est\u00e3o operando fora de um escopo de transa\u00e7\u00e3o. Um ou mais de seus gerenciadores de recursos pode relatar um erro se estava processando o trabalho no momento em que a unidade de recupera\u00e7\u00e3o foi recuperada. Se o problema persistir, entre em contato com o seu pr\u00f3ximo n\u00edvel de suporte.

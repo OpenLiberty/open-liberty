@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.wola/resources/com/ibm/ws/jbatch/wola/internal/resources/BatchWolaMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0250 - 0299: com.ibm.ws.jbatch.wola
+# 
+#
+# Note: do not translate "WOLA", "z/OS Local Adapter", or "batchManagerZos".
+batch.wola.listener.activation=CWWKY0250I: A z/OS helyi adapter (WOLA) k\u00e9r\u00e9sek k\u00f6tegelt figyel\u0151je aktiv\u00e1lva lett \u00e9s be lett jegyezve a(z) {0} JNDI n\u00e9vvel.
+batch.wola.listener.activation.explanation=A figyel\u0151 akt\u00edv \u00e9s k\u00e9sz az \u00fcgyfelekt\u0151l \u00e9rkez\u0151 k\u00e9r\u00e9sek fogad\u00e1s\u00e1ra a z/OS helyi adapterek (WOLA) seg\u00edts\u00e9g\u00e9vel, bele\u00e9rtve a nat\u00edv z/OS k\u00f6tegelt seg\u00e9dprogramot (batchManagerZos). 
+batch.wola.listener.activation.useraction=Nincs teend\u0151. 
+ 
+# Note: do not translate "WOLA", "z/OS Local Adapter", or "batchManagerZos".
+batch.wola.listener.deactivation=CWWKY0251I: A z/OS helyi adapter (WOLA) k\u00e9r\u00e9sek k\u00f6tegelt figyel\u0151je le lett \u00e1ll\u00edtva.
+batch.wola.listener.deactivation.explanation=A figyel\u0151 le lett tiltva \u00e9s m\u00e1r nem szolg\u00e1lja ki az \u00fcgyfelekt\u0151l \u00e9rkez\u0151 k\u00e9r\u00e9seket a z/OS helyi adapterek (WOLA) seg\u00edts\u00e9g\u00e9vel, bele\u00e9rtve a nat\u00edv z/OS k\u00f6tegelt seg\u00e9dprogramot (batchManagerZos).
+batch.wola.listener.deactivation.useraction=Nincs teend\u0151. 
+ 

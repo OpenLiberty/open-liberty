@@ -1,0 +1,179 @@
+###############################################################################
+# Copyright (c) 2011, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.core/resources/com/ibm/ws/zos/core/internal/resources/CoreMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Core
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: Command processing (com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops)
+#0051-0100: Native code (com.ibm.zos.native/resources/com/ibm/ws/zos/native/native_messages.nlsprops)
+#0101-0150: core (here)
+# -------------------------------------------------------------------------------------------------
+
+#{0} is an integer reason code.
+ANGEL_NOT_AVAILABLE=CWWKB0101I: Proces typu angel nen\u00ed dostupn\u00fd. Nebudou na\u010dteny \u017e\u00e1dn\u00e9 autorizovan\u00e9 slu\u017eby. K\u00f3d p\u0159\u00ed\u010diny je {0}.
+ANGEL_NOT_AVAILABLE.explanation=Bu\u010f neexistuje proces typu angel, nebo existuje, ale server se nem\u016f\u017ee p\u0159ipojit k procesu typu angel kv\u016fli chyb\u011b.
+ANGEL_NOT_AVAILABLE.useraction=Pokud server nevy\u017eaduje autorizovan\u00e9 slu\u017eby, potom nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Pokud server vy\u017eaduje autorizovan\u00e9 slu\u017eby, spus\u0165te na tomto syst\u00e9mu proces typu angel, aby mohl tento server na\u010d\u00edst autorizovan\u00fd k\u00f3d a zp\u0159\u00edstupnit autorizovan\u00e9 slu\u017eby. Text zpr\u00e1vy uv\u00e1d\u00ed, kter\u00fd intern\u00ed k\u00f3d p\u0159\u00ed\u010diny m\u00e1 b\u00fdt pou\u017eit podporou produktu. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu WebSphere Application Server na adrese: http://www.ibm.com/software/webservers/appserv/was/support.
+
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL=CWWKB0102I: Tento server nem\u00e1 autorizaci pro p\u0159ipojen\u00ed k procesu typu angel. Nebudou na\u010dteny \u017e\u00e1dn\u00e9 autorizovan\u00e9 slu\u017eby.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL.explanation=ID u\u017eivatele, kter\u00fd spustil tento server, nem\u00e1 p\u0159\u00edstup k profilu BBG.ANGEL t\u0159\u00eddy serveru SAF. Pro p\u0159ipojen\u00ed k procesu typu angel je povinn\u00fd p\u0159\u00edstup pro \u010dten\u00ed k tomuto profilu.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL.useraction=Pokud tento server nevy\u017eaduje \u017e\u00e1dn\u00e9 autorizovan\u00e9 slu\u017eby, nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Pokud server po\u017eaduje autorizovan\u00e9 slu\u017eby, ud\u011blte ID u\u017eivatele, kter\u00fd spustil server, p\u0159\u00edstup pro \u010dten\u00ed k profilu BBG.ANGEL t\u0159\u00eddy serveru SAF. 
+
+#{0} is the name of a service group (a text string between 1-8 characters)
+AUTHORIZED_SERVICE_AVAILABLE=CWWKB0103I: Skupina autorizovan\u00fdch slu\u017eeb {0} je k dispozici.
+AUTHORIZED_SERVICE_AVAILABLE.explanation=Skupina autorizovan\u00fdch slu\u017eeb uveden\u00e1 ve zpr\u00e1v\u011b byla \u00fasp\u011b\u0161n\u011b na\u010dtena.
+AUTHORIZED_SERVICE_AVAILABLE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is the name of a service group (a text string between 1-8 characters)
+AUTHORIZED_SERVICE_NOT_AVAILABLE=CWWKB0104I: Skupina autorizovan\u00fdch slu\u017eeb {0} nen\u00ed dostupn\u00e1.
+AUTHORIZED_SERVICE_NOT_AVAILABLE.explanation=ID u\u017eivatele, kter\u00fd spustil tento server, nem\u00e1 p\u0159\u00edstup k p\u0159\u00edslu\u0161n\u00e9mu profilu ve t\u0159\u00edd\u011b serveru SAF. N\u00e1zev profilu je BBG.BBGZSAFM.<name>, kde <name> je n\u00e1zev skupiny slu\u017eeb v t\u00e9to zpr\u00e1v\u011b.
+AUTHORIZED_SERVICE_NOT_AVAILABLE.useraction=Pokud tento server tuto skupinu autorizovan\u00fdch slu\u017eeb nevy\u017eaduje, nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Pokud server po\u017eaduje slu\u017eby poskytovan\u00e9 touto skupinou autorizovan\u00fdch slu\u017eeb, ud\u011blte ID u\u017eivateli, kter\u00fd spustil server, p\u0159\u00edstup pro \u010dten\u00ed k p\u0159\u00edslu\u0161n\u00fdm profil\u016fm ve t\u0159\u00edd\u011b serveru SAF.
+
+#{0} is the name of the unauthorized function module
+#{1} is the return value from BPX4LOD
+#{2} is the return code from BPX4LOD
+#{3} is the reason code from BPX4LOD
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD=CWWKB0105E: Nelze na\u010d\u00edst knihovnu nativn\u00edho k\u00f3du opera\u010dn\u00edho syst\u00e9mu z/OS {0}. Do\u0161lo k nezdaru slu\u017eby BPX4LOD, RV = {1} RC = {2} RSN = {3}
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD.explanation=\u010c\u00e1st nativn\u00edch knihoven opera\u010dn\u00edho syst\u00e9mu z/OS pro aplika\u010dn\u00ed server nebylo mo\u017en\u00e9 na\u010d\u00edst. Do\u0161lo k nezdaru slu\u017eby syst\u00e9mu Unix BPX4LOD p\u0159i pokusu o na\u010dten\u00ed knihovny uveden\u00e9 ve zpr\u00e1v\u011b. Ve zpr\u00e1v\u011b je uvedena rovn\u011b\u017e n\u00e1vratov\u00e1 hodnota, n\u00e1vratov\u00fd k\u00f3d a k\u00f3d p\u0159\u00ed\u010diny vr\u00e1cen\u00fd slu\u017ebou BPX4LOD. N\u00e1vratov\u00fd k\u00f3d a k\u00f3d p\u0159\u00ed\u010diny je uveden jako cel\u00e9 hexadecim\u00e1ln\u00ed \u010d\u00edslo.
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD.useraction=Ov\u011b\u0159te, zda byly p\u0159i instalaci aplika\u010dn\u00edho serveru na tomto syst\u00e9mu provedeny v\u0161echny instala\u010dn\u00ed kroky. N\u00e1vratovou hodnotu, n\u00e1vratov\u00fd k\u00f3d a k\u00f3d p\u0159\u00ed\u010diny lze vyhledat v p\u0159\u00edru\u010dce "z/OS UNIX System Services Messages and Codes", \u010d\u00edslo publikace SA22-7807-xx. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na dal\u0161\u00ed \u00farove\u0148 podpory.
+
+#{0} is the name of the library
+LIBRARY_DOES_NOT_EXIST=CWWKB0106E: Nativn\u00ed knihovna opera\u010dn\u00edho syst\u00e9mu z/OS {0} v syst\u00e9mu soubor\u016f neexistuje.
+LIBRARY_DOES_NOT_EXIST.explanation=Knihovna nativn\u00edho k\u00f3du opera\u010dn\u00edho syst\u00e9mu z/OS nebyla v syst\u00e9mu soubor\u016f nalezena. N\u00e1zev knihovny je uveden ve zpr\u00e1v\u011b.
+LIBRARY_DOES_NOT_EXIST.useraction=Ov\u011b\u0159te, zda byly p\u0159i instalaci aplika\u010dn\u00edho serveru na tomto syst\u00e9mu provedeny v\u0161echny instala\u010dn\u00ed kroky. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na dal\u0161\u00ed \u00farove\u0148 podpory.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_REGISTRATION_FAILED_BAD_PARM=CWWKB0107E: Nezda\u0159ila se registrace {0} produktu {1} verze {2} v opera\u010dn\u00edm syst\u00e9mu z/OS kv\u016fli probl\u00e9m\u016fm s p\u0159ekladem nezbytn\u00fdch \u0159et\u011bzc\u016f do EBCDIC.
+PRODUCT_REGISTRATION_FAILED_BAD_PARM.explanation=N\u011bkter\u00fd z \u0159et\u011bzc\u016f identifikuj\u00edc\u00edch produkt nelze p\u0159elo\u017eit do EBCDIC, aby jej bylo mo\u017en\u00e9 p\u0159edat slu\u017eb\u011b IFAUSAGE.
+PRODUCT_REGISTRATION_FAILED_BAD_PARM.useraction=Obra\u0165te se na vlastn\u00edka produktu a po\u017e\u00e1dejte jej o opravu identifika\u010dn\u00edho \u0159et\u011bzce \u010di \u0159et\u011bzc\u016f.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_REGISTRATION_SUCCESSFUL=CWWKB0108I: {0} Produkt {1} verze {2} byl \u00fasp\u011b\u0161n\u011b registrov\u00e1n v syst\u00e9mu z/OS.
+PRODUCT_REGISTRATION_SUCCESSFUL.explanation=Uveden\u00fd produkt byl registrov\u00e1n v syst\u00e9mu z/OS pomoc\u00ed slu\u017eby IFAUSAGE.
+PRODUCT_REGISTRATION_SUCCESSFUL.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+#{3} is the return code
+PRODUCT_REGISTRATION_UNSUCCESSFUL=CWWKB0109E: Nezda\u0159ila se registrace {0} produktu {1} verze {2} v syst\u00e9mu z/OS. N\u00e1vratov\u00fd k\u00f3d = {3}.
+PRODUCT_REGISTRATION_UNSUCCESSFUL.explanation=Nezda\u0159ila se registrace uveden\u00e9ho produktu v syst\u00e9mu z/OS pomoc\u00ed slu\u017eby IFAUSAGE. N\u00e1vratov\u00e9 k\u00f3dy vy\u0161\u0161\u00ed ne\u017e nula poch\u00e1zej\u00ed se slu\u017eby IFAUSAGE. Z\u00e1porn\u00e9 n\u00e1vratov\u00e9 k\u00f3dy signalizuj\u00ed probl\u00e9m intern\u00edho zpracov\u00e1n\u00ed po\u017eadavku na registraci. 
+PRODUCT_REGISTRATION_UNSUCCESSFUL.useraction=N\u00e1vratov\u00fd k\u00f3d osm (8) m\u016f\u017ee signalizovat, \u017ee se server pokou\u0161\u00ed o registraci p\u0159\u00edli\u0161 vysok\u00e9ho po\u010dtu produkt\u016f z\u00e1rove\u0148. 
+
+#No fill-ins
+SERVER_SAFM_NOT_APF_AUTHORIZED=CWWKB0110I: Modul bbgzsafm nem\u00e1 autorizaci APF. Nebudou k dispozici \u017e\u00e1dn\u00e9 autorizovan\u00e9 slu\u017eby.
+SERVER_SAFM_NOT_APF_AUTHORIZED.explanation=Modul bbgzsafm nem\u00e1 autorizaci APF. Modul bbgzsafm mus\u00ed m\u00edt autorizaci APF pro povolen\u00ed p\u0159\u00edstupu k autorizovan\u00fdm slu\u017eb\u00e1m.
+SERVER_SAFM_NOT_APF_AUTHORIZED.useraction=Pokud tento server nevy\u017eaduje \u017e\u00e1dn\u00e9 autorizovan\u00e9 slu\u017eby, nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Pokud server vy\u017eaduje autorizovan\u00e9 slu\u017eby, APF zautorizuje modul bbgzsafm. Viz p\u0159\u00edkaz extattr v publikaci "z/OS UNIX System Services Command Reference", \u010d\u00edslo publikace SA22-7802-xx.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_DEREGISTRATION_SUCCESSFUL=CWWKB0111I: {0} Registrace produktu {1} verze {2} v syst\u00e9mu z/OS byla \u00fasp\u011b\u0161n\u011b zru\u0161ena.
+PRODUCT_DEREGISTRATION_SUCCESSFUL.explanation=Registrace uveden\u00e9ho produktu v syst\u00e9mu z/OS byla zru\u0161ena pomoc\u00ed slu\u017eby IFAUSAGE.
+PRODUCT_DEREGISTRATION_SUCCESSFUL.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} successful product registration count
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED=CWWKB0112I: Po\u010det \u00fasp\u011b\u0161n\u011b zaregistrovan\u00fdch produkt\u016f v syst\u00e9mu z/OS je {0}. P\u0159i ukon\u010den\u00ed pr\u00e1ce serveru se server pokus\u00ed registraci t\u011bchto produkt\u016f v syst\u00e9mu z/OS zru\u0161it.
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED.explanation=P\u0159i ukon\u010den\u00ed pr\u00e1ce se server pokus\u00ed registraci v\u0161ech produkt\u016f zaregistrovan\u00fdch v syst\u00e9mu z/OS explicitn\u011b zru\u0161it. K zru\u0161en\u00ed registrace produkt\u016f se pou\u017e\u00edv\u00e1 slu\u017eba z/OS IFAUSAGE.
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} successful product registration count
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED=CWWKB0113I: Po\u010det \u00fasp\u011b\u0161n\u011b zaregistrovan\u00fdch produkt\u016f v syst\u00e9mu z/OS je {0}. P\u0159i ukon\u010den\u00ed adresn\u00edho prostoru bude registrace t\u011bchto produkt\u016f v syst\u00e9mu z/OS zru\u0161ena.
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED.explanation=P\u0159i ukon\u010den\u00ed adresn\u00edho prostoru bude registrace v\u0161ech \u00fasp\u011b\u0161n\u011b zaregistrovan\u00fdch produkt\u016f v syst\u00e9mu z/OS zru\u0161ena. Pokud je p\u0159i ukon\u010den\u00ed pr\u00e1ce serveru nutn\u00e9 explicitn\u00ed zru\u0161en\u00ed registrace produktu, vytvo\u0159te a povolte profil serveru pro p\u0159\u00edstup k autorizovan\u00fdm slu\u017eb\u00e1m ve skupin\u011b PRODMGR a spus\u0165te proces typu angel. Proces typu angel mus\u00ed b\u00fdt spu\u0161t\u011bn je\u0161t\u011b p\u0159ed spu\u0161t\u011bn\u00edm serveru.
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+#{3} is the return code
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL=CWWKB0114E: {0} Zru\u0161en\u00ed registrace produktu {1} verze {2} v syst\u00e9mu z/OS se nezda\u0159ilo. N\u00e1vratov\u00fd k\u00f3d = {3}.
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL.explanation=Zru\u0161en\u00ed registrace uveden\u00e9 produktu v syst\u00e9mu z/OS pomoc\u00ed slu\u017eby IFAUSAGE se nezda\u0159ilo. N\u00e1vratov\u00e9 k\u00f3dy vy\u0161\u0161\u00ed ne\u017e nula poch\u00e1zej\u00ed se slu\u017eby IFAUSAGE. Z\u00e1porn\u00e9 n\u00e1vratov\u00e9 k\u00f3dy znamenaj\u00ed probl\u00e9m intern\u00edho zpracov\u00e1n\u00ed po\u017eadavku na zru\u0161en\u00ed registrace.
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL.useraction=N\u00e1vratov\u00fd k\u00f3d osm (8) znamen\u00e1, \u017ee produkt v\u016fbec nebyl registrov\u00e1n.
+
+SERVER_SAFM_NOT_SAF_AUTHORIZED=CWWKB0115I: Tento server nen\u00ed autorizov\u00e1n k na\u010dten\u00ed modulu bbgzsafm. Nebudou na\u010dteny \u017e\u00e1dn\u00e9 autorizovan\u00e9 slu\u017eby.
+SERVER_SAFM_NOT_SAF_AUTHORIZED.explanation=ID u\u017eivatele, kter\u00fd spustil tento server, nem\u00e1 p\u0159\u00edstup k profilu BBG.AUTHMOD.BBGZSAFM t\u0159\u00eddy serveru SAF. Pro p\u0159ipojen\u00ed k procesu typu angel je povinn\u00fd p\u0159\u00edstup pro \u010dten\u00ed k tomuto profilu a na\u010dten\u00ed autorizovan\u00fdch slu\u017eeb.
+SERVER_SAFM_NOT_SAF_AUTHORIZED.useraction=Pokud tento server nevy\u017eaduje \u017e\u00e1dn\u00e9 autorizovan\u00e9 slu\u017eby, nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Pokud server po\u017eaduje autorizovan\u00e9 slu\u017eby, ud\u011blte ID u\u017eivatele, kter\u00fd spustil server, p\u0159\u00edstup pro \u010dten\u00ed k profilu BBG.AUTHMOD.BBGZSAFM t\u0159\u00eddy serveru SAF. 
+
+NOT_REGISTERED_WITH_REQUIRED_ANGEL=CWWKB0116I: Tento server nen\u00ed registrov\u00e1n s procesem typu angel, t\u0159eba\u017ee je nakonfigurov\u00e1n pro po\u017eadov\u00e1n\u00ed registrace s procesem typu angel. Tento server se pokou\u0161\u00ed prov\u00e9st zastaven\u00ed.
+NOT_REGISTERED_WITH_REQUIRED_ANGEL.explanation=Server je nakonfigurov\u00e1n pro zru\u0161en\u00ed spou\u0161t\u011bn\u00ed, pokud nen\u00ed registrov\u00e1n s procesem typu angel. Server nen\u00ed registrov\u00e1n s procesem typu angel a zastavuje se.
+NOT_REGISTERED_WITH_REQUIRED_ANGEL.useraction=Zajist\u011bte spu\u0161t\u011bn\u00ed procesu typu angel a schopnost serveru p\u0159ipojit se k tomuto procesu a registrovat se v n\u011bm. P\u0159\u00edpadn\u011b zm\u011b\u0148te konfiguraci tak, abyste serveru umo\u017enili spu\u0161t\u011bn\u00ed bez registrace s procesem typu angel.
+
+#{0} is the name of the angel process.  1-54 characters.
+#{1} is an integer reason code.
+ANGEL_NOT_AVAILABLE_NAME=CWWKB0117W: Proces typu angel {0} nen\u00ed dostupn\u00fd. Nebudou na\u010dteny \u017e\u00e1dn\u00e9 autorizovan\u00e9 slu\u017eby. K\u00f3d p\u0159\u00ed\u010diny: {1}.
+ANGEL_NOT_AVAILABLE_NAME.explanation=Bu\u010f neexistuje \u017e\u00e1dn\u00fd proces typu angel s n\u00e1zvem uveden\u00fdm ve zpr\u00e1v\u011b, nebo takov\u00fd proces typu angel existuje, ale server se k n\u011bmu nemohl p\u0159ipojit v d\u016fsledku chyby.
+ANGEL_NOT_AVAILABLE_NAME.useraction=Pokud server vy\u017eaduje autorizovan\u00e9 slu\u017eby, spus\u0165te na tomto syst\u00e9mu proces typu angel, aby mohl tento server na\u010d\u00edst autorizovan\u00fd k\u00f3d a zp\u0159\u00edstupnit autorizovan\u00e9 slu\u017eby. Text zpr\u00e1vy uv\u00e1d\u00ed, kter\u00fd intern\u00ed k\u00f3d p\u0159\u00ed\u010diny m\u00e1 b\u00fdt pou\u017eit podporou produktu. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, nahl\u00e9dn\u011bte do informac\u00ed pro ur\u010dov\u00e1n\u00ed p\u0159\u00ed\u010din probl\u00e9m\u016f na n\u00e1sleduj\u00edc\u00ed webov\u00e9 str\u00e1nce podpory produktu WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support. Pokud tento server nevy\u017eaduje \u017e\u00e1dn\u00e9 autorizovan\u00e9 slu\u017eby, nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Chcete-li zabr\u00e1nit v\u00fdskytu t\u00e9to zpr\u00e1vy, odeberte ze souboru bootstrap.properties vlastnost com.ibm.ws.zos.core.angelName.
+
+#{0} is the name of the angel process. 1-54 characters.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME=CWWKB0118W: Tento server nem\u00e1 autorizaci pro p\u0159ipojen\u00ed k procesu typu angel {0}. Nebudou na\u010dteny \u017e\u00e1dn\u00e9 autorizovan\u00e9 slu\u017eby.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME.explanation=ID u\u017eivatele, kter\u00fd spustil tento server, nem\u00e1 p\u0159\u00edstup k profilu autorizace SAF (System Authorization Facility) pro proces typu angel uveden\u00fd ve zpr\u00e1v\u011b. Pro p\u0159ipojen\u00ed k tomuto procesu typu angel je povinn\u00fd p\u0159\u00edstup pro \u010dten\u00ed k tomuto profilu.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME.useraction=Pokud server vy\u017eaduje autorizovan\u00e9 slu\u017eby, vyhledejte v dokumentaci postup nastaven\u00ed uveden\u00e9ho procesu typu angel. Pokud tento server nevy\u017eaduje \u017e\u00e1dn\u00e9 autorizovan\u00e9 slu\u017eby, nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Chcete-li zabr\u00e1nit v\u00fdskytu t\u00e9to zpr\u00e1vy, odeberte ze souboru bootstrap.properties vlastnost com.ibm.ws.zos.core.angelName.
+
+ANGEL_NAME_TOO_LONG=CWWKB0119E: N\u00e1zev procesu typu angel uveden\u00fd v souboru bootstrap.properties je del\u0161\u00ed ne\u017e 54 znak\u016f.
+ANGEL_NAME_TOO_LONG.explanation=Vlastnost com.ibm.ws.zos.core.angelName ur\u010duje n\u00e1zev procesu typu angel, ke kter\u00e9mu by se m\u011bl tento server p\u0159ipojit. Tato vlastnost je uvedena v souboru bootstrap.properties a mus\u00ed m\u00edt d\u00e9lku 54 nebo m\u00e9n\u011b znak\u016f. 
+ANGEL_NAME_TOO_LONG.useraction=Tento server se nep\u0159ipoj\u00ed k procesu typu angel. Chcete-li se p\u0159ipojit k procesu typu angel, zadejte hodnotu vlastnosti com.ibm.ws.zos.core.angelName o d\u00e9lce 54 nebo m\u00e9n\u011b znak\u016f a restartujte server.
+
+#{0} is an unsupported character
+#{1} is a number between 1 and 54
+ANGEL_NAME_UNSUPPORTED_CHARACTER=CWWKB0120E: N\u00e1zev procesu typu angel uveden\u00fd v souboru bootstrap.properties obsahuje nepodporovan\u00fd znak {0} na pozici {1}.
+ANGEL_NAME_UNSUPPORTED_CHARACTER.explanation=Vlastnost com.ibm.ws.zos.core.angelName ur\u010duje n\u00e1zev procesu typu angel, ke kter\u00e9mu by se m\u011bl tento server p\u0159ipojit. Tato vlastnost se ur\u010duje v souboru boostrap.properties a m\u016f\u017ee obsahovat pouze znaky z n\u00e1sleduj\u00edc\u00ed znakov\u00e9 sady:  A-Z 0-9 ! # $ + - / : < > = ? @ [ ] ^ _ ` { } | ~
+ANGEL_NAME_UNSUPPORTED_CHARACTER.useraction=Tento server se nep\u0159ipoj\u00ed k procesu typu angel. Chcete-li se p\u0159ipojit k procesu typu angel, zadejte hodnotu vlastnosti com.ibm.ws.zos.core.angelName s pou\u017eit\u00edm podporovan\u00e9 znakov\u00e9 sady a restartujte server.
+
+#{0} is the server's UMASK value.
+SERVER_CURRENT_UMASK=CWWKB0121I: Hodnota UMASK procesu serveru je nastavena na {0}.
+SERVER_CURRENT_UMASK.explanation=Hodnota UMASK procesu serveru. Standardn\u011b se hodnota UMASK d\u011bd\u00ed z procesu, kter\u00fd spustil tento server Liberty, ale pak se d\u00e1le upravuje, aby se znemo\u017enil p\u0159\u00edstup pro \u010dten\u00ed, z\u00e1pis \u010di prov\u00e1d\u011bn\u00ed u\u017eivatel\u016fm typu OTHER. Nastaven\u00ed prom\u011bnn\u00e9 prost\u0159ed\u00ed WLP_SKIP_UMASK na hodnotu true zabr\u00e1n\u00ed serveru v t\u011bchto \u00faprav\u00e1ch hodnoty UMASK. Kdy\u017e je spu\u0161t\u011bn server Liberty pomoc\u00ed procedury z/OS, m\u016f\u017eete hodnotu UMASK vyu\u017e\u00edvanou procesem serveru upravit definov\u00e1n\u00edm prom\u011bnn\u00fdch prost\u0159ed\u00ed WLP_SKIP_UMASK a _BPX_BATCH_UMASK. Prom\u011bnnou WLP_SKIP_UMASK je mo\u017en\u00e9 ur\u010dit bu\u010f v souboru server.env, nebo pokud je server spu\u0161t\u011bn pomoc\u00ed procedury z/OS, pomoc\u00ed polo\u017eky STDENDV DD. Oproti tomu prom\u011bnnou _BPX_BATCH_UMASK v souboru server.env ur\u010dit nelze. Tu lze zadat pouze pomoc\u00ed polo\u017eky STDENV DD v procedu\u0159e z/OS.
+SERVER_CURRENT_UMASK.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#{0} is the name of the angel process. 1-54 characters.
+SERVER_CONNECTED_TO_ANGEL=CWWKB0122I: Tento server je p\u0159ipojen k procesu typu angel {0}.
+SERVER_CONNECTED_TO_ANGEL.explanation=Tento server je p\u0159ipojen k nakonfigurovan\u00e9mu procesu typu angel.
+SERVER_CONNECTED_TO_ANGEL.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID=CWWKB0123W: Doba \u010dek\u00e1n\u00ed p\u0159i spu\u0161t\u011bn\u00ed pro typ Angel, kter\u00e1 byla uvedena v souboru bootstrap.properties, je mimo rozsah povolen\u00fdch hodnot nebo je neplatn\u00e1. Bude pou\u017eita v\u00fdchoz\u00ed hodnota 0(s).
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID.explanation=Server m\u00e1 chybnou konfiguraci pro dobu \u010dek\u00e1n\u00ed p\u0159i spu\u0161t\u011bn\u00ed pro typ Angel. Povolen\u00fd rozsah je od 0 do 300 sekund.
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID.useraction=Tento server bude pou\u017e\u00edvat v\u00fdchoz\u00ed dobu \u010dek\u00e1n\u00ed 0(s) pro p\u0159ipojen\u00ed k po\u017eadovan\u00e9mu typu Angel. Chcete-li nakonfigurovat platnou dobu \u010dek\u00e1n\u00ed p\u0159i spu\u0161t\u011bn\u00ed, zadejte celo\u010d\u00edselnou hodnotu v rozsahu 0 a\u017e 300 do vlastnosti com.ibm.ws.zos.core.angelWaitTimeSeconds a restartujte server.
+
+#{0} is the configured time that liberty server will wait the required angel to start, {1} is the name of the required angel process.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT=CWWKB0124I: Typ Angel {1} je povinn\u00fd, server byl konfigurov\u00e1n tak, aby \u010dekal a\u017e {0} s pro p\u0159ipojen\u00ed k c\u00edlen\u00e9mu typu Angel.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT.explanation=Tento server vy\u017eaduje spu\u0161t\u011bn\u00ed typu Angel a tak\u00e9 maxim\u00e1ln\u00ed dobu \u010dek\u00e1n\u00ed p\u0159i spu\u0161t\u011bn\u00ed, ne\u017e dojde k ukon\u010den\u00ed, pokud se nezda\u0159\u00ed registrace s po\u017eadovan\u00fdm typem Angel.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+
+REGION_REQUESTED=CWWKB0125I: Tento server po\u017eadoval velikosti oblasti {0}. Mezn\u00ed hodnota \u00falo\u017ei\u0161t\u011b pod hranic\u00ed je {1} a mezn\u00ed hodnota \u00falo\u017ei\u0161t\u011b nad hranic\u00ed je {2}.
+REGION_REQUESTED.explanation=Tato zpr\u00e1va zobrazuje r\u016fzn\u00e9 hodnoty z \u0159\u00eddic\u00edho bloku LDA (Local Data Area), kter\u00e9 mohou b\u00fdt u\u017eite\u010dn\u00e9 p\u0159i lad\u011bn\u00ed podm\u00ednky out-of-storage. Velikost oblasti je oblast \u00falo\u017ei\u0161t\u011b, kter\u00e1 je p\u0159id\u011blena k adresn\u00edmu prostoru (v kilobajtech). Mezn\u00ed hodnoty "pod/nad hranic\u00ed" jsou uvedeny v megabajtech. "HRANICE" je mez mezi 24bitov\u00fdmi a 31bitov\u00fdmi adresami \u00falo\u017ei\u0161t\u011b. Mezn\u00ed hodnoty ozna\u010duj\u00ed skute\u010dn\u00e9 mezn\u00ed hodnoty \u00falo\u017ei\u0161t\u011b pro adresy pod hranic\u00ed (24bitov\u00e9 adresy) a adresy nad hranic\u00ed (31bitov\u00e9 adresy).
+REGION_REQUESTED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+MEMORY_LIMIT_INFORMATION=CWWKB0126I: MEMLIMIT={0}. ZDROJ KONFIGURACE MEMLIMIT={1}.
+MEMORY_LIMIT_INFORMATION.explanation=Zobrazuje konfigurovan\u00fd parametr MEMLIMIT pro adresn\u00ed prostor a zdroj konfigurace MEMLIMIT. Parametr MEMLIMIT CONFIGURATION SOURCE je jeden z n\u00e1sleduj\u00edc\u00edch hodnot. "SMF" je nastaveno bu\u010f slu\u017ebou SMF v SMFPRMxx, nebo standardn\u011b na 0. "JCL" je nastaveno od JCL. "REG0" Neomezen\u00e1 velikost zalo\u017een\u00e1 na specifikaci REGION=0. Hodnota "USI" je nakonfigurov\u00e1na polem IEFSMFIE a nastavena pomoc\u00ed u\u017eivatelsk\u00e9 procedury IEFUSI. Hodnota "OMVS" nastaven\u00e1 segmentem UNIX OMVS. Hodnota "SETR" nastaven\u00e1 UNIX setrlimit. Hodnota "SPW" nastaven\u00e1 UNIX spawn. Hodnota "SETO" nastaven\u00e1 p\u0159\u00edkazem UNIX SETOMVS. Hodnota "AUTH" nastaven\u00e1 autorizovanou \u00fapravou aplikace. Hodnota "URG" nastaven\u00e1 v IEFSMFIE u\u017eivatelskou procedurou IEFUSI. Hodnota "UNKNOWN" nastaven\u00e1 nezn\u00e1m\u00fdm zdrojem. "BAD" Chyba s nastaven\u00edm MEMLIMIT.
+MEMORY_LIMIT_INFORMATION.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+OLD_ANGEL_VERSION=CWWKB0127W: Aktu\u00e1ln\u00ed verze procesu typu angel je d\u0159\u00edv\u011bj\u0161\u00ed ne\u017e verze, kterou server o\u010dek\u00e1v\u00e1. Aktualizujte verzi procesu typu angel na nejnov\u011bj\u0161\u00ed dostupnou verzi.
+OLD_ANGEL_VERSION.explanation=Server m\u00e1 o\u010dek\u00e1vanou hodnotu pro verzi procesu typu angel. Aktu\u00e1ln\u00ed verze je d\u0159\u00edv\u011bj\u0161\u00ed ne\u017e o\u010dek\u00e1van\u00e1 verze. Pokud se instance serveru Liberty p\u0159ipojuje k procesu typu angel, kter\u00fd je spu\u0161t\u011bn\u00fd na star\u0161\u00ed \u00farovni slu\u017eeb, n\u011bkter\u00e9 funkce serveru nemus\u00ed b\u00fdt dostupn\u00e9.
+OLD_ANGEL_VERSION.useraction=Chcete-li zajistit, aby v\u0161echny funkce serveru byly dostupn\u00e9 pro proces typu angel, aktualizujte proces typu angel na nejnov\u011bj\u0161\u00ed verzi.

@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.asyncio/resources/com.ibm.ws.zos.asyncio.internal.resources/ZAsyncIOMessages.nlsprops
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO zOS Async IO
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0NNN-0NNN: zOS Async IO
+# -------------------------------------------------------------------------------------------------
+
+ZOSAIO_ACTIVATED=CWWKO0229I: O suporte de E/S ass\u00edncronas nativas para z/OS foi ativado.
+ZOSAIO_ACTIVATED.explanation=A E/S de soquetes TCP/IP ass\u00edncronas para Liberty (AsyncIO) no servi\u00e7o z/OS, que fornecem capacidades b\u00e1sicas de um pacote de E/S ass\u00edncronas no n\u00edvel de sistema operacional, est\u00e3o ativadas.
+ZOSAIO_ACTIVATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ZOSAIO_DEACTIVATED=CWWKO0230I: O suporte de E/S ass\u00edncronas nativas para z/OS foi desativado.
+ZOSAIO_DEACTIVATED.explanation=A E/S de soquetes TCP/IP ass\u00edncronas para Liberty (AsyncIO) no servi\u00e7o z/OS, que fornecem capacidades b\u00e1sicas de um pacote de E/S ass\u00edncronas no n\u00edvel de sistema operacional, est\u00e3o desativadas.
+ZOSAIO_DEACTIVATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

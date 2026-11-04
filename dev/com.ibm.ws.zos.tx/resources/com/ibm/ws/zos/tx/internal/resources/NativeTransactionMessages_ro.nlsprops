@@ -1,0 +1,129 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.tx/resources/com.ibm.ws.zos.tx.internal.resources/NativeTransactionMessages.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB zOS Native Transaction Manager Extension
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0101-0200: zOS Native Transaction Manager Extension
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the invoked service name
+#{1} is the service's return code.
+#{2} is the additional debug information relevant to the service call.
+INVALID_RRS_SERVICE_RC=CWLIB0101E: Serviciu de sistem {0} a e\u015fuat cu codul retur {1}. Informa\u0163ii relevante: {2}
+INVALID_RRS_SERVICE_RC.explanation=Invocarea serviciului indicat a e\u015fuat. Codul retur este un \u00eentreg hexadecimal.
+INVALID_RRS_SERVICE_RC.useraction=Pentru informa\u0163ii suplimentare despre codul retur vede\u0163i cartea Programare MVS: Recuperare de resurse. Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 urm\u0103torul nivel de suport.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+#{3} is the list of outstanding transaction global transaction IDs.
+OUTSTANDING_TRANS_RM_UNREGISTERED=CWLIB0102W: Managerul de resurse cu numele {0} \u015fi identificatorul de jetoane {1} a fost de\u00eenregistrat cu sistemul. Au fost {2} tranzac\u0163ii remarcabile c\u00e2nd managerul de resurse a fost de\u00eenregistrat. Aceste tranzac\u0163ii au urm\u0103toarele ID-uri de tranzac\u0163ie globale: {3}
+OUTSTANDING_TRANS_RM_UNREGISTERED.explanation=Existau tranzac\u0163ii remarcabile la momentul \u00een care au fost de\u00eenregistrat managerul de resurse. Toate resursele remarcabile vor trece prin procesarea recuper\u0103rii data viitoare c\u00e2nd este repornit serverul.
+OUTSTANDING_TRANS_RM_UNREGISTERED.useraction=Asigura\u0163i-v\u0103 c\u0103 toate set\u0103rile necesare pentru realizarea lucrului tranzac\u0163ional cu resurse RRS capabile sunt asigurate. Revizui\u0163i jurnalele serverului pentru informa\u0163ii suplimentare. Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 urm\u0103torul nivel de suport.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+RM_RESTART_COMPLETE=CWLIB0103I: Managerul de resurse {0} cu ID-ul de jeton {1} corespunz\u0103tor a fost repornit cu succes cu RRS (Resource Recovery Services). Num\u0103r de unit\u0103\u0163i de recuperare nerezolvate: {2}
+RM_RESTART_COMPLETE.explanation=Managerul de resurse specificat a repornit cu RRS. Toate unit\u0103\u0163ile de recuperare nerezolvate raportate vor trece prin recuperare.
+RM_RESTART_COMPLETE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token 
+RM_RECOVERY_COMPLETE=CWLIB0104I: Procesarea recuper\u0103rii pentru managerul de resurse {0} cu ID-ul de jeton {1} corespunz\u0103tor a fost finalizat\u0103.
+RM_RECOVERY_COMPLETE.explanation=Procesarea recuper\u0103rii pentru managerul de resurse specificat a fost finalizat\u0103. Toate unit\u0103\u0163ile de recuperare nerezolvate raportate au fost recuperate.
+RM_RECOVERY_COMPLETE.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_WAIT_FOR_SUSPENDED_CTX=CWLIB0105I: Managerul de contexte native RRS a\u015fteapt\u0103 ca jetonul de context suspendat {0} s\u0103 finalizeze urm\u0103toarea unitate de lucru: {1}
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.explanation=Managerul de contexte native RRS \u00ee\u015fi opre\u015fte activitatea.  Managerul de context a\u015fteapt\u0103 ca toate unit\u0103\u0163ile de lucru cu un context nativ asociat s\u0103 finalizeze.
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.useraction=Nu este necesar\u0103 nicio ac\u0163iune.  Managerul de contexte native RRS va continua terminarea dup\u0103 ce au fost finalizate toate unit\u0103\u0163ile de lucru.
+
+#{0} is the context token (hex bytes)
+#{1} is a thread ID
+#{2} is a unit of work identifier
+CTXMGR_WAIT_FOR_ACTIVE_CTX=CWLIB0106I: Managerul de contexte native RRS a\u015fteapt\u0103 ca jetonul de context {0} de pe firul de execu\u0163ie {1} s\u0103 finalizeze urm\u0103toarea unitate de lucru activ\u0103: {2}
+CTXMGR_WAIT_FOR_ACTIVE_CTX.explanation=Managerul de contexte native RRS \u00ee\u015fi opre\u015fte activitatea.  Managerul de context a\u015fteapt\u0103 ca toate unit\u0103\u0163ile de lucru cu un context nativ asociat s\u0103 finalizeze.
+CTXMGR_WAIT_FOR_ACTIVE_CTX.useraction=Nu este necesar\u0103 nicio ac\u0163iune.  Managerul de contexte native RRS va continua terminarea dup\u0103 ce au fost finalizate toate unit\u0103\u0163ile de lucru.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_TERMINATING_CTX_WITH_WORK=CWLIB0107I: Managerul de contexte native RRS termin\u0103 jetonul de context {0} ce este asociat curent cu urm\u0103toarea unitate de lucru: {1}
+CTXMGR_TERMINATING_CTX_WITH_WORK.explanation=Managerul de contexte native RRS \u00ee\u015fi opre\u015fte activitatea, dup\u0103 ce a\u015fteapt\u0103 ca lucru activ s\u0103 se lini\u015fteasc\u0103.  Managerul de contexte termin\u0103 contextul identificat \u00een acest mesaj.  Contextul este asociat cu o unitate de lucru \u015fi unitatea de lucru va fi scoas\u0103 afar\u0103.
+CTXMGR_TERMINATING_CTX_WITH_WORK.useraction=Nu este necesar\u0103 nicio ac\u0163iune.  Unul sau mai mul\u0163i din managerii dumneavoastr\u0103 de resurse pot raporta o eroare dac\u0103 procesau lucru \u00een momentul \u00een care contextul s-a finalizat.
+
+#{0} is the resource manager name
+#{1} is the number of non-restart transactions waiting to complete
+#{2} is the number of milliseconds to wait
+TM_DEACTIVATE_WAITING_FOR_TRANS=CWLIB0108I: Managerul de resurse {0} a\u015fteapt\u0103 ca {1} tranzac\u0163ii s\u0103 finalizeze.  Va a\u015ftepta un maxim de {2} millisecunde.
+TM_DEACTIVATE_WAITING_FOR_TRANS.explanation=Managerul de resurse native RRS \u00ee\u015fi opre\u015fte activitatea.  Exist\u0103 \u00eenc\u0103 tranzac\u0163ii active ce folosesc resurse RRS native, precum conexiuni de baze de date tip 2.  Managerul de resurse native vor a\u015ftepta ca aceste resurse s\u0103 finalizeze \u00eenainte de a opri activitatea.
+TM_DEACTIVATE_WAITING_FOR_TRANS.useraction=Nu este necesar\u0103 nicio ac\u0163iune.  Managerul de resurse va continua oprirea activit\u0103\u0163ii dup\u0103 ce tranzac\u0163iile s-au finalizat sau dup\u0103 ce a trecut timpul de a\u015fteptare specificat.  Dac\u0103 timpul de a\u015fteptare maxim a trecut, mesajul CWLIB0102W va indica ce tranzac\u0163ii erau \u00eenc\u0103 active.
+
+#{0} is the RRS unit of recovery identifier (URID).
+#{1} is an Xid
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE=CWLIB0109E: Ramura de tranzac\u0163ii reprezentate de URID-ul RRS {0} nu poate fi rezolvat\u0103 deoarece instan\u0163a       ativeTransactionManager ce a creat ramura a fost dezactivat\u0103.  Serverul trebuie repornit pentru a permite ca aceast\u0103 tranzac\u0163ie s\u0103 finalizeze.  Xid-ul ramurii de tranzac\u0163ii este: {1}
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.explanation=Serviciul managerului de tranzac\u0163ii native RRS s-a oprit \u015fi nu mai este conectat la RRS.  Ramura de tranzac\u0163ii nu poate fi finalizat\u0103 deoarece RRS nu poate fi anun\u0163at de rezultat.  Serverul trebuie repornit pentru a permite ca managerul de tranzac\u0163ii s\u0103 se resincronizeze cu RRS \u015fi s\u0103 rezolve tranzac\u0163ia.
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.useraction=Reporni\u0163i serverul.
+ 
+#{0} is a unit of work identifier
+#{1} is the context token (hex bytes)
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK=CWLIB0110W: Unitatea de lucru {0} se \u00eencheie \u015fi unitatea de recuperare RRS asociat\u0103 ce opereaz\u0103 sub jetonul de context {1} are interese de resurse nerezolvate. Unitatea de recuperare RRS este dat\u0103 \u00eenapoi.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.explanation=O unitate de recuperare RRS a fost g\u0103sit\u0103 s\u0103 aib\u0103 interese de resurse remarcabile la sf\u00e2r\u015fitul unit\u0103\u0163ii de  lucru.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.useraction=Verifica\u0163i c\u0103 resursele capabile RRS folosite nu opereaz\u0103 \u00een afara unui domeniu de tranzac\u0163ie. Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 urm\u0103torul nivel de suport.
+
+#{0} The configured resource manager prefix.
+INVALID_CONFIGURED_RMNAME_PREFIX=CWLIB0111W: Prefixul de manager de resurse configurat pentru {0} este invalid. Este utilizat prefixul de manager de resurse implicit.
+INVALID_CONFIGURED_RMNAME_PREFIX.explanation=Prefixul de manager de resurse configurat trebuie s\u0103 fie de lungime de la 1 la 8 caractere \u015fi poate con\u0163ine numai caractere alfanumerice (a-z,A-Z,0-9) \u015fi na\u0163ionale (@,$,#).
+INVALID_CONFIGURED_RMNAME_PREFIX.useraction=Verifica\u0163i c\u0103 prefixul de manager de resurse configurat \u00eendepline\u015fte cerin\u0163ele de lungime \u015fi de caractere. Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 urm\u0103torul nivel de suport.
+
+#{0} The configured resource manager prefix.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED=CWLIB0112W: Nu este permis\u0103 actualizarea configura\u0163iei pentru a seta prefixul de nume de manager de resurse la {0} \u00een timpul rul\u0103rii. Actualizarea este ignorat\u0103.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.explanation=Este ignorat\u0103 actualizarea configura\u0163iei pentru a seta prefixul de manager de resurse \u00een timpul rul\u0103rii.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.useraction=Configura\u0163i prefixul de manager de resurse \u00eenainte de pornirea serverului sau \u00eenainte de configurarea caracteristicii zosTransaction-1.0. Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 urm\u0103torul nivel de suport.
+
+#{0} The configured resource manager prefix.
+#{1} The Internal authorization check return code.
+#{2} The SAF return code.
+#{3} The RACF return code.
+#{4} The RACF reason code.
+RMNAME_PREFIX_AUTH_CHECK_FAILED=CWLIB0113E: A e\u015fuat verificarea autoriza\u0163iei care valideaz\u0103 privilegiile de utilizator func\u0163ie de numele prefixului de manager de resurse configurat {0}. INTERNAL_RC: {1} SAF_RC: {2}, RACF_RC: {3}, RACF_RSN: {4}
+RMNAME_PREFIX_AUTH_CHECK_FAILED.explanation=A e\u015fuat verificarea autoriza\u0163iei care valideaz\u0103 privilegiile de utilizator func\u0163ie de numele prefixului de manager de resurse configurat cu codurile de returnare men\u0163ionate.
+RMNAME_PREFIX_AUTH_CHECK_FAILED.useraction=Verifica\u0163i c\u0103 prefixul de manager de resurse configurat \u00eendepline\u015fte cerin\u0163ele de nume, de lungime \u015fi de caractere. Verifica\u0163i c\u0103 nu a fost configurat numele de prefix \u00een eroare. Verifica\u0163i c\u0103 utilizatorului i s-au acordat privilegiile corespunz\u0103toare pentru a utiliza numele prefixului. Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 urm\u0103torul nivel de suport.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) being ended.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR=CWLIB0114W: Firul de execu\u0163ie {0} se \u00eencheie. Unitatea RRS de recuperare asociat\u0103 cu jetonul de context {1} are drepturi nerezolvate asupra resurselor. Managerul de contexte native termin\u0103 contextul.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.explanation=Firul de execu\u0163ie specificat se finalizeaz\u0103 \u015fi unitatea RRS de recuperare asociat\u0103 cu contextul are interese nerezolvate. \u00cencerc\u0103rile de derulare \u00eenapoi a unit\u0103\u0163ii RRS de recuperare au e\u015fuat.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.useraction=Verifica\u0163i c\u0103 managerii de resurse capabile RRS utiliza\u0163i nu opereaz\u0103 \u00een afara unui domeniu de tranzac\u0163ii. Unul sau mai mul\u0163i dintre managerii dumneavoastr\u0103 de resurse pot raporta o eroare dac\u0103 procesau la momentul termin\u0103rii contextului. Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 urm\u0103torul nivel de suport.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) associated with the UR whose outstanding interests were rolled back.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED=CWLIB0115W: Firul de execu\u0163ie {0} se \u00eencheie. Unitatea RRS de recuperare asociat\u0103 cu jetonul de context {1} are drepturi nerezolvate asupra resurselor. Unitatea de recuperare RRS este derulat\u0103 \u00eenapoi \u015fi jetonul de context este reutilizat.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.explanation=Firul de execu\u0163ie specificat se finalizeaz\u0103 \u015fi unitatea RRS de recuperare a fost g\u0103sit\u0103 ca av\u00e2nd interese nerezolvate de resurse.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.useraction=Verifica\u0163i c\u0103 managerii de resurse capabile RRS utiliza\u0163i nu opereaz\u0103 \u00een afara unui domeniu de tranzac\u0163ii. Unul sau mai mul\u0163i dintre managerii dumneavoastr\u0103 de resurse pot raporta o eroare dac\u0103 procesau la momentul c\u00e2nd unitatea de recuperare era derulat\u0103 \u00eenapoi. Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 urm\u0103torul nivel de suport.

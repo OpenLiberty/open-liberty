@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.wlm.ejb/resources/com.ibm.ws.zos.wlm.ejb.internal.resources/ZosWlmEjbMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB  z/OS WLM EJB (MDB) classification
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0701-0750 z/OS WLM EJB (MDB) classification
+# -------------------------------------------------------------------------------------------------
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED=CWWKB0701W: \u5728 mdbClassification \u914d\u7f6e\u5143\u7d20\u4e4b\u4e0b\uff0c\u555f\u52d5\u898f\u683c {1} \u76f8\u95dc\u806f\u7684 transactionClass \u5c6c\u6027\u503c {0} \u88ab\u622a\u65b7\u6210\u503c {2}\u3002\u503c\u5df2\u622a\u65b7\uff0c\u56e0\u70ba\u5b83\u8d85\u904e\u5bb9\u8a31\u7684\u5927\u5c0f\u4e0a\u9650\uff08{3} \u500b\u5b57\u5143\uff09\u3002
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.explanation=\u5df2\u5728 mdbClassification \u914d\u7f6e\u5143\u7d20\u4e4b\u4e0b\uff0c\u5c07\u6240\u63d0\u53ca\u4e4b\u6240\u914d\u7f6e\u7684 transactionClass \u5c6c\u6027\u503c\u622a\u65b7\u6210\u5bb9\u8a31\u7684\u5b57\u5143\u9577\u5ea6\u4e0a\u9650\u3002\u8acb\u6ce8\u610f\uff0c\u5982\u679c\u986f\u793a\u7684\u555f\u52d5\u898f\u683c\u662f\u4e00\u500b\u842c\u7528\u5b57\u5143\uff0c\u5c31\u6703\u4f9d\u73fe\u72c0\u6307\u5b9a\uff0c\u6216\u8005\u4e0d\u6307\u5b9a\u4e26\u4f7f\u7528\u9810\u8a2d\u503c\u3002
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.useraction=\u8acb\u9a57\u8b49 mdbClassification \u914d\u7f6e\u5143\u7d20\u4e4b\u4e0b\u7684 transactionClass \u5c6c\u6027\u503c\u6c92\u6709\u8d85\u904e\u9577\u5ea6\u4e0a\u9650\u3002
+
+MDB_CONFIG_INVALID_ACTIVATION_SPEC=CWWKB0702W: \u5728 mdbClassification \u914d\u7f6e\u5143\u7d20\u4e4b\u4e0b\uff0c\u4ea4\u6613\u985e\u5225 {1} \u76f8\u95dc\u806f\u7684 jmsActivationSpec \u5c6c\u6027\u503c {0} \u7121\u6548\u3002\u6703\u5ffd\u7565 mdbClassification \u5143\u7d20\u3002
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.explanation=\u5728 mdbClassification \u914d\u7f6e\u5143\u7d20\u4e4b\u4e0b\uff0c\u5c07\u6240\u63d0\u53ca\u4e4b\u6240\u914d\u7f6e\u7684 jmsActivationSpec \u5c6c\u6027\u503c\u4e0d\u80fd\u662f\u7a7a\u5b57\u4e32\u6216\u4e00\u9023\u4e32\u7684\u7a7a\u683c\u3002\u8acb\u6ce8\u610f\uff0c\u5982\u679c\u986f\u793a\u7684\u4ea4\u6613\u985e\u5225\u662f\u4e00\u500b\u7a7a\u5b57\u4e32\uff0c\u5c31\u6703\u4f9d\u73fe\u72c0\u6307\u5b9a\uff0c\u6216\u8005\u4e0d\u6307\u5b9a\u4e26\u4f7f\u7528\u9810\u8a2d\u503c\u3002
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.useraction=\u8acb\u9a57\u8b49 mdbClassification \u914d\u7f6e\u5143\u7d20\u4e4b\u4e0b\u7684 jmsActivationSpec \u5c6c\u6027\u5305\u542b\u6709\u6548\u503c\u3002

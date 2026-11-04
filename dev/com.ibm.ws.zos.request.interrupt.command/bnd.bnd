@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Request Interrupt Command Handler for z/OS
+Bundle-SymbolicName: com.ibm.ws.zos.request.interrupt.command
+Bundle-Description: Request Interrupt Command Handler for z/OS; version=${bVersion}
+
+WS-TraceGroup: requestInterrupt
+
+Private-Package: \
+  com.ibm.ws.zos.request.interrupt.command
+
+-dsannotations: \
+  com.ibm.ws.zos.request.interrupt.command.RequestInterruptCommandHandler
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.zos.core;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest

@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.console/resources/com.ibm.ws.zos.channel.console.internal.resources/ZConsoleChannelMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE zOS Pause and Resume Console Command
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0651-0700: zOS Console Channel
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the command type.
+ERROR.PAUSEABLE.COMPONENT.NOTAVAILABLE=CWWKE0651E: A fost primit\u0103 o comand\u0103 {0} de server, dar infrastructura pentru trecerea \u00een pauz\u0103 a componentelor nu este disponibil\u0103. Cererea nu a putut fi procesat\u0103. 
+ERROR.PAUSEABLE.COMPONENT.NOTAVAILABLE.explanation=Un utilizator a lansat o comand\u0103 care este procesat\u0103 de infrastructura de trecere \u00een pauz\u0103 a componentelor. Totu\u015fi. comanda a putut fi procesat\u0103. Serverul s-ar putea s\u0103 se ini\u0163ializeze sau s\u0103 fie \u00een curs de oprire. 
+ERROR.PAUSEABLE.COMPONENT.NOTAVAILABLE.useraction=Verifica\u0163i c\u0103 serverul s-a ini\u0163ializat complet \u015fi c\u0103 nu este \u00een procesul de oprire.

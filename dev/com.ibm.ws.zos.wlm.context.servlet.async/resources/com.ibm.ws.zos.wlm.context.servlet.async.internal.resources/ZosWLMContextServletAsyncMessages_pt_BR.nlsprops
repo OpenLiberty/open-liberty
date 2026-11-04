@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.connect/resources/com.ibm.ws.zos.connect.internal.resources/ZosConnectMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Connect
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0601-0650: CWWKB: z/OS WLM asynchronous servlet context propagation.
+# ------------------------------------------------------------------------------------------------- 
+
+DEACTIVATE_ENCLAVE_DELETED=CWWKB0601W: O servi\u00e7o de propaga\u00e7\u00e3o de contexto para servlets ass\u00edncronos est\u00e1 sendo encerrado enquanto h\u00e1 trabalho ass\u00edncrono ativo ainda em andamento. O enclave do WLM com o token de identifica\u00e7\u00e3o de {0} foi exclu\u00eddo.
+DEACTIVATE_ENCLAVE_DELETED.explanation= O servi\u00e7o de propaga\u00e7\u00e3o de contexto para servlets ass\u00edncronos est\u00e1 sendo encerrado porque o recurso WLM, o recurso de servlet, ou ambos os recursos n\u00e3o est\u00e3o dispon\u00edveis.
+DEACTIVATE_ENCLAVE_DELETED.useraction=Verifique se o recurso WLM, o recurso de servlet, ou ambos os recursos n\u00e3o foram removidos do arquivo de configura\u00e7\u00e3o enquanto o trabalho ainda estava em andamento.
