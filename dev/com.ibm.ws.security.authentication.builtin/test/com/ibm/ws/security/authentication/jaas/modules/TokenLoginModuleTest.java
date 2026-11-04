@@ -49,6 +49,7 @@ import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.ws.security.token.TokenManager;
 import com.ibm.wsspi.security.ltpa.Token;
 import com.ibm.wsspi.security.token.SingleSignonToken;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 import test.common.SharedOutputManager;
 
@@ -121,6 +122,10 @@ public class TokenLoginModuleTest extends LoginModuleTester {
                 will(returnValue(0L));
                 allowing(ssoTokenOverride).getExpiration();
                 will(returnValue(0L));
+                allowing(ssoToken).getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+                will(returnValue(null));
+                allowing(ssoTokenOverride).getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+                will(returnValue(null));
             }
         });
         jaasService.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
