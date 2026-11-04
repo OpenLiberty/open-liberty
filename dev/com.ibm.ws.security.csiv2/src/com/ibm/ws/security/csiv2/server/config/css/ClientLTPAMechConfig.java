@@ -114,9 +114,13 @@ public class ClientLTPAMechConfig implements CSSASMechConfig {
     }
 
     @Sensitive
-    private byte[] createEncoding(Subject subject, ClientRequestInfo ri, Codec codec) {
+    private byte[] createEncoding(Subject subject, ClientRequestInfo ri, Codec codec) throws IllegalStateException {
         if (subject != null && (new SubjectHelper().isUnauthenticated(subject) == false)) {
             byte[] ltpaTokenBytes = getSSOTokenBytes(subject);
+            if (ltpaTokenBytes.length == 0) {
+                IllegalStateException ils = new IllegalStateException("Subject missing SSOToken. It may be a BasicAuth Subject. " + subject);
+                throw ils;
+            }
             if (isEncodingForWASClassic(ri)) {
                 return Util.encodeLTPATokenForWASClassic(codec, ltpaTokenBytes);
             }
