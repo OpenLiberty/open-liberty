@@ -10,19 +10,59 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+repositories {
+  ivy {
+    url "../cnf/local"
+    metadataSources {
+      ivyDescriptor()
+      artifact()
+    }
+  }
+}
+
 configurations {
   jaxrsValidator {
     transitive = false
   }
+  jarA {
+    transitive = false
+  }
+  jarB {
+    transitive = false
+  }
 }
-	
+
 dependencies {
   jaxrsValidator 'com.sebastian-daschner:jaxrs-analyzer:0.9'
+  jarA 'test:com.ibm.ws.cdi.visibility_fat.jarA:1.+'
+  jarB 'test:com.ibm.ws.cdi.visibility_fat.jarB:1.+'
 }
 
 task addjaxrsValidator(type: Copy) {
   from configurations.jaxrsValidator
   into new File(autoFvtDir, 'lib/jaxrsvalidator')
+}
+
+task addTestBeanJarA() {
+  dependsOn ':com.ibm.ws.cdi.visibility_fat.jarA:release'
+  doLast {
+    copy {
+      from configurations.jarA
+      into new File(autoFvtDir, 'beanJars')
+      rename 'com.ibm.ws.cdi.visibility_fat.jarA-(.*).jar', 'jarA.jar'
+    }
+  }
+}
+
+task addTestBeanJarB() {
+  dependsOn ':com.ibm.ws.cdi.visibility_fat.jarB:release'
+  doLast {
+    copy {
+      from configurations.jarB
+      into new File(autoFvtDir, 'beanJars')
+      rename 'com.ibm.ws.cdi.visibility_fat.jarB-(.*).jar', 'jarB.jar'
+    }
+  }
 }
 
 //This task has a different output directory to the generic one in fat.gradle
@@ -43,6 +83,8 @@ task copyCDIFeatureBundles {
 
 addRequiredLibraries {
   dependsOn addjaxrsValidator
+  dependsOn addTestBeanJarA
+  dependsOn addTestBeanJarB
   dependsOn addJakartaTransformer
   dependsOn copyCDIFeatureBundles
 }
