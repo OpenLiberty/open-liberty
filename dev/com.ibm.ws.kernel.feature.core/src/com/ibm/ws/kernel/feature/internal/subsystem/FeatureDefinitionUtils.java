@@ -80,6 +80,7 @@ public class FeatureDefinitionUtils {
     static final String FILTER_ATTR_NAME = "filter";
     static final String FILTER_FEATURE_KEY = "osgi.identity";
     static final String FILTER_TYPE_KEY = "type";
+    static final String FILTER_VERSION_KEY = "version";
 
     static final List<String> LOCALIZABLE_HEADERS = Collections.unmodifiableList(Arrays.asList(new String[] { "Subsystem-Name", "Subsystem-Description" }));
 
