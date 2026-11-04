@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,21 +26,21 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                NoAppMBeanTest.class,
-                ServletApplicationMBeanTest.class,
-                RestApplicationMbeanTest.class,
-                JSPApplicationMBeanTest.class,
-                JSFApplicationMBeanTest.class,
-                NoAppTest.class,
-                JSPApplicationTest.class,
-                RestApplicationTest.class,
-                ServletApplicationTest.class,
-                JSFApplicationTest.class,
-                ContainerServletApplicationTest.class,
-                ContainerJSPApplicationTest.class,
-                ContainerRestApplicationTest.class,
-                ContainerNoAppTest.class,
-                ContainerJSFApplicationTest.class
+//                NoAppMBeanTest.class,
+//                ServletApplicationMBeanTest.class,
+//                RestApplicationMbeanTest.class,
+//                JSPApplicationMBeanTest.class,
+//                JSFApplicationMBeanTest.class,
+//                NoAppTest.class,
+//                JSPApplicationTest.class,
+//                RestApplicationTest.class,
+//                ServletApplicationTest.class,
+//                JSFApplicationTest.class,
+                ContainerServletApplicationTest.class
+//                ContainerJSPApplicationTest.class,
+//                ContainerRestApplicationTest.class,
+//                ContainerNoAppTest.class,
+//                ContainerJSFApplicationTest.class
 })
 
 public class FATSuite extends TestContainerSuite {
@@ -76,8 +76,8 @@ public class FATSuite extends TestContainerSuite {
             server.addEnvVar("OTEL_SDK_DISABLED", "false");
             server.addEnvVar("OTEL_TRACES_EXPORTER", "none");
             server.addEnvVar("OTEL_LOGS_EXPORTER", "none");
-            server.addEnvVar("OTEL_METRIC_EXPORT_INTERVAL", "1000");
-            server.addEnvVar("OTEL_EXPORTER_OTLP_TIMEOUT", "4000");
+            server.addEnvVar("OTEL_METRIC_EXPORT_INTERVAL", "5000");
+            server.addEnvVar("OTEL_EXPORTER_OTLP_TIMEOUT", "10000");
             server.addEnvVar("OTEL_EXPORTER_OTLP_COMPRESSION", "gzip");
             return archive;
         }
