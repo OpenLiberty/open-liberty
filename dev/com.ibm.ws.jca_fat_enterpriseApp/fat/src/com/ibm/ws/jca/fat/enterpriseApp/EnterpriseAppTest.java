@@ -13,6 +13,8 @@
 
 package com.ibm.ws.jca.fat.enterpriseApp;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -86,6 +88,23 @@ public class EnterpriseAppTest extends FATServletClient {
     @Test
     public void checkSetupTest() throws Exception {
         runTest();
+    }
+
+    /**
+     * Test that embedded RA properties from server.xml <properties.*> element
+     * are applied before ResourceAdapter.start() is called.
+     * This validates the fix for the config admin race condition where
+     * properties may not be merged when BootstrapContextImpl.activate() runs.
+     */
+    @Test
+    public void testEmbeddedRAConfigPropsApplied() throws Exception {
+        // The DerbyResourceAdapter.start() method validates that generalConfigProp == "PROP_SET".
+        // If the race condition occurs, the RA will throw ResourceAdapterInternalException
+        // and the server will fail to start the application.
+        // Since the server started successfully in setUp(), we just need to verify
+        // the success message is in the logs.
+        assertNotNull("generalConfigProp should have been set to PROP_SET by server.xml properties element",
+                      server.waitForStringInLog("generalConfigProp correctly set to: PROP_SET", 5000));
     }
 
     @Test
