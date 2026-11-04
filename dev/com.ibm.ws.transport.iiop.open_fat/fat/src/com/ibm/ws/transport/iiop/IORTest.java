@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020,2023 IBM Corporation and others.
+ * Copyright 2020,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 
 @RunWith(FATRunner.class)
 public class IORTest extends FATServletClient {
-
     @Server("bowlingball")
     @TestServlet(servlet = IORTestServlet.class, contextRoot = "test.corba.web")
     public static LibertyServer server;
