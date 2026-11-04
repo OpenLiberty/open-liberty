@@ -34,6 +34,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.ws.ssl.ConsoleWrapper;
 import com.ibm.ws.ssl.config.KeyStoreManager;
@@ -69,6 +70,9 @@ public class WSX509TrustManagerTest {
     public void setUp() {
         mock.checking(new Expectations() {
             {
+                allowing(sslCfg).getProperty(Constants.SSLPROP_ALIAS);
+                will(returnValue("defaultSSLConfig"));
+                
                 one(sslCfg).get("com.ibm.ws.ssl.trustDefaultCerts");
                 will(returnValue("false"));
             }

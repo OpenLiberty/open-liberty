@@ -15,9 +15,17 @@
 package com.ibm.ws.channel.ssl.internal;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.nio.ReadOnlyBufferException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -26,6 +34,7 @@ import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLPeerUnverifiedException;
 
 import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
@@ -183,6 +192,10 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         // This is a protective measure.
         closed = true;
 
+        // Deregister from the active-link registry so this link is not targeted by
+        // a concurrent closeAllActiveConnections() sweep after it is already closed.
+        this.sslChannel.deregisterActiveLink(this);
+
         // Clean up the read and write interfaces as well as the SSL engine.
 
         // cleanup has logic to avoid writing if stop(0) has been called
@@ -210,6 +223,9 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "destroy, vc=" + getVCHash());
         }
+
+        // Deregister from the active-link registry on destroy as well.
+        this.sslChannel.deregisterActiveLink(this);
 
         // Clean up the read and write interfaces as well as the SSL engine.
         this.connected = false;
@@ -743,6 +759,9 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
 
             // PK16095 - take certain actions when the handshake completes
             getChannel().onHandshakeFinish(getSSLEngine());
+            // Register this link so closeAllActiveConnections() can tear it down
+            // if the truststore is reloaded while this connection is live.
+            getChannel().registerActiveLink(this);
 
             // Handshake complete. Now get the request. Use our read interface so unwrap already done.
             // Check if data exists in the network buffer still. This would be app data beyond handshake.
@@ -1203,6 +1222,46 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
      */
     public SSLEngine getSSLEngine() {
         return this.sslEngine;
+    }
+
+    /**
+     * Returns the peer certificate chain that was presented during the TLS handshake
+     * for this connection, as an array of {@link X509Certificate}.
+     *
+     * <p>The certificates are retrieved from the live {@link javax.net.ssl.SSLSession}
+     * held by the {@link SSLEngine} — they reflect the peer's identity as established
+     * at handshake time and remain available for the lifetime of the connection.
+     *
+     * @return the peer's certificate chain; never {@code null} or empty
+     * @throws SSLPeerUnverifiedException if the peer did not present a certificate
+     *         (e.g. anonymous TLS) or if the engine has no active session
+     */
+    X509Certificate[] getPeerCertificates() throws SSLPeerUnverifiedException {
+        final SSLEngine engine = this.sslEngine;
+        if (engine == null) {
+            throw new SSLPeerUnverifiedException("SSLEngine is null — connection may already be closed");
+        }
+        Certificate[] certs = AccessController.doPrivileged(new PrivilegedAction<Certificate[]>() {
+            @Override
+            public Certificate[] run() {
+                try {
+                    return engine.getSession().getPeerCertificates();
+                } catch (SSLPeerUnverifiedException e) {
+                    return null;
+                }
+            }
+        });
+        if (certs == null) {
+            throw new SSLPeerUnverifiedException("Peer did not present a certificate chain");
+        }
+        X509Certificate[] x509 = new X509Certificate[certs.length];
+        for (int i = 0; i < certs.length; i++) {
+            if (!(certs[i] instanceof X509Certificate)) {
+                throw new SSLPeerUnverifiedException("Peer certificate is not an X509Certificate: " + certs[i].getType());
+            }
+            x509[i] = (X509Certificate) certs[i];
+        }
+        return x509;
     }
 
     /**
