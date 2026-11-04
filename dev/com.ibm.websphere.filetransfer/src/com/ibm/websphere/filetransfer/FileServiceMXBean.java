@@ -155,7 +155,8 @@ public interface FileServiceMXBean {
      *  - an exact file name
      *  - a '*', which will match all files
      *  - a '*' followed by a suffix, which will match any filename with specified suffix
-     * The default is '*.xml', '*.log'
+     * If a '*' appears anywhere else in the pattern, the pattern is invalid and will be ignored
+     * The default is '*.xml', '*.log', '*.xsd'
      */
     List<String> getReadableFilePatterns();
 
