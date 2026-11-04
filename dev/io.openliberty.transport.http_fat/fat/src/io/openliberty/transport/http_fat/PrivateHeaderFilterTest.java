@@ -69,7 +69,8 @@ public class PrivateHeaderFilterTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            // Allow CWWKT0059W warning message for serviceability to know when a WSSP request is received and ignored
+            server.stopServer("CWWKT0059W");
         }
     }
 
