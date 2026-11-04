@@ -163,7 +163,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
         AutoScalingEventExecutorChooserFactory scaler = createThreadScaler(config);
         DefaultThreadFactory workerThreadFactory = new DefaultThreadFactory("TCPChannel NonBlocking Worker Thread", true);
-        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, workerThreadFactory, scaler, ioFactory);
+        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, workerThreadFactory, ioFactory, scaler);
         outboundConnections = new DefaultChannelGroup(childGroup.next());
 
         if (metricsWindow > 0 && TraceComponent.isAnyTracingEnabled() && NettyThreadMetrics.tc.isDebugEnabled()) {
