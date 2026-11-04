@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2023 IBM Corporation and others.
+ * Copyright (c) 2017,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -78,14 +78,14 @@ public class PolicyExecutorTest {
     public void testExpedite() throws Exception {
         ExecutorServiceImpl globalExecutor = new ExecutorServiceImpl();
         Map<String, Object> globalExecutorConfig = new HashMap<String, Object>();
-        globalExecutorConfig.put("coreThreads", ExecutorServiceImpl.MINIMUM_POOL_SIZE);
-        globalExecutorConfig.put("maxThreads", ExecutorServiceImpl.MINIMUM_POOL_SIZE);
+        globalExecutorConfig.put("coreThreads", ExecutorServiceImpl.SMALLEST_MAX_POOL_SIZE);
+        globalExecutorConfig.put("maxThreads", ExecutorServiceImpl.SMALLEST_MAX_POOL_SIZE);
         globalExecutor.activate(globalExecutorConfig);
 
         ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors = new ConcurrentHashMap<String, PolicyExecutorImpl>();
 
         PolicyExecutor executor0 = new PolicyExecutorImpl(globalExecutor, "testExpedite-0", null, policyExecutors, null);
-        executor0.expedite(0).maxConcurrency(ExecutorServiceImpl.MINIMUM_POOL_SIZE + 3).maxQueueSize(ExecutorServiceImpl.MINIMUM_POOL_SIZE + 2);
+        executor0.expedite(0).maxConcurrency(ExecutorServiceImpl.SMALLEST_MAX_POOL_SIZE + 3).maxQueueSize(ExecutorServiceImpl.SMALLEST_MAX_POOL_SIZE + 2);
         PolicyExecutor executor2 = new PolicyExecutorImpl(globalExecutor, "testExpedite-2", "myApp", policyExecutors, null);
         executor2.expedite(2).maxConcurrency(4).maxQueueSize(4);
 
@@ -93,13 +93,13 @@ public class PolicyExecutorTest {
         AtomicInteger sharedCounter = new AtomicInteger(0);
 
         // Use up the thread(s) in the global pool
-        CountDownLatch blockerStartedLatch = new CountDownLatch(ExecutorServiceImpl.MINIMUM_POOL_SIZE);
+        CountDownLatch blockerStartedLatch = new CountDownLatch(ExecutorServiceImpl.SMALLEST_MAX_POOL_SIZE);
         // The first latch blocks one thread and will be released to let the other queued tasks execute
         CountDownLatch blockerLatch = new CountDownLatch(1);
         Future<Integer> future0a = executor0.submit(new CommonTask("blocker", blockerStartedLatch, blockerLatch, sharedCounter));
         // The second latch blocks the other threads in the pool, so that the queued tasks execute in order
         CountDownLatch blockerLatch2 = new CountDownLatch(1);
-        for (int x = 1; x < ExecutorServiceImpl.MINIMUM_POOL_SIZE; x++) {
+        for (int x = 1; x < ExecutorServiceImpl.SMALLEST_MAX_POOL_SIZE; x++) {
             executor0.submit(new CommonTask("blocker", blockerStartedLatch, blockerLatch2, sharedCounter));
         }
         assertTrue(blockerStartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
