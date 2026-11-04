@@ -130,6 +130,7 @@ public class ApplicationProcessor {
         boolean isOASApp = false;
 
         OpenAPI newDocument = null;
+        String strToCauseFileChange = "";
 
         //read and process the MicroProfile config. Try with resources will close the ConfigProcessor when done.
         try (ConfigProcessor configProcessor = new ConfigProcessor(appClassloader)) {
