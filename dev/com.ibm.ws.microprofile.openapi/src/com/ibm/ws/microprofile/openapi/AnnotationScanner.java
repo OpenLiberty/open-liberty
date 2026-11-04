@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.openapi.utils.OpenAPIUtils;
@@ -58,7 +57,7 @@ public class AnnotationScanner {
     private final WebAppConfig appConfig;
 
     public AnnotationScanner(ClassLoader classLoader, Container containerToAdapt) throws UnableToAdaptException {
-        webAnnotations = AnnotationsBetaHelper.getWebAnnotations(containerToAdapt);
+        webAnnotations = containerToAdapt.adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
         appConfig = containerToAdapt.adapt(WebModuleMetaData.class).getConfiguration();
     }
 
