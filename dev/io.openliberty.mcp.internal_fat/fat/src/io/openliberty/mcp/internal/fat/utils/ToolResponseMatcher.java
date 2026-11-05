@@ -34,7 +34,7 @@ import org.skyscreamer.jsonassert.JSONCompareResult;
  * assertThat(response, toolResponse().withError("expected error text"));
  * assertThat(response, toolResponse().withTextContent(json.toString()).withStructuredContent(json));
  *
- * // Content that is not plain text (i.e. image, audio, annotations, resource links)
+ * // Content that is not plain text (image, audio, annotations, resource links, ...)
  * assertThat(response, toolResponse().withContent(new JSONObject("""
  *                 {"type": "image", "data": "aGkJ", "mimeType": "image/png"}
  *                 """)));
@@ -168,18 +168,20 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
 
     /**
      * Requires the custom entries of the {@code _meta} object of the tool result (not of a content
-     * item) to equal the given object, comparing with {@link JSONCompareMode#STRICT}.
+     * item) to equal the given object, comparing with {@link JSONCompareMode#STRICT}. Use
+     * {@link #withCustomMeta(JSONObject, JSONCompareMode)} to compare differently.
      *
      * <p>Entries whose key starts with {@code io.modelcontextprotocol} are reserved by the MCP
      * specification and depend on the protocol version, so they are ignored: the expected object
-     * should only contain the custom entries the tool is expected to return.
+     * should only contain the custom entries the tool is expected to return. The response must
+     * have a {@code _meta} object, even if the expected object is empty.
      */
     public ToolResponseMatcher withCustomMeta(JSONObject expectedCustomMeta) {
         return withCustomMeta(expectedCustomMeta, JSONCompareMode.STRICT);
     }
 
     /**
-     * Like {@link #withCustomMeta(JSONObject)}, but compares with the given mode.
+     * Like {@link #withCustomMeta(JSONObject)}, but compares the custom entries with the given mode.
      */
     public ToolResponseMatcher withCustomMeta(JSONObject expectedCustomMeta, JSONCompareMode compareMode) {
         this.expectedCustomMeta = new JsonExpectation(expectedCustomMeta, compareMode);
