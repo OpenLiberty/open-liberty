@@ -759,7 +759,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
 
         if (waitForInput && context != null && context.executor().inEventLoop()){
-            throw new IllegalStateException(Tr.formatMessage(tc, "netty.blocking.read.on.event.loop"));
+            throw new IllegalStateException("Blocking request read on event loop group thread");
         }
 
         if (this.buffer != null && this.buffer.hasRemaining()){

@@ -142,7 +142,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     @Override
     public long read(long numBytes, int timeout) throws IOException {
         if(nettyChannel.eventLoop().inEventLoop()){
-            throw new IllegalStateException(Tr.formatMessage(tc, "netty.blocking.read.on.event.loop"));
+            throw new IllegalStateException("Blocking read cannot be done in Netty thread");
         }
 
         if(aborted) throw new IOException("I/O Aborted");
@@ -151,8 +151,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Found closed connection on read for channel: " + nettyChannel);
             }
-            throw new EOFException(Tr.formatMessage(tc, "netty.read.failed.end.of.stream",
-                                                   nettyChannel.localAddress(), nettyChannel.remoteAddress()));
+            throw new EOFException("Connection closed: Read failed. Possible end of stream encountered. local="
+                                   + nettyChannel.localAddress()
+                                   + " remote="
+                                   + nettyChannel.remoteAddress());
         }
 
         final boolean logicalUpg = isLogicallyUpgraded();
