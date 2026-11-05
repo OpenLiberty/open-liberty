@@ -58,6 +58,7 @@ import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.wsspi.security.auth.callback.WSX509CertificateChainCallback;
 import com.ibm.wsspi.security.token.SingleSignonToken;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 import test.common.SharedOutputManager;
 
@@ -127,6 +128,10 @@ public class CertificateLoginModuleTest extends LoginModuleTester {
                 will(returnValue(0L));
                 allowing(ssoTokenOverride).getExpiration();
                 will(returnValue(0L));
+                allowing(ssoToken).getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+                will(returnValue(null));
+                allowing(ssoTokenOverride).getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+                will(returnValue(null));
             }
         });
         jaasService.setJaasConfigurationFactory(jaasConfigurationFactoryRef);
