@@ -41,7 +41,9 @@ import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.DualConfigurableMcpPathTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpConfigTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateTest;
+import io.openliberty.mcp.internal.fat.tool.DynamicOnlyToolManagerTest;
 import io.openliberty.mcp.internal.fat.tool.InvalidSessionTimeoutTest;
+import io.openliberty.mcp.internal.fat.tool.MixedEarModuleTest;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
 import io.openliberty.mcp.internal.fat.tool.ToolTest;
 
@@ -67,8 +69,10 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 DualConfigurableMcpPathTest.class,
                 DynamicMcpConfigTest.class,
                 DynamicMcpPathUpdateTest.class,
+                DynamicOnlyToolManagerTest.class,
                 InvalidAsyncTimeoutTest.class,
                 InvalidSessionTimeoutTest.class,
+                MixedEarModuleTest.class,
                 StatelessConfigChangeOnRestoreTest.class,
                 StatelessModeTest.class,
                 // These deploy intentionally failing apps on "mcp-server" and start/stop it
