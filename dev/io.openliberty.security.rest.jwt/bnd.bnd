@@ -27,8 +27,6 @@ Export-Package: \
    io.openliberty.security.rest.jwt.tai
 
 Import-Package: \
-   javax.servlet;version="!", \
-   javax.servlet.*;version="!", \
    com.ibm.websphere.security.jwt;version="[1.0,11)", \
    com.ibm.wsspi.security.tai;version="[1.1,11)", \
    com.ibm.ws.security.authentication.filter;version="[1.0,11)", \
