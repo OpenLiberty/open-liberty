@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ Export-Package: \
    com.ibm.jtc.adapter;provide:=true, \
    com.ibm.websphere.csi;-split-package:=merge-last, \
    com.ibm.ws.container.service.annotations; provide:=true, \
-   com.ibm.ws.container.service.annotations.internal; provide:=true, \
    com.ibm.ws.container.service.annocache; provide:=true, \
    com.ibm.ws.container.service.annocache.internal; provide:=true, \
    com.ibm.ws.container.service.app.deploy; provide:=true, \
@@ -75,30 +74,6 @@ Private-Package: \
 	com.ibm.ws.container.service.metadata.internal.AnnotationCacheReleaseService
 
 Service-Component: \
-   com.ibm.ws.container.service.annotations.ContainerAnnotationsAdapter; \
-      implementation:=com.ibm.ws.container.service.annotations.internal.ContainerAnnotationsAdapter; \
-      provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
-      annoService=com.ibm.wsspi.anno.service.AnnotationService_Service; \
-      configuration-policy:=optional; \
-      optional:="annoService"; \
-      dynamic:="annoService"; \
-      properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.annotations.ContainerAnnotations", \
-   com.ibm.ws.container.service.annotations.ModuleAnnotationsAdapter; \
-      implementation:=com.ibm.ws.container.service.annotations.internal.ModuleAnnotationsAdapter; \
-      provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
-      annoService=com.ibm.wsspi.anno.service.AnnotationService_Service; \
-      configuration-policy:=optional; \
-      optional:="annoService"; \
-      dynamic:="annoService"; \
-      properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.annotations.ModuleAnnotations", \
-   com.ibm.ws.container.service.annotations.WebAnnotationsAdapter; \
-      implementation:=com.ibm.ws.container.service.annotations.internal.WebAnnotationsAdapter; \
-      provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
-      annoService=com.ibm.wsspi.anno.service.AnnotationService_Service; \
-      configuration-policy:=optional; \
-      optional:="annoService"; \
-      dynamic:="annoService"; \
-      properties:="service.vendor=IBM,toType=com.ibm.ws.container.service.annotations.WebAnnotations", \
    com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoFactory; \
       implementation:=com.ibm.ws.container.service.app.deploy.internal.ApplicationInfoFactoryImpl; \
       provide:=com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoFactory; \

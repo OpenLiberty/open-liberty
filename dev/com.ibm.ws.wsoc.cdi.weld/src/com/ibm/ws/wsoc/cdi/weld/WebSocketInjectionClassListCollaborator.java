@@ -21,7 +21,6 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -49,7 +48,7 @@ public class WebSocketInjectionClassListCollaborator  implements WebAppInjection
         List<String> injectionClassNames = new ArrayList<String>();
 
         try {
-            WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
+            WebAnnotations webAnno = moduleContainer.adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
             AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
 
             // Find POJOs that have been annotated to be end points.

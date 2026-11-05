@@ -105,7 +105,6 @@ import org.apache.cxf.message.MessageUtils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
@@ -1840,7 +1839,7 @@ public final class InjectionUtils {
         WebAnnotations webAnnotations;
         AnnotationTargets_Targets annotationTargets;
         try {
-            webAnnotations = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
+            webAnnotations = moduleContainer.adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
             annotationTargets = webAnnotations.getAnnotationTargets();
         } catch ( Exception e ) {
             // Detection cannot be done without annotations information.

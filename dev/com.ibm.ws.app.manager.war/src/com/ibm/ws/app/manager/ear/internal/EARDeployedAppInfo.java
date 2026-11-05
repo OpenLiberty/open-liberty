@@ -36,9 +36,6 @@ import com.ibm.ws.app.manager.module.internal.DeployedAppInfoBase;
 import com.ibm.ws.app.manager.module.internal.DeployedModuleInfoImpl;
 import com.ibm.ws.app.manager.module.internal.ModuleHandler;
 import com.ibm.ws.app.manager.module.internal.ModuleInfoUtils;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-// import com.ibm.ws.container.service.annotations.ContainerAnnotations; // PreBeta
-// import com.ibm.ws.container.service.annocache.ContainerAnnotations; // PostBeta
 import com.ibm.ws.container.service.app.deploy.ClientModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ConnectorModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
@@ -1244,48 +1241,13 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
      * never given links to external information.
      *
      * @param moduleContainer        The module container to test for annotations.
-     * @param useAnnotationTypeNames The names of annotations to detect in the
-     *                                   module container.
+     * @param annotationClassNames The names of annotations to detect in the
+     *                                 module container.
      *
      * @return True or false telling if any of the annotations is present as an
      *         immediate annotation of a class of the module.
      */
-    private boolean hasAnnotations(Container moduleContainer, List<String> useAnnotationTypeNames) {
-        if (AnnotationsBetaHelper.getLibertyBeta()) {
-            return hasAnnotationsPostBeta(moduleContainer, useAnnotationTypeNames);
-        } else {
-            return hasAnnotationsPreBeta(moduleContainer, useAnnotationTypeNames);
-        }
-    }
-
-    private boolean hasAnnotationsPreBeta(Container moduleContainer, List<String> useAnnotationTypeNames) {
-        com.ibm.ws.container.service.annotations.ContainerAnnotations ca = null;
-        try {
-            ca = moduleContainer.adapt(com.ibm.ws.container.service.annotations.ContainerAnnotations.class);
-        } catch (UnableToAdaptException e) {
-            // error.module.annotation.targets=
-            // CWWKZ0121E: Application {0}: Failed to access annotations for module {1} of type {2}: {3}
-            Tr.error(_tc, "error.module.class.source", getName(), moduleContainer.getPath(), "EJB", e);
-
-            if (_tc.isDebugEnabled()) {
-                Tr.debug(_tc, "Selected [ 0 ] EJB annotation cases: Error obtaining annotation targets");
-            }
-        }
-
-        if (ca != null && ca.hasSpecifiedAnnotations(useAnnotationTypeNames, applicationInformation.getUseJandex())) {
-            if (_tc.isDebugEnabled()) {
-                Tr.debug(_tc, "Select EJB module [ " + moduleContainer.getPath() + " ]: EJB annotations were detected:");
-            }
-            return true;
-        } else {
-            if (_tc.isDebugEnabled()) {
-                Tr.debug(_tc, "Reject EJB module [ " + moduleContainer.getPath() + " ]: No descriptor and no EJB annotations");
-            }
-            return false;
-        }
-    }
-
-    private boolean hasAnnotationsPostBeta(Container moduleContainer, List<String> annotationClassNames) {
+    private boolean hasAnnotations(Container moduleContainer, List<String> annotationClassNames) {
         String methodName = "hasAnnotations";
 
         // Use the application name from the application configuration, which
