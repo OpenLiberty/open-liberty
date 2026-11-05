@@ -17,6 +17,7 @@ import static io.openliberty.data.internal.cdi.DataExtension.exc;
 
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,7 +32,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.sql.DataSource;
 
@@ -40,6 +43,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.data.internal.cdi.DataExtension;
 import jakarta.data.exceptions.DataConnectionException;
@@ -74,9 +78,28 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     new ThreadLocal<>();
 
     /**
+     * Keeps track of whether the invoke method is being invoked recursively for
+     * the Data 1.1+ scenario where a repository method return type is
+     * CompletionStage or CompletableFuture but not annotated Asynchronous.
+     */
+    private static final ThreadLocal<Boolean> recursiveForAsyncInvoke = //
+                    new ThreadLocal<>();
+
+    /**
      * Creates EntityAgent and EntityManager instances.
      */
     private final EntityHandlerFactory factory;
+
+    /**
+     * A reference to the CDI intercepted instance that wraps the proxy for this
+     * handler when the repository interface has interceptor bindings such as
+     * Transactional. The reference is empty if the repository is not intercepted.
+     * This is used when running a repository method that returns CompletionStage/
+     * CompletableFuture and lacks Asynchronous on a different thread, so that
+     * interceptors, such as Transactional, are applied around the work that runs
+     * on that thread rather than around the request to run it asynchronously.
+     */
+    private final AtomicReference<R> interceptedInstanceRef;
 
     /**
      * Indicates if the bean for the repository has been disposed.
@@ -117,6 +140,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *                                  provider for EclipseLink.
      * @param extension             CDI extension for the Jakarta Data provider.
      * @param factory               Creates EntityAgent and EntityManager
+     * @param interceptedRef        Reference that will be populated if intercepted
      * @param repositoryInterface   The repository interface.
      * @param primaryEntityClass    The primary entity class for the repository.
      *                                  Null if the repository does not have one.
@@ -127,17 +151,19 @@ public class RepositoryImpl<R> implements InvocationHandler {
     public RepositoryImpl(DataProvider provider,
                           DataExtension extension,
                           EntityHandlerFactory factory,
+                          AtomicReference<R> interceptedRef,
                           Class<R> repositoryInterface,
                           Class<?> primaryEntityClass,
                           Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
         this.factory = factory;
+        this.interceptedInstanceRef = interceptedRef;
 
         // EntityHandlerFactory implementations guarantee that the future
         // in the following map will be completed even if an error occurs
         this.primaryEntityInfoFuture = primaryEntityClass == null //
                         ? null //
                         : factory.entityInfoMap.computeIfAbsent(primaryEntityClass,
-                                                                EntityInfo::newFuture);
+                                                                factory::newFuture);
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
         Object validation = provider.validationService;
@@ -146,9 +172,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         : EntityValidator.newInstance(validation, repositoryInterface);
 
         // reusable instance for supplying this instance to completion stages:
-        CompletableFuture<RepositoryImpl<?>> thisCF = queriesPerEntityClass.isEmpty() //
-                        ? null //
-                        : CompletableFuture.completedFuture(this);
+        CompletableFuture<RepositoryImpl<?>> thisCF = //
+                        queriesPerEntityClass.isEmpty() //
+                                        ? null //
+                                        : factory.newCompletedFuture(this);
 
         List<CompletableFuture<EntityInfo>> entityInfoFutures = new ArrayList<>();
         List<QueryInfo> entitylessQueryInfos = null;
@@ -159,9 +186,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (QueryInfo.ENTITY_TBD.equals(entityClass)) {
                 entitylessQueryInfos = entry.getValue();
             } else {
-                CompletableFuture<EntityInfo> entityInfoFuture = //
-                                factory.entityInfoMap.computeIfAbsent(entityClass,
-                                                                      EntityInfo::newFuture);
+                CompletableFuture<EntityInfo> entityInfoFuture = factory //
+                                .entityInfoMap.computeIfAbsent(entityClass,
+                                                               factory::newFuture);
                 entityInfoFutures.add(entityInfoFuture);
 
                 for (QueryInfo queryInfo : entry.getValue()) {
@@ -169,7 +196,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         queryInfo.validateParams = validator != null &&
                                                    validator.isValidatable(queryInfo.method)[1];
                         queries.put(queryInfo.method,
-                                    CompletableFuture.completedFuture(queryInfo));
+                                    factory.newCompletedFuture(queryInfo));
                     } else {
                         queries.put(queryInfo.method,
                                     entityInfoFuture.thenCombine(thisCF,
@@ -187,20 +214,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                              queryInfo.method,
                                              repositoryInterface.getName(),
                                              "DataRepository<EntityClass, EntityIdClass>");
-                    queries.put(queryInfo.method, CompletableFuture.failedFuture(x));
+                    queries.put(queryInfo.method, factory.newFailedFuture(x));
                 }
             }
 
             CompletableFuture<?>[] futures = entityInfoFutures //
                             .toArray(new CompletableFuture<?>[entityInfoFutures.size()]);
             CompletableFuture<Map<String, CompletableFuture<EntityInfo>>> allEntityInfo = //
-                            CompletableFuture.allOf(futures) //
-                                            .handle((VOID, x) -> x) //
-                                            .thenCombine(CompletableFuture.completedFuture(entityInfoFutures),
+                            factory.newCompletedFuture(entityInfoFutures) //
+                                            .thenCombine(CompletableFuture //
+                                                            .allOf(futures) //
+                                                            .handle((VOID, x) -> x),
                                                          this::allEntityInfoAsMap);
             for (QueryInfo queryInfo : entitylessQueryInfos) {
                 queries.put(queryInfo.method, allEntityInfo //
-                                .thenCombine(CompletableFuture.completedFuture(this),
+                                .thenCombine(factory.newCompletedFuture(this),
                                              queryInfo::init));
             }
         }
@@ -214,8 +242,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @return map of entity name to completed EntityInfo future.
      */
     private Map<String, CompletableFuture<EntityInfo>> //
-                    allEntityInfoAsMap(Throwable x,
-                                       List<CompletableFuture<EntityInfo>> futures) {
+                    allEntityInfoAsMap(List<CompletableFuture<EntityInfo>> futures,
+                                       Throwable x) {
         Map<String, CompletableFuture<EntityInfo>> entityInfos = new HashMap<>();
         for (CompletableFuture<EntityInfo> future : futures) {
             if (future.isCompletedExceptionally()) {
@@ -261,11 +289,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                         longerName);
                     }
                     entityInfos.putIfAbsent(EntityInfo.FAILED,
-                                            CompletableFuture.failedFuture(conflictX));
+                                            factory.newFailedFuture(conflictX));
                 }
             } else {
                 entityInfos.putIfAbsent(EntityInfo.FAILED,
-                                        CompletableFuture.failedFuture(x));
+                                        factory.newFailedFuture(x));
             }
         }
         return entityInfos;
@@ -532,6 +560,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 return returnValue;
             }
 
+            if (Util.returnsCompletionStageAndLacksAsync(method) &&
+                recursiveForAsyncInvoke.get() != Boolean.TRUE &&
+                factory.provider.compat.atLeast(1, 1)) {
+                // method without @Asynchronous returns CompletionStage/Future
+                CompletableFuture<?> cf = queryInfoFuture //
+                                .thenApply(qi -> new Object[] { proxy, method, args }) //
+                                .thenApplyAsync(this::invokeInline);
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "invoke " +
+                                      repositoryInterface.getSimpleName() + '.' +
+                                      method.getName() + " requested to run async",
+                            provider.loggable(repositoryInterface, method, cf));
+                return cf;
+            }
+
             Object returnValue;
             boolean failed = true;
             QueryType queryType = null;
@@ -706,4 +749,55 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 defaultMethodResources.remove();
         }
     }
+
+    /**
+     * Inline execution of a repository method that was previously submitted to
+     * run asynchronously. This is used for repository methods that return
+     * CompletionStage or CompletableFuture but lack the Asynchronous annotation
+     * that would otherwise automatically run the method asynchronously.
+     *
+     * @param proxyMethodArgs 3 element array consisting of proxy, method, and args
+     *                            - the arguments to the invoke method
+     * @return the result of the repository method, extracted from its future
+     *         so that it can be repackaged in the completion stage that is
+     *         returned to the application by the repository method
+     */
+    @FFDCIgnore({ Exception.class,
+                  InvocationTargetException.class,
+                  RuntimeException.class })
+    @Trivial // avoid tracing customer data
+    private Object invokeInline(Object[] proxyMethodArgs) {
+        Object proxy = proxyMethodArgs[0];
+        Method method = (Method) proxyMethodArgs[1];
+        Object[] args = (Object[]) proxyMethodArgs[2];
+
+        ComponentMetaDataAccessorImpl accessor = //
+                        ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
+        accessor.beginDefaultContext();
+        try {
+            recursiveForAsyncInvoke.set(Boolean.TRUE);
+
+            // Invoke via the intercepted instance, if any, so that interceptors
+            // such as Transactional apply on this thread. The recursive flag
+            // causes the invoke method to run the operation directly.
+            Object target = interceptedInstanceRef.get();
+            if (target == null)
+                target = proxy;
+
+            @SuppressWarnings("unchecked")
+            CompletionStage<Object> completedStage = //
+                            (CompletionStage<Object>) method.invoke(target, args);
+            return completedStage.toCompletableFuture().join();
+        } catch (InvocationTargetException x) {
+            throw new CompletionException(x.getCause());
+        } catch (RuntimeException x) {
+            throw x;
+        } catch (Exception x) {
+            throw new CompletionException(x);
+        } finally {
+            recursiveForAsyncInvoke.remove();
+            accessor.endContext();
+        }
+    }
+
 }

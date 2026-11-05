@@ -29,8 +29,6 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.BaseStream;
 import java.util.stream.DoubleStream;
@@ -450,8 +448,7 @@ public class DataExtension implements Extension {
 
             int d = 0, depth = returnTypeAtDepth.size();
             Class<?> rtype = returnTypeAtDepth.get(d);
-            if (CompletionStage.class.equals(rtype) ||
-                CompletableFuture.class.equals(rtype))
+            if (Util.ASYNC_STAGE_RETURN_TYPES.contains(rtype))
                 if (++d < depth)
                     rtype = returnTypeAtDepth.get(d);
                 else

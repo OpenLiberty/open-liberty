@@ -17,7 +17,6 @@ import java.util.Map;
 import org.junit.Test;
 
 import io.openliberty.data.internal.DataProvider;
-import io.openliberty.data.internal.orm.EntityParser;
 import io.openliberty.data.internal.orm.TestConverters.InvalidConverter;
 import jakarta.data.exceptions.MappingException;
 
@@ -32,6 +31,7 @@ public class EntityParserErrorTests {
                         Map.of(), // properties
                         null, // CDIService
                         null, // ClassLoaderIdentifierService
+                        null, // CompletionStageFactory
                         null, // ConfigurationAdmin
                         null, // ExecutorService
                         null, // LocalTransactionCurrent
