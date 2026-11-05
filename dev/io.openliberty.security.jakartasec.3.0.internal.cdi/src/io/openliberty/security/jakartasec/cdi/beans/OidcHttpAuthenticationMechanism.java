@@ -254,9 +254,38 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     /**
      * Section https://jakarta.ee/specifications/security/3.0/jakarta-security-spec-3.0.html#authentication-dialog states that
      * a callback is detected "when a request contains a state request parameter."
+     *
+     * <p>
+     * A {@code multipart/form-data} request can never be an OIDC callback: the OpenID Provider delivers the
+     * authorization response using either query parameters (a GET) or an {@code application/x-www-form-urlencoded}
+     * POST when {@code response_mode=form_post} is used. Calling {@link HttpServletRequest#getParameter(String)} on a
+     * multipart request forces the web container to parse - and consume - the request body so that form fields can be
+     * exposed as parameters. That leaves the request's target (for example a Jakarta REST resource that accepts
+     * {@code List<EntityPart>}) with an empty body. Skip the parameter lookup for multipart requests so that the body
+     * remains available to the resource.
+     * <p>
+     * Skipping the lookup does not weaken authentication: a callback is only ever consulted after
+     * {@link #isAuthenticationRequired} has been evaluated, and a request that reaches this method without being a
+     * callback is still handled as an unauthenticated request (see {@code validateRequest}). Requests to protected
+     * resources are redirected to the OpenID Provider before this method is called, and the {@code state} parameter
+     * that protects genuine callbacks from CSRF is still validated by {@link #processCallback} for every actual
+     * callback.
      */
     private boolean isCallbackRequest(HttpServletRequest request) {
+        if (isMultipartRequest(request)) {
+            return false;
+        }
         return request.getParameter(OpenIdConstant.STATE) != null;
+    }
+
+    /**
+     * A request is considered multipart when its content type starts with {@code multipart/form-data}, matching the
+     * web container's own trigger for parsing (and consuming) a multipart body from the request parameters. The match
+     * is case-insensitive.
+     */
+    private boolean isMultipartRequest(HttpServletRequest request) {
+        String contentType = request.getContentType();
+        return contentType != null && contentType.regionMatches(true, 0, "multipart/form-data", 0, "multipart/form-data".length());
     }
 
     /**
