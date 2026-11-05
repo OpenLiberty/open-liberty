@@ -55,5 +55,6 @@ public class AuditMessageConstants {
 	public static final String CWPKI0803A_SSL_DEFAULT_KEYSTORE_AND_CERT_CREATED = "CWPKI0803A";
 	public static final String CWPKI0033E_KEYSTORE_FAILED_TO_LOAD_ERROR = "CWPKI0033E";
 	public static final String CWPKI0809W_KEYSTORE_FAILED_TO_LOAD_SSL_CANNOT_INIT = "CWPKI0809W";
+	public static final String CWWKG0033W_KEYSTORE_REFERENCE_DOES_NOT_EXIST = "CWWKG0033W";
 
 }
