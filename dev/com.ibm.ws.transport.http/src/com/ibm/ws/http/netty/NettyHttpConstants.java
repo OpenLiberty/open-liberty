@@ -43,7 +43,6 @@ public final class NettyHttpConstants {
     public static final AttributeKey<Long> CONTENT_LENGTH = AttributeKey.valueOf("contentLength");
     public static final AttributeKey<Boolean> IS_OUTBOUND_KEY = AttributeKey.valueOf("isOutbound");
     public static final AttributeKey<String> ENDPOINT_PID = AttributeKey.valueOf("endpointPID");
-    public static final AttributeKey<Boolean> HANDLING_REQUEST = AttributeKey.valueOf("handlingRequest");
     public static final AttributeKey<Boolean> THROW_FFDC = AttributeKey.valueOf("throwFFDC");
     public static final AttributeKey<Integer> NUMBER_OF_HTTP_REQUESTS = AttributeKey.valueOf("numberOfHttpRequests");
     public static final AttributeKey<Integer> STREAMS_REFUSED = AttributeKey.valueOf("streamsRefused");
