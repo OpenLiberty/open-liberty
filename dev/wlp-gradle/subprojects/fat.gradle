@@ -50,7 +50,7 @@ ext {
 }
 
 configurations {
-  requiredLibs
+  requiredLibs { transitive = false; }
   jdbcDrivers { transitive = false; }
   jdbcDriversJava17Plus { transitive = false; }
   testcontainers { transitive = false; }
