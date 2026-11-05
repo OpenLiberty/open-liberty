@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Same as mbean-stop-autostart.xml plus an unrelated logging change.  The
+  application element is unchanged, so the config update must not revive an
+  application that was explicitly stopped.
+-->
+<server description="mbean stop autoStart=true test - updated">
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>localConnector-1.0</feature>
+    </featureManager>
+
+    <applicationManager autoExpand="true"/>
+
+    <application id="snoop" name="snoop" location="snoop.war"/>
+
+    <logging traceSpecification="*=info:com.ibm.ws.app.manager*=fine"/>
+
+    <include location="../fatTestPorts.xml"/>
+</server>
