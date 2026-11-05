@@ -52,12 +52,6 @@ public interface JwtConfig {
 
     JSONWebKey getJSONWebKey();
 
-    long getJwkRotationTime();
-
-    int getJwkSigningKeySize();
-    
-    int getJwkMaxKeys();
-
     String getResolvedHostAndPortUrl();
 
     PrivateKey getPrivateKey();
