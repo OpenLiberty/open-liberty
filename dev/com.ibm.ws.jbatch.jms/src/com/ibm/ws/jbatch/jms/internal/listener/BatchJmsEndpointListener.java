@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -324,8 +324,12 @@ public class BatchJmsEndpointListener implements MessageListener {
                  && msg.getInstanceIdUnchecked() >= 0 ) {
                
                 try{
-                    WSJobRepository jobRepository = getWSJobRepositoryInstance();                
-                    jobRepository.updateJobInstanceWithInstanceStateAndBatchStatus(msg.getInstanceIdUnchecked(), InstanceState.FAILED, BatchStatus.FAILED);
+                    WSJobRepository jobRepository = getWSJobRepositoryInstance();
+                    long instanceId = msg.getInstanceIdUnchecked();
+                    // Only mark FAILED if the instance exists — prevents forged instanceId corruption.
+                    if (jobRepository.getJobInstance(instanceId) != null) {
+                        jobRepository.updateJobInstanceWithInstanceStateAndBatchStatus(instanceId, InstanceState.FAILED, BatchStatus.FAILED);
+                    }
                 } catch (Exception ue) {
                     //FFDC it
                     //don't re-throw consume it
@@ -352,31 +356,31 @@ public class BatchJmsEndpointListener implements MessageListener {
     
     /*
      * Process partition message
-     * 
+     *
      * @param topLevelExecutionId
-     * 
+     *
      */
     private void handleStartPartitionRequest(BatchJmsMessage batchJmsMessage) {
         Exception savedException = null;
          StartPartitionPayload payload = null;
         PartitionReplyQueueJms partitionReplyQueue = null;
         try {
-            
-            payload  = batchJmsMessage.getStartPartitionPayload();
-            PartitionPlanConfig config = payload.getPartitionPlanConfig();
-            long jobExecutionId = config.getTopLevelExecutionId();
-            
-            byte[] securityContext = payload.getSecurityContext();
-            // push the security context on this request because batch operation is guarded with authorization
-            WSJobRepository jobRepositoryProxy = createContextualProxy(securityContext, getWSJobRepositoryInstance(), WSJobRepository.class);
-            BatchInternalDispatcher dispatcherProxy = createContextualProxy(securityContext, getInternalDispatcherInstance(), BatchInternalDispatcher.class);
-
+            // Validate execution ID before deserializing — gate on JMS property, no payload touch needed.
+            long jobExecutionId = batchJmsMessage.getExecutionId();
             if (!isJobExecutionMostRecent(jobExecutionId)) {
                 if(tc.isDebugEnabled()) {
                     Tr.debug(BatchJmsEndpointListener.this, tc, "Exiting since execution Id = " + jobExecutionId + " was not the newest.");
                 }
                 return;
             }
+
+            payload  = batchJmsMessage.getStartPartitionPayload();
+            PartitionPlanConfig config = payload.getPartitionPlanConfig();
+            
+            byte[] securityContext = payload.getSecurityContext();
+            // push the security context on this request because batch operation is guarded with authorization
+            WSJobRepository jobRepositoryProxy = createContextualProxy(securityContext, getWSJobRepositoryInstance(), WSJobRepository.class);
+            BatchInternalDispatcher dispatcherProxy = createContextualProxy(securityContext, getInternalDispatcherInstance(), BatchInternalDispatcher.class);
 
             RemotablePartitionKey rpKey = new RemotablePartitionKey(jobExecutionId, config.getStepName(), config.getPartitionNumber());
             WSRemotablePartitionState rpState = jobRepositoryProxy.getRemotablePartitionInternalState(rpKey);
@@ -476,10 +480,12 @@ public class BatchJmsEndpointListener implements MessageListener {
         long jobExecutionId = executionId;
         
         Exception savedException = null;
-        try {            
-            
+        // Guard: only mark FAILED if the security context bytes are valid (both proxy calls succeed).
+        boolean securityContextValid = false;
+        try {
             WSJobRepository jobRepositoryProxy = createContextualProxy(securityContext, jobRepository, WSJobRepository.class);
             BatchInternalDispatcher dispatcherProxy = createContextualProxy(securityContext, batchDispatcher, BatchInternalDispatcher.class);
+            securityContextValid = true;
             
             // NO_INSTANCE_ID means original version of the restart message was issued.
             if (instanceId == NO_INSTANCE_ID) {
@@ -549,8 +555,10 @@ public class BatchJmsEndpointListener implements MessageListener {
             if ( savedException != null) {
                 Tr.error(tc, "error.endpoint.unable.process.restart.request", new Object[] { executionId,
                         savedException.getCause() != null ? savedException.getCause() : savedException });
-                
-                markInstanceExecutionFailed( instanceId, executionId, correlationId );
+                // Only mark FAILED if security context was valid — prevents forged-context DB corruption.
+                if (securityContextValid) {
+                    markInstanceExecutionFailed( instanceId, executionId, correlationId );
+                }
             }
         }
     }
@@ -568,12 +576,14 @@ public class BatchJmsEndpointListener implements MessageListener {
         WSJobRepository jobRepository = getWSJobRepositoryInstance();
         BatchInternalDispatcher batchDispatcher = getInternalDispatcherInstance();
         String correlationId = this.getCorrelationId(jobParameters);
+        // Guard: only mark FAILED if the security context bytes are valid (both proxy calls succeed).
+        boolean securityContextValid = false;
         
         try {
-            
             // push the security context on this request because batch operation is guarded with authorization
             WSJobRepository jobRepositoryProxy = createContextualProxy(securityContext, jobRepository, WSJobRepository.class);
-            BatchInternalDispatcher dispatcherProxy = createContextualProxy(securityContext, batchDispatcher, BatchInternalDispatcher.class);          
+            BatchInternalDispatcher dispatcherProxy = createContextualProxy(securityContext, batchDispatcher, BatchInternalDispatcher.class);
+            securityContextValid = true;
             
             if (!isJobExecutionMostRecent(executionId)) {
                 return;
@@ -637,8 +647,10 @@ public class BatchJmsEndpointListener implements MessageListener {
             if ( savedException != null) {
                 Tr.error(tc, "error.endpoint.unable.process.start.request", new Object[] { instanceId,
                         savedException.getCause() != null ? savedException.getCause() : savedException });
-                
-                markInstanceExecutionFailed( instanceId, executionId, correlationId );
+                // Only mark FAILED if security context was valid — prevents forged-context DB corruption.
+                if (securityContextValid) {
+                    markInstanceExecutionFailed( instanceId, executionId, correlationId );
+                }
             }
         }
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import java.util.Collection;
 
 import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.saml.error.SamlException;
-import com.ibm.ws.security.saml.sso20.internal.utils.UnsolicitedResponseCache;
+import com.ibm.ws.security.saml.sso20.internal.utils.SamlResponseReplayCache;
 import com.ibm.ws.webcontainer.security.WebProviderAuthenticatorHelper;
 
 public interface SsoSamlService {
@@ -43,7 +43,7 @@ public interface SsoSamlService {
 
     public Cache getAcsCookieCache(String providerId);
 
-    public UnsolicitedResponseCache getUnsolicitedResponseCache(String providerId);
+    public SamlResponseReplayCache getSamlResponseReplayCache(String providerId);
 
     public WebProviderAuthenticatorHelper getAuthHelper();
 

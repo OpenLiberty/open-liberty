@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2025 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -509,6 +509,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             _srtRequestHelper._characterEncoding = arg0;
         }
         else{
+            if (arg0.length() > 100 )
+                arg0 = arg0.substring(0, 100);
+            
             String msg = nls.getFormattedMessage("unsupported.request.encoding.[{0}]", new Object[] { arg0 }, "Unsupported encoding specified --> " + arg0);
             throw new UnsupportedEncodingException(msg);
         }

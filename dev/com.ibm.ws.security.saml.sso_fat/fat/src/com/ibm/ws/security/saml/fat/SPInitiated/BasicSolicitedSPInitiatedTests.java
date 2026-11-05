@@ -144,7 +144,64 @@ public class BasicSolicitedSPInitiatedTests extends BasicSAMLTests {
         genericSAML(_testName, webClient, updatedTestSettings, SAMLConstants.SOLICITED_SP_INITIATED_FLOW, expectations);
 
     }
+    /**
+    * Explicit FAT test for SAML assertion replay cache (CWWKS5082E) in the SP-initiated flow.
+    * The SP-initiated flow uses a WASInitialRequest_* cookie as a fallback when the in-memory relay state
+    * cache entry is already consumed. An attacker who captures both the SAMLResponse and that cookie from
+    * a completed login can replay the request. SamlResponseReplayCache in SolicitedHandler is the fix.
+    * This test verifies that guard works end-to-end:
+    *  1. Run SP-initiated flow through IdP login — save the IDP response page and capture the
+    *     WASInitialRequest_* cookie into an attacker client before ACS consumes it.
+    *  2. Submit the legitimate ACS POST — must succeed; assertion ID is stored in SamlResponseReplayCache.
+    *  3. Attacker replays the same SAMLResponse with the captured cookie — must be rejected with CWWKS5082E.
+    */
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
+    @Test
+    public void basicSolicitedSPInitiatedTests_replayAttack_WASInitialRequestCookie_UseAsFallback() throws Exception {
 
+        WebClient victimClient = getAndSaveWebClient();
+
+        SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
+        updatedTestSettings.updatePartnerInSettings("sp1", true);
+
+        // Step 1: Execute SP-initiated flow through IdP login to obtain SAMLResponse page
+        Object idpResponsePage = genericSAML(_testName, victimClient, updatedTestSettings,
+                                             justGetSAMLToken,
+                                             helpers.setDefaultGoodSAMLExpectations(flowType, updatedTestSettings));
+
+        // Step 2: Capture WASInitialRequest_* cookie into attacker client before ACS consumes it.
+        // Exclude the IdP session cookie so the attacker does not inherit the victim's IdP session.
+        WebClient attackerClient = getAndSaveWebClient();
+        helpers.addAllCookiesExcept(attackerClient,
+                                    helpers.extractAllCookiesExcept(victimClient, SAMLConstants.IDP_SESSION_COOKIE_NAME),
+                                    null);
+
+        // Step 3: Victim submits legitimate ACS POST — consumes in-memory relay state and records
+        // the assertion ID in SamlResponseReplayCache. Only validate the ACS response itself.
+        List<validationData> firstExpectations = vData.addSuccessStatusCodes();
+        firstExpectations = vData.addExpectation(firstExpectations,
+                                                 SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE,
+                                                 SAMLConstants.RESPONSE_TITLE,
+                                                 SAMLConstants.STRING_CONTAINS,
+                                                 "Did not land on the application after legitimate ACS submission.",
+                                                 null,
+                                                 SAMLConstants.APP1_TITLE);
+        helpers.invokeACSWithSAMLResponse(_testName, victimClient, idpResponsePage,
+                                          updatedTestSettings, firstExpectations);
+
+        // Step 4: Attacker replays the captured SAMLResponse to ACS with the captured cookie.
+        // then SolicitedHandler's SamlResponseReplayCache detects assertion reuse and rejects with CWWKS5082E.
+        List<validationData> replayExpectations = msgUtils.addForbiddenExpectation(SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_KEEPING_COOKIES, null);
+        replayExpectations = helpers.addMessageExpectation(testSAMLServer, replayExpectations,
+                                                           SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_KEEPING_COOKIES,
+                                                           SAMLConstants.SAML_MESSAGES_LOG,
+                                                           SAMLConstants.STRING_CONTAINS,
+                                                           "Did not receive CWWKS5082E replay attack failure for SP-initiated flow.",
+                                                           SAMLMessageConstants.CWWKS5082E_ASSERTION_ALREADY_PROCESSED);
+        helpers.invokeACSWithSAMLResponse(_testName, attackerClient, idpResponsePage,
+                                          updatedTestSettings, replayExpectations,
+                                          SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE_KEEPING_COOKIES, true);
+    }
     @Mode(TestMode.LITE)
     @Test
     public void basicSolicitedSPInitiatedTests_validateInitialRequestStatusCode() throws Exception {

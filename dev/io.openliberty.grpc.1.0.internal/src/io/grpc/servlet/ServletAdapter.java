@@ -148,6 +148,9 @@ public final class ServletAdapter {
 
 		boolean libertyAuth = GrpcServerComponent.doServletAuth(req, resp, method);
 
+		// Store the auth key for request cleanup when finished
+		String libertyAuthKey = String.valueOf(req.hashCode());
+
 		AsyncContext asyncCtx = req.startAsync(req, resp);
 		ServletRequest asyncRq = asyncCtx.getRequest();
 
@@ -155,7 +158,7 @@ public final class ServletAdapter {
 			logger.log(FINE, "Liberty inbound gRPC request path translated to {0}", method);
 		}
 
-		Metadata headers = getHeaders(req, libertyAuth);
+		Metadata headers = getHeaders(req, libertyAuthKey, libertyAuth);
 
 		if (logger.isLoggable(FINEST)) {
 			logger.log(FINEST, "[{0}] method: {1}", new Object[] { logId, method });
@@ -181,7 +184,7 @@ public final class ServletAdapter {
 
 		asyncRq.getInputStream().setReadListener(new GrpcReadListener(stream, asyncCtx, asyncRq, logId));
 
-		asyncCtx.addListener(new GrpcAsycListener(stream, logId));
+		asyncCtx.addListener(new GrpcAsycListener(stream, logId, libertyAuthKey));
 
 		if (logger.isLoggable(FINEST)) {
 			logger.log(FINE, "[{0}] the listeners set on async request {1}", new Object[] { logId, asyncRq});
@@ -195,7 +198,7 @@ public final class ServletAdapter {
 // This method must use Enumeration and its members, since that is the only way to read headers
 // from the servlet api.
 @SuppressWarnings("JdkObsolete")
-  private static Metadata getHeaders(HttpServletRequest req, boolean libertyAuth) {
+  private static Metadata getHeaders(HttpServletRequest req, String libertyAuthKey, boolean libertyAuth) {
     Enumeration<String> headerNames = req.getHeaderNames();
     checkNotNull(
         headerNames, "Servlet container does not allow HttpServletRequest.getHeaderNames()");
@@ -219,7 +222,7 @@ public final class ServletAdapter {
     }
 
     // liberty change: add result of authorization to headers
-    GrpcServerSecurity.addLibertyAuthHeader(byteArrays, req, libertyAuth);
+    GrpcServerSecurity.addLibertyAuthHeader(byteArrays, libertyAuthKey, libertyAuth);
 
     return InternalMetadata.newMetadata(byteArrays.toArray(new byte[][]{}));
   }
@@ -243,14 +246,22 @@ public final class ServletAdapter {
   private static final class GrpcAsycListener implements AsyncListener {
     final InternalLogId logId;
     final ServletServerStream stream;
+    final String libertyAuthKey;
 
-    GrpcAsycListener(ServletServerStream stream, InternalLogId logId) {
+    GrpcAsycListener(ServletServerStream stream, InternalLogId logId, String libertyAuthKey) {
       this.stream = stream;
       this.logId = logId;
+      this.libertyAuthKey = libertyAuthKey;
     }
 
     @Override
-    public void onComplete(AsyncEvent event) {}
+    public void onComplete(AsyncEvent event) {
+      // Liberty check to run clean up on finished request
+      if (logger.isLoggable(FINEST)) {
+        logger.log(FINE, String.format("[{%s}] Complete, running Liberty clean up logic.", logId));
+      }
+      GrpcServerSecurity.removeAuthEntry(libertyAuthKey);
+    }
 
     @Override
     public void onTimeout(AsyncEvent event) {

@@ -134,7 +134,7 @@ public class InitialRequestUtil {
 
         HttpRequestInfo httprequestinfo = null;
         if (ir.getRequestUrlWithEncodedQueryString() != null) {
-            httprequestinfo = new HttpRequestInfo(ir.getRequestUrl(), ir.getRequestUrlWithEncodedQueryString(), ir.getMethod(), ir.getInResponseToId(), ir.getFormLogoutExitPage(), ir.getPostParamsMap());
+            httprequestinfo = new HttpRequestInfo(ir.getRequestUrl(), ir.getRequestUrlWithEncodedQueryString(), ir.getMethod(), ir.getInResponseToId(), ir.getFormLogoutExitPage(), ir.getPostParamsMap(), ir.getBirthTimeMillis());
         }
         return httprequestinfo;
 
@@ -248,7 +248,7 @@ public class InitialRequestUtil {
     private InitialRequest createInitialRequestFromHttpRequestInfo(HttpServletRequest req,  HttpRequestInfo requestInfo) throws SamlException {
        InitialRequest ir = null;
        if (requestInfo != null) {
-           ir = new InitialRequest(req, requestInfo.getReqUrl(), requestInfo.getRequestUrl(), req.getMethod(), requestInfo.getInResponseToId(), requestInfo.getFormLogoutExitPage(), (HashMap) requestInfo.getSavedPostParams());
+           ir = new InitialRequest(req, requestInfo.getReqUrl(), requestInfo.getRequestUrl(), req.getMethod(), requestInfo.getInResponseToId(), requestInfo.getFormLogoutExitPage(), (HashMap) requestInfo.getSavedPostParams(), requestInfo.getBirthTime().getMillis());
        }
        return ir;
     }
