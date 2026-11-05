@@ -1326,7 +1326,13 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             // endpoint will no longer be accepted (CWWKO0220I: TCP Channel ***(-ssl) has stopped listening for
             // requests on host ****  (IPv6) port ****.).
             processHttpChainWork(false, true);
-            
+
+            if (useNetty) {
+                // NettyChain.stop() returns while the server channel is still closing. Wait for STOPPED so the
+                // port is really released and a resume that follows immediately does not find the chain STOPPING.
+                nettyChain.awaitStopped();
+                nettySecureChain.awaitStopped();
+            }
 
             // Check the state of the HTTP chains. The expectation is that the HTTP chains' states are NOT STARTED
             // (UNITIALIZED, DESTROYED, QUIESCED or STOPPED).
@@ -1365,6 +1371,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Chain work processed, verifying states");
             }
+            // The Netty bind completes asynchronously; wait for the result before checking states.
+            nettyChain.awaitBindResult();
+            nettySecureChain.awaitBindResult();
             logChainStates();
             verifyResumedChainStates();
 
@@ -1427,6 +1436,13 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             }
             return;
         }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Chain states invalid after resume - HTTP: " + ChainState.printState(httpChainState)
+                               + ", HTTPS: " + ChainState.printState(httpsChainState));
+        }
+        throw new PauseableComponentException("The request to resume HTTP endpoint " + name + " did not complete successfully. HTTPChain: " + httpChain.toString()
+                                              + ". HTTPSChain: " + httpsChain.toString());
     }
 
 

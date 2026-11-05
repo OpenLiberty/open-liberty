@@ -54,6 +54,9 @@ public class NettyChain extends AbstractHttpChain {
     private final AtomicReference<ChainState> state = new AtomicReference<>(ChainState.UNINITIALIZED);
 
     private volatile boolean enabled = false;
+    /** Guarded by this. A config change arrived while the bind was in flight (STARTING). */
+    private boolean pendingUpdate = false;
+    private String pendingResolvedHostName;
     private final Object stopLock = new Object();
 
     /**
@@ -167,6 +170,44 @@ public class NettyChain extends AbstractHttpChain {
         }
     }
 
+    /**
+     * Block until an in-progress {@link #stop()} has finished (the chain has left STOPPING), or the
+     * wait expires.  Returns immediately if the chain is not STOPPING.
+     *
+     * stop() returns while the closeFuture listener is still to run on the event loop; that listener
+     * moves the chain to STOPPED.  Callers that must not return before the chain is stopped, such as
+     * HttpEndpointImpl.pause(), call this so a quick resume does not find the chain still STOPPING.
+     * This mirrors HttpChain.stop() in the channel framework, which waits for the stop notification
+     * for the default chain quiesce timeout (HttpChain.StopWait).
+     * Deliberately not synchronized on this chain: the closeFuture listener only needs stopLock.
+     *
+     * The state is not changed on timeout.
+     */
+    public void awaitStopped() {
+        long timeoutMs = nettyFramework.getDefaultChainQuiesceTimeout();
+        long deadline = System.currentTimeMillis() + timeoutMs;
+        synchronized (stopLock) {
+            while (state.get() == ChainState.STOPPING) {
+                long remaining = deadline - System.currentTimeMillis();
+                if (remaining <= 0) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Timed out after " + timeoutMs + "ms waiting for chain to stop on " + endpointName + ", state=" + state.get());
+                    }
+                    return;
+                }
+                try {
+                    stopLock.wait(remaining);
+                } catch (InterruptedException e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Interrupted while waiting for chain to stop on " + endpointName);
+                    }
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+        }
+    }
+
     @Override
     public synchronized void update(String resolvedHostName) {
 
@@ -181,6 +222,7 @@ public class NettyChain extends AbstractHttpChain {
             return;
         }
 
+        pendingUpdate = false;
         final ActiveConfiguration oldConfig = currentConfig;
         final ActiveConfiguration newConfig = new ActiveConfiguration(isHttps(), getOwner().getTcpOptions(), isHttps() ? getOwner().getSslOptions() : null, getOwner().getHttpOptions(), getOwner().getRemoteIpConfig(), getOwner().getCompressionConfig(), getOwner().getSamesiteConfig(), getOwner().getHeadersConfig(), getOwner().getEndpointOptions(), resolvedHostName);
 
@@ -200,8 +242,31 @@ public class NettyChain extends AbstractHttpChain {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "This configuration differs and should cause an update ");
                 }
+                ChainState currentState = state.get();
+                // Defer only when a bind is really in flight: serverChannel is set and
+                // channelFutureHandler() will be called.  If STARTING with no serverChannel
+                // (startInbound returned null, e.g. framework stopping), no callback will
+                // ever replay the change, so fall through to the normal path.
+                if (currentState == ChainState.STARTING && serverChannel != null) {
+                    // A deferred bind (initial startup path) is running on the Liberty
+                    // executor thread inside runWhenServerStarted.  That thread holds no
+                    // lock on NettyChain and will call channelFutureHandler() when it
+                    // finishes, transitioning state to STARTED or STOPPED.
+                    // Calling stopAndWait() here would fire notifyStopped() without a
+                    // matching notifyStarted(), spuriously removing all web apps from
+                    // the virtual host.  Skip the stop and leave currentConfig untouched
+                    // (it describes the channel being bound).  Remember the request so
+                    // channelFutureHandler() re-runs update() once the bind resolves.
+                    pendingUpdate = true;
+                    pendingResolvedHostName = resolvedHostName;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Deferred bind in progress (STARTING), deferring config change on " + endpointName);
+                        Tr.exit(this, tc, "Config change deferred until bind resolves for " + endpointName);
+                    }
+                    return;
+                }
                 currentConfig = newConfig;
-                if (state.get() != ChainState.UNINITIALIZED) {
+                if (currentState != ChainState.UNINITIALIZED) {
                     stopAndWait();
                 }
             }
@@ -273,7 +338,81 @@ public class NettyChain extends AbstractHttpChain {
 
     }
 
+    /**
+     * Block until an in-flight bind started by {@link #startNettyChannel()} reaches a terminal
+     * state (STARTED or STOPPED), or the bind timeout expires.  Returns immediately if the chain
+     * is not STARTING.
+     *
+     * startNettyChannel() returns while the bind is still pending (the result arrives on
+     * channelFutureHandler()), so callers that must verify the final chain state, such as
+     * HttpEndpointImpl.resume(), call this first.  It is deliberately not folded into
+     * startNettyChannel() so config updates never block on the bind.
+     *
+     * The state is not changed on timeout: the bind may still complete later, and forcing STOPPED
+     * would make channelFutureHandler() shut that channel down.  The caller sees the chain still
+     * STARTING and treats it as a failure.
+     */
+    public synchronized void awaitBindResult() {
+        if (state.get() != ChainState.STARTING) {
+            return;
+        }
+        long timeoutMs = getBindTimeoutMs();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Waiting up to " + timeoutMs + "ms for bind result on " + endpointName);
+        }
+        // Start the clock after the trace so tracing cost never eats into the timeout.
+        long deadline = System.currentTimeMillis() + timeoutMs;
+        while (state.get() == ChainState.STARTING) {
+            long remaining = deadline - System.currentTimeMillis();
+            if (remaining <= 0) {
+                // Traced only after the wait has expired, so it cannot shorten the timeout.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Channel ch = serverChannel;
+                    Tr.debug(this, tc, "Timed out after " + timeoutMs + "ms waiting for bind result on " + endpointName
+                                       + ", state=" + state.get()
+                                       + ", serverChannel=" + (ch == null ? "null" : (ch.isOpen() ? "open" : "closed") + "/" + (ch.isActive() ? "active" : "inactive"))
+                                       + ", pendingUpdate=" + pendingUpdate);
+                }
+                return;
+            }
+            try {
+                // Releases this monitor so channelFutureHandler() can record the result.
+                wait(remaining);
+            } catch (InterruptedException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Interrupted while waiting for bind result on " + endpointName);
+                }
+                Thread.currentThread().interrupt();
+                return;
+            }
+        }
+    }
+
+    /**
+     * The bind retries once per second, portOpenRetries times after the first attempt, so allow
+     * (portOpenRetries + 1) seconds.
+     */
+    private long getBindTimeoutMs() {
+        int portOpenRetries = 0;
+        Object retries = owner.getTcpOptions().get("portOpenRetries");
+        if (retries instanceof Integer) {
+            portOpenRetries = (Integer) retries;
+        } else if (retries instanceof String) {
+            try {
+                portOpenRetries = Integer.parseInt((String) retries);
+            } catch (NumberFormatException ignored) {
+                // use the default of 0
+            }
+        }
+        return (portOpenRetries + 1L) * 1000L;
+    }
+
     private void channelFutureHandler(ChannelFuture future) {
+        // Entry trace sits before the monitor so a handler blocked on the NettyChain lock is still visible.
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "channelFutureHandler invoked for " + endpointName + ", state=" + state.get()
+                               + ", success=" + future.isSuccess());
+        }
         if (state.get() == ChainState.STOPPING || state.get() == ChainState.STOPPED) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Chain: " + endpointName + ", Current state: " + state.get() + ", is not starting so will not notify any virtual hosts and will shutdown the channel if active");
@@ -324,6 +463,16 @@ public class NettyChain extends AbstractHttpChain {
             //quiesce action required at this time
             nettyFramework.registerEndpointQuiesce(future.channel(), QuiesceStrategy.NO_OP.getTask());
             notifyAll();
+
+            // A config change arrived while this bind was in flight (see update()).  The state is
+            // now STARTED or STOPPED, so replay it to restart the chain with the new configuration.
+            if (pendingUpdate) {
+                pendingUpdate = false;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Bind resolved, replaying deferred config change on " + endpointName);
+                }
+                update(pendingResolvedHostName);
+            }
         }
     }
 
