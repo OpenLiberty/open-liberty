@@ -1,0 +1,79 @@
+<server description="com.ibm.ws.security.audit.fat.config">
+
+	<featureManager>
+		<feature>appSecurity-2.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>audit-1.0</feature>
+	</featureManager>
+
+	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+	<auditFileHandler 
+		 encrypt="false"
+         encryptAlias="enccert2"
+         encryptKeyStoreRef="auditEncKeyStore"
+		 sign="false"
+         signingAlias="auditsigning"
+         signingKeyStoreRef="auditSignKeyStore">
+        <events name="AuditEvent_1" eventName="SECURITY_AUTHN" outcome="SUCCESS"/>    
+	</auditFileHandler>
+	
+	    <!-- pwd: Liberty, expires 9/2/2037 -->
+    <keyStore
+         id="auditSignKeyStore"
+         password="Liberty"
+         location="${server.config.dir}/resources/security/AuditSigningKeyStore.jks"
+         type="JKS" />
+         
+    <keyStore
+         id="auditEncKeyStore"
+         password="{xor}EzY9Oi0rJg=="
+         location="${server.config.dir}/resources/security/AuditEncryptionKeyStore2.jks"
+         type="JKS" />
+
+	<basicRegistry id="basic" realm="BasicRealm">
+		<user name="user0" password="user0pwd" />
+		<user name="user1" password="user1pwd" />
+		<group name="group1">
+			<member name="user0" />
+			<member name="user1" />
+		</group>
+		<user name="user2" password="user2pwd" />
+		<group name="group2">
+			<member name="user2" />
+			<member name="user6" />
+		</group>
+		<user name="user3" password="user3pwd" />
+		<group name="group3">
+			<member name="user3" />
+		</group>
+		<user name="user4" password="user4 pwd" />
+		<group name="group4">
+			<member name="user4" />
+		</group>
+		<user name="user5" password="user5pwd " />
+		<group name="group5">
+			<member name="user5" />
+		</group>
+		<user name="user6" password="user6pwd" />
+	</basicRegistry>
+
+ 	<application type="war" id="AuditBasicAuthServlet" name="AuditBasicAuthServlet" location="AuditBasicAuthServlet.war">
+ 		<application-bnd>
+			<security-role name="audit_basic">
+				<user name="user1" />
+				<group name="group1" />
+			</security-role>	
+			<security-role name="audit_form">
+				<user name="user2" />
+				<group name="group2" />
+			</security-role>	
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<include location="../fatTestPorts.xml" />
+
+</server>
