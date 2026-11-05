@@ -885,7 +885,6 @@ public class StatefulTimeoutServlet extends FATServlet {
             StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
             bean.throwUncheckedExceptionInFAFAsyncMethod();
             assertTrue("Timed out waiting for async method to execute", latch.await(15, TimeUnit.SECONDS));
-            FATHelper.sleep(FATHelper.POST_INVOKE_DELAY);
             try {
                 bean.sync();
                 fail("Unchecked exception in fire-and-forget async method did not remove the stateful bean.");
@@ -914,7 +913,6 @@ public class StatefulTimeoutServlet extends FATServlet {
             StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
             bean.throwUncheckedExceptionInFAFAsyncRemoveMethod();
             assertTrue("Timed out waiting for async method to execute", latch.await(15, TimeUnit.SECONDS));
-            FATHelper.sleep(FATHelper.POST_INVOKE_DELAY);
             try {
                 bean.sync();
                 fail("Unchecked exception in fire-and-forget async remove method did not remove the stateful bean.");
@@ -944,7 +942,6 @@ public class StatefulTimeoutServlet extends FATServlet {
             StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
             bean.throwUncheckedExceptionInFAFAsyncRemoveWithRetainMethod();
             assertTrue("Timed out waiting for async method to execute", latch.await(15, TimeUnit.SECONDS));
-            FATHelper.sleep(FATHelper.POST_INVOKE_DELAY);
             try {
                 bean.sync();
                 fail("Unchecked exception in fire-and-forget async remove method did not remove the stateful bean.");
