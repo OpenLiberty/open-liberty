@@ -10,7 +10,11 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
+
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -18,7 +22,6 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -31,6 +34,7 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
 
 @CheckpointTest(alwaysRun = true)
 @RunWith(FATRunner.class)
@@ -77,25 +81,8 @@ public class ConfigurableMcpPathTest extends FATServletClient {
 
     @Test
     public void testCustomEndpointPath() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "echo",
-                            "arguments": {
-                              "input": "Hello"
-                            }
-                          }
-                        }
-                        """;
+        ToolResponse response = client.callTool("echo", Map.of("input", "Hello"));
 
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(response, toolResponse().withTextContent("Hello").withNoStructuredContent());
     }
 }

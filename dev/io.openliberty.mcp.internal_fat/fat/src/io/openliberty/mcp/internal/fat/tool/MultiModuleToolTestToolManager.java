@@ -10,6 +10,10 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.INVALID_PARAMS;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcResponseMatcher.jsonRpcResponse;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -21,8 +25,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
@@ -72,9 +74,9 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
 
         // Converter test modules
         WebArchive customConverterModule = ShrinkWrap.create(WebArchive.class, "customConverterModule.war")
-                                                .addPackage(CustomConverterModuleTools.class.getPackage());
+                                                     .addPackage(CustomConverterModuleTools.class.getPackage());
         WebArchive sharedConvertersModule = ShrinkWrap.create(WebArchive.class, "sharedConvertersModule.war")
-                                                .addPackage(SharedConvertersModuleTools.class.getPackage());
+                                                      .addPackage(SharedConvertersModuleTools.class.getPackage());
 
         // 1) EarToolBean cannot share its tools across WARs (they need module context)
         // 2) EarToolBean also has a Person Encoder with a high priority (5000), but it correctly is never used.
@@ -107,52 +109,16 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
         serverLifecycle.undeployDropinApp(EAR_NAME + ".ear");
     }
 
-    private static String toolCallRequest(String id, String toolName) {
-        return String.format("""
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "%s",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "%s"
-                          }
-                        }
-                        """, id, toolName);
-    }
-
-    private static String textResponse(String id, String text) {
-        return String.format("""
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "%s",
-                          "result": {
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "%s"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """, id, text);
-    }
-
-    private static String errorResponse(String id, String toolName) {
-        return String.format("""
-                        {"id":"%s","jsonrpc":"2.0","error":{"code":-32602,"data":["Method %s not found"],"message":"Invalid params"}}
-                        """, id, toolName);
-    }
-
     // High-level assertion helpers that combine call + assertion
-    private static void assertToolReturnsText(McpClient client, String id, String toolName, String expectedText) throws Exception {
-        String response = client.callMCP(toolCallRequest(id, toolName));
-        JSONAssert.assertEquals(textResponse(id, expectedText), response, JSONCompareMode.STRICT);
+    private static void assertToolReturnsText(McpClient client, String toolName, String expectedText) throws Exception {
+        assertThat(client.callTool(toolName), toolResponse().withTextContent(expectedText).withNoStructuredContent());
     }
 
-    private static void assertToolNotFound(McpClient client, String id, String toolName) throws Exception {
-        String response = client.callMCP(toolCallRequest(id, toolName));
-        JSONAssert.assertEquals(errorResponse(id, toolName), response, JSONCompareMode.STRICT);
+    private static void assertToolNotFound(McpClient client, String toolName) throws Exception {
+        assertThat(client.call(client.toolCallRequest(toolName)),
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS)
+                                    .withErrorMessage("Invalid params")
+                                    .withErrorDataItems("Method " + toolName + " not found"));
     }
 
     /**
@@ -179,10 +145,10 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testAllWarTools() throws Exception {
-        assertToolReturnsText(encoderModuleMCPClient, "1", "methodTool", "EncoderModule");
-        assertToolReturnsText(encoderModuleMCPClient, "2", "apiTool", "EncoderModule");
-        assertToolReturnsText(defaultEncoderModuleMCPClient, "3", "methodTool", "DefaultEncoderModule");
-        assertToolReturnsText(defaultEncoderModuleMCPClient, "4", "apiTool", "DefaultEncoderModule");
+        assertToolReturnsText(encoderModuleMCPClient, "methodTool", "EncoderModule");
+        assertToolReturnsText(encoderModuleMCPClient, "apiTool", "EncoderModule");
+        assertToolReturnsText(defaultEncoderModuleMCPClient, "methodTool", "DefaultEncoderModule");
+        assertToolReturnsText(defaultEncoderModuleMCPClient, "apiTool", "DefaultEncoderModule");
     }
 
     /**
@@ -208,8 +174,8 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testEJBJar() throws Exception {
-        assertToolNotFound(encoderModuleMCPClient, "1", "ejbJarMethodTool");
-        assertToolNotFound(encoderModuleMCPClient, "2", "ejbJarApiTool");
+        assertToolNotFound(encoderModuleMCPClient, "ejbJarMethodTool");
+        assertToolNotFound(encoderModuleMCPClient, "ejbJarApiTool");
     }
 
     /**
@@ -220,9 +186,9 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testSharedEncoderAccessibleToAllModules() throws Exception {
-        String expected = "{\\\"age\\\":32,\\\"fistName\\\":\\\"Jon\\\",\\\"lastName\\\":\\\"Encoded by PersonContentEncoder\\\"}";
-        assertToolReturnsText(defaultEncoderModuleMCPClient, "1", "testContentEncoderSharing", expected);
-        assertToolReturnsText(encoderModuleMCPClient, "1", "testContentEncoderSharing", expected);
+        String expected = "{\"age\":32,\"fistName\":\"Jon\",\"lastName\":\"Encoded by PersonContentEncoder\"}";
+        assertToolReturnsText(defaultEncoderModuleMCPClient, "testContentEncoderSharing", expected);
+        assertToolReturnsText(encoderModuleMCPClient, "testContentEncoderSharing", expected);
     }
 
     /**
@@ -247,10 +213,10 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testModuleSpecificEncoderIsolation() throws Exception {
-        assertToolReturnsText(encoderModuleMCPClient, "2", "testWar1SpecificEncoder",
-                              "{\\\"employees\\\":350000,\\\"industry\\\":\\\"Technology\\\",\\\"name\\\":\\\"IBM (encoded by War1)\\\"}");
-        assertToolReturnsText(defaultEncoderModuleMCPClient, "3", "testWar1SpecificEncoderIsolation",
-                              "{\\\"employees\\\":350000,\\\"industry\\\":\\\"Technology\\\",\\\"name\\\":\\\"IBM\\\"}");
+        assertToolReturnsText(encoderModuleMCPClient, "testWar1SpecificEncoder",
+                              "{\"employees\":350000,\"industry\":\"Technology\",\"name\":\"IBM (encoded by War1)\"}");
+        assertToolReturnsText(defaultEncoderModuleMCPClient, "testWar1SpecificEncoderIsolation",
+                              "{\"employees\":350000,\"industry\":\"Technology\",\"name\":\"IBM\"}");
     }
 
     /**
@@ -259,12 +225,12 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testSharingOfSessionIDs() throws Exception {
-        assertToolReturnsText(encoderModuleMCPClient, "1", "methodTool", "EncoderModule");
+        assertToolReturnsText(encoderModuleMCPClient, "methodTool", "EncoderModule");
 
         boolean exceptionThrown = false;
         try {
-            defaultEncoderModuleMCPClient.callMCPRaw(toolCallRequest("1", "methodTool"))
-                    .sessionId(encoderModuleMCPClient.getSessionId()).run();
+            defaultEncoderModuleMCPClient.callMCPRaw(defaultEncoderModuleMCPClient.toolCallRequest("methodTool").toString())
+                                         .sessionId(encoderModuleMCPClient.getSessionId()).run();
         } catch (Exception e) {
             exceptionThrown = true;
             assertTrue(e.getMessage().contains("Invalid or Expired Session Id"));
@@ -277,10 +243,10 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testBuiltInConvertersAccessibleToAllModules() throws Exception {
-        assertToolReturnsText(customConverterModuleClient, "1", "testBuiltInStringConverter", "Jupiter");
-        assertToolReturnsText(customConverterModuleClient, "2", "testBuiltInIntConverter", "2025");
-        assertToolReturnsText(sharedConvertersModuleClient, "3", "testBuiltInStringConverter", "Mars");
-        assertToolReturnsText(sharedConvertersModuleClient, "4", "testBuiltInIntConverter", "2026");
+        assertToolReturnsText(customConverterModuleClient, "testBuiltInStringConverter", "Jupiter");
+        assertToolReturnsText(customConverterModuleClient, "testBuiltInIntConverter", "2025");
+        assertToolReturnsText(sharedConvertersModuleClient, "testBuiltInStringConverter", "Mars");
+        assertToolReturnsText(sharedConvertersModuleClient, "testBuiltInIntConverter", "2026");
     }
 
     /**
@@ -288,8 +254,8 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testSharedConverterAccessibleToAllModules() throws Exception {
-        assertToolReturnsText(customConverterModuleClient, "1", "testPersonConverter", "{\\\"age\\\":30,\\\"name\\\":\\\"John\\\"}");
-        assertToolReturnsText(sharedConvertersModuleClient, "2", "testPersonConverter", "{\\\"age\\\":25,\\\"name\\\":\\\"Jane\\\"}");
+        assertToolReturnsText(customConverterModuleClient, "testPersonConverter", "{\"age\":30,\"name\":\"John\"}");
+        assertToolReturnsText(sharedConvertersModuleClient, "testPersonConverter", "{\"age\":25,\"name\":\"Jane\"}");
     }
 
     /**
@@ -297,9 +263,9 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testModuleConverterOverridesSharedConverter() throws Exception {
-        assertToolReturnsText(customConverterModuleClient, "1", "testCityConverter",
-                              "{\\\"country\\\":\\\"UK\\\",\\\"name\\\":\\\"Module1-London\\\",\\\"population\\\":9000000}");
-        assertToolReturnsText(sharedConvertersModuleClient, "2", "testCityConverter",
-                              "{\\\"country\\\":\\\"France\\\",\\\"name\\\":\\\"Paris\\\",\\\"population\\\":2000000}");
+        assertToolReturnsText(customConverterModuleClient, "testCityConverter",
+                              "{\"country\":\"UK\",\"name\":\"Module1-London\",\"population\":9000000}");
+        assertToolReturnsText(sharedConvertersModuleClient, "testCityConverter",
+                              "{\"country\":\"France\",\"name\":\"Paris\",\"population\":2000000}");
     }
 }
