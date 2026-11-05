@@ -30,6 +30,14 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- arquillian-liberty-managed-jakarta's parent pom pulls in arquillian-container-spi 1.7.0.Final, which is not generic.
+                 arquillian-container-impl-base 1.10.x expects the generic Container<T> from 1.10.x, otherwise Arquillian fails with
+                 MalformedParameterizedTypeException: "Could not create Container websphere". Keep in step with arquillian.version -->
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-container-spi</artifactId>
+                <version>${arquillian.version}</version>
+            </dependency>
             <!-- Needed for ZOS. Defines the version of this artifact that arquillian-liberty-managed should use -->
             <!-- This doesn't exist for JEE 9 so leaving it out for now, will have to see what happens on ZOS -->
             <!-- <dependency>

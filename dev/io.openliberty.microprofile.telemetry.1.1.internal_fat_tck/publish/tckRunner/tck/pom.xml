@@ -13,6 +13,8 @@
     
     <properties>
         <arquillian.version>1.10.2.Final</arquillian.version>
+        <!-- arquillian-protocol-servlet-jakarta is versioned separately from arquillian core and is not managed by arquillian-bom -->
+        <arquillian.protocol.servlet.jakarta.version>10.0.0.Final</arquillian.protocol.servlet.jakarta.version>
 		<arquillian.liberty.managed.jakarta.version>2.1.3</arquillian.liberty.managed.jakarta.version>
 		<testng.version>7.5.1</testng.version>
 		<slf4j.version>2.0.6</slf4j.version>
@@ -142,7 +144,7 @@
         <dependency>
             <groupId>org.jboss.arquillian.protocol</groupId>
             <artifactId>arquillian-protocol-servlet-jakarta</artifactId>
-            <version>${arquillian.version}</version>
+            <version>${arquillian.protocol.servlet.jakarta.version}</version>
             <scope>test</scope>
         </dependency>
         
