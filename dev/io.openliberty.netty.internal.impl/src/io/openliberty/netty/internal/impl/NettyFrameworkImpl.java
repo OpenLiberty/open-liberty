@@ -412,7 +412,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             }
             isActive = false;
             // If the system is configured to quiesce connections..
-            long timeout = serverElementConfig.getQuiesceTimeoutMillis();
+            long timeout = serverElementConfig != null ? serverElementConfig.getQuiesceTimeoutMillis() : 30000L;
 
             if (timeout > 0) {
                 if (activeChannelMap.isEmpty() && outboundConnections.isEmpty()) {
@@ -785,7 +785,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Override
     public long getDefaultChainQuiesceTimeout() {
-        return serverElementConfig.getQuiesceTimeoutMillis();
+        return serverElementConfig != null ? serverElementConfig.getQuiesceTimeoutMillis() : 30000L;
     }
 
     @Override
