@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2024 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,13 @@ package com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.web;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -876,14 +879,21 @@ public class StatefulTimeoutServlet extends FATServlet {
         if (!recLogInit)
             initRecoveryLog();
 
-        StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
-        bean.throwUncheckedExceptionInFAFAsyncMethod();
-        FATHelper.sleep(2000);
+        CountDownLatch latch = new CountDownLatch(1);
+        StatefulTimeoutAsyncBean.latch = latch;
         try {
-            bean.sync();
-            fail("Unchecked exception in fire-and-forget async method did not remove the stateful bean.");
-        } catch (NoSuchEJBException ex) {
-            svLogger.info("Caught expected NoSuchEJBException - PASS");
+            StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
+            bean.throwUncheckedExceptionInFAFAsyncMethod();
+            assertTrue("Timed out waiting for async method to execute", latch.await(15, TimeUnit.SECONDS));
+            FATHelper.sleep(FATHelper.POST_INVOKE_DELAY);
+            try {
+                bean.sync();
+                fail("Unchecked exception in fire-and-forget async method did not remove the stateful bean.");
+            } catch (NoSuchEJBException ex) {
+                svLogger.info("Caught expected NoSuchEJBException - PASS");
+            }
+        } finally {
+            StatefulTimeoutAsyncBean.latch = null;
         }
     }
 
@@ -898,14 +908,21 @@ public class StatefulTimeoutServlet extends FATServlet {
         if (!recLogInit)
             initRecoveryLog();
 
-        StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
-        bean.throwUncheckedExceptionInFAFAsyncRemoveMethod();
-        FATHelper.sleep(2000);
+        CountDownLatch latch = new CountDownLatch(1);
+        StatefulTimeoutAsyncBean.latch = latch;
         try {
-            bean.sync();
-            fail("Unchecked exception in fire-and-forget async remove method did not remove the stateful bean.");
-        } catch (NoSuchEJBException ex) {
-            svLogger.info("Caught expected NoSuchEJBException - PASS");
+            StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
+            bean.throwUncheckedExceptionInFAFAsyncRemoveMethod();
+            assertTrue("Timed out waiting for async method to execute", latch.await(15, TimeUnit.SECONDS));
+            FATHelper.sleep(FATHelper.POST_INVOKE_DELAY);
+            try {
+                bean.sync();
+                fail("Unchecked exception in fire-and-forget async remove method did not remove the stateful bean.");
+            } catch (NoSuchEJBException ex) {
+                svLogger.info("Caught expected NoSuchEJBException - PASS");
+            }
+        } finally {
+            StatefulTimeoutAsyncBean.latch = null;
         }
     }
 
@@ -921,14 +938,21 @@ public class StatefulTimeoutServlet extends FATServlet {
         if (!recLogInit)
             initRecoveryLog();
 
-        StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
-        bean.throwUncheckedExceptionInFAFAsyncRemoveWithRetainMethod();
-        FATHelper.sleep(2000);
+        CountDownLatch latch = new CountDownLatch(1);
+        StatefulTimeoutAsyncBean.latch = latch;
         try {
-            bean.sync();
-            fail("Unchecked exception in fire-and-forget async remove method did not remove the stateful bean.");
-        } catch (NoSuchEJBException ex) {
-            svLogger.info("Caught expected NoSuchEJBException - PASS");
+            StatefulTimeoutAsyncBean bean = (StatefulTimeoutAsyncBean) new InitialContext().lookup(JNDI_ASYNC);
+            bean.throwUncheckedExceptionInFAFAsyncRemoveWithRetainMethod();
+            assertTrue("Timed out waiting for async method to execute", latch.await(15, TimeUnit.SECONDS));
+            FATHelper.sleep(FATHelper.POST_INVOKE_DELAY);
+            try {
+                bean.sync();
+                fail("Unchecked exception in fire-and-forget async remove method did not remove the stateful bean.");
+            } catch (NoSuchEJBException ex) {
+                svLogger.info("Caught expected NoSuchEJBException - PASS");
+            }
+        } finally {
+            StatefulTimeoutAsyncBean.latch = null;
         }
     }
 
