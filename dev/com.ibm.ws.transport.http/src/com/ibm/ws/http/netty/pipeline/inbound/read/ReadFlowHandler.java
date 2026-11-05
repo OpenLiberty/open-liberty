@@ -238,7 +238,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
         state(context.channel()).readFlowHandlerContext = context;
         TimeoutHandler timeoutHandler = context.pipeline().get(TimeoutHandler.class);
         if (timeoutHandler != null) {
-            timeoutHandler.readFlowHandlerChanged(true);
+            timeoutHandler.readFlowHandlerChanged(context.channel(), true);
         }
         super.handlerAdded(context);
     }
@@ -247,7 +247,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
     public void handlerRemoved(ChannelHandlerContext context) throws Exception {
         TimeoutHandler timeoutHandler = context.pipeline().get(TimeoutHandler.class);
         if (timeoutHandler != null) {
-            timeoutHandler.readFlowHandlerChanged(false);
+            timeoutHandler.readFlowHandlerChanged(context.channel(), false);
         }
         super.handlerRemoved(context);
     }
