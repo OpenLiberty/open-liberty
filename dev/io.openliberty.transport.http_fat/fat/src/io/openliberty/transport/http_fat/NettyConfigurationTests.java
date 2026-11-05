@@ -25,8 +25,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * Tests that Netty configuration options are correctly read, and that runtime
- * config changes log the expected warning.
+ * Tests that Netty configuration options and server quiesce timeout are correctly read,
+ * and that runtime config changes log the expected warning.
  */
 @RunWith(FATRunner.class)
 public class NettyConfigurationTests {
@@ -65,8 +65,9 @@ public class NettyConfigurationTests {
     }
 
     /**
-     * Verifies default Netty config values are logged at startup, then verifies
-     * custom values are picked up after a restart with netty-custom-server.xml.
+     * Verifies default Netty config values and default quiesce timeout are logged at startup,
+     * then verifies custom values (including server quiesceTimeout) are picked up after a restart
+     * with netty-custom-server.xml.
      */
     @Test
     public void testNettyConfigurationPickedUp() throws Exception {
@@ -88,6 +89,8 @@ public class NettyConfigurationTests {
                       server.waitForStringInTrace(".*scalerCycles=3.*"));
         assertNotNull("Default scalerMetricsWindowSize=0 not found",
                       server.waitForStringInTrace(".*scalerMetricsWindowSize=0.*"));
+        assertNotNull("Default quiesce timeout 30000ms not found in Netty trace",
+                      server.waitForStringInTrace(".*Default Chain Quiesce Timeout: 30000.*"));
 
         // Restart with custom config and verify all values changed.
         server.stopServer();
@@ -114,6 +117,42 @@ public class NettyConfigurationTests {
                       server.waitForStringInTrace(".*scalerMetricsWindowSize=10000.*"));
         assertNotNull("Custom useNativeIO=false not found",
                       server.waitForStringInTrace(".*useNativeIO=false.*"));
+        assertNotNull("Custom quiesce timeout 90000ms not found in Netty trace",
+                      server.waitForStringInTrace(".*Default Chain Quiesce Timeout: 90000.*"));
+    }
+
+    /**
+     * Verifies that when a quiesce timeout less than the 30-second minimum is configured
+     * on the <server> element (e.g. quiesceTimeout="15s"), Netty relies on the minimum of 30s (30000ms).
+     */
+    @Test
+    public void testNettyQuiesceTimeoutLessThanMinimum() throws Exception {
+        if (server.isStarted()) {
+            server.stopServer();
+        }
+        server.setServerConfigurationFile("netty-quiesce-min-server.xml");
+        server.startServer(NettyConfigurationTests.class.getSimpleName() + ".log", false);
+
+        assertNotNull("Minimum quiesce timeout 30000ms not found in Netty trace",
+                      server.waitForStringInTrace(".*Default Chain Quiesce Timeout: 30000.*"));
+    }
+
+    /**
+     * Verifies that when both <server quiesceTimeout> and <channelfw chainQuiesceTimeout>
+     * are configured, the <server> quiesceTimeout takes precedence for Netty and CWWKO0400I is logged.
+     */
+    @Test
+    public void testNettyQuiesceTimeoutOverridesChannelfw() throws Exception {
+        if (server.isStarted()) {
+            server.stopServer();
+        }
+        server.setServerConfigurationFile("netty-quiesce-override-server.xml");
+        server.startServer(NettyConfigurationTests.class.getSimpleName() + ".log", false);
+
+        assertNotNull("Override quiesce timeout 90000ms not found in Netty trace",
+                      server.waitForStringInTrace(".*Default Chain Quiesce Timeout: 90000.*"));
+        assertNotNull("CWWKO0400I override message not found in log",
+                      server.waitForStringInLog("CWWKO0400I"));
     }
 
     /**
@@ -122,11 +161,12 @@ public class NettyConfigurationTests {
      */
     @Test
     public void testNettyDynamicConfigWarningLogged() throws Exception {
-        // testNettyConfigurationPickedUp may have stopped the server; restart if needed.
-        if (!server.isStarted()) {
-            server.startServer(NettyConfigurationTests.class.getSimpleName() + ".log", false);
-            server.saveServerConfiguration();
+        if (server.isStarted()) {
+            server.stopServer();
         }
+        server.setServerConfigurationFile("server.xml");
+        server.startServer(NettyConfigurationTests.class.getSimpleName() + ".log", false);
+        server.saveServerConfiguration();
 
         // Switching to netty-custom-server.xml adds a <netty> element — a real change
         // from the baseline server.xml — triggering @Modified on NettyFrameworkImpl.
