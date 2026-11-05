@@ -42,8 +42,6 @@ import com.ibm.ws.logging.WsMessageRouter;
  */
 public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageRouter {
 	
-	 private static boolean isBeta;
-	
     private static final ReentrantReadWriteLock RERWLOCK = new ReentrantReadWriteLock(true);
     /**
      * Map of LogHandlerIDs to WsLogHandlers.
@@ -64,7 +62,6 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
      * CTOR, protected.
      */
     protected WsMessageRouterImpl() {
-    	isBeta = ProductInfo.getBetaEdition();
     }
 
     /**
@@ -151,30 +148,26 @@ public class WsMessageRouterImpl extends MessageRouterImpl implements WsMessageR
         	return handlersToReturn;
         }
 
-        //Beta-guard
-		if (isBeta) {
-			if (wildCardMsgIdToLogHandlerIds.size() > 0) {
-				Level msgLevelReadAsIs = parseLevel(msgId);
+		if (wildCardMsgIdToLogHandlerIds.size() > 0) {
+			Level msgLevelReadAsIs = parseLevel(msgId);
 
-				for (WildCardMessageAndLevel wmac : wildCardMsgIdToLogHandlerIds.keySet()) {
+			for (WildCardMessageAndLevel wmac : wildCardMsgIdToLogHandlerIds.keySet()) {
 
-					// IF NOT LEVEL.ALL (Default) need to check AND THEN IF NOT MATCHING - SKIP
-					Level wmacLevl = wmac.getLogLevel();
-					if (!wmacLevl.equals(Level.ALL) && !wmacLevl.equals(msgLevelReadAsIs)) {
-						continue;
-					}
+				// IF NOT LEVEL.ALL (Default) need to check AND THEN IF NOT MATCHING - SKIP
+				Level wmacLevl = wmac.getLogLevel();
+				if (!wmacLevl.equals(Level.ALL) && !wmacLevl.equals(msgLevelReadAsIs)) {
+					continue;
+				}
 
-					/*
-					 * Use temp set so as not to directly manipulate source set from
-					 * original map.
-					 */
-					if (msgId.startsWith(wmac.getWildCardMessageID())) {
-						Set<String> merged = new CopyOnWriteArraySet<String>();
-						if (handlersToReturn != null)
-							merged.addAll(handlersToReturn);
-						merged.addAll(wildCardMsgIdToLogHandlerIds.get(wmac));
-						handlersToReturn = merged;
-					}
+				/*
+				 * Use temp set so as not to directly manipulate source set from original map.
+				 */
+				if (msgId.startsWith(wmac.getWildCardMessageID())) {
+					Set<String> merged = new CopyOnWriteArraySet<String>();
+					if (handlersToReturn != null)
+						merged.addAll(handlersToReturn);
+					merged.addAll(wildCardMsgIdToLogHandlerIds.get(wmac));
+					handlersToReturn = merged;
 				}
 			}
 		}
