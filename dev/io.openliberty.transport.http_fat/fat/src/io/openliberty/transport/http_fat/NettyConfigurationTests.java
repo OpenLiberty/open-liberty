@@ -60,7 +60,7 @@ public class NettyConfigurationTests {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer("CWWKO0040W");
+            server.stopServer("CWWKO0040W", "CWWKG0111W");
         }
     }
 
@@ -93,9 +93,10 @@ public class NettyConfigurationTests {
                       server.waitForStringInTrace(".*Default Chain Quiesce Timeout: 30000.*"));
 
         // Restart with custom config and verify all values changed.
-        server.stopServer();
+        server.stopServer("CWWKO0040W", "CWWKG0111W");
         server.setServerConfigurationFile("netty-custom-server.xml");
         server.startServer(NettyConfigurationTests.class.getSimpleName() + ".log", false);
+        server.waitForDefaultHTTPEndpointStart();
 
         assertNotNull("Custom scalerMinThreads=2 not found",
                       server.waitForStringInTrace(".*scalerMinThreads=2.*"));
@@ -128,10 +129,11 @@ public class NettyConfigurationTests {
     @Test
     public void testNettyQuiesceTimeoutLessThanMinimum() throws Exception {
         if (server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKO0040W", "CWWKG0111W");
         }
         server.setServerConfigurationFile("netty-quiesce-min-server.xml");
         server.startServer(NettyConfigurationTests.class.getSimpleName() + ".log", false);
+        server.waitForDefaultHTTPEndpointStart();
 
         assertNotNull("Minimum quiesce timeout 30000ms not found in Netty trace",
                       server.waitForStringInTrace(".*Default Chain Quiesce Timeout: 30000.*"));
@@ -144,10 +146,11 @@ public class NettyConfigurationTests {
     @Test
     public void testNettyQuiesceTimeoutOverridesChannelfw() throws Exception {
         if (server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKO0040W", "CWWKG0111W");
         }
         server.setServerConfigurationFile("netty-quiesce-override-server.xml");
         server.startServer(NettyConfigurationTests.class.getSimpleName() + ".log", false);
+        server.waitForDefaultHTTPEndpointStart();
 
         assertNotNull("Override quiesce timeout 90000ms not found in Netty trace",
                       server.waitForStringInTrace(".*Default Chain Quiesce Timeout: 90000.*"));
@@ -162,10 +165,11 @@ public class NettyConfigurationTests {
     @Test
     public void testNettyDynamicConfigWarningLogged() throws Exception {
         if (server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKO0040W", "CWWKG0111W");
         }
-        server.setServerConfigurationFile("server.xml");
+        server.setServerConfigurationFile("netty-default-server.xml");
         server.startServer(NettyConfigurationTests.class.getSimpleName() + ".log", false);
+        server.waitForDefaultHTTPEndpointStart();
         server.saveServerConfiguration();
 
         // Switching to netty-custom-server.xml adds a <netty> element — a real change
