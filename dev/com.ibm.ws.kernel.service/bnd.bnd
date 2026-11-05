@@ -27,6 +27,7 @@ Bundle-Activator: com.ibm.ws.kernel.service.location.internal.Activator
 Export-Package: \
  com.ibm.websphere.kernel.server;provide:=true, \
  com.ibm.wsspi.kernel.service.condition, \
+ com.ibm.wsspi.kernel.service.jms;provide:=true, \
  com.ibm.wsspi.kernel.service.location, \
  com.ibm.wsspi.kernel.service.utils;provide:=true, \
  com.ibm.ws.kernel.service.util;provide:=true, \

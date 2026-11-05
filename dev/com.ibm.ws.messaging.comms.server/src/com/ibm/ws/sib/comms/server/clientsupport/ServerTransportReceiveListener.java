@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2013, 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -508,16 +508,7 @@ public class ServerTransportReceiveListener extends CommonServerReceiveListener 
 
                     break;
 
-                case (JFapChannelConstants.SEG_INVOKE_COMMAND):
-                    StaticCATConnection.rcvInvokeCommand(buffer, conversation, requestNumber,
-                                                         allocatedFromBufferPool, false);
-                    break;
-
-                case (JFapChannelConstants.SEG_INVOKE_COMMAND_WITH_TX):
-                    StaticCATConnection.rcvInvokeCommand(buffer, conversation, requestNumber,
-                                                         allocatedFromBufferPool, true);
-                    break;
-
+ 
                 case (JFapChannelConstants.SEG_SEND_CHUNKED_SESS_MSG):
                 case (JFapChannelConstants.SEG_SEND_CHUNKED_SESS_MSG_NOREPLY):
                     StaticCATProducer.rcvSendChunkedSessMsg(buffer, conversation, requestNumber,
@@ -800,7 +791,7 @@ public class ServerTransportReceiveListener extends CommonServerReceiveListener 
      * of the Conversation:
      * <ul>
      * <li>If we receive a segment of the following types, we will inform the dispatcher to go
-     * to all the active dispatch queues so that it is guarenteed to go behind any other
+     * to all the active dispatch queues so that it is guaranteed to go behind any other
      * data currently in the queues:
      * <ul>
      * <li>SEG_CLOSE_CONSUMER_SESSION
@@ -1018,7 +1009,6 @@ public class ServerTransportReceiveListener extends CommonServerReceiveListener 
                 case JFapChannelConstants.SEG_SEND_TO_EXCEPTION_DESTINATION:
                 case JFapChannelConstants.SEG_SEND_CHUNKED_TO_EXCEPTION_DESTINATION:
                 case JFapChannelConstants.SEG_RECEIVE_CONN_MSG:
-                case JFapChannelConstants.SEG_INVOKE_COMMAND_WITH_TX:
                     boolean requiresOptimizedTransactions =
                                     (handshakeProperties.getFapLevel() >= JFapChannelConstants.FAP_VERSION_5) &&
                                                     ((handshakeProperties.getCapabilites() & CommsConstants.CAPABILITIY_REQUIRES_OPTIMIZED_TX) != 0);

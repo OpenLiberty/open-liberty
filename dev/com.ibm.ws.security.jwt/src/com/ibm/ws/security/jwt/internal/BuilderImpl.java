@@ -214,7 +214,7 @@ public class BuilderImpl implements Builder {
         }
         // cannot set workload identity if jwt builder is invoked during checkpoint since env vars are not available
         if (!CheckpointPhase.getPhase().restored()) {
-            String msg = Tr.formatMessage(tc, "JWT_BUILDER_CHECKPOINT_NOT_SUPPORTED", new Object[] { configId });
+            String msg = Tr.formatMessage(tc, "JWT_BUILDER_API_CHECKPOINT_NOT_SUPPORTED", new Object[] { configId });
             throw new IllegalStateException(msg);
         }
         return true;
@@ -1007,7 +1007,7 @@ public class BuilderImpl implements Builder {
 
     private void putClaim(String key, Object value) throws InvalidClaimException {
         if (isWorkloadIdentityClaim(key)) {
-            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED", new Object[] { workloadIdentityClaim, configId });
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED", new Object[] { configId, workloadIdentityClaim });
             throw new InvalidClaimException(msg);
         }
         claims.put(key, value);
@@ -1015,7 +1015,7 @@ public class BuilderImpl implements Builder {
 
     private void removeClaim(String key) throws InvalidClaimException {
         if (isWorkloadIdentityClaim(key)) {
-            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED", new Object[] { workloadIdentityClaim, configId });
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED", new Object[] { configId, workloadIdentityClaim });
             throw new InvalidClaimException(msg);
         }
         claims.remove(key);
@@ -1023,7 +1023,7 @@ public class BuilderImpl implements Builder {
 
     private void putAllClaims(Map<? extends String, ? extends Object> claimsMap) throws InvalidTokenException {
         if (claimsMap.containsKey(workloadIdentityClaim)) {
-            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED", new Object[] { workloadIdentityClaim, configId });
+            String msg = Tr.formatMessage(tc, "JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED", new Object[] { configId, workloadIdentityClaim });
             throw new InvalidTokenException(msg);
         }
         claims.putAll(claimsMap);

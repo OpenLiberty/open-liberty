@@ -32,7 +32,7 @@
 
   <dataSource id="LibertyDataSource" jndiName="jdbc/LibertyDataSource">
     <jdbcDriver libraryRef="JDBCLibrary"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:libertydb" user="dbuser1" password="dbpwd1"/>
+    <properties.h2 URL="jdbc:h2:mem:libertydb;DB_CLOSE_DELAY=-1" user="dbuser1" password="dbpwd1"/>
   </dataSource>
 
   <library id="jnosql">
@@ -40,7 +40,7 @@
   </library>
   
   <library id="JDBCLibrary">
-    <fileset dir="${shared.resource.dir}/derbyJava17Plus" includes="*.jar"/>
+    <fileset dir="${shared.resource.dir}/h2" includes="*.jar"/>
   </library>
     
   <variable name="jnosql.document.database" value="${MONGO_DBNAME}"/>

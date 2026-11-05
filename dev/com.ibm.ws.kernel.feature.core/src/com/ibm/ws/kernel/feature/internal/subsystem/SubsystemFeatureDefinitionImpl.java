@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -302,7 +302,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
 
     private ProvisioningDetails verifyDetails() {
         if (mfDetails == null) {
-            throw new IllegalStateException("Method called outside of provisioining operation or without a registered service");
+            throw new IllegalStateException("Method called outside of provisioning operation or without a registered service");
         }
         return mfDetails;
     }
@@ -355,14 +355,14 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     @Override
     public Collection<HeaderElementDefinition> getHeaderElements(String header) {
         if (mfDetails == null)
-            throw new IllegalStateException("Method called outside of provisioining operation or without a registered service");
+            throw new IllegalStateException("Method called outside of provisioning operation or without a registered service");
 
         return mfDetails.getRawHeaderElements(header);
     }
 
     void setHeader(String header, String value) {
         if (mfDetails == null)
-            throw new IllegalStateException("Method called outside of provisioining operation or without a registered service");
+            throw new IllegalStateException("Method called outside of provisioning operation or without a registered service");
 
         mfDetails.setHeaderValue(header, value);
     }
@@ -389,7 +389,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     @Override
     public boolean isSuperseded() {
         if (mfDetails == null)
-            throw new IllegalStateException("Method called outside of provisioining operation or without a registered service");
+            throw new IllegalStateException("Method called outside of provisioning operation or without a registered service");
 
         return mfDetails.isSuperseded();
     }
@@ -397,7 +397,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     @Override
     public String getSupersededBy() {
         if (mfDetails == null)
-            throw new IllegalStateException("Method called outside of provisioining operation or without a registered service");
+            throw new IllegalStateException("Method called outside of provisioning operation or without a registered service");
 
         return mfDetails.getSupersededBy();
     }
@@ -409,7 +409,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
             return true;
 
         if (mfDetails == null)
-            throw new IllegalStateException("Method called outside of provisioining operation or without a registered service");
+            throw new IllegalStateException("Method called outside of provisioning operation or without a registered service");
 
         boolean isCapabilitySatisfied = true;
 
@@ -509,7 +509,7 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
     @Override
     public Collection<Bundle> getBundles() {
         if (mfDetails == null)
-            throw new IllegalStateException("Method called outside of provisioining operation or without a registered service");
+            throw new IllegalStateException("Method called outside of provisioning operation or without a registered service");
 
         Collection<Bundle> bundles = featureBundles.get();
 

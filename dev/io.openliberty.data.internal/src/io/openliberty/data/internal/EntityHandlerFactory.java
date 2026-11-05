@@ -359,7 +359,8 @@ public abstract class EntityHandlerFactory {
                                     versionAttrName, //
                                     this);
 
-                    entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).complete(entityInfo);
+                    entityInfoMap.computeIfAbsent(userEntityClass, this::newFuture) //
+                                    .complete(entityInfo);
                 } catch (Throwable x) { // Ignored FFDC
                     if (!(x instanceof DataException))
                         x = exc(DataException.class,
@@ -368,7 +369,7 @@ public abstract class EntityHandlerFactory {
                                 getClassNames(repositoryInterfaces),
                                 dataStore,
                                 x.getMessage()).initCause(x);
-                    entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture) //
+                    entityInfoMap.computeIfAbsent(userEntityClass, this::newFuture) //
                                     .completeExceptionally(x);
                 }
             }
@@ -380,7 +381,7 @@ public abstract class EntityHandlerFactory {
                                       getClassNames(missingEntityTypes),
                                       getClassNames(repositoryInterfaces));
                 for (Class<?> ec : missingEntityTypes)
-                    entityInfoMap.computeIfAbsent(ec, EntityInfo::newFuture) //
+                    entityInfoMap.computeIfAbsent(ec, this::newFuture) //
                                     .completeExceptionally(x);
             }
         }
@@ -719,6 +720,50 @@ public abstract class EntityHandlerFactory {
         return cause instanceof SQLRecoverableException ||
                cause instanceof SQLNonTransientConnectionException ||
                cause instanceof SQLTransientConnectionException;
+    }
+
+    /**
+     * Creates a completed CompletableFuture that will run dependent stages
+     * on the Liberty thread pool.
+     *
+     * @param <T>    type of result
+     * @param result the result of the CompletableFuture
+     * @return the completed CompletableFuture
+     */
+    @Trivial
+    <T> CompletableFuture<T> newCompletedFuture(T result) {
+        CompletableFuture<T> future = //
+                        provider.completionStageFactory.newIncompleteFuture();
+        future.complete(result);
+        return future;
+    }
+
+    /**
+     * Creates an exceptionally completed CompletableFuture that will
+     * run dependent stages on the Liberty thread pool.
+     *
+     * @param <T>     type of the CompletableFuture
+     * @param failure the cause Exception or Error
+     * @return the failed CompletableFuture
+     */
+    @Trivial
+    <T> CompletableFuture<T> newFailedFuture(Throwable failure) {
+        CompletableFuture<T> future = //
+                        provider.completionStageFactory.newIncompleteFuture();
+        future.completeExceptionally(failure);
+        return future;
+    }
+
+    /**
+     * Creates a CompletableFuture that will run dependent stages on the
+     * Liberty thread pool.
+     *
+     * @param entityClass
+     * @return new incomplete CompletableFuture.
+     */
+    @Trivial
+    CompletableFuture<EntityInfo> newFuture(Class<?> entityClass) {
+        return provider.completionStageFactory.newIncompleteFuture();
     }
 
     /**

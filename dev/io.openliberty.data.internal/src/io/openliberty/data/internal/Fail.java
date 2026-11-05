@@ -880,6 +880,23 @@ public class Fail {
     }
 
     /**
+     * Raises UnsupportedOperationException because the entityGraph
+     * and the jakarta.persitence.loadgraph hints value cannot point to
+     * different entity graph names on the same QueryOptions annotation.
+     *
+     * @param info query information for the repository method.
+     * @throws the UnsupportedOperationException.
+     */
+    public static UnsupportedOperationException //
+                    queryOptionsGraphConflict(QueryInfo info) {
+        throw new UnsupportedOperationException // TODO NLS
+        ("The " + info.method.getName() + " method of the " +
+         info.repositoryInterface.getName() + " repository has a" +
+         " QueryOptions annotation that configures a " + Util.LOADGRAPH +
+         " hint that conflicts with the " + "entityGraph" + " member.");
+    }
+
+    /**
      * Raises MappingException for a result that cannot be converted to the
      * return type of the repository method.
      *
