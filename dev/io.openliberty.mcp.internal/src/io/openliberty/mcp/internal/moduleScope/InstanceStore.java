@@ -12,6 +12,8 @@ package io.openliberty.mcp.internal.moduleScope;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import jakarta.enterprise.context.spi.Contextual;
 import jakarta.enterprise.context.spi.CreationalContext;
 
@@ -20,6 +22,7 @@ import jakarta.enterprise.context.spi.CreationalContext;
  */
 // Unchecked casts are safe because we ensure that the keys and values in instances map match
 @SuppressWarnings("unchecked")
+@Trivial
 class InstanceStore {
 
     /**
@@ -29,6 +32,7 @@ class InstanceStore {
      * @param instance the instance
      * @param creationalContext the creational context used to create the instance
      */
+    @Trivial
     record InstanceEntry<T>(T instance, CreationalContext<T> creationalContext) {}
 
     /**
