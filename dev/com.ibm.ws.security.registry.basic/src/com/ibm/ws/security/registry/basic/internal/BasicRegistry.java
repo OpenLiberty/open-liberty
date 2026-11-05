@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Pattern;
 
 import org.apache.felix.scr.ext.annotation.DSExt;
 import org.osgi.service.component.annotations.Activate;
@@ -459,20 +460,16 @@ public class BasicRegistry implements UserRegistry {
     }
 
     /**
-     * Convert the "command line" style pattern into a regular expression.
-     * The conversion is as follows:
-     * <ul>
-     * <li>* -> .*</li>
-     * <li>? -> .</li>
-     * <li>( -> \(</li>
-     * <li>) -> \)</li>
-     * <li>{ -> \{</li>
-     * <li>} -> \}</li>
-     * <li>\ -> \\</li>
-     * </ul>
+     * Converts a glob-style search pattern into a regular expression for use with
+     * {@link String#matches(String)}. The only supported wildcard is {@code *},
+     * which matches any sequence of characters (translated to {@code .*}). Every other
+     * character, including {@code .} and backslash, is treated as a literal: each run of
+     * characters between {@code *} wildcards is quoted with {@link Pattern#quote(String)}.
+     * A regular-expression pattern such as {@code user.*} is therefore not supported; use
+     * {@code user*}.
      *
-     * @param pattern
-     * @return regular expression
+     * @param pattern the glob-style pattern to convert
+     * @return the equivalent regular expression string
      */
     private String convertToRegex(String pattern) {
 
@@ -485,13 +482,20 @@ public class BasicRegistry implements UserRegistry {
         }
 
         /*
-         * Replace any * with .* and escape any characters that might have special meaning
-         * in a regular expression.
+         * Quote every literal segment so that only '*' retains special meaning, and
+         * join the segments with '.*'.
          */
-        pattern = pattern.replace("*", ".*");
-        pattern = pattern.replace("\\", "\\\\");
-        pattern = pattern.replace("(", "\\(").replace(")", "\\)");
-        pattern = pattern.replace("{", "\\{").replace("}", "\\}");
+        String[] segments = pattern.split("\\*", -1);
+        StringBuilder regex = new StringBuilder();
+        for (int i = 0; i < segments.length; i++) {
+            if (i > 0) {
+                regex.append(".*");
+            }
+            if (!segments[i].isEmpty()) {
+                regex.append(Pattern.quote(segments[i]));
+            }
+        }
+        pattern = regex.toString();
 
         /*
          * Add the ignore case control back on if we removed it.
