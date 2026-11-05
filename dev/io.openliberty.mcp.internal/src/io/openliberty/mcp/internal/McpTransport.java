@@ -97,6 +97,7 @@ public class McpTransport {
             throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, excpetionMesaage);
         }
         this.mcpRequest = toRequest();
+        HeaderValidation.validateProtocolVersionMatchesBody(version, mcpRequest);
         this.appName = extractAppName();
         final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
 
@@ -288,6 +289,10 @@ public class McpTransport {
         RequestId id = (mcpRequest != null) ? mcpRequest.id() : null;
         McpResponse mcpResponse = new McpErrorResponse(id, e);
 
+        // The spec requires a header mismatch to be rejected with HTTP 400 as well as a JSON-RPC error
+        if (e.getErrorCode() == JSONRPCErrorCode.HEADER_MISMATCH) {
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
         res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }
