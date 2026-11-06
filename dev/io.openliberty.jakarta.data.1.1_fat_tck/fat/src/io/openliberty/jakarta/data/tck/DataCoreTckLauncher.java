@@ -65,8 +65,10 @@ public class DataCoreTckLauncher {
     public void launchDataTckCorePersistence() throws Exception {
 
         // Setup persistence server
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(persistenceServer, FATSuite.relationalDatabase);
-        persistenceServer.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(FATSuite.relationalDatabase).getDriverName());
+        DatabaseContainerUtil.build(persistenceServer, FATSuite.relationalDatabase)
+                        .withDatabaseProperties()
+                        .withDriverVariable()
+                        .modify();
         persistenceServer.startServer();
 
         // Test groups to run
