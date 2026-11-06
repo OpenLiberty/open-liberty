@@ -1,0 +1,21 @@
+<server>
+    <featureManager>
+        <feature>webProfile-8.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <webApplication location="testNativeLibrary.war">
+        <classloader privateLibraryRef="nativeAccessLib" />
+    </webApplication>
+
+    <!--
+        The native <file> entry is added programmatically by the test before
+        the server starts, so only the JAR classpath entry is declared here.
+    -->
+    <library id="nativeAccessLib">
+        <file name="nativeAccess/testLib1.jar"/>
+    </library>
+
+</server>

@@ -50,6 +50,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.Bundle;
@@ -80,6 +81,20 @@ import com.ibm.wsspi.library.Library;
  */
 public class AppClassLoader extends ContainerClassLoader implements SpringLoader {
     static final TraceComponent tc = Tr.register(AppClassLoader.class);
+
+    /**
+     * The native library file extension for the current platform, derived once
+     * from System.mapLibraryName. For example ".dll" on Windows, ".so" on Linux,
+     * ".dylib" on macOS. Used to detect native files in shared library config.
+     */
+    private static final String NATIVE_LIB_EXTENSION;
+    static {
+        // System.mapLibraryName("check") returns e.g. "check.dll", "libcheck.so", "libcheck.dylib".
+        // Extract everything from the last '.' to get the platform extension.
+        String mapped = System.mapLibraryName("check");
+        int dot = mapped.lastIndexOf('.');
+        NATIVE_LIB_EXTENSION = dot >= 0 ? mapped.substring(dot) : "";
+    }
 
     private static final Set<String> forbiddenClassNames = Collections.unmodifiableSet( loadForbidden() );
 
@@ -1133,19 +1148,59 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private void copyLibraryElementsToClasspath(Library library, boolean prepend) {
         Collection<File> files = library.getFiles();
         addToClassPath(library.getContainers(), prepend);
-        if (files != null && !!!files.isEmpty()) {
+        // Fresh per-library flag: warns at most once per library registration.
+        AtomicBoolean nativeAccessWarningLogged = new AtomicBoolean(false);
+        if (files != null && !files.isEmpty()) {
             for (File file : files) {
-
                 nativeLibraryFiles.add(file);
+                logNativeAccessWarning(library, file.getName(), nativeAccessWarningLogged);
             }
         }
 
         for (Fileset fileset : library.getFilesets()) {
             for (File file : fileset.getFileset()) {
-
                 nativeLibraryFiles.add(file);
+                logNativeAccessWarning(library, file.getName(), nativeAccessWarningLogged);
             }
         }
+    }
+
+    /**
+     * Logs CWWKL0085W at most once per library registration if the file looks like
+     * a native library and the JVM was not started with native access enabled.
+     *
+     * <p>On Java 24+, loading a native library from classpath code is a restricted
+     * operation (JEP 472). This only covers explicit {@code <file>} and
+     * {@code <fileset>} entries. Native libraries inside containers (searched by
+     * {@code super.findLibrary}) are not checked here because eagerly listing
+     * container entries to detect native files would be too expensive.
+     *
+     * @param library  the library being registered
+     * @param name     the file name to test
+     * @param nativeAccessWarningLogged per-library flag; set to true after first warning
+     */
+    private void logNativeAccessWarning(Library library, String name, AtomicBoolean nativeAccessWarningLogged) {
+        if (nativeAccessWarningLogged.get()) {
+            return;
+        }
+        if (isNativeLibraryName(name) && !NativeLibraryAccessChecker.isNativeAccessEnabled()) {
+            nativeAccessWarningLogged.set(true);
+            Tr.warning(tc, "cls.native.access.not.enabled", library.id(), name);
+        }
+    }
+
+    /**
+     * Returns true if the file name looks like a native library.
+     * Uses the platform-specific extension derived from System.mapLibraryName.
+     * The check is case-insensitive to handle Windows .DLL vs .dll variants.
+     */
+    private static boolean isNativeLibraryName(String name) {
+        if (name == null || NATIVE_LIB_EXTENSION.isEmpty()
+                || name.length() < NATIVE_LIB_EXTENSION.length()) {
+            return false;
+        }
+        return name.regionMatches(true, name.length() - NATIVE_LIB_EXTENSION.length(),
+                                  NATIVE_LIB_EXTENSION, 0, NATIVE_LIB_EXTENSION.length());
     }
 
     /**
