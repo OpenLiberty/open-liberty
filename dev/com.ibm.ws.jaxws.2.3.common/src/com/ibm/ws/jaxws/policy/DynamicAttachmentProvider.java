@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,14 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import java.net.URI;
+import org.apache.cxf.ws.policy.attachment.external.EndpointReferenceDomainExpression;
+
 import javax.xml.namespace.QName;
+import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
+import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.adaptable.module.Entry;
+import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.common.injection.NoJSR250Annotations;
@@ -182,22 +189,54 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
         Document doc = null;
         try {
             InputStream is = null;
-            ClassLoader classLoader = getThreadContextClassLoader();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Start to load policy from template", classLoader.getResource(location));
+            
+            // Retrieve the module metadata and Container associated with this Bus.
+            // Using the module's Container isolates the resource lookup to the current module archive,
+            // preventing classpath shadowing across multiple JARs in an EAR application.
+            JaxWsModuleMetaData moduleMetaData = (bus != null) ? bus.getExtension(JaxWsModuleMetaData.class) : null;
+            Container moduleContainer = (moduleMetaData != null) ? moduleMetaData.getModuleContainer() : null;
+
+            // 1. Primary lookup: load the policy attachment directly from the current module Container
+            if (moduleContainer != null) {
+                Entry entry = moduleContainer.getEntry(location);
+                if (entry != null) {
+                    try {
+                        is = entry.adapt(InputStream.class);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Start to load policy from template via moduleContainer: " + location);
+                        }
+                    } catch (UnableToAdaptException e) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Unable to adapt entry to InputStream: " + location, e);
+                        }
+                    }
+                }
             }
-            if (classLoader.getResource(location) != null) {
-                is = classLoader.getResourceAsStream(location);
+
+            // 2. Fallback: if Container lookup did not resolve an InputStream, use the module's ClassLoader
+            if (is == null) {
+                ClassLoader moduleClassLoader = (moduleMetaData != null && moduleMetaData.getModuleInfo() != null)
+                                                ? moduleMetaData.getModuleInfo().getClassLoader()
+                                                : getThreadContextClassLoader();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Start to load policy from template via classLoader: ", moduleClassLoader.getResource(location));
+                }
+                if (moduleClassLoader != null && moduleClassLoader.getResource(location) != null) {
+                    is = moduleClassLoader.getResourceAsStream(location);
+                }
             }
+
             if (null == is) {
                 throw new PolicyException(new Exception("Could not open the special policy attachment file because getResourceAsStream is null"));
             }
+            
             // Changed from DOMUtils.readXml(InputStream) to StaxUtils.read(InputStream)
             doc = StaxUtils.read(is);
         } catch (Exception ex) {
             throw new PolicyException(ex);
         }
 
+        // Parse <wsp:PolicyAttachment> elements from the document
         for (Element ae : PolicyConstants.findAllPolicyElementsOfLocalName(doc,
                                                                            Constants.ELEM_POLICY_ATTACHMENT)) {
             PolicyAttachment attachment = new PolicyAttachment();
@@ -213,7 +252,7 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
                 if (Constants.isAppliesToElem(qn)) {
                     Collection<DomainExpression> des = readDomainExpressions((Element) nd);
                     if (des.isEmpty()) {
-                        // forget about this attachment
+                        // Forget about this attachment if domain expressions cannot be built
                         continue;
                     }
                     attachment.setDomainExpressions(des);
@@ -297,8 +336,69 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
                 } else if (nd.getLocalName().equals("EndpointReference")) {
                     DomainExpressionBuilderRegistry debr = bus.getExtension(DomainExpressionBuilderRegistry.class);
                     assert null != debr;
-                    DomainExpression de = debr.build((Element) nd);
-                    des.add(de);
+                    final DomainExpression de = debr.build((Element) nd);
+
+                    // Normalize address comparisons (handles relative paths, context paths, and full URLs)
+                    DomainExpression normalizedDE = new DomainExpression() {
+                        @Override
+                        public boolean appliesTo(EndpointInfo ei) {
+                            if (de.appliesTo(ei)) {
+                                return true;
+                            }
+                            if (de instanceof EndpointReferenceDomainExpression) {
+                                EndpointReferenceDomainExpression eprde = (EndpointReferenceDomainExpression) de;
+                                if (eprde.getEndpointReference() != null && eprde.getEndpointReference().getAddress() != null) {
+                                    String policyAddr = eprde.getEndpointReference().getAddress().getValue();
+                                    String epAddr = (ei != null) ? ei.getAddress() : null;
+                                    if (policyAddr != null && epAddr != null) {
+                                        policyAddr = policyAddr.trim();
+                                        epAddr = epAddr.trim();
+
+                                        // 1. Direct or suffix match
+                                        if (policyAddr.equals(epAddr) || policyAddr.endsWith(epAddr) || epAddr.endsWith(policyAddr)) {
+                                            return true;
+                                        }
+
+                                        // 2. Normalized path match (strips scheme://host:port)
+                                        try {
+                                            String pPath = (policyAddr.startsWith("http://") || policyAddr.startsWith("https://")) 
+                                                            ? URI.create(policyAddr).getPath() : policyAddr;
+                                            String ePath = (epAddr.startsWith("http://") || epAddr.startsWith("https://")) 
+                                                            ? URI.create(epAddr).getPath() : epAddr;
+                                            if (pPath != null && ePath != null) {
+                                                if (pPath.equals(ePath) || pPath.endsWith(ePath) || ePath.endsWith(pPath)) {
+                                                    return true;
+                                                }
+                                            }
+                                        } catch (Exception ignored) {
+                                        }
+                                    }
+                                }
+                            }
+                            return false;
+                        }
+
+                        @Override
+                        public boolean appliesTo(ServiceInfo si) {
+                            return de.appliesTo(si);
+                        }
+
+                        @Override
+                        public boolean appliesTo(BindingOperationInfo boi) {
+                            return de.appliesTo(boi);
+                        }
+
+                        @Override
+                        public boolean appliesTo(BindingMessageInfo bmi) {
+                            return de.appliesTo(bmi);
+                        }
+
+                        @Override
+                        public boolean appliesTo(BindingFaultInfo bfi) {
+                            return de.appliesTo(bfi);
+                        }
+                    };
+                    des.add(normalizedDE);
                 } else {
                     throw new PolicyException(new Exception("No Related DomainExpressionBuilder"));
                 }
