@@ -85,10 +85,27 @@ public enum McpProtocolVersion {
     }
 
     /**
-     * @return the newest protocol version, which is only available on a beta runtime while it is a beta version
+     * Returns the newest protocol version which is available on the current runtime. Beta versions are
+     * only returned on a beta runtime.
+     * <p>
+     * This relies on the versions being declared newest first.
+     *
+     * @return the newest available protocol version
      */
     public static McpProtocolVersion latest() {
-        return V_2026_07_28;
+        return availableValues()[0];
+    }
+
+    /**
+     * Checks whether this protocol version is within the given range.
+     *
+     * @param min the minimum version (inclusive)
+     * @param max the maximum version (inclusive)
+     * @return true if this version is between min and max, inclusive
+     */
+    public boolean isBetween(McpProtocolVersion min, McpProtocolVersion max) {
+        // Versions are declared newest first, so a newer version has a lower ordinal
+        return ordinal() <= min.ordinal() && ordinal() >= max.ordinal();
     }
 
     /**

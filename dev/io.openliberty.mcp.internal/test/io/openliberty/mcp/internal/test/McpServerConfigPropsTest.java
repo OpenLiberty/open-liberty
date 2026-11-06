@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -64,35 +63,47 @@ public class McpServerConfigPropsTest {
         System.setProperty(BETA_PROPERTY, "true");
         assertEquals(McpProtocolVersion.V_2025_03_26, McpServerConfigProps.defaultMinimum());
         assertEquals(McpProtocolVersion.latest(), McpServerConfigProps.defaultMaximum());
-        McpServerConfigProps config = configWithRange(null, null);
+        McpServerConfigProps config = configWithOtherSettingsOnly();
         for (McpProtocolVersion version : McpProtocolVersion.values()) {
             assertTrue(version.getVersion() + " should be accepted by default on beta", config.isAccepted(version));
         }
     }
 
     /**
-     * {@link McpServerConfigProps#isBetween} is inclusive at both ends, and excludes versions older than the
+     * {@link McpProtocolVersion#isBetween} is inclusive at both ends, and excludes versions older than the
      * minimum or newer than the maximum.
      */
     @Test
     public void testIsBetween() {
         McpProtocolVersion min = McpProtocolVersion.V_2025_06_18;
         McpProtocolVersion max = McpProtocolVersion.V_2025_11_25;
-        assertTrue(McpServerConfigProps.isBetween(McpProtocolVersion.V_2025_06_18, min, max));
-        assertTrue(McpServerConfigProps.isBetween(McpProtocolVersion.V_2025_11_25, min, max));
-        assertFalse(McpServerConfigProps.isBetween(McpProtocolVersion.V_2025_03_26, min, max));
-        assertFalse(McpServerConfigProps.isBetween(McpProtocolVersion.V_2026_07_28, min, max));
+        assertTrue(McpProtocolVersion.V_2025_06_18.isBetween(min, max));
+        assertTrue(McpProtocolVersion.V_2025_11_25.isBetween(min, max));
+        assertFalse(McpProtocolVersion.V_2025_03_26.isBetween(min, max));
+        assertFalse(McpProtocolVersion.V_2026_07_28.isBetween(min, max));
     }
 
     /**
      * A range where the minimum is newer than the maximum contains no versions. The configuration rejects
-     * such a range, so this checks that {@link McpServerConfigProps#isBetween} reports it as empty.
+     * such a range, so this checks that {@link McpProtocolVersion#isBetween} reports it as empty.
      */
     @Test
     public void testIsBetweenWithInvertedRange() {
         for (McpProtocolVersion version : McpProtocolVersion.values()) {
-            assertFalse(McpServerConfigProps.isBetween(version, McpProtocolVersion.V_2025_11_25, McpProtocolVersion.V_2025_06_18));
+            assertFalse(version.isBetween(McpProtocolVersion.V_2025_11_25, McpProtocolVersion.V_2025_06_18));
         }
+    }
+
+    /**
+     * A range where the minimum equals the maximum contains only that version. The neighbours on both
+     * sides are excluded.
+     */
+    @Test
+    public void testIsBetweenWithSingleVersionRange() {
+        McpProtocolVersion only = McpProtocolVersion.V_2025_06_18;
+        assertTrue(only.isBetween(only, only));
+        assertFalse(McpProtocolVersion.V_2025_11_25.isBetween(only, only));
+        assertFalse(McpProtocolVersion.V_2025_03_26.isBetween(only, only));
     }
 
     /**
@@ -102,6 +113,16 @@ public class McpServerConfigPropsTest {
     private static McpServerConfigProps configWithRange(McpProtocolVersion min, McpProtocolVersion max) {
         return new McpServerConfigProps(false, null, McpServerConfigProps.FALLBACK_PATH, null, Duration.ofMinutes(10), null,
                                         McpServerConfigProps.DEFAULT_ASYNC_TIMEOUT_MS, min, max);
+    }
+
+    /**
+     * Creates a configuration which sets other attributes but leaves {@code minimumProtocolVersion} and
+     * {@code maximumProtocolVersion} unset, as when a user configures an {@code <mcp>} element in server.xml
+     * without a protocol version range. The unset bounds are replaced by their defaults, which depend on the
+     * beta setting at the time of the call.
+     */
+    private static McpServerConfigProps configWithOtherSettingsOnly() {
+        return new McpServerConfigProps(true, "app", "/custom", null, Duration.ofMinutes(5), null, 1_000, null, null);
     }
 
     /**
@@ -133,71 +154,30 @@ public class McpServerConfigPropsTest {
     }
 
     /**
-     * On a non-beta runtime the server behaves as if the minimum is 2025-03-26 and the maximum is 2025-11-25,
-     * so the beta version is not accepted by default.
+     * When no protocol version range is configured on a non-beta runtime, the minimum is 2025-03-26 and the
+     * maximum is 2025-11-25, so the beta version is not accepted.
      */
     @Test
     public void testDefaultsOnNonBeta() {
         System.setProperty(BETA_PROPERTY, "false");
         assertEquals(McpProtocolVersion.V_2025_03_26, McpServerConfigProps.defaultMinimum());
         assertEquals(McpProtocolVersion.V_2025_11_25, McpServerConfigProps.defaultMaximum());
-        McpServerConfigProps config = configWithRange(null, null);
+        McpServerConfigProps config = configWithOtherSettingsOnly();
+        assertEquals(McpProtocolVersion.V_2025_03_26, config.minimumProtocolVersion());
+        assertEquals(McpProtocolVersion.V_2025_11_25, config.maximumProtocolVersion());
         assertEquals(List.of(McpProtocolVersion.V_2025_11_25, McpProtocolVersion.V_2025_06_18, McpProtocolVersion.V_2025_03_26),
                      config.acceptedProtocolVersions());
         assertFalse(config.isAccepted(McpProtocolVersion.V_2026_07_28));
     }
 
     /**
-     * Null protocol versions in the configuration are replaced by the defaults.
-     * <p>
-     * This creates a new instance rather than using {@code DEFAULT_CONFIG}, which is a constant created when the
-     * class is loaded and so would reflect whichever beta setting was in effect at that point.
+     * The {@code latest} keyword selects the newest available version, and any other value is parsed as a
+     * protocol version string.
      */
     @Test
-    public void testNullProtocolVersionsUseDefaults() {
-        System.setProperty(BETA_PROPERTY, "false");
-        McpServerConfigProps config = configWithRange(null, null);
-        assertEquals(McpProtocolVersion.V_2025_03_26, config.minimumProtocolVersion());
-        assertEquals(McpProtocolVersion.V_2025_11_25, config.maximumProtocolVersion());
-    }
-
-    /**
-     * Every supported version can be configured by its version string, and "latest" selects the newest one.
-     * This covers versions which are added later without a change to the FAT.
-     */
-    @Test
-    public void testParseProtocolVersionOnBeta() {
+    public void testParseProtocolVersion() {
         System.setProperty(BETA_PROPERTY, "true");
-        for (McpProtocolVersion version : McpProtocolVersion.values()) {
-            assertEquals(version, McpServerConfigProps.parseProtocolVersion(version.getVersion()));
-        }
         assertEquals(McpProtocolVersion.latest(), McpServerConfigProps.parseProtocolVersion("latest"));
-    }
-
-    /**
-     * On a non-beta runtime "latest" selects the newest version which is available, not the beta version.
-     */
-    @Test
-    public void testParseLatestOnNonBeta() {
-        System.setProperty(BETA_PROPERTY, "false");
-        assertEquals(McpProtocolVersion.V_2025_11_25, McpServerConfigProps.parseProtocolVersion("latest"));
-    }
-
-    /**
-     * A configured beta version is not a valid value on a non-beta runtime.
-     */
-    @Test(expected = NoSuchElementException.class)
-    public void testParseBetaVersionRejectedOnNonBeta() {
-        System.setProperty(BETA_PROPERTY, "false");
-        McpServerConfigProps.parseProtocolVersion("2026-07-28");
-    }
-
-    /**
-     * A value which is neither {@code latest} nor a known protocol version is not valid.
-     */
-    @Test(expected = NoSuchElementException.class)
-    public void testParseUnknownVersionRejected() {
-        System.setProperty(BETA_PROPERTY, "true");
-        McpServerConfigProps.parseProtocolVersion("1999-01-01");
+        assertEquals(McpProtocolVersion.V_2025_06_18, McpServerConfigProps.parseProtocolVersion("2025-06-18"));
     }
 }

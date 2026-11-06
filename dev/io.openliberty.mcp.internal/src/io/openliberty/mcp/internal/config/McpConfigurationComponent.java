@@ -85,7 +85,7 @@ public class McpConfigurationComponent {
 
             McpProtocolVersion effectiveMinimum = minimumProtocolVersion != null ? minimumProtocolVersion : McpServerConfigProps.defaultMinimum();
             McpProtocolVersion effectiveMaximum = maximumProtocolVersion != null ? maximumProtocolVersion : McpServerConfigProps.defaultMaximum();
-            if (!McpServerConfigProps.isBetween(effectiveMinimum, McpServerConfigProps.defaultMinimum(), effectiveMaximum)) {
+            if (!effectiveMinimum.isBetween(McpServerConfigProps.defaultMinimum(), effectiveMaximum)) {
                 Tr.error(tc, "CWMCM0046E.protocol.version.range.invalid", effectiveMinimum.getVersion(), effectiveMaximum.getVersion());
                 minimumProtocolVersion = null;
                 maximumProtocolVersion = null;

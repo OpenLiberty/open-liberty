@@ -25,9 +25,10 @@ import componenttest.topology.utils.HttpRequest;
  * Helpers for tests which send requests using a chosen {@code MCP-Protocol-Version} header to an
  * MCP application.
  * <p>
- * {@link io.openliberty.mcp.internal.fat.utils.McpClient} always sends the 2025-11-25 header, so it cannot be
- * used to test a protocol version range which excludes that version. These helpers use {@link HttpRequest}
- * directly, like {@link ProtocolVersionTest}.
+ * {@link io.openliberty.mcp.internal.fat.utils.McpClient} can override the header on a POST with
+ * {@code callMCPRaw(...).protocolVersion(...)}, but it cannot omit the header, send a DELETE with a chosen
+ * version, read the {@code Mcp-Session-Id} response header, or initialize with a version other than 2025-11-25.
+ * These helpers use {@link HttpRequest} directly to cover those cases.
  * <p>
  * Stateless applications need no session. For stateful applications use {@link #initialize} to obtain a session
  * and the {@code ...InSession} methods to send requests in it.

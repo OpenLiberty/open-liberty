@@ -94,7 +94,7 @@ public record McpServerConfigProps(boolean stateless,
      */
     public static McpProtocolVersion parseProtocolVersion(String value) {
         if (LATEST.equals(value)) {
-            return McpProtocolVersion.availableValues()[0];
+            return McpProtocolVersion.latest();
         }
         return McpProtocolVersion.parse(value);
     }
@@ -118,19 +118,6 @@ public record McpServerConfigProps(boolean stateless,
      */
     public static McpProtocolVersion defaultMaximum() {
         return McpProtocolVersion.availableValues()[0];
-    }
-
-    /**
-     * Checks whether a protocol version is within the configured range.
-     *
-     * @param version the version to check
-     * @param min the minimum version (inclusive)
-     * @param max the maximum version (inclusive)
-     * @return true if the version is between min and max, inclusive
-     */
-    public static boolean isBetween(McpProtocolVersion version, McpProtocolVersion min, McpProtocolVersion max) {
-        // Versions are declared newest first, so a newer version has a lower ordinal
-        return version.ordinal() <= min.ordinal() && version.ordinal() >= max.ordinal();
     }
 
     @Override

@@ -54,6 +54,27 @@ public class McpProtocolVersionTest {
         assertEquals(McpProtocolVersion.V_2026_07_28, McpProtocolVersion.parse("2026-07-28"));
     }
 
+    /**
+     * Every declared version can be parsed from its version string on a beta runtime. This covers versions
+     * which are added later without a change to the FAT.
+     */
+    @Test
+    public void testParseRoundTripsEveryVersionOnBeta() {
+        System.setProperty(BETA_PROPERTY, "true");
+        for (McpProtocolVersion version : McpProtocolVersion.values()) {
+            assertEquals(version, McpProtocolVersion.parse(version.getVersion()));
+        }
+    }
+
+    /**
+     * A value which is not a known protocol version is not valid.
+     */
+    @Test(expected = NoSuchElementException.class)
+    public void testParseUnknownVersionRejected() {
+        System.setProperty(BETA_PROPERTY, "true");
+        McpProtocolVersion.parse("1999-01-01");
+    }
+
     @Test
     public void testParseGaVersionsOnNonBeta() {
         System.setProperty(BETA_PROPERTY, "false");
@@ -117,24 +138,23 @@ public class McpProtocolVersionTest {
     }
 
     /**
-     * {@link McpProtocolVersion#latest()} is a fixed constant, not derived from {@code values()}. On a beta
-     * runtime every version is available, so it must equal the first available version. This fails if a newer
-     * version is declared without updating {@code latest()}.
+     * On a beta runtime every version is available, so {@link McpProtocolVersion#latest()} is the newest
+     * declared version.
      */
     @Test
-    public void testLatestMatchesAvailableValues() {
+    public void testLatestOnBeta() {
         System.setProperty(BETA_PROPERTY, "true");
-        assertEquals(McpProtocolVersion.availableValues()[0], McpProtocolVersion.latest());
+        assertEquals(McpProtocolVersion.values()[0], McpProtocolVersion.latest());
     }
 
     /**
-     * {@link McpProtocolVersion#latest()} is the beta version, so on a non-beta runtime it is not one of
-     * the available versions. Code which needs the newest version usable on the current runtime must take
-     * the first entry of {@link McpProtocolVersion#availableValues()} instead of calling {@code latest()}.
+     * On a non-beta runtime {@link McpProtocolVersion#latest()} is the newest version which is available,
+     * so it is never the beta version.
      */
     @Test
-    public void testLatestIsNotAvailableOnNonBeta() {
+    public void testLatestOnNonBeta() {
         System.setProperty(BETA_PROPERTY, "false");
-        assertFalse(Arrays.asList(McpProtocolVersion.availableValues()).contains(McpProtocolVersion.latest()));
+        assertEquals(McpProtocolVersion.V_2025_11_25, McpProtocolVersion.latest());
+        assertTrue(McpProtocolVersion.latest().isAvailable());
     }
 }

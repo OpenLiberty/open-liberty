@@ -63,7 +63,7 @@ public interface McpConfig {
      * @return true if requests may use the version
      */
     default boolean isAccepted(McpProtocolVersion version) {
-        return version.isAvailable() && McpServerConfigProps.isBetween(version, minimumProtocolVersion(), maximumProtocolVersion());
+        return version.isAvailable() && version.isBetween(minimumProtocolVersion(), maximumProtocolVersion());
     }
 
     /**

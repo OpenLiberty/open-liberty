@@ -73,8 +73,7 @@ Bundle-Localization: \
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.app.manager;version=latest,\
-	com.ibm.ws.kernel.boot
+	com.ibm.ws.app.manager;version=latest
 
 -testpath: \
 	com.ibm.ws.kernel.boot.core;version=latest,\
