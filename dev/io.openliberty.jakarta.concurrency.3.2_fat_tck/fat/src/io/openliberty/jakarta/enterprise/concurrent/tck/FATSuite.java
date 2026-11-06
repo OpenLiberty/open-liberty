@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,10 +56,8 @@ public class FATSuite {
                 return result = false;
             }
 
-            // Disable signature test because 3.2.0-M2 milestone TCK signature file is outdated and mismatched with 3.2 spec APIs.
-            // TODO enable signature tests once 3.2.0-M3 TCK is created
-            reason = "signature test disabled due to mismatched milestone 3.2.0-M2 TCK signature file";
-            return result = false;
+            reason = "running signature tests";
+            return result = true;
 
         } finally {
             Log.info(testClass, "shouldRunSignatureTests", "Return: " + result + ", because " + reason);

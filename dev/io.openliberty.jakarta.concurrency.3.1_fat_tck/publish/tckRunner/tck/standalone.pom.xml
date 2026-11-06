@@ -38,27 +38,6 @@
         <targetDirectory>${project.basedir}/target</targetDirectory>
     </properties>
 
-	<repositories>
-		<!-- For artifacts not yet in Maven Central -->
-		<repository>
-			<id>sonatype-nexus-staging</id>
-			<name>Sonatype Nexus Staging</name>
-			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<!-- For artifacts not yet in Stagging repo use DHE -->
-		<repository>
-			<name>IBM DHE Maven repository</name>
-			<id>DHE</id>
-			<url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
-		</repository>
-	</repositories>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
