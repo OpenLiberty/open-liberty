@@ -21,12 +21,12 @@ import java.util.Optional;
 
 import jakarta.annotation.Resource;
 import jakarta.inject.Inject;
+import jakarta.nosql.Template;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceUnit;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
-import org.eclipse.jnosql.mapping.document.DocumentTemplate;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -39,14 +39,13 @@ public class DataNoSQLIntegrationServlet extends FATServlet {
     private EntityManagerFactory libertyEMF;
 
     @Inject
-    DocumentTemplate jNoSQLtemplate;
+    Template jNoSQLtemplate;
 
     @Inject
     Counties counties; //JNoSQL
 
-    //TODO Re-enable after future JNoSQL Release
-    //@Inject
-    //Segments segments; //Liberty
+    @Inject
+    Segments segments; //Liberty
 
     @Resource
     private UserTransaction tx;
@@ -82,14 +81,12 @@ public class DataNoSQLIntegrationServlet extends FATServlet {
         counties.remove(expected);
     }
 
-    //TODO Re-enable after future JNoSQL Release
-    //@Test
+    @Test
     public void testLibertyProvider() throws Exception {
 
         Segment expected = Segment.of(5, 10, 2, 4);
 
-        //TODO Re-enable after future JNoSQL Release
-        //expected = segments.save(expected);
+        expected = segments.save(expected);
         int expectedId = expected.id;
 
         //Ensure the Liberty persistence unit was used
@@ -106,9 +103,6 @@ public class DataNoSQLIntegrationServlet extends FATServlet {
 
         assertTrue(unexpected.isEmpty());
 
-        //TODO Re-enable after future JNoSQL Release
-        //segments.remove(expected);
-
+        segments.remove(expected);
     }
-
 }

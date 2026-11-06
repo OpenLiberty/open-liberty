@@ -42,8 +42,10 @@ public class DataFullTckLauncher {
 
     @BeforeClass
     public static void setup() throws Exception {
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, FATSuite.relationalDatabase);
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(FATSuite.relationalDatabase).getDriverName());
+        DatabaseContainerUtil.build(server, FATSuite.relationalDatabase)
+                        .withDatabaseProperties()
+                        .withDriverVariable()
+                        .modify();
         server.startServer();
     }
 
@@ -79,7 +81,7 @@ public class DataFullTckLauncher {
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.1");
+        additionalProps.put("jakarta.data.tck.version", "1.0.2");
 
         TCKRunner.build(server, Type.JAKARTA, "Data")
                         .withPlatformVersion("11")
