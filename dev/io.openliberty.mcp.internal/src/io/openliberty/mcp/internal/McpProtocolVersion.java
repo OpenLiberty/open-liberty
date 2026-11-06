@@ -85,15 +85,14 @@ public enum McpProtocolVersion {
     }
 
     /**
-     * Returns the newest protocol version which is available on the current runtime. Beta versions are
-     * only returned on a beta runtime.
+     * Returns the newest protocol version which is available on the current runtime.
      * <p>
-     * This relies on the versions being declared newest first.
+     * On a beta runtime this is {@link #V_2026_07_28}, otherwise it is {@link #V_2025_11_25}.
      *
      * @return the newest available protocol version
      */
     public static McpProtocolVersion latest() {
-        return availableValues()[0];
+        return V_2026_07_28.isAvailable() ? V_2026_07_28 : V_2025_11_25;
     }
 
     /**
