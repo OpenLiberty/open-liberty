@@ -38,6 +38,9 @@ public class McpSessionStore {
 
     private final ConcurrentMap<McpSessionId, McpSession> sessions = new ConcurrentHashMap<>();
 
+    // CDI no-args constructor
+    McpSessionStore() {}
+
     public McpSessionStore(McpRequestTracker requestTracker, McpConfig mcpConfig) {
         this.requestTracker = requestTracker;
         this.mcpConfig = mcpConfig;
