@@ -45,6 +45,7 @@ import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.VirtualConnection;
+import com.ibm.wsspi.genericbnf.exception.MalformedMessageException;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
 import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.channel.error.HttpError;
@@ -79,6 +80,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.InvalidLineSeparatorException;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.TooLongHttpLineException;
 import io.netty.handler.codec.http2.Http2Connection;
@@ -226,6 +228,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             if(context.channel().isActive()) {
                 if (msg.decoderResult().cause() != null) {
                     Throwable failure = msg.decoderResult().cause();
+                    // Channel framework reports a bare LF as a MalformedMessageException, which is handled without FFDC.
+                    if (failure instanceof InvalidLineSeparatorException) {
+                        MalformedMessageException mme = new MalformedMessageException(failure.getMessage());
+                        mme.initCause(failure);
+                        failure = mme;
+                    }
                     // The legacy parser rejects this protocol condition without FFDC.
                     if (!(failure instanceof ContentLengthNotAllowedException)
                                     && !isExpectedRequestValidationFailure(failure)
@@ -361,6 +369,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     private static boolean isExpectedRequestValidationFailure(Throwable failure) {
         return failure instanceof HttpRequestValidationException
+                        || failure instanceof MalformedMessageException
                         || (failure instanceof IllegalArgumentException
                                         && failure.getCause() instanceof HttpRequestValidationException);
     }
