@@ -77,11 +77,17 @@ public interface FileServiceMXBean {
     String ATTRIBUTE_NAME_BLOCK_LIST = "BlockList";
 
     /**
+     * The name of the attribute representing the list of readable file match patterns
+     */
+    String ATTRIBUTE_NAME_READABLE_FILES_LIST = "ReadableFilePatterns";
+
+    /**
      * Get the configured list of read-accessible locations on the host where
      * this server resides. This list is configurable for each server by
      * modifying the server.xml. Each directory to allow for read access can
      * be specified to the &lt;remoteFileAccess&gt; configuration element
-     * 'readDir' attribute.
+     * 'readDir' attribute. To be readable, a file must also be matched by
+     * the patterns specified in the ReadableFilePattern.
      * <p>
      * For example:
      * <br>
@@ -91,8 +97,7 @@ public interface FileServiceMXBean {
      * &lt;/remoteFileAccess&gt;
      * </pre>
      * <p>
-     * The default is a list containing 3 entries: ${wlp.install.dir},
-     * ${wlp.user.dir} and ${server.output.dir}.
+     * The default is a list containing 2 entries: ${server.config.dir} and ${server.output.dir}.
      * 
      * @return a list of Strings containing the absolute paths which are read-accessible.
      */
@@ -146,6 +151,18 @@ public interface FileServiceMXBean {
     List<String> getBlockList();
 
     /**
+     * Get the configured list of match patterns for readable files. All read operations
+     * will only return files matched by the configured patterns.
+     * A pattern can either be
+     *  - an exact file name
+     *  - a '*', which will match all files
+     *  - a '*' followed by a suffix, which will match any filename with specified suffix
+     * If a '*' appears anywhere else in the pattern, the pattern is invalid and will be ignored
+     * The default is '*.xml', '*.log', '*.xsd'
+     */
+    List<String> getReadableFilePatterns();
+
+    /**
      * Get the metadata pertaining to the specified path. The result object
      * will contain the requested metadata subset as indicated by the
      * requestOptions String value, which should be constructed as a
@@ -154,6 +171,9 @@ public interface FileServiceMXBean {
      * For example: to obtain a request that provides only the "size" and
      * "lastModified" metadata values, the user can pass in "st" as the
      * requestOptions field.
+     * <p>
+     * If the requested path represents a file, the file must be a readable file
+     * name as specified by the readable file patterns
      * 
      * @param path the absolute path of the file or directory for which to retrieve the metadata
      * @param requestOptions a String representing the concatenation of the requested metadata keys. See REQUEST_OPTIONS_* fields.
@@ -163,6 +183,8 @@ public interface FileServiceMXBean {
 
     /**
      * List the directory/files for the given path.
+     * <p>
+     * Only files matching the patterns specified in the readable file pattern list will be returned.
      * 
      * @param directory the absolute path of the directory to list
      * @param recursive a boolean to specify if the search should be done to all descendant paths
@@ -177,6 +199,9 @@ public interface FileServiceMXBean {
      * This operation occurs on the file system on which this server resides.
      * Therefore the sourcePath and targetPath are paths on the server's host
      * system.
+     * <p>
+     * The created archive will only contain files whose names match the patterns specified
+     * in the readable file pattern list.
      * 
      * @param sourcePath the absolute path of the entity to archive
      * @param targetPath the absolute path to where resulting archive is to be stored
@@ -190,6 +215,9 @@ public interface FileServiceMXBean {
      * This operation occurs on the file system on which this server resides.
      * Therefore the sourcePath and targetPath are paths on the server's host
      * system.
+     * <p>
+     * The name of the file specified by sourcePath must match the patterns specified
+     * in the readable file pattern list.
      * 
      * @param sourcePath the absolute path of the archive to be expanded
      * @param targetPath the absolute path to where archive is to be expanded
