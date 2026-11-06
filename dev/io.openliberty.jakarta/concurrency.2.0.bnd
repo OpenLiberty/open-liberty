@@ -14,15 +14,18 @@
 bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.jakarta.concurrency.2.0; singleton:=true
+Specification-Title: Jakarta Concurrency
+Specification-Vendor: Eclipse Foundation
+Specification-Version: 2.0
 
-Export-Package: jakarta.enterprise.concurrent;version="2.0.0"
+Export-Package: \
+  jakarta.enterprise.concurrent;version="2.0.0"
+
+-buildpath: \
+  jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=2.0.0;strategy=exact
 
 -includeresource: \
   @${repo;jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;2.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
-instrument.disabled: true
-
-publish.wlp.jar.suffix: dev/api/spec
-
--buildpath: \
-  jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=2.0.0;strategy=exact
+-maven-dependencies: \
+   dep1;groupId=jakarta.enterprise.concurrent;artifactId=jakarta.enterprise.concurrent-api;version=2.0.0;scope=runtime
