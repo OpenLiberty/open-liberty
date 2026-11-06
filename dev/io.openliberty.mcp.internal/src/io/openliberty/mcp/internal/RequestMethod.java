@@ -10,12 +10,8 @@
 package io.openliberty.mcp.internal;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
-import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 
 /**
  *
@@ -53,7 +49,7 @@ public enum RequestMethod {
     public static RequestMethod getForMethodName(String methodName) throws NoSuchElementException {
         RequestMethod result = METHODS_BY_NAME.get(methodName);
         if (result == null) {
-            throw new JSONRPCException(JSONRPCErrorCode.METHOD_NOT_FOUND, List.of(methodName + " not found"));
+            throw new NoSuchElementException(methodName);
         }
         return result;
     }
