@@ -164,7 +164,7 @@ public class HttpServerStatsMonitor extends StatisticActions {
 
 		if (probedHttpDispatcherLinkObj != null) {
 			HttpDispatcherLink httpDispatcherLink = (HttpDispatcherLink)probedHttpDispatcherLinkObj;
-			builder.withServerName(httpDispatcherLink.getRequestedHost());
+			builder.withServerName(httpDispatcherLink.getRequestedRoutingHost());
 			builder.withServerPort(httpDispatcherLink.getRequestedPort());
 			
 			 try {
