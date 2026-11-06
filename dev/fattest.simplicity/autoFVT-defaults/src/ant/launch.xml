@@ -464,10 +464,20 @@
 		<echo>Timeout: ${fattest.timeout}</echo>
 		<iff if="env.debug.framework">
 			<then>
+					<iff if="env.WLP_DEBUG_REMOTE">
+						<!-- if the env for remote debugging the server is set then assume we also want
+						     remote debugging of the FAT side -->
+						<then>
+							<property name="framework.debug.address" value="0.0.0.0:6666"/>
+						</then>
+						<else>
+							<property name="framework.debug.address" value="6666"/>
+						</else>
+					</iff>
 				<!-- if we are debugging then set these values to be passed to the JVM -->
 				<property name="framework.debug.jvmarg1" value="-Xdebug" />
 				<!-- this is the debugging port for the FAT/simplicity JVM -->
-				<property name="framework.debug.jvmarg2" value="-agentlib:jdwp=transport=dt_socket,address=6666,server=y,suspend=y" />
+				<property name="framework.debug.jvmarg2" value="-agentlib:jdwp=transport=dt_socket,address=${framework.debug.address},server=y,suspend=y" />
 			</then>
 			<else>
 				<!-- if we are not debugging make sure the values are empty strings to have no JVM effect-->
