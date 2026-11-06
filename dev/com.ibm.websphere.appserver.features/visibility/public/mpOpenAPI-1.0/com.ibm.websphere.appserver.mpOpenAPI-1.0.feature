@@ -34,13 +34,13 @@ IBM-API-Package: \
 	org.eclipse.microprofile.openapi.models.tags; type="stable",\
 	org.eclipse.microprofile.openapi.spi; type="stable"
 -features=com.ibm.websphere.appserver.internal.optional.jaxb-2.2, \
-  com.ibm.websphere.appserver.mpConfig-1.2; ibm.tolerates:="1.3,1.4", \
+  io.openliberty.microprofile.internal.mpConfig-1.2; ibm.tolerates:="1.3,1.4", \
   io.openliberty.mpCompatible-0.0, \
   com.ibm.wsspi.appserver.webBundle-1.0, \
   com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:="4.0", \
   io.openliberty.servlet.internal-3.1; ibm.tolerates:="4.0", \
   com.ibm.websphere.appserver.org.eclipse.microprofile.openapi-1.0, \
-  com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:="2.1", \
+  io.openliberty.microprofile.internal.rest-2.0; ibm.tolerates:="2.1", \
   io.openliberty.jandex.internal-2.0
 -bundles=\
  com.ibm.ws.microprofile.openapi,\

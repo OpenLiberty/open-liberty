@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.fat.repeat;
 
@@ -110,7 +107,7 @@ public class RepeatFaultTolerance {
                       MicroProfileActions.MP70_EE11,
                       MicroProfileActions.MP61,
                       MicroProfileActions.MP60,
-                      MicroProfileActions.MP13,
+                      MicroProfileActions.MP13_EE7,
                       MicroProfileActions.MP20,
                       MicroProfileActions.MP22,
                       MicroProfileActions.MP30,

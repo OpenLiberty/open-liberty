@@ -10,7 +10,7 @@ IBM-API-Package: org.eclipse.microprofile.faulttolerance.exceptions;  type="stab
 IBM-ShortName: mpFaultTolerance-2.0
 Subsystem-Name: MicroProfile Fault Tolerance 2.0
 -features=io.openliberty.mpCompatible-0.0, \
-  com.ibm.websphere.appserver.mpConfig-1.1; ibm.tolerates:="1.2,1.3,1.4", \
+  io.openliberty.microprofile.internal.mpConfig-1.1; ibm.tolerates:="1.2,1.3,1.4", \
   com.ibm.websphere.appserver.org.eclipse.microprofile.faulttolerance-2.0, \
   com.ibm.websphere.appserver.cdi-2.0, \
   com.ibm.websphere.appserver.concurrent-1.0

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.rules.repeater.RepeatTests;
 
 public class TelemetryActions {
-    public static final String MP14_MPTEL11_ID = MicroProfileActions.MP14_ID + "_MPTEL11";
+    public static final String MP14_MPTEL11_ID = MicroProfileActions.MP14_EE7_ID + "_MPTEL11";
     public static final String MP41_MPTEL11_ID = MicroProfileActions.MP41_ID + "_MPTEL11";
     public static final String MP50_MPTEL11_ID = MicroProfileActions.MP50_ID + "_MPTEL11";
 
@@ -43,7 +43,7 @@ public class TelemetryActions {
     public static final String MP50_MPTEL21_ID = JakartaEEAction.EE9_ACTION_ID + "_MPTEL21_MP50";
     public static final String MP50_MPTEL21_JAVA8_ID = JakartaEEAction.EE9_ACTION_ID + "_MPTEL21_MP50_JAVA8";
 
-    public static final FeatureSet MP14_MPTEL11 = MicroProfileActions.MP14
+    public static final FeatureSet MP14_MPTEL11 = MicroProfileActions.MP14_EE7
                     .addFeature("mpTelemetry-1.1")
                     .setMinJavaLevel(SEVersion.JAVA11)
                     .build(MP14_MPTEL11_ID);
@@ -75,7 +75,7 @@ public class TelemetryActions {
                     .addFeature("mpTelemetry-2.0")
                     .build(MP41_MPTEL20_ID);
 
-    public static final FeatureSet MP14_MPTEL20 = MicroProfileActions.MP14
+    public static final FeatureSet MP14_MPTEL20 = MicroProfileActions.MP14_EE7
                     .addFeature("mpTelemetry-2.0")
                     .build(MP14_MPTEL20_ID);
 
@@ -85,7 +85,7 @@ public class TelemetryActions {
                     .addFeature("mpTelemetry-2.0")
                     .build(MP61_MPTEL20_ID);
 
-    public static final FeatureSet MP14_MPTEL21 = MicroProfileActions.MP14
+    public static final FeatureSet MP14_MPTEL21 = MicroProfileActions.MP14_EE7
                     .addFeature("mpTelemetry-2.1")
                     .setMinJavaLevel(SEVersion.JAVA11)
                     .build(MP14_MPTEL21_ID);

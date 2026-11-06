@@ -12,8 +12,8 @@ IBM-API-Package: \
 -features=com.ibm.websphere.appserver.opentracing-1.1, \
   io.openliberty.mpCompatible-0.0, \
   com.ibm.websphere.appserver.org.eclipse.microprofile.opentracing-1.1, \
-  com.ibm.websphere.appserver.cdi-1.2; ibm.tolerates:="2.0", \
-  com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:="2.1"
+  io.openliberty.microprofile.internal.cdi-1.2; ibm.tolerates:="2.0", \
+  io.openliberty.microprofile.internal.rest-2.0; ibm.tolerates:="2.1"
 -bundles=\
   com.ibm.ws.microprofile.opentracing.1.1
 kind=ga
