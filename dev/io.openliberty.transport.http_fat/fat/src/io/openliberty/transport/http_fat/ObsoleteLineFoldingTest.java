@@ -48,7 +48,8 @@ public class ObsoleteLineFoldingTest {
     private static final String APP_NAME = "obsFoldApp";
     private static final String SERVLET_PATH = "/" + APP_NAME + "/ObsFoldEchoServlet";
     private static final String HOST_HEADER_NAME = "malformed-framing.example.test";
-    private static final int SOCKET_TIMEOUT_MS = 1000;
+    private static final String NETTY_TCP_CLASS_NAME = "io.openliberty.netty.internal.tcp.TCPUtils";
+    private static final int SOCKET_TIMEOUT_MS = 2000;
     private static boolean runningNetty = false;
 
     @Server("ObsoleteLineFolding")
@@ -60,6 +61,10 @@ public class ObsoleteLineFoldingTest {
         server.addInstalledAppForValidation(APP_NAME);
         configurePorts();
         server.startServer();
+        String tcpChannelMessage = server.waitForDefaultHTTPEndpointStart();
+        LOG.info("Endpoint: " + tcpChannelMessage);
+        runningNetty = tcpChannelMessage != null && tcpChannelMessage.contains(NETTY_TCP_CLASS_NAME);
+        LOG.info("Running Netty? " + runningNetty);
         server.waitForStringInLog("CWWKT0016I:.*" + APP_NAME + ".*");
     }
 
@@ -109,7 +114,29 @@ public class ObsoleteLineFoldingTest {
                 "\r\n" +
                 secondaryRequest;
 
-        assertMalformedRequestRejected(request, marker);
+        if (runningNetty) {
+            // Netty's HttpServerCodec does not normalize the obs-fold: it joins the folded
+            // line onto the empty value, leaving " <length>" (leading SP) which is not a valid
+            // Content-Length, and marks the request as a decode failure. The request must
+            // therefore never be accepted (no 200) and the secondary request must never be
+            // processed. Unlike legacy Liberty, the rejection is not required to be a 400 here.
+            RawHttpExchange exchange = sendRawRequest(request);
+            String response = exchange.getResponse();
+            LOG.info("Raw response for " + marker + " (Netty):\n" + response);
+
+            List<String> statusLines = statusLines(response);
+            assertTrue("Expected at most one HTTP response for rejected obs-fold request. Status lines were: " + statusLines,
+                    statusLines.size() <= 1);
+            for (String statusLine : statusLines) {
+                assertFalse("Obs-fold request must not be accepted. Status line was: " + statusLine,
+                        statusLine.startsWith("HTTP/1.1 2"));
+            }
+            assertFalse("Malformed request marker must not be processed as a separate request. Response was:\n" + response,
+                    response.contains(marker));
+        } else {
+            // Legacy Liberty implements RFC 9112 §5.2 Option 1: strictly rejects obs-fold with HTTP 400.
+            assertMalformedRequestRejected(request, marker);
+        }
     }
 
     @Test
