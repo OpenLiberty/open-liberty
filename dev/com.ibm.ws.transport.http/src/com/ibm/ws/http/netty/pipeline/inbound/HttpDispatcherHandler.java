@@ -125,6 +125,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     // NEW: per-request marker to avoid double-enqueue when FullHttpRequest is used
     private boolean aggregatedBodyEnqueued;
+    
+    // Marker to reject a declared Content-Length over messageSizeLimit before the request dispatch
+    private boolean requestRejected;
 
     private final Map<String, HttpInputStream> streamMap = new ConcurrentHashMap<>();
 
@@ -232,7 +235,13 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                                     && !failure.getMessage().contains("possibly HTTP/0.9")) {
                         FFDCFilter.processException(failure, HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
                     }
-                    sendErrorMessage(failure);
+                    // If streaming is already active, signal the error to the application stream 
+                    // rather than sending a duplicate direct transport response.
+                    if (!(msg instanceof HttpRequest) && queue != null && !queue.isEosSignaled()) {
+                        queue.signalError(failure);
+                    } else {
+                        sendErrorMessage(failure);
+                    }
                 } else {
                     sendErrorMessage(new Exception("HTTP request decoding failure!"));
                 }
@@ -253,6 +262,23 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 UnsupportedProtocolVersionException cause = new UnsupportedProtocolVersionException(
                                 "Unsupported: " + req.protocolVersion().text());
                 sendErrorMessage(StatusCodes.UNSUPPORTED_VERSION, cause);
+                ReferenceCountUtil.release(req);
+                return;
+            }
+
+            // Reject a declared Content-Length over messageSizeLimit before the request is
+            // dispatched to the application. Mirrors
+            // HttpInboundServiceContextImpl.parsingComplete()
+            // in the channel framework, so the servlet never runs and no EOFException is
+            // signalled to a thread blocked reading the body when the connection closes.
+            requestRejected = false;
+            final long sizeLimit = config.getMessageSizeLimit();
+            if ((connectionProtocol == ProtocolName.HTTP1 || connectionProtocol == ProtocolName.HTTP10)
+                    && HttpConfigConstants.UNLIMITED != sizeLimit
+                    && HttpUtil.getContentLength(req, -1L) > sizeLimit) {
+                requestRejected = true;
+                sendErrorMessage(StatusCodes.ENTITY_TOO_LARGE,
+                        new TooLongFrameException("Content length exceeded max of " + sizeLimit + " bytes."));
                 ReferenceCountUtil.release(req);
                 return;
             }
@@ -303,6 +329,11 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
         if (msg instanceof HttpContent) {
             HttpContent content = (HttpContent) msg;
+
+            if(requestRejected) {
+                ReferenceCountUtil.release(content);
+                return;
+            }
 
             int sizeOfCurrentChunk = content.content().readableBytes();
             if (HttpConfigConstants.UNLIMITED != config.getMessageSizeLimit() && (sizeOfCurrentChunk > config.getMessageSizeLimit() ||
@@ -361,8 +392,17 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     private static boolean isExpectedRequestValidationFailure(Throwable failure) {
         return failure instanceof HttpRequestValidationException
+                        || isChunkSizeOverflow(failure)                        
                         || (failure instanceof IllegalArgumentException
                                         && failure.getCause() instanceof HttpRequestValidationException);
+    }
+
+    // Netty's HttpObjectDecoder reports an out-of-range chunk-size field as 
+    // NumberFormatException("Chunk size overflow: <n>"); the legacy parser rejects it without FFDC.
+    private static boolean isChunkSizeOverflow(Throwable failure) {
+        return failure instanceof NumberFormatException
+                        && failure.getMessage() != null
+                        && failure.getMessage().startsWith("Chunk size overflow");
     }
 
     private static boolean isUpgrade(HttpRequest req) {
