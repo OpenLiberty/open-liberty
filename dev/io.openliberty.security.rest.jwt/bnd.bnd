@@ -12,11 +12,9 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
-bVersion=1.0
+-sub: *.bnd
 
-Bundle-Name: Liberty Security REST JWT TAI
-Bundle-SymbolicName: io.openliberty.security.rest.jwt
-Bundle-Description: WebSphere Security REST Admin JWT Trust Association Interceptor, version=${bVersion}
+bVersion=1.0
 
 WS-TraceGroup: \
   RESTJWT

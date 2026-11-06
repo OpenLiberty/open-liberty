@@ -12,11 +12,15 @@
  *******************************************************************************/
 package io.openliberty.security.rest.jwt.fat;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE10RepeatAction;
+
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -27,5 +31,12 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 RestJwtKeyFileInvalidFATTest.class
 })
 public class FATSuite {
+
+    /*
+     * The restJwt-1.0 auto feature requires EE10 or later, so only the EE10 repeat is run.
+     */
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureEE10RepeatAction().forServerConfigPaths("publish/servers"));
+
     public static final String REST_MBEANS_ENDPOINT = "/IBMJMXConnectorREST/mbeans";
 }
