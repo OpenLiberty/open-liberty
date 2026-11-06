@@ -68,6 +68,7 @@ public class JwtUtils {
     public static final String CFG_KEY_VALID = "expiry";
     public static final String CFG_KEY_JTI = "jti"; // builder
     public static final String CFG_KEY_JTI_CHECK_ENABLED = "jtiCheckEnabled"; // consumer
+    public static final String CFG_KEY_TOKEN_REUSE = "tokenReuse"; // consumer
     public static final String CFG_KEY_SCOPE = "scope";
     public static final String CFG_KEY_AUDIENCES = "audiences";
     public static final String CFG_KEY_SIGNATURE_ALGORITHM = "signatureAlgorithm";

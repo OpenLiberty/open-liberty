@@ -147,6 +147,42 @@ public class RestJwtFATTest {
         assertEquals("Expected 401 Unauthorized for expired JWT", HttpURLConnection.HTTP_UNAUTHORIZED, responseCode);
     }
 
+    /**
+     * jwtConsumer does not allow token reuse by default, so presenting the same token (same iss and jti)
+     * a second time is rejected as a replay.
+     */
+    @Test
+    public void testReplayedJwt_Unauthorized() throws Exception {
+        String token = createJwtToken("adminUser", Collections.singletonList("liberty-admin"), ISSUER, SHARED_KEY, 10);
+        assertEquals("Expected 200 OK the first time the JWT is used", HttpURLConnection.HTTP_OK,
+                     sendRequest(FATSuite.REST_MBEANS_ENDPOINT, "GET", token).getResponseCode());
+        assertEquals("Expected 401 Unauthorized when the same JWT is replayed", HttpURLConnection.HTTP_UNAUTHORIZED,
+                     sendRequest(FATSuite.REST_MBEANS_ENDPOINT, "GET", token).getResponseCode());
+    }
+
+    /**
+     * With tokenReuse="true" on the jwtConsumer, the same token (same iss and jti) is accepted repeatedly.
+     */
+    @Test
+    public void testReplayedJwt_AllowedWhenTokenReuseEnabled() throws Exception {
+        server.saveServerConfiguration();
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFromFilePath("server_tokenReuse.xml");
+        try {
+            assertNotNull("The server configuration update was not completed",
+                          server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I"));
+            String token = createJwtToken("adminUser", Collections.singletonList("liberty-admin"), ISSUER, SHARED_KEY, 10);
+            assertEquals("Expected 200 OK the first time the JWT is used", HttpURLConnection.HTTP_OK,
+                         sendRequest(FATSuite.REST_MBEANS_ENDPOINT, "GET", token).getResponseCode());
+            assertEquals("Expected 200 OK when the same JWT is reused and tokenReuse is true", HttpURLConnection.HTTP_OK,
+                         sendRequest(FATSuite.REST_MBEANS_ENDPOINT, "GET", token).getResponseCode());
+        } finally {
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
+            server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I");
+        }
+    }
+
     @Test
     public void testMissingToken_Unauthorized() throws Exception {
         HttpURLConnection conn = sendRequest(FATSuite.REST_MBEANS_ENDPOINT, "GET", null);
