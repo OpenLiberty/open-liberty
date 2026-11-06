@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="REST Admin JWT TAI FAT Server">
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>restConnector-2.0</feature>
+        <feature>jwt-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="Liberty" />
+    <ltpa keysPassword="password" />
+
+    <!-- Route the admin REST connector (IBMJMXConnectorREST) through a dedicated admin endpoint/virtual host -->
+    <variable name="admin.virtual.host" value="admin_host"/>
+    <virtualHost id="admin_host" allowFromEndpointRef="adminEndpoint">
+        <hostAlias>*:${bvt.prop.HTTP_secondary.secure}</hostAlias>
+    </virtualHost>
+    <httpEndpoint id="adminEndpoint" host="*" httpPort="-1" httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
+    <jwtConsumer id="JMXConnectorRESTConsumer"
+                 issuer="IBMJMXConnectorRESTIssuer"
+                 audiences="IBMJMXConnectorREST"
+                 sharedKey="superSecretSharedKeyForRestJwtTesting123456"
+                 signatureAlgorithm="HS256"
+                 clockSkew="1m" />
+
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="adminUser" password="password"/>
+        <user name="readerUser" password="password"/>
+        <user name="unauthorizedUser" password="password"/>
+        <group name="liberty-admin">
+            <member name="adminUser"/>
+        </group>
+        <group name="liberty-reader">
+            <member name="readerUser"/>
+        </group>
+    </basicRegistry>
+
+    <administrator-role group="liberty-admin" />
+    <reader-role group="liberty-reader" />
+</server>
