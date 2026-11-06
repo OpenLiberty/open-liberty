@@ -1,0 +1,103 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+apply plugin: 'war'
+
+// We aren't making a war for the entire project
+war { enabled = false }
+
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               project(':com.ibm.ws.security.audit_fat.common.tooling'),
+               project(':com.ibm.ws.security.fat.common'),
+               project(':com.ibm.json4j')
+}
+
+/*
+ * The audit test applications and the keystores are provided by the tooling project.
+ */
+autoFVT.dependsOn ':com.ibm.ws.security.audit_fat.common.tooling:assemble'
+
+autoFVT.doLast {
+  def tooling = project(':com.ibm.ws.security.audit_fat.common.tooling')
+  def appDir = new File(tooling.buildDir, 'test-application')
+  def keyDir = new File(tooling.projectDir, 'securitykeys')
+  def serverDir = { String server -> new File(autoFvtDir, "publish/servers/${server}") }
+
+  /*
+   * Servers that need both audit applications.
+   */
+  ['com.ibm.ws.security.audit.fat.config',
+   'com.ibm.ws.security.audit.fat.logging'].each { server ->
+    copy {
+      from new File(appDir, 'AuditBasicAuthServlet.war')
+      from new File(appDir, 'AuditFormLoginServlet.war')
+      into new File(serverDir(server), 'apps')
+    }
+  }
+
+  /*
+   * Servers that need only the basic auth application.
+   */
+  ['com.ibm.ws.security.audit.fat.uniqueserver',
+   'com.ibm.ws.security.audit.fat.uniqueserver.env',
+   'com.ibm.ws.security.audit.fat.securelog',
+   'com.ibm.ws.security.audit.fat.securelogerror',
+   'com.ibm.ws.security.audit.fat.securelogging',
+   'com.ibm.ws.security.audit.fat.jsonlog'].each { server ->
+    copy {
+      from new File(appDir, 'AuditBasicAuthServlet.war')
+      into new File(serverDir(server), 'apps')
+    }
+  }
+
+  /*
+   * Copy the keystores to the servers that sign and/or encrypt the audit log.
+   */
+  copy {
+    from keyDir
+    include 'AuditEncryptionPublicKeyKeystore.jks',
+            'AuditEncryptionKeyStore2.jks',
+            'AuditEncryptionKeyStore.jks',
+            'AuditSigningKeyStore.jks',
+            'AuditSigningKeyStore2.jks',
+            'AuditCertPasswordKeystore.jks',
+            'key.jks'
+    into new File(serverDir('com.ibm.ws.security.audit.fat.securelog'), 'resources/security')
+  }
+  copy {
+    from keyDir
+    include 'AuditEncryptionPublicKeyKeystore.jks',
+            'AuditEncryptionKeyStore2.jks',
+            'AuditEncryptionKeyStore.jks',
+            'AuditSigningKeyStore.jks',
+            'AuditSigningKeyStore2.jks'
+    into new File(serverDir('com.ibm.ws.security.audit.fat.securelogerror'), 'resources/security')
+  }
+  ['com.ibm.ws.security.audit.fat.securelogging',
+   'com.ibm.ws.security.audit.fat.jsonlog'].each { server ->
+    copy {
+      from keyDir
+      include 'AuditEncryptionKeyStore.jks',
+              'AuditSigningKeyStore2.jks'
+      into new File(serverDir(server), 'resources/security')
+    }
+  }
+}
