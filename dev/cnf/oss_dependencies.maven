@@ -321,7 +321,7 @@ jakarta.authorization:jakarta.authorization-api:3.0.0
 jakarta.batch:jakarta.batch-api:2.0.0
 jakarta.batch:jakarta.batch-api:2.1.1
 jakarta.concurrency:jakarta.concurrency-api:3.2.0-M2
-jakarta.data:jakarta.data-api:1.0.0
+jakarta.data:jakarta.data-api:1.0.2
 jakarta.data:jakarta.data-api:1.1.0-M4
 jakarta.data:jakarta.data.stateful-api:1.1.0-M4
 jakarta.ejb:jakarta.ejb-api:4.0.1
@@ -621,9 +621,6 @@ org.eclipse.jetty:jetty-util:9.2.2.v20140723
 org.eclipse.jetty:jetty-util:9.4.39.v20210325
 org.eclipse.jetty:jetty-util:9.4.7.RC0
 org.eclipse.jetty:jetty-websocket:8.2.0.v20160908
-org.eclipse.jnosql.communication:jnosql-communication-semistructured:1.1.12
-org.eclipse.jnosql.mapping:jnosql-mapping-document:1.1.12
-org.eclipse.jnosql.mapping:jnosql-mapping-semistructured:1.1.12
 org.eclipse.microprofile.config:microprofile-config-api:1.1
 org.eclipse.microprofile.config:microprofile-config-api:1.2.1
 org.eclipse.microprofile.config:microprofile-config-api:1.3

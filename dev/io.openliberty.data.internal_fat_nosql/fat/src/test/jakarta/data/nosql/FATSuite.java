@@ -37,7 +37,7 @@ public class FATSuite extends TestContainerSuite {
                     .parse("public.ecr.aws/docker/library/mongo:8.0")
                     .asCompatibleSubstituteFor("mongo:8.0");
 
-    public static String JNOSQL_VERSION = "1.1.12";
+    public static String JNOSQL_VERSION = "1.2.0";
 
     @ClassRule
     public static MongoDBContainer mongoDBContainer = new MongoDBContainer(mongoDBImage);
