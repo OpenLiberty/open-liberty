@@ -1,0 +1,137 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package io.openliberty.classloading.classpath.fat;
+
+import static io.openliberty.classloading.classpath.fat.FATSuite.BASE_FEATURES;
+import static io.openliberty.classloading.classpath.fat.FATSuite.BASE_PLUS_DYNAMIC_FEATURE;
+import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_APP2_SERVLET_PATH;
+import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_EAR_TEST_SERVER;
+import static io.openliberty.classloading.classpath.fat.FATSuite.DYNAMIC_FEATURE_SERVLET_PATH;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_EAR;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_EAR_APP;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_UNRELATED_APP;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_DYNAMIC_FEATURE_UNRELATED_WAR;
+import static io.openliberty.classloading.classpath.fat.FATSuite.assertAppStoppedThenStarted;
+import static io.openliberty.classloading.classpath.fat.FATSuite.countAppMessages;
+import static io.openliberty.classloading.classpath.fat.FATSuite.installTestFeatureAndBundle;
+import static io.openliberty.classloading.classpath.fat.FATSuite.stopServerAndUninstall;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
+
+/**
+ * FAT test for dynamic feature lifecycle inside an EAR application (Scenario S7).
+ * <p>
+ * Tests that when a module inside an EAR application depends on a dynamic feature API,
+ * removing that feature recycles the entire EAR application.
+ * Verifies the {@code "EARApplication"} branch in {@code ClassLoaderFactory.registerOwnerAppNames}.
+ */
+@RunWith(FATRunner.class)
+public class DynamicFeatureEarTest {
+
+    @Server(DYNAMIC_FEATURE_EAR_TEST_SERVER)
+    public static LibertyServer server;
+
+    @BeforeClass
+    public static void setupTestServer() throws Exception {
+        // Feature / bundle installs must happen before startServer().
+        installTestFeatureAndBundle(server);
+
+        ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_EAR, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, TEST_DYNAMIC_FEATURE_UNRELATED_WAR, DeployOptions.SERVER_ONLY);
+
+        server.startServer();
+    }
+
+    @Test
+    public void testDynamicFeatureEarLifecycle() throws Exception {
+        int unrelatedMessagesBefore = countAppMessages(server, TEST_DYNAMIC_FEATURE_UNRELATED_APP);
+
+        // ── STATE 1: Feature present ─────────────────────────────────────────
+        server.setMarkToEndOfLog();
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH, "testAppDirectlyDependsOnFeatureApi_FeaturePresent");
+        assertNotNull("State 1 SUCCESS marker not found in log",
+                      server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_TEST STATE1 - SUCCESS"));
+
+        // Mark both modules before the update.
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH,
+                                 "testMarkEarModuleBeforeUpdate");
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_APP2_SERVLET_PATH,
+                                 "testMarkEarModuleBeforeUpdate");
+
+
+        // ── STATE 2: Remove feature dynamically ──────────────────────────────
+        server.setMarkToEndOfLog();
+        server.changeFeatures(BASE_FEATURES);
+        List<String> removalMessages = server.waitForConfigUpdateInLogUsingMark(
+            null, true,
+            "CWWKZ0009I.*" + TEST_DYNAMIC_FEATURE_EAR_APP,
+            "CWWKZ000[13]I.*" + TEST_DYNAMIC_FEATURE_EAR_APP);
+        assertAppStoppedThenStarted(TEST_DYNAMIC_FEATURE_EAR_APP, "State 2", removalMessages);
+        assertEquals("State 2: unrelated app must not be restarted",
+                     unrelatedMessagesBefore, countAppMessages(server, TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+        assertEquals("State 2: " + TEST_DYNAMIC_FEATURE_EAR_APP + " must have restarted exactly once",
+                     3, countAppMessages(server, TEST_DYNAMIC_FEATURE_EAR_APP));
+
+        // Both modules should have fresh static state after the EAR restart.
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH,
+                                 "testEarModuleWasRecreated");
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_APP2_SERVLET_PATH,
+                                 "testEarModuleWasRecreated");
+
+        server.setMarkToEndOfLog();
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH,
+            "testAppDirectlyDependsOnFeatureApi_FeatureRemoved_CachedInterface");
+        assertNotNull("State 2a NOT_LOADABLE marker not found in log",
+                      server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_TEST STATE2a - NOT_LOADABLE"));
+
+        server.setMarkToEndOfLog();
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH,
+            "testAppDirectlyDependsOnFeatureApi_FeatureRemoved_FreshInterface");
+        assertNotNull("State 2b marker not found in log",
+                      server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_TEST STATE2b -"));
+
+        // ── STATE 3: Re-add feature (no app restart expected) ────────────────
+        server.setMarkToEndOfLog();
+        server.changeFeatures(BASE_PLUS_DYNAMIC_FEATURE);
+        server.waitForConfigUpdateInLogUsingMark(null, true);
+        assertEquals("State 3: unrelated app must not be restarted",
+                     unrelatedMessagesBefore, countAppMessages(server, TEST_DYNAMIC_FEATURE_UNRELATED_APP));
+        assertEquals("State 3: " + TEST_DYNAMIC_FEATURE_EAR_APP + " must not have restarted again",
+                     3, countAppMessages(server, TEST_DYNAMIC_FEATURE_EAR_APP));
+
+        server.setMarkToEndOfLog();
+        FATServletClient.runTest(server, DYNAMIC_FEATURE_SERVLET_PATH, "testAppDirectlyDependsOnFeatureApi_FeatureReAdded");
+        assertNotNull("State 3 SUCCESS marker not found in log",
+                      server.waitForStringInLogUsingMark("DYNAMIC_FEATURE_TEST STATE3 - SUCCESS"));
+    }
+
+    @AfterClass
+    public static void stopServer() throws Exception {
+        stopServerAndUninstall(server);
+    }
+}

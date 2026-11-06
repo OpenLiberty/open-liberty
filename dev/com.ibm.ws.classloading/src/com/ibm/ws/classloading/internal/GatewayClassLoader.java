@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.osgi.internal.loader.BundleLoader;
 import org.eclipse.osgi.internal.loader.ModuleClassLoader;
@@ -71,6 +72,15 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     private volatile BundleLoader bLoader;
     private final CompositeResourceProvider resourceProviders;
     private final String toStringCache;
+    /**
+     * App names of top-level application modules that are served by this gateway:
+     * either the module whose ACL uses this GCL as its Java parent (app gateway),
+     * or modules whose WAR/EJB ACL lists this GCL's ACL as a common-library delegate
+     * (library gateway).  Populated at ACL creation time by ClassLoaderFactory;
+     * never null.  Uses a concurrent set so the UNRESOLVED listener can read it
+     * without a lock.
+     */
+    private final Set<String> ownerAppNames = ConcurrentHashMap.newKeySet();
 
     static GatewayClassLoader createGatewayClassLoader(Map<Bundle, Set<GatewayClassLoader>> classloaders,
                                                        GatewayConfiguration config,
@@ -343,6 +353,22 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     @Trivial
     public Bundle getBundle() {
         return bundle;
+    }
+
+    /**
+     * Registers an app name that is served by (or depends on) this gateway's ACL.
+     * Called once per top-level app module at ACL creation time.
+     */
+    void addOwnerAppName(String appName) {
+        ownerAppNames.add(appName);
+    }
+
+    /**
+     * Returns the set of app names registered on this gateway, or an empty set.
+     * The returned set must not be modified by the caller.
+     */
+    Set<String> getOwnerAppNames() {
+        return ownerAppNames;
     }
 
     @Trivial
