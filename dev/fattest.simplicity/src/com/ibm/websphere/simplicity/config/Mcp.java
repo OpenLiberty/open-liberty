@@ -20,6 +20,8 @@ public class Mcp extends ConfigElement {
     private String moduleName;
     private String path;
     private String asyncTimeout;
+    private String minimumProtocolVersion;
+    private String maximumProtocolVersion;
 
     /**
      * @return whether the MCP server is stateless
@@ -69,6 +71,30 @@ public class Mcp extends ConfigElement {
         this.asyncTimeout = asyncTimeout;
     }
 
+    /**
+     * @return the minimum accepted MCP protocol version
+     */
+    public String getMinimumProtocolVersion() {
+        return minimumProtocolVersion;
+    }
+
+    @XmlAttribute
+    public void setMinimumProtocolVersion(String minimumProtocolVersion) {
+        this.minimumProtocolVersion = minimumProtocolVersion;
+    }
+
+    /**
+     * @return the maximum accepted MCP protocol version
+     */
+    public String getMaximumProtocolVersion() {
+        return maximumProtocolVersion;
+    }
+
+    @XmlAttribute
+    public void setMaximumProtocolVersion(String maximumProtocolVersion) {
+        this.maximumProtocolVersion = maximumProtocolVersion;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Mcp {");
@@ -80,6 +106,10 @@ public class Mcp extends ConfigElement {
             builder.append("path=\"" + path + "\" ");
         if (asyncTimeout != null)
             builder.append("asyncTimeout=\"" + asyncTimeout + "\" ");
+        if (minimumProtocolVersion != null)
+            builder.append("minimumProtocolVersion=\"" + minimumProtocolVersion + "\" ");
+        if (maximumProtocolVersion != null)
+            builder.append("maximumProtocolVersion=\"" + maximumProtocolVersion + "\" ");
         builder.append("}");
         return builder.toString();
     }
