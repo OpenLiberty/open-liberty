@@ -1,0 +1,23 @@
+<server>
+    <include location="../fatTestCommon.xml"/>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>concurrent-1.0</feature>
+        <feature>test.iiop-1.0</feature>
+        <feature>test.user.feature-1.0</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>ejbRemote-3.2</feature>
+    </featureManager>
+    <!-- Use secondary HTTP port to avoid collision with ephemeralIiopClient (which uses HTTP_default=8010) -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+    <tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
+    <!-- iiopPort=-1 lets Yoko pick an OS-assigned ephemeral plain IIOP port for bootstrap.
+         The FAT test reads it from the trace log and injects it as iiop.ephemeral.port.-->
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="-1">
+       
+    </iiopEndpoint>
+
+</server>

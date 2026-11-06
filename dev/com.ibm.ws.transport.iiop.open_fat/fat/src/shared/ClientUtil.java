@@ -13,6 +13,8 @@
 package shared;
 
 import java.rmi.Remote;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.stream.Stream;
@@ -20,14 +22,33 @@ import java.util.stream.Stream;
 import javax.rmi.PortableRemoteObject;
 import javax.rmi.CORBA.Stub;
 
+import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.portable.InputStream;
 import org.omg.CORBA.portable.OutputStream;
+import org.omg.CSIIOP.CompoundSecMech;
+import org.omg.CSIIOP.CompoundSecMechList;
+import org.omg.CSIIOP.CompoundSecMechListHelper;
+import org.omg.CSIIOP.TAG_CSI_SEC_MECH_LIST;
+import org.omg.CSIIOP.TAG_TLS_SEC_TRANS;
+import org.omg.CSIIOP.TLS_SEC_TRANS;
+import org.omg.CSIIOP.TLS_SEC_TRANSHelper;
+import org.omg.CSIIOP.TransportAddress;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
+import org.omg.IIOP.ProfileBody_1_1;
+import org.omg.IIOP.ProfileBody_1_1Helper;
+import org.omg.IOP.Codec;
+import org.omg.IOP.CodecFactory;
+import org.omg.IOP.CodecFactoryHelper;
+import org.omg.IOP.ENCODING_CDR_ENCAPS;
+import org.omg.IOP.Encoding;
 import org.omg.IOP.IOR;
 import org.omg.IOP.IORHelper;
+import org.omg.IOP.TAG_INTERNET_IOP;
+import org.omg.IOP.TaggedComponent;
+import org.omg.IOP.TaggedProfile;
 import org.omg.PortableServer.POA;
 
 public enum ClientUtil {
@@ -76,10 +97,57 @@ public enum ClientUtil {
     }
 
     public static int getNumProfiles(Stub ejb, ORB orb) {
+        return getIor(ejb, orb).profiles.length;
+    }
+
+    private static IOR getIor(Stub ejb, ORB orb) {
         OutputStream os = orb.create_output_stream();
         os.write_Object(ejb);
         InputStream is = os.create_input_stream();
-        IOR ior = IORHelper.read(is);
-        return ior.profiles.length;
+        return IORHelper.read(is);
+    }
+
+    private static Codec getCodec(ORB orb) throws Exception {
+        CodecFactory factory = CodecFactoryHelper.narrow(orb.resolve_initial_references("CodecFactory"));
+        return factory.create_codec(new Encoding(ENCODING_CDR_ENCAPS.value, (byte) 1, (byte) 2));
+    }
+
+    /** Decodes the first TAG_INTERNET_IOP profile of the IOR of the given stub. */
+    public static ProfileBody_1_1 getIiopProfile(Stub ejb, ORB orb) throws Exception {
+        Codec codec = getCodec(orb);
+        for (TaggedProfile profile : getIor(ejb, orb).profiles) {
+            if (profile.tag == TAG_INTERNET_IOP.value) {
+                Any any = codec.decode_value(profile.profile_data, ProfileBody_1_1Helper.type());
+                return ProfileBody_1_1Helper.extract(any);
+            }
+        }
+        throw new IllegalStateException("IOR has no TAG_INTERNET_IOP profile");
+    }
+
+    /**
+     * Returns the ports of every CSIv2 TLS_SEC_TRANS address advertised in the
+     * TAG_CSI_SEC_MECH_LIST component of the given IIOP profile.
+     */
+    public static List<Integer> getCsiv2SslPorts(ProfileBody_1_1 profile, ORB orb) throws Exception {
+        Codec codec = getCodec(orb);
+        List<Integer> ports = new ArrayList<>();
+        for (TaggedComponent component : profile.components) {
+            if (component.tag != TAG_CSI_SEC_MECH_LIST.value) {
+                continue;
+            }
+            Any any = codec.decode_value(component.component_data, CompoundSecMechListHelper.type());
+            CompoundSecMechList mechList = CompoundSecMechListHelper.extract(any);
+            for (CompoundSecMech mech : mechList.mechanism_list) {
+                if (mech.transport_mech.tag != TAG_TLS_SEC_TRANS.value) {
+                    continue;
+                }
+                Any tlsAny = codec.decode_value(mech.transport_mech.component_data, TLS_SEC_TRANSHelper.type());
+                TLS_SEC_TRANS tls = TLS_SEC_TRANSHelper.extract(tlsAny);
+                for (TransportAddress address : tls.addresses) {
+                    ports.add(address.port & 0xFFFF);
+                }
+            }
+        }
+        return ports;
     }
 }
