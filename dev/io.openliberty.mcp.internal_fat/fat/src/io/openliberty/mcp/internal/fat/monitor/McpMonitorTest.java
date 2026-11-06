@@ -10,12 +10,14 @@
 package io.openliberty.mcp.internal.fat.monitor;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMonitorServerSuite.serverLifecycle;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.management.MBeanServerConnection;
@@ -31,9 +33,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
@@ -50,11 +50,9 @@ public class McpMonitorTest {
     private static final String MBEAN_TYPE_OPERATION = "McpOperationStatistics";
     private static final String MBEAN_TYPE_SESSION = "McpSessionStatistics";
 
-    @Server("mcp-server-monitor-only")
-    public static LibertyServer server;
-
+    // Server is managed by McpMonitorServerSuite — do NOT add @Server or copy the field here.
     @Rule
-    public McpClient client = McpClient.builder(server, "/" + APP_NAME).build();
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     private static LocalConnector localConnector;
     private static MBeanServerConnection mbeanServer;
@@ -117,18 +115,16 @@ public class McpMonitorTest {
 
     @BeforeClass
     public static void setup() throws Exception {
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E")); // Expected: Tool threw non-business exception
+
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(BasicTools.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        server.startServer();
-
-        // Wait for server to be ready
-        assertNotNull("Server should start successfully",
-                      server.waitForStringInLog("CWWKF0011I"));
+        serverLifecycle.deployDropinApp(war);
 
         // Connect to local JMX connector
-        localConnector = new LocalConnector(server.getServerRoot());
+        localConnector = new LocalConnector(serverLifecycle.getServer().getServerRoot());
         mbeanServer = localConnector.getMBeanServer();
         assertNotNull("MBean server connection should not be null", mbeanServer);
     }
@@ -140,9 +136,7 @@ public class McpMonitorTest {
                 localConnector.close();
             }
         } finally {
-            if (server != null && server.isStarted()) {
-                server.stopServer("CWMCM0010E"); // Expected: Tool threw non-business exception
-            }
+            serverLifecycle.undeployDropinApp(APP_NAME);
         }
     }
 
@@ -696,7 +690,7 @@ public class McpMonitorTest {
         // Set log mark after deleteSession() so the waitForStringInLogUsingMark below
         // cannot match a CWWKZ0009I from a previous test. Must be placed before
         // removeDropinsApplications() to capture the undeploy that follows.
-        server.setMarkToEndOfLog();
+        serverLifecycle.getServer().setMarkToEndOfLog();
 
         // 2. Verify both operation and session MBeans are registered with specific checks
         ObjectName operationQuery = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
@@ -719,7 +713,7 @@ public class McpMonitorTest {
                       mbeanServer.getAttribute(sessionMBean, "Count"));
 
         // 3. Undeploy the application
-        server.removeDropinsApplications(APP_NAME + ".war");
+        serverLifecycle.getServer().removeDropinsApplications(APP_NAME + ".war");
 
         // Use waitForStringInLogUsingMark (not waitForStringInLog) so that only the
         // CWWKZ0009I from this undeploy is matched. CWWKZ0009I is logged synchronously
@@ -727,7 +721,7 @@ public class McpMonitorTest {
         // removeStatsForApp() completes — so the JMX assertions below are guaranteed
         // to run after all MBeans have been deregistered, eliminating the race.
         assertNotNull("Application should stop",
-                      server.waitForStringInLogUsingMark("CWWKZ0009I.*" + APP_NAME));
+                      serverLifecycle.getServer().waitForStringInLogUsingMark("CWWKZ0009I.*" + APP_NAME));
 
         // 4. Verify cleanup: both operation and session MBeans should be removed
         operationMBeans = mbeanServer.queryNames(operationQuery, null);
@@ -739,9 +733,9 @@ public class McpMonitorTest {
         // 5. Redeploy the application
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(BasicTools.class.getPackage());
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(serverLifecycle.getServer(), war, SERVER_ONLY);
         assertNotNull("Application should restart",
-                      server.waitForStringInLog("CWWKZ0001I.*" + APP_NAME));
+                      serverLifecycle.getServer().waitForStringInLogUsingMark("CWWKZ0001I.*" + APP_NAME));
 
         // 6. Reinitialize client and generate metrics again
         client.initialize();

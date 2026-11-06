@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -21,37 +21,31 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.tool.nonRequiredArgsApp.NonRequiredArgsTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 @RunWith(FATRunner.class)
 public class NonRequiredArgsToolsTest {
 
-    @Server("mcp-server")
-    public static LibertyServer server;
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String APP_NAME = "nonRequiredArgsToolsTest";
 
     @Rule
-    public McpClient client = McpClient.builder(server, "/nonRequiredArgsToolsTest").build();
-
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
+    
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "nonRequiredArgsToolsTest.war")
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(NonRequiredArgsTools.class.getPackage());
-
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$"));
+        serverLifecycle.deployDropinApp(war);
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
