@@ -9,10 +9,17 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import io.openliberty.mcp.internal.encoders.EncoderRegistries;
+import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.moduleScope.ModuleScoped;
+import io.openliberty.mcp.internal.sessions.McpSessionStore;
+import io.openliberty.mcp.internal.sessions.McpSessionStores;
 import io.openliberty.mcp.tools.ToolManager;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.Typed;
+import jakarta.json.bind.Jsonb;
 
 /**
  * Holds provider methods which produce CDI beans for MCP components.
@@ -37,6 +44,44 @@ public class McpCdiProducers {
     @Produces
     private ToolManager produceToolManager(McpCdiExtension extension) {
         return extension.getCurrentToolRegistry();
+    }
+
+    @ModuleScoped
+    @Produces
+    private ConverterRegistry producerConverterRegistry(ConverterRegistries store) {
+        return store.getCurrent();
+    }
+
+    @ModuleScoped
+    @Produces
+    private EncoderRegistry produceEncoderRegistry(EncoderRegistries store) {
+        return store.getCurrent();
+    }
+
+    @ModuleScoped
+    @Produces
+    private McpRequestTracker produceRequestTracker(McpRequestTrackers store) {
+        return store.getCurrent();
+    }
+
+    @ModuleScoped
+    @Produces
+    private McpSessionStore produceSessionStore(McpSessionStores store) {
+        return store.getCurrent();
+    }
+
+    @ModuleScoped
+    @Produces
+    @Typed(ToolRegistry.class)
+    private ToolRegistry produceToolRegistry(McpCdiExtension extension) {
+        return extension.getCurrentToolRegistry();
+    }
+
+    @Dependent
+    @Produces
+    @McpInternal
+    private Jsonb produceInternalJsonb(McpCdiExtension extension) {
+        return extension.getJsonb();
     }
 
 }
