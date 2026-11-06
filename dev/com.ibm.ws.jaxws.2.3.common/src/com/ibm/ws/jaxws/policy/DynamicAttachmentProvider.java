@@ -18,6 +18,9 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import java.net.URI;
+import org.apache.cxf.ws.policy.attachment.external.EndpointReferenceDomainExpression;
+
 import javax.xml.namespace.QName;
 import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -333,8 +336,69 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
                 } else if (nd.getLocalName().equals("EndpointReference")) {
                     DomainExpressionBuilderRegistry debr = bus.getExtension(DomainExpressionBuilderRegistry.class);
                     assert null != debr;
-                    DomainExpression de = debr.build((Element) nd);
-                    des.add(de);
+                    final DomainExpression de = debr.build((Element) nd);
+
+                    // Normalize address comparisons (handles relative paths, context paths, and full URLs)
+                    DomainExpression normalizedDE = new DomainExpression() {
+                        @Override
+                        public boolean appliesTo(EndpointInfo ei) {
+                            if (de.appliesTo(ei)) {
+                                return true;
+                            }
+                            if (de instanceof EndpointReferenceDomainExpression) {
+                                EndpointReferenceDomainExpression eprde = (EndpointReferenceDomainExpression) de;
+                                if (eprde.getEndpointReference() != null && eprde.getEndpointReference().getAddress() != null) {
+                                    String policyAddr = eprde.getEndpointReference().getAddress().getValue();
+                                    String epAddr = (ei != null) ? ei.getAddress() : null;
+                                    if (policyAddr != null && epAddr != null) {
+                                        policyAddr = policyAddr.trim();
+                                        epAddr = epAddr.trim();
+
+                                        // 1. Direct or suffix match
+                                        if (policyAddr.equals(epAddr) || policyAddr.endsWith(epAddr) || epAddr.endsWith(policyAddr)) {
+                                            return true;
+                                        }
+
+                                        // 2. Normalized path match (strips scheme://host:port)
+                                        try {
+                                            String pPath = (policyAddr.startsWith("http://") || policyAddr.startsWith("https://")) 
+                                                            ? URI.create(policyAddr).getPath() : policyAddr;
+                                            String ePath = (epAddr.startsWith("http://") || epAddr.startsWith("https://")) 
+                                                            ? URI.create(epAddr).getPath() : epAddr;
+                                            if (pPath != null && ePath != null) {
+                                                if (pPath.equals(ePath) || pPath.endsWith(ePath) || ePath.endsWith(pPath)) {
+                                                    return true;
+                                                }
+                                            }
+                                        } catch (Exception ignored) {
+                                        }
+                                    }
+                                }
+                            }
+                            return false;
+                        }
+
+                        @Override
+                        public boolean appliesTo(ServiceInfo si) {
+                            return de.appliesTo(si);
+                        }
+
+                        @Override
+                        public boolean appliesTo(BindingOperationInfo boi) {
+                            return de.appliesTo(boi);
+                        }
+
+                        @Override
+                        public boolean appliesTo(BindingMessageInfo bmi) {
+                            return de.appliesTo(bmi);
+                        }
+
+                        @Override
+                        public boolean appliesTo(BindingFaultInfo bfi) {
+                            return de.appliesTo(bfi);
+                        }
+                    };
+                    des.add(normalizedDE);
                 } else {
                     throw new PolicyException(new Exception("No Related DomainExpressionBuilder"));
                 }
