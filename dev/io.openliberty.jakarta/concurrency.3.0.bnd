@@ -13,12 +13,15 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+Bundle-SymbolicName: io.openliberty.jakarta.concurrency.3.0; singleton:=true
+Specification-Title: Jakarta Concurrency
+Specification-Vendor: Eclipse Foundation
+Specification-Version: 3.0
+
 javac.source: 11
 javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
-
-Bundle-SymbolicName: io.openliberty.jakarta.concurrency.3.0; singleton:=true
 
 Export-Package: \
   jakarta.enterprise.concurrent;version="3.0.4",\
@@ -36,9 +39,5 @@ Import-Package: \
 -includeresource: \
   @${repo;jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;3.0.4;EXACT}!/!(META-INF/maven/*|module-info.class)
 
-instrument.disabled: true
-
-publish.wlp.jar.suffix: dev/api/spec
-
--buildpath: \
-  jakarta.enterprise.concurrent:jakarta.enterprise.concurrent-api;version=3.0.4;strategy=exact
+-maven-dependencies: \
+   dep1;groupId=jakarta.enterprise.concurrent;artifactId=jakarta.enterprise.concurrent-api;version=3.0.4;scope=runtime
