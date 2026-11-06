@@ -32,6 +32,8 @@ import org.mcpjava.server.tools.Tool;
 import org.mcpjava.server.tools.ToolArg;
 import org.mcpjava.server.tools.ToolResponse;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.WrapBusinessError;
 import io.openliberty.mcp.internal.ToolRegistry.ToolArgumentImpl;
@@ -485,6 +487,11 @@ public record ToolMetadata(String name,
     @Override
     public boolean isMethod() {
         return methodMetadata.isPresent();
+    }
+
+    @Trivial
+    public Instant createdAt() {
+        return createdAt;
     }
 
 }

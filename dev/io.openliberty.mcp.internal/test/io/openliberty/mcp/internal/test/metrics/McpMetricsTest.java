@@ -16,6 +16,7 @@ import static org.junit.Assert.assertSame;
 import org.junit.After;
 import org.junit.Test;
 
+import io.openliberty.mcp.internal.RequestMethod;
 import io.openliberty.mcp.internal.metrics.McpOperationMetrics;
 import io.openliberty.mcp.internal.metrics.McpSessionMetrics;
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitor;
@@ -34,7 +35,7 @@ public class McpMetricsTest {
         McpStatsMonitorHolder.set(monitor);
 
         McpOperationMetrics metrics = new McpOperationMetrics();
-        metrics.setMethodName("initialize");
+        metrics.setMethod(RequestMethod.INITIALIZE);
 
         McpOperationMetrics.operationStarted(metrics);
 
@@ -47,7 +48,7 @@ public class McpMetricsTest {
         McpStatsMonitorHolder.set(monitor);
 
         McpOperationMetrics metrics = new McpOperationMetrics();
-        metrics.setMethodName("tools/list");
+        metrics.setMethod(RequestMethod.TOOLS_LIST);
         metrics.setOutcome("ok", null);
 
         McpOperationMetrics.operationEnded(metrics);
@@ -61,7 +62,7 @@ public class McpMetricsTest {
         McpStatsMonitorHolder.clear();
 
         McpOperationMetrics metrics = new McpOperationMetrics();
-        metrics.setMethodName("initialize");
+        metrics.setMethod(RequestMethod.INITIALIZE);
 
         McpOperationMetrics.operationStarted(metrics);
 
@@ -74,7 +75,7 @@ public class McpMetricsTest {
         McpStatsMonitorHolder.clear();
 
         McpOperationMetrics metrics = new McpOperationMetrics();
-        metrics.setMethodName("initialize");
+        metrics.setMethod(RequestMethod.INITIALIZE);
         metrics.setOutcome("ok", null);
 
         McpOperationMetrics.operationEnded(metrics);

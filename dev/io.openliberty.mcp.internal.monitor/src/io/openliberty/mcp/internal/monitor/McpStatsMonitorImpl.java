@@ -337,12 +337,7 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 
         if (metrics.getTransport() != null) {
             try {
-                if (metrics.getTransport().getMcpRequest() != null) {
-                    String jsonrpcVersion = metrics.getTransport().getMcpRequest().jsonrpc();
-                    if (jsonrpcVersion != null) {
-                        builder.withJsonrpcProtocolVersion(jsonrpcVersion);
-                    }
-                }
+                builder.withJsonrpcProtocolVersion("2.0");
 
                 if (metrics.getTransport().getProtocolVersion() != null) {
                     builder.withMcpProtocolVersion(metrics.getTransport().getProtocolVersion().getVersion());

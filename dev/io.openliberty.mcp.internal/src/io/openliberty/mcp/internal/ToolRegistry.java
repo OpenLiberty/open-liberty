@@ -66,6 +66,12 @@ public class ToolRegistry implements ToolManager {
 
     private final ToolStore toolStore = new ToolStore();
 
+    // CDI no-args constructor
+    public ToolRegistry() {
+        schemaRegistry = null;
+        jsonb = null;
+    }
+
     /**
      * Create a toolRegistry
      *

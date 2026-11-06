@@ -45,8 +45,6 @@ public class ExceptionAssertions {
             code.run();
             fail("No exception thrown");
         } catch (Throwable t) {
-            System.out.println("Exception thrown: ");
-            t.printStackTrace();
             assertThat(t, matcher);
         }
     }
@@ -73,6 +71,7 @@ public class ExceptionAssertions {
         protected Class<? extends Throwable> type;
         protected final List<String> messageIncludes = new ArrayList<>();
         protected Matcher<Throwable> causeMatcher;
+        protected final List<Matcher<? super Throwable>> chainedMatchers = new ArrayList<>();
 
         private ExceptionMatcher() {
             super(Throwable.class);
@@ -111,6 +110,17 @@ public class ExceptionAssertions {
             return this;
         }
 
+        /**
+         * Chain additional matchers to run against the exception
+         *
+         * @param matcher the matcher
+         * @return {@code this}
+         */
+        public ExceptionMatcher and(Matcher<? super Throwable> matcher) {
+            this.chainedMatchers.add(matcher);
+            return this;
+        }
+
         /** {@inheritDoc} */
         @Override
         public void describeTo(Description desc) {
@@ -123,6 +133,9 @@ public class ExceptionAssertions {
             }
             if (causeMatcher != null) {
                 desc.appendText(" with cause ").appendDescriptionOf(causeMatcher);
+            }
+            for (Matcher<?> m : chainedMatchers) {
+                desc.appendText(" and ").appendDescriptionOf(m);
             }
         }
 
@@ -153,6 +166,15 @@ public class ExceptionAssertions {
                     desc.appendText("\n");
                 }
             }
+
+            for (Matcher<?> m : chainedMatchers) {
+                if (!m.matches(t)) {
+                    result = false;
+                    m.describeMismatch(t, desc);
+                    desc.appendText("\n");
+                }
+            }
+
             return result;
         }
     }

@@ -15,6 +15,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.mcp.internal.McpTransport;
+import io.openliberty.mcp.internal.RequestMethod;
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitor;
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitorHolder;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
@@ -87,8 +88,12 @@ public final class McpOperationMetrics {
     /**
      * @param methodName the methodName to set
      */
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
+    public void setMethod(RequestMethod method) {
+        if (method != null) {
+            this.methodName = method.getMethodName();
+        } else {
+            this.methodName = "_OTHER";
+        }
     }
 
     /**
@@ -98,9 +103,6 @@ public final class McpOperationMetrics {
         return toolName;
     }
 
-    /**
-     * @param toolName the toolName to set
-     */
     public void setToolName(String toolName) {
         this.toolName = toolName;
     }
