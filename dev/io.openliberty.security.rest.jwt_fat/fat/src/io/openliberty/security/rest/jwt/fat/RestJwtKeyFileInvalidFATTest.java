@@ -47,7 +47,7 @@ import componenttest.topology.impl.LibertyServer;
  * valid key is never served, so no key can be cached from an earlier request.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class RestJwtKeyFileInvalidFATTest {
 
     private static final Class<?> c = RestJwtKeyFileInvalidFATTest.class;

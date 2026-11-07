@@ -44,7 +44,7 @@ import componenttest.topology.impl.LibertyServer;
  * jwkEndpointUrl="file:${server.config.dir}resources/security/jwtPublic.pem"
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class RestJwtKeyFileFATTest {
 
     private static final Class<?> c = RestJwtKeyFileFATTest.class;

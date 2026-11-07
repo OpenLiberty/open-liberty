@@ -37,7 +37,7 @@ import componenttest.topology.impl.LibertyServer;
  * provisioned, so RestJwtTAI must not be created and must not process any request.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class RestJwtNoConnectorFATTest {
 
     private static final Class<?> c = RestJwtNoConnectorFATTest.class;

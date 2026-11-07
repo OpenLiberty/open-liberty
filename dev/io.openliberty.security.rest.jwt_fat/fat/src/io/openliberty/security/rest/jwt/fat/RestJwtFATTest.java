@@ -37,7 +37,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 public class RestJwtFATTest {
 
     private static final Class<?> c = RestJwtFATTest.class;
@@ -67,6 +67,7 @@ public class RestJwtFATTest {
     }
 
     @Test
+    @Mode(TestMode.LITE)
     public void testValidJwtWithAdminRole_Success() throws Exception {
         String token = createToken(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS));
         assertEquals("Expected 200 OK for a valid JWT with a server: access ID subject and the liberty-admin group access ID in groups",
@@ -99,6 +100,7 @@ public class RestJwtFATTest {
     }
 
     @Test
+    @Mode(TestMode.LITE)
     public void testValidJwtWithUnauthorizedRole_Forbidden() throws Exception {
         String token = createToken(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.UNAUTHORIZED_GROUPS));
         assertEquals("Expected 403 Forbidden for a valid JWT with a server: access ID subject and only the unauthorizedGroup group access ID, which has no role",
@@ -146,6 +148,7 @@ public class RestJwtFATTest {
     }
 
     @Test
+    @Mode(TestMode.LITE)
     @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     public void testInvalidSignatureJwt_Unauthorized() throws Exception {
         String token = FATSuite.createHs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS), FATSuite.WRONG_KEY);
@@ -325,6 +328,7 @@ public class RestJwtFATTest {
      * mapping.
      */
     @Test
+    @Mode(TestMode.LITE)
     public void testGroupMapping_PlainGroupNames() throws Exception {
         String token = createToken(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.PLAIN_ADMIN_GROUPS));
         assertEquals("Expected 200 OK for a valid JWT with a server: access ID subject and the plain group name liberty-admin in groups",
@@ -337,6 +341,7 @@ public class RestJwtFATTest {
      * realm to build the access IDs from and the token is rejected.
      */
     @Test
+    @Mode(TestMode.LITE)
     public void testPlainUserSubject_Unauthorized() throws Exception {
         String token = createToken(FATSuite.createClaims(FATSuite.PLAIN_USER, FATSuite.PLAIN_ADMIN_GROUPS));
         assertEquals("Expected 401 Unauthorized for a valid JWT whose subject is the plain user name plainUser and whose groups has only the plain group name liberty-admin, so there is no access ID to take the realm from",
