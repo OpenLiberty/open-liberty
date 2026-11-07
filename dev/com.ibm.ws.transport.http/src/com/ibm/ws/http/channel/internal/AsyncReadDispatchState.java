@@ -12,9 +12,11 @@ package com.ibm.ws.http.channel.internal;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Map;
 
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.wsspi.channelfw.VirtualConnection;
 
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
@@ -25,16 +27,20 @@ import io.netty.util.AttributeKey;
  */
 public final class AsyncReadDispatchState {
     private static final AttributeKey<AsyncReadDispatchState> STATE = AttributeKey.valueOf("asyncReadDispatchState");
+    private static final Object HTTP2_REQUEST_STATE = new Object();
 
     private final Channel channel;
     private final Executor executor;
+    private final boolean requestScoped;
     private Registration armed;
     private boolean dispatched;
     private boolean failed;
+    private boolean asyncReadInProgress;
 
-    private AsyncReadDispatchState(Channel channel, Executor executor) {
+    private AsyncReadDispatchState(Channel channel, Executor executor, boolean requestScoped) {
         this.channel = channel;
         this.executor = executor;
+        this.requestScoped = requestScoped;
     }
 
     public static AsyncReadDispatchState forChannel(Channel channel) {
@@ -46,9 +52,46 @@ public final class AsyncReadDispatchState {
         if (state != null) {
             return state;
         }
-        AsyncReadDispatchState created = new AsyncReadDispatchState(channel, executor);
+        AsyncReadDispatchState created = new AsyncReadDispatchState(channel, executor, false);
         AsyncReadDispatchState existing = channel.attr(STATE).setIfAbsent(created);
         return existing == null ? created : existing;
+    }
+
+    /** H2 callbacks belong to a request VC; H1 and upgrades remain channel owned. */
+    public static AsyncReadDispatchState forRequest(Channel channel, VirtualConnection vc) {
+        return forRequest(channel, vc, null);
+    }
+
+    static AsyncReadDispatchState forRequest(Channel channel, VirtualConnection vc, Executor executor) {
+        if (vc == null || vc.getStateMap() == null
+                        || vc.getStateMap().get(NettyHttpConstants.VC_HTTP2_STREAM_ID) == null) {
+            return forChannel(channel);
+        }
+        Map<Object, Object> stateMap = vc.getStateMap();
+        synchronized (stateMap) {
+            AsyncReadDispatchState state = (AsyncReadDispatchState) stateMap.get(HTTP2_REQUEST_STATE);
+            if (state == null) {
+                state = new AsyncReadDispatchState(channel, executor, true);
+                stateMap.put(HTTP2_REQUEST_STATE, state);
+            }
+            return state;
+        }
+    }
+
+    public synchronized void setAsyncReadInProgress(boolean inProgress) {
+        asyncReadInProgress = inProgress;
+    }
+
+    public synchronized boolean isAsyncReadInProgress() {
+        return asyncReadInProgress;
+    }
+
+    public synchronized boolean isFailed() {
+        return failed;
+    }
+
+    public boolean isRequestScoped() {
+        return requestScoped;
     }
 
     public Registration arm(Runnable success, Runnable error) {
@@ -155,7 +198,8 @@ public final class AsyncReadDispatchState {
         synchronized (this) {
             return registration.mode == Mode.ERROR
                             || registration.mode == Mode.SIGNAL
-                                            && (failed || Boolean.TRUE.equals(channel.attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get()));
+                                            && (failed || !requestScoped
+                                                            && Boolean.TRUE.equals(channel.attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get()));
         }
     }
 

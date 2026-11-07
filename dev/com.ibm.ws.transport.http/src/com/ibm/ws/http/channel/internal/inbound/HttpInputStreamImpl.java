@@ -21,6 +21,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.inputstream.HttpInputStreamConnectWeb;
 import com.ibm.ws.http.channel.inputstream.HttpInputStreamObserver;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.channel.internal.AsyncReadDispatchState;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.message.BodyQueue;
@@ -780,7 +781,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 streamingTransferInProgress = false;
                 if (queue.isEos()){
                     this.readChannelComplete = true;
-                    if (this.context != null){
+                    if (this.context != null && !isStreamingHttp2Request()){
                         ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
                         ReadFlowHandler.markRequestConsumed(this.context.channel());
                     }
@@ -789,11 +790,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
                 Throwable error = queue.error();
                 if (error != null) {
-                    if (context != null
-                            && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get())) {
-                        try {
-                            ReadFlowHandler.setBodyReadWanted(context.channel(), false);
-                        } catch (Throwable ignore) {
+                    if (isAsyncStreamingRead()) {
+                        if (!isStreamingHttp2Request()) {
+                            try {
+                                ReadFlowHandler.setBodyReadWanted(context.channel(), false);
+                            } catch (Throwable ignore) {
+                            }
                         }
                         return false;
                     }
@@ -808,19 +810,21 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     return false;
                 }
 
-                if(!readRequested && !autoRead && queue.wantsInput() && context != null){
+                if(!isStreamingHttp2Request() && !readRequested && !autoRead && queue.wantsInput() && context != null){
                     ReadFlowHandler.setBodyReadWanted(context.channel(), true);
                     readRequested = true;
                 }
 
-                if(context != null && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get())){
+                if(isAsyncStreamingRead()){
                     return false;
                 }
 
                 try{
-                    boolean inputShutdownPending = context != null && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get());
+                    boolean inputShutdownPending = isStreamingHttp2Request()
+                                    ? h2AsyncReadState().isFailed()
+                                    : context != null && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get());
                     if(inputShutdownPending){
-                        if(this.context!=null){
+                        if(this.context!=null && !isStreamingHttp2Request()){
                             try{
                                 ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
                             } catch (Throwable ignore){}
@@ -896,12 +900,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 if(out !=null && out.hasRemaining()){
                     this.buffer = out;
                     this.decodedBytesProduced += this.buffer.remaining();
-                    if (fixedLengthComplete){
+                    if (fixedLengthComplete && !isStreamingHttp2Request()){
                         completeStreamingFixedLengthRequest();
                     }
                     return true;
                 } 
-                if (fixedLengthComplete){
+                if (fixedLengthComplete && !isStreamingHttp2Request()){
                     completeStreamingFixedLengthRequest();
                 }
                 //No data produced, compression might need more data
@@ -940,6 +944,20 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
     }
 
+    private boolean isStreamingHttp2Request() {
+        return isc instanceof HttpInboundServiceContextImpl
+                        && ((HttpInboundServiceContextImpl) isc).isNettyHttp2Request();
+    }
+
+    private AsyncReadDispatchState h2AsyncReadState() {
+        return AsyncReadDispatchState.forRequest(context.channel(), ((HttpInboundServiceContextImpl) isc).getVC());
+    }
+
+    private boolean isAsyncStreamingRead() {
+        return context != null && (isStreamingHttp2Request() ? h2AsyncReadState().isAsyncReadInProgress()
+                        : Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get()));
+    }
+
     protected boolean isStreamingEndReadyForCallback(){
         synchronized (streamingReadLock){
             return isStreamingEndReadyForCallbackLocked();
@@ -964,7 +982,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             q.signalEos();
         }
 
-        if(this.context != null){
+        if(this.context != null && !isStreamingHttp2Request()){
             try{
                 ReadFlowHandler.setBodyReadWanted(this.context.channel(), false);
             } catch(Throwable ignore){}

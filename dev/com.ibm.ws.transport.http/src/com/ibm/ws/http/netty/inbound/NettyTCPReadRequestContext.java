@@ -405,7 +405,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     }
 
     private void signalAndDispatchAsyncRead() {
-        AsyncReadDispatchState.forChannel(nettyChannel).signal();
+        AsyncReadDispatchState.forRequest(nettyChannel, vc).signal();
     }
 
     public VirtualConnection upgradedAsyncRead(long numBytes, TCPReadCompletedCallback callback, boolean forceQueue, int timeout) {
@@ -752,17 +752,22 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                                                TCPReadCompletedCallback callback,
                                                int effectiveTimeout) {
         final AtomicBoolean delivered = new AtomicBoolean(false);
-        final AsyncReadDispatchState state = AsyncReadDispatchState.forChannel(nettyChannel);
+        final AsyncReadDispatchState state = AsyncReadDispatchState.forRequest(nettyChannel, vc);
         Runnable success = () -> {
             if (!delivered.compareAndSet(false, true)) {
                 return;
             }
-            nettyChannel.attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.TRUE);
+            if (state.isRequestScoped()) {
+                state.setAsyncReadInProgress(true);
+            } else {
+                nettyChannel.attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.TRUE);
+            }
             try {
                 boolean inputShutdownPending;
                 try {
                     read(numBytes, effectiveTimeout);
-                    inputShutdownPending = Boolean.TRUE.equals(nettyChannel.attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get());
+                    inputShutdownPending = state.isRequestScoped() ? state.isFailed()
+                                    : Boolean.TRUE.equals(nettyChannel.attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get());
                 } catch (Throwable t) {
                     if (callback != null) {
                         callback.error(
@@ -783,8 +788,12 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                     
                 }
             } finally {
-                nettyChannel.attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.FALSE);
-                nettyChannel.attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
+                if (state.isRequestScoped()) {
+                    state.setAsyncReadInProgress(false);
+                } else {
+                    nettyChannel.attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.FALSE);
+                    nettyChannel.attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
+                }
             }
         };
 
@@ -806,7 +815,11 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                     );
                 }
             } finally {
-                nettyChannel.attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.FALSE);
+                if (state.isRequestScoped()) {
+                    state.setAsyncReadInProgress(false);
+                } else {
+                    nettyChannel.attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.FALSE);
+                }
             }
         };
 
