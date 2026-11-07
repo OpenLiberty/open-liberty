@@ -115,15 +115,18 @@ public class TCPUtils {
      * SCR thread).  Calling it from a Netty I/O thread would deadlock because
      * ChannelFuture.await() waits for the I/O thread to complete the operation.
      *
-     * On success the channel is registered into the framework's active-channels map and
-     * the caller-supplied openListener is invoked directly on the calling thread.
+     * It only performs the attempt.  The retry loop, registering the channel on success
+     * (registerSuccess()), logging and notifying the open listener are all done by open().
      *
-     * On failure the method returns the failed future; the caller is responsible for
-     * logging the error and invoking openListener with the terminal failure future.
-     *
-     * @return the completed ChannelFuture, or null if the channel was already closed
+     * @param channel        the channel to bind or connect
+     * @param config         the TCP configuration (decides bind or connect)
+     * @param inetHost       the resolved host
+     * @param inetPort       the port
+     * @param allowReuseAddr inbound only: the SO_REUSEADDR value to bind with
+     * @return the completed ChannelFuture (check isSuccess()), or null if the channel was already closed
+     * @throws InterruptedException if interrupted while waiting for the operation to complete
      */
-    private static ChannelFuture bindOrConnect(NettyFrameworkImpl framework, final Channel channel,
+    private static ChannelFuture bindOrConnect(final Channel channel,
                                                final TCPConfigurationImpl config, final String inetHost,
                                                final int inetPort, final boolean allowReuseAddr) throws InterruptedException {
         if (!channel.isOpen()) {
@@ -135,15 +138,14 @@ public class TCPUtils {
 
         ChannelFuture future;
         if (config.isInbound()) {
-            // First attempt: bind with SO_REUSEADDR=false so the OS rejects a real conflict
-            // (e.g. a specific-host:port when a wildcard:port is already listening).
-            // This mirrors CHFW's TCPPort.finishInitServerSocket() which also binds with
-            // reuseAddress=false first.
+            // SO_REUSEADDR is set per attempt.  open() binds with false first, and on every
+            // portOpenRetries retry, so the OS rejects a real conflict (e.g. a specific
+            // host:port when a wildcard:port is already listening).  This mirrors CHFW's
+            // TCPPort.finishInitServerSocket() which also binds with reuseAddress=false first.
             //
-            // Retry attempts (allowReuseAddr=true): bind with SO_REUSEADDR=true so the OS
-            // allows binding over a TIME_WAIT socket left from a previous server run.
-            // The OS still rejects the bind if something is actively listening, so this
-            // correctly distinguishes TIME_WAIT (succeeds) from a real conflict (fails again).
+            // Only the one-time TIME_WAIT retry passes the configured value, so the OS can
+            // allow binding over a TIME_WAIT socket left from a previous server run.
+            // The OS still rejects that bind if something is actively listening.
             channel.config().setOption(ChannelOption.SO_REUSEADDR, allowReuseAddr);
             future = channel.bind(new InetSocketAddress(inetHost, inetPort));
         } else {
@@ -158,7 +160,7 @@ public class TCPUtils {
 
     /**
      * Register a successfully bound/connected channel into the framework and log the
-     * started message.  Called after a successful bindOrConnect().
+     * started message.  Called by open() after a successful bind or connect.
      */
     private static void registerSuccess(NettyFrameworkImpl framework, final Channel channel,
                                         final TCPConfigurationImpl config, final String inetHost,
@@ -269,7 +271,7 @@ public class TCPUtils {
             // (e.g. specific-host:port when a wildcard is already listening).
             ChannelFuture future;
             try {
-                future = bindOrConnect(framework, channel, config, resolvedHost, inetPort, false);
+                future = bindOrConnect(channel, config, resolvedHost, inetPort, false);
             } catch (InterruptedException ie) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "open interrupted for " + config.getExternalName());
@@ -366,7 +368,7 @@ public class TCPUtils {
                     }
 
                     try {
-                        future = bindOrConnect(framework, channel, config, resolvedHost, inetPort, config.getSoReuseAddress());
+                        future = bindOrConnect(channel, config, resolvedHost, inetPort, config.getSoReuseAddress());
                     } catch (InterruptedException ie) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "open interrupted (reuseAddr retry) for " + config.getExternalName());
