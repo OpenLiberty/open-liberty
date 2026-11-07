@@ -18,22 +18,11 @@ import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.cert.X509Certificate;
-import java.util.Collections;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
-import org.jose4j.jws.AlgorithmIdentifiers;
-import org.jose4j.jws.JsonWebSignature;
-import org.jose4j.jwt.JwtClaims;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -63,9 +52,6 @@ public class RestJwtKeyFileInvalidFATTest {
 
     private static final Class<?> c = RestJwtKeyFileInvalidFATTest.class;
 
-    private static final String ISSUER = "IBMJMXConnectorRESTIssuer";
-    private static final String AUDIENCE = "IBMJMXConnectorREST";
-
     @Server("RestJwtKeyFileServer")
     public static LibertyServer server;
 
@@ -79,7 +65,7 @@ public class RestJwtKeyFileInvalidFATTest {
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
         generator.initialize(2048);
         KeyPair pair = generator.generateKeyPair();
-        token = createRs256Token(pair);
+        token = FATSuite.createRs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS), pair.getPrivate());
 
         // Must be the file named by jwkEndpointUrl in the RestJwtKeyFileServer server.xml
         keyFile = new File(server.getServerRoot() + "/resources/security/jwtPublic.pem");
@@ -137,7 +123,7 @@ public class RestJwtKeyFileInvalidFATTest {
     private void assertUnauthorized() throws Exception {
         server.setMarkToEndOfLog();
         assertEquals("Expected 401 Unauthorized when the public key cannot be read from " + keyFile,
-                     HttpURLConnection.HTTP_UNAUTHORIZED, sendRequest(token).getResponseCode());
+                     HttpURLConnection.HTTP_UNAUTHORIZED, FATSuite.getResponseCode(server, token));
         assertNotNull("RestJwtTAI did not report an error validating the JWT",
                       server.waitForStringInTraceUsingMark("Error validating JWT token"));
     }
@@ -147,50 +133,5 @@ public class RestJwtKeyFileInvalidFATTest {
             keyFile.setReadable(true, false);
             keyFile.delete();
         }
-    }
-
-    private static String createRs256Token(KeyPair pair) throws Exception {
-        JwtClaims claims = new JwtClaims();
-        claims.setIssuer(ISSUER);
-        claims.setAudience(AUDIENCE);
-        claims.setSubject("adminUser");
-        claims.setStringListClaim("groups", Collections.singletonList("liberty-admin"));
-        claims.setExpirationTimeMinutesInTheFuture(10);
-        claims.setIssuedAtToNow();
-        claims.setGeneratedJwtId();
-
-        JsonWebSignature jws = new JsonWebSignature();
-        jws.setPayload(claims.toJson());
-        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
-        jws.setKey(pair.getPrivate());
-        return jws.getCompactSerialization();
-    }
-
-    private static HttpURLConnection sendRequest(String bearerToken) throws Exception {
-        URL url = new URL("https", server.getHostname(), server.getHttpSecondarySecurePort(), FATSuite.REST_MBEANS_ENDPOINT);
-        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-        SSLContext sc = SSLContext.getInstance("TLS");
-        sc.init(null, new TrustManager[] { new X509TrustManager() {
-            @Override
-            public X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-
-            @Override
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-            }
-
-            @Override
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-            }
-        } }, new java.security.SecureRandom());
-        conn.setSSLSocketFactory(sc.getSocketFactory());
-        conn.setHostnameVerifier((hostname, session) -> true);
-        conn.setRequestMethod("GET");
-        conn.setConnectTimeout(30000);
-        conn.setReadTimeout(30000);
-        conn.setRequestProperty("Authorization", "Bearer " + bearerToken);
-        conn.connect();
-        return conn;
     }
 }

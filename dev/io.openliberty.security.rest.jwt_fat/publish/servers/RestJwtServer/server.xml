@@ -25,18 +25,11 @@
                  signatureAlgorithm="HS256"
                  clockSkew="1m" />
 
-    <basicRegistry id="basic" realm="BasicRealm">
-        <user name="adminUser" password="password"/>
-        <user name="readerUser" password="password"/>
-        <user name="unauthorizedUser" password="password"/>
-        <group name="liberty-admin">
-            <member name="adminUser"/>
-        </group>
-        <group name="liberty-reader">
-            <member name="readerUser"/>
-        </group>
-    </basicRegistry>
-
-    <administrator-role group="liberty-admin" />
-    <reader-role group="liberty-reader" />
+    <!-- No user registry. The tokens carry user and group access IDs, so the roles are mapped by access ID. -->
+    <administrator-role>
+        <group>group:defaultWIMFileBasedRealm/liberty-admin</group>
+    </administrator-role>
+    <reader-role>
+        <group>group:defaultWIMFileBasedRealm/liberty-reader</group>
+    </reader-role>
 </server>

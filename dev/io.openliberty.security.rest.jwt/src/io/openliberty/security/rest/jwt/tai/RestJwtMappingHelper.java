@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.JwtToken;
+import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
@@ -38,29 +39,32 @@ public class RestJwtMappingHelper {
     public static final String CLAIM_USERNAME = "username";
     public static final String CLAIM_GROUPS = "groups";
     public static final String CLAIM_ROLES = "roles";
+    public static final String CLAIM_GROUP = "group";
 
     private String username;
+    private String userAccessId;
     private String realm;
-    private final String registryRealm;
     private List<String> groups;
     private final Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
 
-    public RestJwtMappingHelper(@Sensitive JwtToken jwtToken) {
-        this(jwtToken, null);
-    }
-
     /**
-     * @param registryRealm realm of the configured user registry. When non-null it is used as the realm instead of
-     *                          the token issuer so that groups from the token match the access IDs used by role mappings
-     *                          such as {@code <administrator-role group="..."/>}.
+     * The node agent builds the JWT with either a server access ID or a user access ID as the subject, for example
+     * {@code server:defaultWIMFileBasedRealm/server:ndcell_node1_nodeagent} or
+     * {@code user:defaultWIMFileBasedRealm/adminUser}, and with plain group names in the groups claim. The realm is
+     * taken from the access ID and is used to turn each plain group name into a group access ID,
+     * {@code group:<realm>/<name>}, which is what the role mappings in server.xml match against.
+     * <p>
+     * Either the subject or a group may carry the access ID. If the subject is a plain name, the realm is taken from
+     * the first group that is a group access ID, and the user access ID is built from it.
+     *
+     * @throws IllegalArgumentException if neither the subject nor any group is an access ID, so there is no realm
      */
-    public RestJwtMappingHelper(@Sensitive JwtToken jwtToken, String registryRealm) {
+    public RestJwtMappingHelper(@Sensitive JwtToken jwtToken) {
         String methodName = "<init>";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, jwtToken);
         }
 
-        this.registryRealm = registryRealm;
         if (jwtToken != null) {
             Claims claims = jwtToken.getClaims();
             if (claims != null) {
@@ -85,16 +89,48 @@ public class RestJwtMappingHelper {
         if (user == null || user.isEmpty()) {
             user = claims.getClaim(CLAIM_USERNAME, String.class);
         }
-        this.username = user;
+        List<String> groupNames = extractGroups(claims);
 
-        // Map realm from the user registry if available, otherwise from issuer
-        this.realm = (registryRealm != null && !registryRealm.isEmpty()) ? registryRealm : claims.getIssuer();
+        if (AccessIdUtil.isUserAccessId(user) || AccessIdUtil.isServerAccessId(user)) {
+            // Use the access ID as is, with the realm and the name taken from it, so that no user registry lookup is
+            // needed to build the credential.
+            this.userAccessId = user;
+            this.realm = AccessIdUtil.getRealm(user);
+            this.username = AccessIdUtil.getUniqueId(user);
+        } else {
+            // The subject is a plain name. Take the realm from the first group access ID instead.
+            String groupRealm = null;
+            for (String group : groupNames) {
+                if (AccessIdUtil.isGroupAccessId(group)) {
+                    groupRealm = AccessIdUtil.getRealm(group);
+                    break;
+                }
+            }
+            if (user == null || user.isEmpty() || groupRealm == null) {
+                throw new IllegalArgumentException("Neither the subject of the JWT nor any of its groups is an access ID, so there is no realm. Subject: " + user);
+            }
+            this.realm = groupRealm;
+            this.username = user;
+            this.userAccessId = AccessIdUtil.createAccessId(AccessIdUtil.TYPE_USER, groupRealm, user);
+        }
 
-        // Map groups
-        this.groups = extractGroups(claims);
+        // Map groups, building a group access ID from the realm for each plain group name
+        this.groups = toGroupAccessIds(groupNames, this.realm);
 
         // Populate custom properties
         populateCustomProperties();
+    }
+
+    private List<String> toGroupAccessIds(List<String> groupNames, String groupRealm) {
+        List<String> accessIds = new ArrayList<String>();
+        for (String group : groupNames) {
+            if (AccessIdUtil.isGroupAccessId(group)) {
+                accessIds.add(group);
+            } else {
+                accessIds.add(AccessIdUtil.createAccessId(AccessIdUtil.TYPE_GROUP, groupRealm, group));
+            }
+        }
+        return accessIds;
     }
 
     @SuppressWarnings("unchecked")
@@ -103,6 +139,9 @@ public class RestJwtMappingHelper {
         Object groupsObj = claims.get(CLAIM_GROUPS);
         if (groupsObj == null) {
             groupsObj = claims.get(CLAIM_ROLES);
+        }
+        if (groupsObj == null) {
+            groupsObj = claims.get(CLAIM_GROUP);
         }
 
         if (groupsObj instanceof Collection<?>) {
@@ -131,7 +170,7 @@ public class RestJwtMappingHelper {
         if (username != null) {
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, username);
 
-            String uniqueId = (realm != null && !realm.isEmpty()) ? realm + "/" + username : username;
+            String uniqueId = userAccessId != null ? userAccessId : (realm != null && !realm.isEmpty()) ? realm + "/" + username : username;
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, uniqueId);
 
             if (realm != null && !realm.isEmpty()) {

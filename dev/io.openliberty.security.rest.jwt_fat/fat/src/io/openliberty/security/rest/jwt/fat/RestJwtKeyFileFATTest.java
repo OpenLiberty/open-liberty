@@ -17,24 +17,13 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
 import java.util.Base64;
-import java.util.Collections;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
-import org.jose4j.jws.AlgorithmIdentifiers;
-import org.jose4j.jws.JsonWebSignature;
-import org.jose4j.jwt.JwtClaims;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -59,9 +48,6 @@ import componenttest.topology.impl.LibertyServer;
 public class RestJwtKeyFileFATTest {
 
     private static final Class<?> c = RestJwtKeyFileFATTest.class;
-
-    private static final String ISSUER = "IBMJMXConnectorRESTIssuer";
-    private static final String AUDIENCE = "IBMJMXConnectorREST";
 
     @Server("RestJwtKeyFileServer")
     public static LibertyServer server;
@@ -101,61 +87,16 @@ public class RestJwtKeyFileFATTest {
 
     @Test
     public void testTokenSignedWithKeyFromFile_Success() throws Exception {
-        String token = createRs256Token("adminUser", "liberty-admin", signingKey);
+        String token = FATSuite.createRs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS), signingKey);
         assertEquals("Expected 200 OK when the signature matches the public key file",
-                     HttpURLConnection.HTTP_OK, sendRequest(token).getResponseCode());
+                     HttpURLConnection.HTTP_OK, FATSuite.getResponseCode(server, token));
     }
 
     @Test
     @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     public void testTokenSignedWithOtherKey_Unauthorized() throws Exception {
-        String token = createRs256Token("adminUser", "liberty-admin", otherKey);
+        String token = FATSuite.createRs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS), otherKey);
         assertEquals("Expected 401 Unauthorized when the signature does not match the public key file",
-                     HttpURLConnection.HTTP_UNAUTHORIZED, sendRequest(token).getResponseCode());
-    }
-
-    private static String createRs256Token(String user, String group, PrivateKey key) throws Exception {
-        JwtClaims claims = new JwtClaims();
-        claims.setIssuer(ISSUER);
-        claims.setAudience(AUDIENCE);
-        claims.setSubject(user);
-        claims.setStringListClaim("groups", Collections.singletonList(group));
-        claims.setExpirationTimeMinutesInTheFuture(10);
-        claims.setIssuedAtToNow();
-        claims.setGeneratedJwtId();
-
-        JsonWebSignature jws = new JsonWebSignature();
-        jws.setPayload(claims.toJson());
-        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
-        jws.setKey(key);
-        return jws.getCompactSerialization();
-    }
-
-    private static HttpURLConnection sendRequest(String bearerToken) throws Exception {
-        URL url = new URL("https", server.getHostname(), server.getHttpSecondarySecurePort(), FATSuite.REST_MBEANS_ENDPOINT);
-        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-        SSLContext sc = SSLContext.getInstance("TLS");
-        sc.init(null, new TrustManager[] { new X509TrustManager() {
-            @Override
-            public X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-
-            @Override
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-            }
-
-            @Override
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-            }
-        } }, new java.security.SecureRandom());
-        conn.setSSLSocketFactory(sc.getSocketFactory());
-        conn.setHostnameVerifier((hostname, session) -> true);
-        conn.setRequestMethod("GET");
-        conn.setConnectTimeout(30000);
-        conn.setReadTimeout(30000);
-        conn.setRequestProperty("Authorization", "Bearer " + bearerToken);
-        conn.connect();
-        return conn;
+                     HttpURLConnection.HTTP_UNAUTHORIZED, FATSuite.getResponseCode(server, token));
     }
 }

@@ -24,10 +24,4 @@
                  signatureAlgorithm="HS256"
                  clockSkew="1m" />
 
-    <basicRegistry id="basic" realm="BasicRealm">
-        <user name="adminUser" password="password"/>
-        <group name="liberty-admin">
-            <member name="adminUser"/>
-        </group>
-    </basicRegistry>
 </server>

@@ -17,6 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -246,46 +247,45 @@ public class RestJwtTAITest {
     }
 
     @Test
-    public void testMappingHelper_ExtractsUsernameAndClaims() {
+    public void testMappingHelper_UpnAccessIdTakesPrecedenceAndCreatesSubject() {
         mockery.checking(new Expectations() {
             {
                 allowing(jwtToken).getClaims();
                 will(returnValue(claims));
                 allowing(claims).getClaim("upn", String.class);
-                will(returnValue("adminUser@ibm.com"));
+                will(returnValue("user:defaultWIMFileBasedRealm/adminUser"));
                 allowing(claims).getClaim("preferred_username", String.class);
                 will(returnValue(null));
                 allowing(claims).getSubject();
-                will(returnValue("adminUser"));
+                will(returnValue("someOtherSubject"));
                 allowing(claims).getClaim("username", String.class);
-                will(returnValue("adminUser"));
-                allowing(claims).getIssuer();
-                will(returnValue("https://issuer.ibm.com"));
+                will(returnValue(null));
                 allowing(claims).get("groups");
                 will(returnValue(Arrays.asList("Administrator", "Reader")));
             }
         });
 
+        List<String> groupAccessIds = Arrays.asList("group:defaultWIMFileBasedRealm/Administrator", "group:defaultWIMFileBasedRealm/Reader");
         RestJwtMappingHelper helper = new RestJwtMappingHelper(jwtToken);
-        assertEquals("adminUser@ibm.com", helper.getUsername());
-        assertEquals("https://issuer.ibm.com", helper.getRealm());
-        assertEquals(Arrays.asList("Administrator", "Reader"), helper.getGroups());
+        assertEquals("adminUser", helper.getUsername());
+        assertEquals("defaultWIMFileBasedRealm", helper.getRealm());
+        assertEquals(groupAccessIds, helper.getGroups());
 
         Subject subject = helper.createSubject();
         assertNotNull(subject);
         Set<Hashtable> creds = subject.getPrivateCredentials(Hashtable.class);
         assertFalse(creds.isEmpty());
         Hashtable customProps = creds.iterator().next();
-        assertEquals("adminUser@ibm.com", customProps.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME));
-        assertEquals("https://issuer.ibm.com/adminUser@ibm.com", customProps.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
-        assertEquals("https://issuer.ibm.com", customProps.get(AttributeNameConstants.WSCREDENTIAL_REALM));
-        assertEquals(Arrays.asList("Administrator", "Reader"), customProps.get(AttributeNameConstants.WSCREDENTIAL_GROUPS));
+        assertEquals("adminUser", customProps.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME));
+        assertEquals("user:defaultWIMFileBasedRealm/adminUser", customProps.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
+        assertEquals("defaultWIMFileBasedRealm", customProps.get(AttributeNameConstants.WSCREDENTIAL_REALM));
+        assertEquals(groupAccessIds, customProps.get(AttributeNameConstants.WSCREDENTIAL_GROUPS));
         assertEquals(Boolean.TRUE, customProps.get(AuthenticationConstants.INTERNAL_ASSERTION_KEY));
         assertEquals(Boolean.TRUE, customProps.get(RestJwtMappingHelper.INTERNAL_DISABLE_SSO_LTPA_CACHE));
     }
 
     @Test
-    public void testMappingHelper_FallsBackToSubjectClaim() {
+    public void testMappingHelper_FallsBackToSubjectClaimAndSplitsCommaSeparatedGroups() {
         mockery.checking(new Expectations() {
             {
                 allowing(jwtToken).getClaims();
@@ -295,10 +295,8 @@ public class RestJwtTAITest {
                 allowing(claims).getClaim("preferred_username", String.class);
                 will(returnValue(null));
                 allowing(claims).getSubject();
-                will(returnValue("adminSubject"));
+                will(returnValue("server:defaultWIMFileBasedRealm/server:ndcell_node1_nodeagent"));
                 allowing(claims).getClaim("username", String.class);
-                will(returnValue(null));
-                allowing(claims).getIssuer();
                 will(returnValue(null));
                 allowing(claims).get("groups");
                 will(returnValue("Administrator,Auditor"));
@@ -306,9 +304,104 @@ public class RestJwtTAITest {
         });
 
         RestJwtMappingHelper helper = new RestJwtMappingHelper(jwtToken);
-        assertEquals("adminSubject", helper.getUsername());
-        assertNull(helper.getRealm());
-        assertEquals(Arrays.asList("Administrator", "Auditor"), helper.getGroups());
+        assertEquals("server:ndcell_node1_nodeagent", helper.getUsername());
+        assertEquals("defaultWIMFileBasedRealm", helper.getRealm());
+        assertEquals(Arrays.asList("group:defaultWIMFileBasedRealm/Administrator", "group:defaultWIMFileBasedRealm/Auditor"), helper.getGroups());
+    }
+
+    private void expectSubjectAndGroups(final String subject, final List<String> tokenGroups) {
+        mockery.checking(new Expectations() {
+            {
+                allowing(jwtToken).getClaims();
+                will(returnValue(claims));
+                allowing(claims).getClaim("upn", String.class);
+                will(returnValue(null));
+                allowing(claims).getClaim("preferred_username", String.class);
+                will(returnValue(null));
+                allowing(claims).getSubject();
+                will(returnValue(subject));
+                allowing(claims).getClaim("username", String.class);
+                will(returnValue(null));
+                allowing(claims).getIssuer();
+                will(returnValue("IBMJMXConnectorRESTIssuer"));
+                allowing(claims).get("groups");
+                will(returnValue(tokenGroups));
+            }
+        });
+    }
+
+    @Test
+    public void testMappingHelper_UserAccessIdSubjectIsUsedAsUniqueId() {
+        List<String> groups = Arrays.asList("group:defaultWIMFileBasedRealm/liberty-admin");
+        expectSubjectAndGroups("user:defaultWIMFileBasedRealm/adminUser", groups);
+
+        RestJwtMappingHelper helper = new RestJwtMappingHelper(jwtToken);
+        assertEquals("adminUser", helper.getUsername());
+        assertEquals("defaultWIMFileBasedRealm", helper.getRealm());
+
+        Hashtable<String, Object> customProps = helper.getCustomProperties();
+        assertEquals("adminUser", customProps.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME));
+        assertEquals("user:defaultWIMFileBasedRealm/adminUser", customProps.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
+        assertEquals("defaultWIMFileBasedRealm", customProps.get(AttributeNameConstants.WSCREDENTIAL_REALM));
+        assertEquals(groups, customProps.get(AttributeNameConstants.WSCREDENTIAL_GROUPS));
+    }
+
+    @Test
+    public void testMappingHelper_ServerAccessIdWithGroupAccessIdsKeepsGroupsUnchanged() {
+        List<String> groups = Arrays.asList("group:defaultWIMFileBasedRealm/liberty-admin");
+        expectSubjectAndGroups("server:defaultWIMFileBasedRealm/server:ndcell_node1_nodeagent", groups);
+
+        RestJwtMappingHelper helper = new RestJwtMappingHelper(jwtToken);
+        assertEquals("server:ndcell_node1_nodeagent", helper.getUsername());
+        assertEquals("defaultWIMFileBasedRealm", helper.getRealm());
+
+        Hashtable<String, Object> customProps = helper.getCustomProperties();
+        assertEquals("server:ndcell_node1_nodeagent", customProps.get(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME));
+        assertEquals("server:defaultWIMFileBasedRealm/server:ndcell_node1_nodeagent", customProps.get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
+        assertEquals("defaultWIMFileBasedRealm", customProps.get(AttributeNameConstants.WSCREDENTIAL_REALM));
+        assertEquals(groups, customProps.get(AttributeNameConstants.WSCREDENTIAL_GROUPS));
+    }
+
+    /**
+     * The node agent builds the JWT with a server access ID as the subject and plain group names. The realm of the
+     * server access ID is used to build the group access IDs.
+     */
+    @Test
+    public void testMappingHelper_ServerAccessIdWithPlainGroupsBuildsGroupAccessIds() {
+        expectSubjectAndGroups("server:defaultWIMFileBasedRealm/server:ndcell_node1_nodeagent",
+                               Arrays.asList("liberty-admin", "group:otherRealm/liberty-reader"));
+
+        RestJwtMappingHelper helper = new RestJwtMappingHelper(jwtToken);
+        List<String> expected = Arrays.asList("group:defaultWIMFileBasedRealm/liberty-admin", "group:otherRealm/liberty-reader");
+        assertEquals(expected, helper.getGroups());
+        assertEquals(expected, helper.getCustomProperties().get(AttributeNameConstants.WSCREDENTIAL_GROUPS));
+    }
+
+    /**
+     * The subject is a plain name, so the realm comes from the first group access ID, and the user access ID is built
+     * from it. Plain group names are expanded with the same realm.
+     */
+    @Test
+    public void testMappingHelper_PlainSubjectWithGroupAccessIdTakesRealmFromGroup() {
+        expectSubjectAndGroups("adminUser", Arrays.asList("group:defaultWIMFileBasedRealm/liberty-admin", "liberty-reader"));
+
+        RestJwtMappingHelper helper = new RestJwtMappingHelper(jwtToken);
+        assertEquals("adminUser", helper.getUsername());
+        assertEquals("defaultWIMFileBasedRealm", helper.getRealm());
+        assertEquals(Arrays.asList("group:defaultWIMFileBasedRealm/liberty-admin", "group:defaultWIMFileBasedRealm/liberty-reader"), helper.getGroups());
+        assertEquals("user:defaultWIMFileBasedRealm/adminUser", helper.getCustomProperties().get(AttributeNameConstants.WSCREDENTIAL_UNIQUEID));
+    }
+
+    @Test
+    public void testMappingHelper_PlainSubjectWithPlainGroupsIsRejected() {
+        expectSubjectAndGroups("defaultWIMFileBasedRealm/adminUser", Arrays.asList("liberty-admin"));
+
+        try {
+            new RestJwtMappingHelper(jwtToken);
+            fail("A plain subject with only plain groups has no realm and should be rejected");
+        } catch (IllegalArgumentException expected) {
+            assertTrue("The message should name the subject: " + expected.getMessage(), expected.getMessage().contains("defaultWIMFileBasedRealm/adminUser"));
+        }
     }
 
     @Test

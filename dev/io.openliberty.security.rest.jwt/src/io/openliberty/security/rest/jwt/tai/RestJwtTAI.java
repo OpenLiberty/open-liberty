@@ -47,7 +47,6 @@ import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
 import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.common.jwk.utils.JsonUtils;
-import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.ws.webcontainer.security.internal.TAIAuthenticator;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -272,7 +271,7 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
         return result;
     }
 
-    @FFDCIgnore({ Exception.class })
+    @FFDCIgnore({ Exception.class, IllegalArgumentException.class })
     protected TAIResult validateJwtAndCreateResult(@Sensitive String token) throws WebTrustAssociationFailedException {
         String methodName = "validateJwtAndCreateResult";
         if (tc.isDebugEnabled()) {
@@ -301,7 +300,21 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
             return result;
         }
 
-        RestJwtMappingHelper mappingHelper = new RestJwtMappingHelper(jwtToken, getRegistryRealm());
+        // The node agent builds the JWT with a server or user access ID as the subject and plain group names. Either the
+        // subject or a group must be an access ID to give the realm; otherwise the token is rejected.
+        RestJwtMappingHelper mappingHelper;
+        try {
+            mappingHelper = new RestJwtMappingHelper(jwtToken);
+        } catch (IllegalArgumentException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Error mapping JWT token claims: " + e.getMessage());
+            }
+            TAIResult result = TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED);
+            if (tc.isDebugEnabled()) {
+                Tr.exit(tc, methodName, result);
+            }
+            return result;
+        }
         String username = mappingHelper.getUsername();
         if (username == null || username.isEmpty()) {
             if (tc.isDebugEnabled()) {
@@ -352,27 +365,6 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
         MpConfigProperties mpProps = new MpConfigProperties();
         mpProps.put(MpConfigProperties.KEY_LOCATION, location.trim());
         return mpProps;
-    }
-
-    /**
-     * @return the realm of the configured user registry, or null if it cannot be determined
-     */
-    @FFDCIgnore({ Exception.class })
-    protected String getRegistryRealm() {
-        try {
-            SecurityService securityService = securityServiceRef.getService();
-            if (securityService != null) {
-                UserRegistryService urs = securityService.getUserRegistryService();
-                if (urs != null && urs.isUserRegistryConfigured()) {
-                    return urs.getUserRegistry().getRealm();
-                }
-            }
-        } catch (Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Unable to determine user registry realm: " + e.getMessage());
-            }
-        }
-        return null;
     }
 
     protected boolean isTargetRestAdminRequest(HttpServletRequest request) {
@@ -481,6 +473,10 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
             return null;
         }
         String authHeader = request.getHeader(HEADER_AUTHORIZATION);
+        if (tc.isDebugEnabled()) {
+            // TEMPORARY diagnostic: logs the raw header, which contains the credential. Remove after the 401 investigation.
+            Tr.debug(tc, "Raw Authorization header: " + authHeader);
+        }
         if (authHeader != null && authHeader.regionMatches(true, 0, BEARER_PREFIX, 0, BEARER_PREFIX.length())) {
             String token = authHeader.substring(BEARER_PREFIX.length()).trim();
             if (!token.isEmpty()) {

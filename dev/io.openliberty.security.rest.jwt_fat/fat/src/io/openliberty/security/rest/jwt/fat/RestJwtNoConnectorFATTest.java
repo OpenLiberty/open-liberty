@@ -17,20 +17,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.cert.X509Certificate;
-import java.util.Collections;
 import java.util.List;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
-import org.jose4j.jws.AlgorithmIdentifiers;
-import org.jose4j.jws.JsonWebSignature;
-import org.jose4j.jwt.JwtClaims;
-import org.jose4j.keys.HmacKey;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,9 +41,6 @@ import componenttest.topology.impl.LibertyServer;
 public class RestJwtNoConnectorFATTest {
 
     private static final Class<?> c = RestJwtNoConnectorFATTest.class;
-
-    private static final String ISSUER = "https://localhost:9443/jwt";
-    private static final String SHARED_KEY = "superSecretSharedKeyForRestJwtTesting123456";
 
     // Anything that would only be logged if the restJwt bundle was started or the TAI was invoked
     private static final String TAI_TRACE_REGEX = "RestJwtTAI|restJwtTAI|io\\.openliberty\\.security\\.rest\\.jwt\\.tai";
@@ -91,57 +76,12 @@ public class RestJwtNoConnectorFATTest {
      */
     @Test
     public void testBearerRequestNotProcessedByRestJwtTai() throws Exception {
-        String token = createJwtToken("adminUser", "liberty-admin");
+        String token = FATSuite.createHs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS), FATSuite.SHARED_KEY);
 
-        HttpURLConnection conn = sendRequest(FATSuite.REST_MBEANS_ENDPOINT, token);
         assertEquals("Expected 404 because the REST connector application is not present", HttpURLConnection.HTTP_NOT_FOUND,
-                     conn.getResponseCode());
+                     FATSuite.getResponseCode(server, token));
 
         List<String> found = server.findStringsInTrace(TAI_TRACE_REGEX);
         assertTrue("RestJwtTAI should not process the request, but found: " + found, found.isEmpty());
-    }
-
-    private static String createJwtToken(String username, String group) throws Exception {
-        JwtClaims claims = new JwtClaims();
-        claims.setIssuer(ISSUER);
-        claims.setSubject(username);
-        claims.setStringListClaim("groups", Collections.singletonList(group));
-        claims.setExpirationTimeMinutesInTheFuture(10);
-        claims.setIssuedAtToNow();
-        claims.setGeneratedJwtId();
-
-        JsonWebSignature jws = new JsonWebSignature();
-        jws.setPayload(claims.toJson());
-        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA256);
-        jws.setKey(new HmacKey(SHARED_KEY.getBytes("UTF-8")));
-        return jws.getCompactSerialization();
-    }
-
-    private static HttpURLConnection sendRequest(String path, String bearerToken) throws Exception {
-        URL url = new URL("https", server.getHostname(), server.getHttpSecondarySecurePort(), path);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        if (conn instanceof HttpsURLConnection) {
-            SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, new TrustManager[] { new X509TrustManager() {
-                @Override
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-
-                @Override
-                public void checkClientTrusted(X509Certificate[] certs, String authType) {}
-
-                @Override
-                public void checkServerTrusted(X509Certificate[] certs, String authType) {}
-            } }, new java.security.SecureRandom());
-            ((HttpsURLConnection) conn).setSSLSocketFactory(sc.getSocketFactory());
-            ((HttpsURLConnection) conn).setHostnameVerifier((hostname, session) -> true);
-        }
-        conn.setRequestMethod("GET");
-        conn.setConnectTimeout(30000);
-        conn.setReadTimeout(30000);
-        conn.setRequestProperty("Authorization", "Bearer " + bearerToken);
-        conn.connect();
-        return conn;
     }
 }
