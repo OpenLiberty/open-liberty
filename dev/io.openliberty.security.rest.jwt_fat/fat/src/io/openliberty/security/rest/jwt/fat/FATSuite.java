@@ -81,8 +81,9 @@ public class FATSuite {
     public static final String REALM = "defaultWIMFileBasedRealm";
 
     /**
-     * The server access ID of the node agent, server:<realm>/server:<node agent unique ID>. The node agent can
-     * authenticate to the REST connector with a server: or a user: access ID, and most tests use this one.
+     * The access ID of the node agent, server:<realm>/server:<cell>_<node>_nodeagent. Here the cell is ndcell
+     * and the node is node1. The node agent can authenticate to the REST connector with a server: or a user: access
+     * ID, and most tests use this one.
      */
     public static final String SERVER_ID = "server:" + REALM + "/server:ndcell_node1_nodeagent";
 
