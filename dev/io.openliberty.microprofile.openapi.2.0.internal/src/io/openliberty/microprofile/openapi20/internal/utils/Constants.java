@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -128,6 +128,9 @@ public class Constants {
     public static final String FORMAT_PARAM_NAME = "format";
     public static final String FORMAT_PARAM_VALUE_JSON = "json";
     public static final String FORMAT_PARAM_VALUE_YAML = "yaml";
+
+    // Application Query Parameter Constants
+    public static final String APPLICATION_PARAM_NAME = "application";
 
     // Regular expression constants
     public static final Pattern REGEX_COMPONENT_KEY_PATTERN = Pattern.compile("^[a-zA-Z0-9\\.\\-_]+$");
