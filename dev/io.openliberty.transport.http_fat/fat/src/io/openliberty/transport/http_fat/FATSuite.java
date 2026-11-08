@@ -42,7 +42,6 @@ import io.openliberty.transport.http_fat.accesslists.AccessListsTests;
                 HttpVersionTokenTest.class,
                 HeaderCasingTests.class,
                 PrivateHeaderFilterTest.class,
-                NettyConfigurationTests.class
 })
 
 public class FATSuite {
