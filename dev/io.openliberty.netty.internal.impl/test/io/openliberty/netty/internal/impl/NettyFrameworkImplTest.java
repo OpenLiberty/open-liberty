@@ -53,7 +53,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoop;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import io.openliberty.channel.config.ChannelFrameworkConfig;
+import com.ibm.ws.runtime.update.ServerElementConfig;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.tcp.TCPChannelInitializerImpl;
@@ -415,11 +415,11 @@ public class NettyFrameworkImplTest {
     public void testQuiesceWithBlockedChildEventLoops() throws Exception {
         final int connectionCount = 128;
         Mockery context = new Mockery();
-        ChannelFrameworkConfig channelConfig = context.mock(ChannelFrameworkConfig.class);
+        ServerElementConfig serverConfig = context.mock(ServerElementConfig.class);
         context.checking(new Expectations() {{
-            allowing(channelConfig).getDefaultChainQuiesceTimeout(); will(returnValue(60000L));
+            allowing(serverConfig).getQuiesceTimeoutMillis(); will(returnValue(60000L));
         }});
-        framework.setChannelFWConfig(channelConfig);
+        framework.setServerElementConfig(serverConfig);
         ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
         framework.setScheduledExecutorService(scheduler);
         ExecutorService stoppingExecutor = Executors.newSingleThreadExecutor();
