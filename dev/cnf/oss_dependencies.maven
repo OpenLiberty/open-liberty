@@ -856,6 +856,7 @@ org.jboss.weld:weld-osgi-bundle:4.0.3.Final
 org.jboss.weld:weld-osgi-bundle:5.1.1.SP2
 org.jboss.weld:weld-osgi-bundle:6.0.2.Final
 org.jboss.weld:weld-porting-package-tck:6.0.0.Final
+org.jboss:jandex:2.4.5.Final
 org.jctools:jctools-core:4.0.5
 org.jetbrains.kotlin:kotlin-stdlib-common:1.9.0
 org.jetbrains.kotlin:kotlin-stdlib:1.9.0
