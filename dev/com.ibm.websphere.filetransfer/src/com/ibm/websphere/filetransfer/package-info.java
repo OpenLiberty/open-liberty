@@ -15,8 +15,8 @@
  * This package is intended to encapsulate the public API and SPI related
  * to file transfer. Do not add non-public interfaces to this package.
  * 
- * @version 1.2
+ * @version 1.3
  */
-@org.osgi.annotation.versioning.Version("1.2")
+@org.osgi.annotation.versioning.Version("1.3")
 package com.ibm.websphere.filetransfer;
 

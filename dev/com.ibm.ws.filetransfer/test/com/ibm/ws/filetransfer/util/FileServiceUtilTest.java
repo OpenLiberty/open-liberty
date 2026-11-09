@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ibm.ws.filetransfer.internal.mbean.FileService;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -134,7 +136,7 @@ public class FileServiceUtilTest {
             pw.close();
 
             // archive the file
-            FileServiceUtil ftau = new FileServiceUtil();
+            FileServiceUtil ftau = new FileServiceUtil(new FileService());
             assertTrue(ftau.createArchive(testArchiveSource, testArchiveTarget));
             assertTrue(new File(testArchiveTarget).exists());
 
@@ -160,5 +162,24 @@ public class FileServiceUtilTest {
 
             outputMgr.failWithThrowable(m, t);
         }
+    }
+
+    @Test
+    public void testIsFileMatched() {
+        ArrayList<String> patterns = new ArrayList<String>();
+
+        patterns.add("*");
+        assertTrue("It should match", FileServiceUtil.isFileMatched("bob.xml", patterns));
+
+        patterns.clear();
+        patterns.add("*.xml");
+        patterns.add("exactmatch");
+        assertTrue("It should match", FileServiceUtil.isFileMatched("bob.xml", patterns));
+        assertTrue("It should match", FileServiceUtil.isFileMatched("exactmatch", patterns));
+        assertFalse("It shouldn't match", FileServiceUtil.isFileMatched("bobxml", patterns));
+
+        patterns.clear();
+        assertFalse("It shouldn't match", FileServiceUtil.isFileMatched("anything", patterns));
+
     }
 }
