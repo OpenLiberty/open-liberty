@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #ISMESSAGEFILE TRUE
 #NLS_ENCODING=UNICODE
@@ -28,3 +25,7 @@
 OSGI_SERVICE_ERROR=CWWKO1350E: Us\u0142uga OSGi {0} nie jest dost\u0119pna.
 OSGI_SERVICE_ERROR.explanation=Jest to wewn\u0119trzny b\u0142\u0105d serwera zg\u0142aszany w zwi\u0105zku z niedost\u0119pno\u015bci\u0105 okre\u015blonej us\u0142ugi.
 OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer, u\u017cywaj\u0105c opcji clean.
+
+CORS_UNSUPPORTED_ORIGIN_WILDCARD=CWWKO1351W: Warto\u015b\u0107 allowedOrigins {0} w konfiguracji CORS dla domeny {1} zawiera nieobs\u0142ugiwany symbol wieloznaczny i jest ignorowana. Tylko warto\u015b\u0107 * zezwala na wszystkie \u017ar\u00f3d\u0142a.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.explanation=Atrybut \u201e allowedOrigins \u201d mo\u017ce przyjmowa\u0107 albo pojedyncz\u0105 gwiazdk\u0119 (*), kt\u00f3ra zezwala na wszystkie \u017ar\u00f3d\u0142a, albo list\u0119 konkretnych \u017ar\u00f3de\u0142. Pochodzenie zawieraj\u0105ce gwiazdk\u0119 wraz z innymi znakami nie jest obs\u0142ugiwanym wzorcem, dlatego jest ignorowane i nie zezwala na \u017cadne pochodzenie.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.useraction=Nale\u017cy wyra\u017anie okre\u015bli\u0107 ka\u017cde dozwolone \u017ar\u00f3d\u0142o lub wpisa\u0107 znak *, aby zezwoli\u0107 na wszystkie \u017ar\u00f3d\u0142a.

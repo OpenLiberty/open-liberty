@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -71,6 +71,26 @@ INVALID_PROVIDER_CWWKW1305W.useraction=Zkontrolujte k\u00f3d aplikace a ujist\u0
 INVALID_LONG_PROPERTY_CWWKW1306W=CWWKW1306W: Vlastnost klienta {0} mus\u00ed b\u00fdt typu long integer, ale byla nespr\u00e1vn\u011b nakonfigurov\u00e1na s {1}. Toto nastaven\u00ed je ignorov\u00e1no.
 INVALID_LONG_PROPERTY_CWWKW1306W.explanation=Vlastnosti klienta, jako nap\u0159\u00edklad nastaven\u00ed \u010dasov\u00e9ho limitu, mus\u00ed b\u00fdt nakonfigurov\u00e1ny jako hodnota typu long integer nebo string, kter\u00e9 lze p\u0159ev\u00e9st na long integer. Tato zpr\u00e1va ozna\u010duje, \u017ee vlastnost klienta byla nakonfigurov\u00e1na s neplatnou hodnotou. V d\u016fsledku toho je tato vlastnost ignorov\u00e1na.
 INVALID_LONG_PROPERTY_CWWKW1306W.useraction=Zkontrolujte k\u00f3d aplikace a konfiguraci serveru, abyste ur\u010dili, kde byla tato vlastnost nastavena nespr\u00e1vn\u011b, a bu\u010f ji odeberte, nebo ji zm\u011b\u0148te na platnou hodnotu typu long integer.
+
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W=CWWKW1307W: Nepoda\u0159ilo se nastavit atribut ''{0}'' na hodnotu ''{1}''.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.explanation=Implementace t\u0159\u00eddy XML TransformerFactory nepodporuje zadan\u00fd atribut. Zpracov\u00e1n\u00ed pokra\u010duje s v\u00fdchoz\u00ed konfigurac\u00ed transform\u00e1toru.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.useraction=Nakonfigurujte nebo prove\u010fte upgrade na implementaci XML TransformerFactory, kter\u00e1 podporuje atribut ''{0}'', abyste zajistili odpov\u00eddaj\u00edc\u00ed pos\u00edlen\u00ed zabezpe\u010den\u00ed.
+
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W=CWWKW1308W: Konfigurace filtru CORS ur\u010duje zdroj s univerz\u00e1ln\u00edm znakem (*) a nastavuje atribut allowCredentials na hodnotu true. Prohl\u00ed\u017ee\u010de nepodporuj\u00ed p\u0159ihla\u0161ovac\u00ed \u00fadaje s p\u016fvodem ozna\u010den\u00fdm z\u00e1stupn\u00fdm znakem, proto filtr CORS deaktivuje podporu t\u011bchto p\u0159ihla\u0161ovac\u00edch \u00fadaj\u016f. Chcete-li podporovat ov\u011b\u0159ovac\u00ed \u00fadaje, zadejte p\u0159esn\u00e9 povolen\u00e9 zdroje nam\u00edsto zdroje s hv\u011bzdi\u010dkou.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.explanation=Specifikace W3C pro sd\u00edlen\u00ed zdroj\u016f mezi dom\u00e9nami (Cross-Origin Resource Sharing) zakazuje pou\u017eit\u00ed hlavi\u010dky odpov\u011bdi `Access-Control-Allow-Credentials`, pokud je hodnotou hlavi\u010dky odpov\u011bdi `Access-Control-Allow-Origin` z\u00e1stupn\u00fd znak (*). Filtr CORS proto v souladu s touto specifikac\u00ed deaktivuje podporu p\u0159ihla\u0161ovac\u00edch \u00fadaj\u016f.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.useraction=Pokud jsou vy\u017eadov\u00e1ny p\u0159ihla\u0161ovac\u00ed \u00fadaje, nakonfigurujte filtr CORS tak, aby obsahoval v\u00fdslovn\u011b povolen\u00e9 zdroje nam\u00edsto zdroje s hv\u011bzdi\u010dkou. Pokud p\u0159ihla\u0161ovac\u00ed \u00fadaje nejsou vy\u017eadov\u00e1ny, odeberte atribut allowCredentials nebo nastavte atribut allowCredentials na hodnotu false.
+
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E=CWWKW1309E: Neplatn\u00e9 rozm\u011bry obr\u00e1zku: {0} \u00d7 {1}
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.explanation=Rozm\u011bry obr\u00e1zku uveden\u00e9 v hlavi\u010dce obr\u00e1zku nejsou platn\u00e9. \u0160\u00ed\u0159ka i v\u00fd\u0161ka obr\u00e1zku mus\u00ed b\u00fdt kladn\u00e9 hodnoty. K t\u00e9to chyb\u011b m\u016f\u017ee doj\u00edt, pokud je obrazov\u00fd soubor po\u0161kozen\u00fd nebo obsahuje ne\u00fapln\u00e9 informace v hlavi\u010dce.
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.useraction=Ujist\u011bte se, \u017ee nahran\u00fd obr\u00e1zek je platn\u00fd a nepo\u0161kozen\u00fd obrazov\u00fd soubor.
+
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E=CWWKW1310E: Neplatn\u00e9 rozm\u011bry miniatury: {0} \u00d7 {1}
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.explanation=Rozm\u011bry miniatury uveden\u00e9 v hlavi\u010dce obr\u00e1zku nejsou platn\u00e9. \u0160\u00ed\u0159ka i v\u00fd\u0161ka miniatury mus\u00ed b\u00fdt kladn\u00e9 hodnoty. K t\u00e9to chyb\u011b m\u016f\u017ee doj\u00edt, pokud je obrazov\u00fd soubor po\u0161kozen\u00fd nebo obsahuje ne\u00fapln\u00e9 informace o miniatur\u00e1ch.
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.useraction=Ujist\u011bte se, \u017ee nahran\u00fd obr\u00e1zek je platn\u00fd, nepo\u0161kozen\u00fd obrazov\u00fd soubor s platn\u00fdmi rozm\u011bry miniatury.
+
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E=CWWKW1311E: Velikost obr\u00e1zku {0} \u00d7 {1} ( {2} ) p\u0159ekra\u010duje maxim\u00e1ln\u00ed limit {3}
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.explanation=Odhadovan\u00e1 velikost dek\u00f3dovan\u00e9ho obr\u00e1zku p\u0159ekra\u010duje nastavenou maxim\u00e1ln\u00ed mezn\u00ed hodnotu. Z d\u016fvodu omezen\u00ed vyu\u017eit\u00ed pam\u011bti je po\u017eadavek zam\u00edtnut s k\u00f3dem stavu HTTP 400.
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.useraction=Zmen\u0161ete rozm\u011bry obr\u00e1zku nebo zvy\u0161te prahovou hodnotu nastaven\u00edm syst\u00e9mov\u00e9 vlastnosti ` dev.resteasy.image.threshold ` na vy\u0161\u0161\u00ed hodnotu (nap\u0159\u00edklad 500 MB). Nastavte hodnotu na -1, chcete-li kontrolu zcela deaktivovat.
 
 # Same message as in /com.ibm.ws.jaxrs.2.0.common/resources/com/ibm/ws/jaxrs20/common/internal/resources/JaxRsCommonMessages.nlsprops
 

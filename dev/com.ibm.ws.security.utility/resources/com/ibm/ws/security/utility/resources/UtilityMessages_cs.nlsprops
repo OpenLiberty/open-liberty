@@ -104,6 +104,7 @@ createLTPAKeys.createdFile=Vytvo\u0159en\u00fd soubor s kl\u00ed\u010di LTPA: {0
 configureFIPS.notIbmSdkNorSemeru=Instalace Java nen\u00ed bu\u010f z IBMSemeru Runtimes ani IBM SDK, nebo pokud ano, nepodporuje FIPS 140-3.\nNainstalujte Javu bu\u010f z IBMSemeru Runtimes nebo IBM SDK pomoc\u00ed verze a opera\u010dn\u00edho syst\u00e9mu, kter\u00fd podporuje FIPS 140-3.\nPokud pou\u017e\u00edv\u00e1te IBMSemeru Runtimes, pou\u017eijte verzi 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.1.0, nebo vy\u0161\u0161\u00ed.\nPokud pou\u017e\u00edv\u00e1te IBM SDK, pou\u017eijte verzi 8.0.8.30 nebo vy\u0161\u0161\u00ed.
 
 configureFIPS.zosNotAvailable=P\u0159\u00edkaz securityUtility configureFIPS nen\u00ed podporov\u00e1n na adrese z/OS.
+configureFIPS.zosEvaluation=P\u0159\u00edkaz \u201e securityUtility configureFIPS \u201c v syst\u00e9mu z/OS slou\u017e\u00ed pouze k testovac\u00edm \u00fa\u010del\u016fm.
 
 configureFIPS.configureSemeru=Konfigurace FIPS 140-3 pro IBM Semeru Runtimes.
 configureFIPS.configureIbmSdk=Konfigurace FIPS 140-3 pro IBM SDK.

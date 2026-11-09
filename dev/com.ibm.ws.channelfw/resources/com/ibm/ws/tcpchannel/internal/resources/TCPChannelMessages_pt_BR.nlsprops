@@ -159,14 +159,14 @@ netty.handler.removed.from.pipeline=CWWKO0231W: O manipulador de canal {0} Netty
 netty.handler.removed.from.pipeline.explanation=Um manipulador de canal do tipo \u201c Netty \u201d, necess\u00e1rio para o funcionamento correto da conex\u00e3o, foi removido inesperadamente enquanto o canal estava ativo.
 netty.handler.removed.from.pipeline.useraction=Se essa mensagem persistir, colete informa\u00e7\u00f5es de rastreamento de diagn\u00f3stico e entre em contato com o suporte do IBM.
 
-read.timeout=CWWKO1713W: Ocorreu um tempo limite na opera\u00e7\u00e3o de leitura de um HTTP : {0}
-read.timeout.explanation=Uma conex\u00e3o de entrada do tipo \u201c HTTP \u201d n\u00e3o recebeu dados dentro do per\u00edodo de tempo limite de leitura configurado.
-read.timeout.useraction=Verifique a conex\u00e3o de rede ou aumente o valor do tempo limite de leitura na configura\u00e7\u00e3o do endpoint HTTP.
+# read.timeout=CWWKO1713W: An HTTP read operation timed out: {0}
+# read.timeout.explanation=An inbound HTTP connection did not receive data within the configured read timeout period.
+# read.timeout.useraction=Check the network connection or increase the read timeout value in the HTTP endpoint configuration.
 
-write.timeout=CWWKO1714W: Ocorreu um tempo limite na opera\u00e7\u00e3o de grava\u00e7\u00e3o do HTTP : {0}
-write.timeout.explanation=Uma opera\u00e7\u00e3o de grava\u00e7\u00e3o de sa\u00edda no HTTP n\u00e3o foi conclu\u00edda dentro do per\u00edodo de tempo limite de grava\u00e7\u00e3o configurado.
-write.timeout.useraction=Verifique a conex\u00e3o de rede ou aumente o valor do tempo limite de grava\u00e7\u00e3o na configura\u00e7\u00e3o do endpoint HTTP.
+# write.timeout=CWWKO1714W: An HTTP write operation timed out: {0}
+# write.timeout.explanation=An outbound HTTP write operation did not complete within the configured write timeout period.
+# write.timeout.useraction=Check the network connection or increase the write timeout value in the HTTP endpoint configuration.
 
-h2.idle.timeout=CWWKO1715W: Uma conex\u00e3o do HTTP/2 foi encerrada devido a um tempo limite de inatividade: {0}
-h2.idle.timeout.explanation=A conex\u00e3o HTTP/2 ficou inativa por um per\u00edodo superior ao tempo limite de inatividade configurado; por isso, o servidor encerrou a conex\u00e3o.
-h2.idle.timeout.useraction=Verifique a conex\u00e3o de rede ou aumente o tempo limite de inatividade da conex\u00e3o HTTP/2 na configura\u00e7\u00e3o do endpoint HTTP.
+# h2.idle.timeout=CWWKO1715W: An HTTP/2 connection closed because of an idle timeout: {0}
+# h2.idle.timeout.explanation=The HTTP/2 connection was idle for longer than the configured idle timeout period, so the server closed the connection.
+# h2.idle.timeout.useraction=Check the network connection or increase the HTTP/2 connection idle timeout value in the HTTP endpoint configuration.

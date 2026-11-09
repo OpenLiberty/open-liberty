@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,3 +51,7 @@ OSGI_ERROR_MSG.useraction=Consulte a mensagem de erro para obter informa\u00e7\u
 OSGI_BUNDLE_EXCEPTION=CWWKE0702E: {0}
 OSGI_BUNDLE_EXCEPTION.explanation=Uma BundleException foi lan\u00e7ada pela estrutura OSGi.
 OSGI_BUNDLE_EXCEPTION.useraction=Consulte a mensagem de exce\u00e7\u00e3o para obter informa\u00e7\u00f5es.
+
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W=CWWKE0710W: O ID de mensagem com caractere curinga para {0} n\u00e3o \u00e9 v\u00e1lido. A sintaxe esperada \u00e9 <prefixo>*[<n\u00edvel-de-log]], em que \u201cn\u00edvel-de-log\u201d \u00e9 um \u00fanico caractere opcional que representa um dos seguintes n\u00edveis de log: I para informa\u00e7\u00e3o, A para auditoria, W para aviso ou E para erro.
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W.explanation=Um ID de mensagem que cont\u00e9m um caractere curinga n\u00e3o est\u00e1 de acordo com a sintaxe esperada. A sintaxe esperada \u00e9 <prefixo>*[<n\u00edvel de log]]. O valor do n\u00edvel de log \u00e9 um \u00fanico caractere opcional que representa o n\u00edvel de log \u201cInforma\u00e7\u00e3o\u201d, \u201cAuditoria\u201d, \u201cAviso\u201d ou \u201cErro\u201d.
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W.useraction=Atualize o ID da mensagem para que ele utilize a sintaxe esperada: <prefixo>*[<n\u00edvel de log]." Especifique um caractere v\u00e1lido: I para informa\u00e7\u00e3o, A para auditoria, W para aviso, E para erro ou omita o valor do n\u00edvel de log. Se voc\u00ea n\u00e3o tomar nenhuma medida, este ID de mensagem ser\u00e1 ignorado e as mensagens correspondentes n\u00e3o ser\u00e3o registradas.

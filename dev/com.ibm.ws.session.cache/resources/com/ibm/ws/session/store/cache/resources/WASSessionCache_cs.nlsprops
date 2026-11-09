@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018,2022 IBM Corporation and others.
+# Copyright (c) 2018, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,6 +72,11 @@ CONFIG_ATTRIBUTE_IGNORED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 
 UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: Atribut konfigurace mezipam\u011bti relace HTTP {0} se zm\u011bnil od doby, kdy byl server kontrolov\u00e1n. Pokud se hodnota atributu zm\u011bn\u00ed po kontroln\u00edm bodu serveru, ale p\u0159ed obnoven\u00edm procesu serveru, aplikace nepou\u017e\u00edv\u00e1 aktualizovanou hodnotu.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=Uveden\u00fd atribut konfigurace nelze upravit b\u011bhem doby mezi kontroln\u00edm bodem serveru a obnovou procesu serveru.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Nastavte hodnotu atributu p\u0159ed proveden\u00edm kontroln\u00edho bodu serveru.
+
+# do not translate: httpSessionCache, cacheManagerRef
+FALLBACK_LIBRARY_NOT_REGISTERED=SESN0313I: Z\u00e1lo\u017en\u00ed knihovna pro konfiguraci httpSessionCache nebyla zaregistrov\u00e1na, proto\u017ee slu\u017eba knihovny {0} nen\u00ed k dispozici.
+FALLBACK_LIBRARY_NOT_REGISTERED.explanation=Konfigurace ` httpSessionCache ` specifikuje ` cacheManagerRef, ` kter\u00fd k uspokojen\u00ed z\u00e1vislosti na knihovn\u011b vyu\u017e\u00edv\u00e1 z\u00e1lo\u017en\u00ed registraci knihovny. Slu\u017eba knihovny {0} nebyla v okam\u017eiku pokusu o registraci dostupn\u00e1, proto byla registrace p\u0159esko\u010dena.
+FALLBACK_LIBRARY_NOT_REGISTERED.useraction=Nen\u00ed t\u0159eba prov\u00e1d\u011bt \u017e\u00e1dn\u00e9 kroky, pokud se poda\u0159\u00ed spustit mezipam\u011b\u0165 HTTP ov\u00e9 relace. Pokud se spu\u0161t\u011bn\u00ed nezda\u0159\u00ed, zkontrolujte konfiguraci knihovny poskytovatele mezipam\u011bti a pod\u00edvejte se, zda se nezobrazuj\u00ed n\u011bjak\u00e9 souvisej\u00edc\u00ed zpr\u00e1vy.
 
 INTERNAL_SERVER_ERROR=Intern\u00ed chyba serveru
 

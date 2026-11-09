@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #ISMESSAGEFILE TRUE
 #NLS_ENCODING=UNICODE
@@ -28,3 +25,7 @@
 OSGI_SERVICE_ERROR=CWWKO1350E: Il servizio OSGi {0} non \u00e8 disponibile.
 OSGI_SERVICE_ERROR.explanation=Questo errore interno del server viene generato perch\u00e9 il servizio specificato non \u00e8 disponibile.
 OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione clean.
+
+CORS_UNSUPPORTED_ORIGIN_WILDCARD=CWWKO1351W: Il valore allowedOrigins {0} nella configurazione CORS per il dominio {1} contiene un carattere jolly non supportato e viene ignorato. Solo il valore * consente tutte le origini.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.explanation=L'attributo ` allowedOrigins ` accetta sia un singolo asterisco (*) per consentire tutte le origini, sia un elenco di origini specifiche. Un'origine che contiene un asterisco insieme ad altri caratteri non \u00e8 un modello supportato, pertanto viene ignorata e non consente alcuna origine.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.useraction=Specificare esplicitamente ciascuna origine consentita oppure utilizzare * per consentire tutte le origini.

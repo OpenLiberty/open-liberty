@@ -104,6 +104,7 @@ createLTPAKeys.createdFile=A l\u00e9trehozott LTPA kulcsf\u00e1jl: {0}\nVegye fe
 configureFIPS.notIbmSdkNorSemeru=A Java telep\u00edt\u00e9se nem a Runtimes vagy IBMIBMSemeru az SDK programb\u00f3l sz\u00e1rmazik, vagy ha igen, akkor nem t\u00e1mogatja a FIPS 140-3 szabv\u00e1nyt.\nTelep\u00edtse a Java programot a IBMSemeru Runtimes vagy IBM az SDK programb\u00f3l, olyan verzi\u00f3t \u00e9s oper\u00e1ci\u00f3s rendszert haszn\u00e1lva, amely t\u00e1mogatja a FIPS 140-3 szabv\u00e1nyt.\nHa IBMSemeru Runtimes-t haszn\u00e1l, akkor a 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.1.0 vagy ann\u00e1l magasabb verzi\u00f3t haszn\u00e1lja.\nHa SDK-t IBM haszn\u00e1l, akkor a 8.0.8.30 vagy ann\u00e1l magasabb verzi\u00f3t haszn\u00e1lja.
 
 configureFIPS.zosNotAvailable=A securityUtility configureFIPS parancs nem t\u00e1mogatott a z/OS oldalon.
+configureFIPS.zosEvaluation=A securityUtility configureFIPS parancs a z/OS rendszeren kiz\u00e1r\u00f3lag \u00e9rt\u00e9kel\u00e9si c\u00e9lokra szolg\u00e1l.
 
 configureFIPS.configureSemeru=A FIPS 140-3 konfigur\u00e1l\u00e1sa a IBM Semeru fut\u00e1si id\u0151h\u00f6z.
 configureFIPS.configureIbmSdk=FIPS 140-3 konfigur\u00e1l\u00e1sa a IBM SDK sz\u00e1m\u00e1ra.

@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #ISMESSAGEFILE TRUE
 #NLS_ENCODING=UNICODE
@@ -28,3 +25,7 @@
 OSGI_SERVICE_ERROR=CWWKO1350E: Serviciul OSGi {0} nu este disponibil.
 OSGI_SERVICE_ERROR.explanation=Aceast\u0103 eroare intern\u0103 de server este aruncat\u0103 pentru c\u0103 serviciul specificat nu este disponibil.
 OSGI_SERVICE_ERROR.useraction=Reporni\u0163i serverul cu op\u0163iunea de cur\u0103\u0163are.
+
+CORS_UNSUPPORTED_ORIGIN_WILDCARD=CWWKO1351W: Valoarea allowedOrigins {0} din configura\u021bia CORS pentru domeniul {1} con\u021bine un caracter general neacceptat \u0219i este ignorat\u0103. Doar valoarea * permite toate originile.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.explanation=Atributul \u201e allowedOrigins \u201d accept\u0103 fie un singur asterisc (*), pentru a permite toate originile, fie o list\u0103 cu originile exacte. O origine care con\u021bine un asterisc \u00eempreun\u0103 cu alte caractere nu este un model acceptat, a\u0219a c\u0103 este ignorat\u0103 \u0219i nu permite nicio origine.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.useraction=Specifica\u021bi \u00een mod explicit fiecare origine permis\u0103 sau folosi\u021bi simbolul * pentru a permite toate originile.

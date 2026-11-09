@@ -104,6 +104,7 @@ createLTPAKeys.createdFile=Fi\u015fierul de chei LTPA a fost creat: {0}\nInclude
 configureFIPS.notIbmSdkNorSemeru=Instalarea Java nu provine nici din IBMSemeru Runtimes, nici IBM din SDK, sau, dac\u0103 provine, nu accept\u0103 FIPS 140-3.\nInstala\u021bi Java din Runtimes IBMSemeru sau IBM SDK utiliz\u00e2nd o versiune \u0219i un sistem de operare care accept\u0103 FIPS 140-3.\nDac\u0103 utiliza\u021bi IBMSemeru Runtimes, utiliza\u021bi versiunea 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.1.0, sau o versiune superioar\u0103.\nDac\u0103 utiliza\u021bi IBM SDK, utiliza\u021bi versiunea 8.0.8.30 sau o versiune superioar\u0103.
 
 configureFIPS.zosNotAvailable=Comanda securityUtility configureFIPS nu este acceptat\u0103 pe z/OS.
+configureFIPS.zosEvaluation=Comanda \u201e securityUtility configureFIPS \u201d din z/OS este destinat\u0103 exclusiv evalu\u0103rii.
 
 configureFIPS.configureSemeru=Configurarea FIPS 140-3 pentru IBM Semeru Runtimes.
 configureFIPS.configureIbmSdk=Configurarea FIPS 140-3 pentru IBM SDK.

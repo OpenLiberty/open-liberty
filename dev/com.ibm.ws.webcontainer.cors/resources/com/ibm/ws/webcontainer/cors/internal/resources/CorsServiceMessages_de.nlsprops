@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #ISMESSAGEFILE TRUE
 #NLS_ENCODING=UNICODE
@@ -28,3 +25,7 @@
 OSGI_SERVICE_ERROR=CWWKO1350E: Der OSGi-Service {0} ist nicht verf\u00fcgbar.
 OSGI_SERVICE_ERROR.explanation=Dieser interne Serverfehler wird ausgel\u00f6st, weil der angegebene Service nicht verf\u00fcgbar ist.
 OSGI_SERVICE_ERROR.useraction=Starten Sie den Server mit der Option clean erneut.
+
+CORS_UNSUPPORTED_ORIGIN_WILDCARD=CWWKO1351W: Der Wert \u201e allowedOrigins \u201c {0} in der CORS -Konfiguration f\u00fcr die Dom\u00e4ne {1} enth\u00e4lt einen nicht unterst\u00fctzten Platzhalter und wird ignoriert. Nur der Wert * l\u00e4sst alle Urspr\u00fcnge zu.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.explanation=Das Attribut \u201e allowedOrigins \u201c akzeptiert entweder ein einzelnes Sternchen (*), um alle Urspr\u00fcnge zuzulassen, oder eine Liste mit genauen Urspr\u00fcngen. Ein Ursprung, der ein Sternchen zusammen mit anderen Zeichen enth\u00e4lt, ist kein unterst\u00fctztes Muster; daher wird er ignoriert und l\u00e4sst keinen Ursprung zu.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.useraction=Geben Sie jede zul\u00e4ssige Quelle explizit an oder verwenden Sie *, um alle Quellen zuzulassen.

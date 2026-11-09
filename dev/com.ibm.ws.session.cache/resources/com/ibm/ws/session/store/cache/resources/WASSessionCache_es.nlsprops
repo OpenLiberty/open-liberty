@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018,2022 IBM Corporation and others.
+# Copyright (c) 2018, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,6 +72,11 @@ CONFIG_ATTRIBUTE_IGNORED.useraction=No se requiere ninguna acci\u00f3n.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: El atributo de configuraci\u00f3n de memoria cach\u00e9 de sesi\u00f3n HTTP {0} ha cambiado desde que se comprob\u00f3 el punto de comprobaci\u00f3n del servidor. Si el valor del atributo se cambia despu\u00e9s del punto de comprobaci\u00f3n del servidor, pero antes de que se restaure el proceso del servidor, la aplicaci\u00f3n no utiliza el valor actualizado.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=El atributo de configuraci\u00f3n especificado no se puede modificar durante el tiempo entre el punto de comprobaci\u00f3n del servidor y la restauraci\u00f3n del proceso del servidor.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Establezca el valor del atributo antes de realizar el punto de comprobaci\u00f3n del servidor.
+
+# do not translate: httpSessionCache, cacheManagerRef
+FALLBACK_LIBRARY_NOT_REGISTERED=SESN0313I: La biblioteca de reserva para la configuraci\u00f3n de httpSessionCache no se ha registrado porque el servicio de la biblioteca {0} no est\u00e1 disponible.
+FALLBACK_LIBRARY_NOT_REGISTERED.explanation=La configuraci\u00f3n de \u00ab httpSessionCache \u00bb especifica \u00ab cacheManagerRef, \u00bb que utiliza un registro de biblioteca de reserva para satisfacer una dependencia de biblioteca. El servicio de la biblioteca {0} no estaba disponible cuando se intent\u00f3 realizar el registro, por lo que este se omiti\u00f3.
+FALLBACK_LIBRARY_NOT_REGISTERED.useraction=No es necesario realizar ninguna acci\u00f3n, salvo que la cach\u00e9 de la sesi\u00f3n HTTP no se inicie. Si no se inicia, comprueba la configuraci\u00f3n de la biblioteca del proveedor de cach\u00e9 y busca mensajes relacionados.
 
 INTERNAL_SERVER_ERROR=Error interno del servidor
 
