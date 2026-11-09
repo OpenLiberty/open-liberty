@@ -663,7 +663,7 @@ Extended StAX API [stax-ex] (Copyright 1997-2020 Oracle and/or its affiliates) (
 Extended StAX API [stax-ex] (Copyright 1997-2021 Oracle and) (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
 Extended StAX API [stax-ex] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
 GMBAL (API only) [gmbal-api-only] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2019-2021 Oracle and/or its affiliates) (Eclipse Foundation)
-Hamcrest Core [hamcrest-core] (Copyright 2000-2006 www.hamcrest.org) (Hamcrest)
+Hamcrest Core [hamcrest-core] (Copyright 2000-2006 www.hamcrest.org) (Copyright 2006 Hamcrest)
 JAX-WS RI Runtime (jaxws-rt) [jaxws-rt] (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 JAX-WS RI Tools (jaxws-tools) [jaxws-tools] (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020 Oracle and/or its affiliates) (Eclipse Foundation)
@@ -903,7 +903,7 @@ javax.annotation API [javax.annotation-api] http://jcp.org/en/jsr/detail?id=250
 javax.ejb API [javax.ejb-api] https://glassfish.java.net
 javax.enterprise.concurrent-api http://www.oracle.com/
 javax.interceptor API [javax.interceptor-api] https://glassfish.java.net
-javax.json (https://repo1.maven.org/maven2/javax/json/javax.json-api/)
+javax.json***FIXME Source URL missing for javax.json v:1.0.6.ibm***
 javax.json.bind-api https://javaee.github.io/jsonb-spec
 javax.resource API [javax.resource-api] https://glassfish.java.net
 javax.ws.rs-api http://www.oracle.com/
@@ -1006,7 +1006,7 @@ Region Digraph [org.eclipse.equinox.region] https://github.com/eclipse-equinox/e
 Yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
 che-lib7.0.0-rc-4.0 [che-lib] https://github.com/eclipse-che/che-lib.git
 jakarta.enterprise.concurrent-api https://github.com/eclipse-ee4j/concurrency-api
-jakarta.json (https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/)
+jakarta.json***FIXME Source URL missing for jakarta.json v:2.0.3.ibm***
 jakarta.resource API [jakarta.resource-api] https://github.com/eclipse-ee4j/jca-api
 jakarta.transaction API [jakarta.transaction-api] https://projects.eclipse.org/projects/ee4j.jta
 jakarta.ws.rs-api https://github.com/eclipse-ee4j/jaxrs-api
@@ -1111,6 +1111,7 @@ Animal Sniffer Annotations [animal-sniffer-annotations] (Codehaus) (Copyright 20
 Animal Sniffer Annotations [animal-sniffer-annotations] (Copyright 2009 codehaus.org) (MojoHaus)
 Checker Qual [checker-compat-qual](Copyright Not Found)
 Checker Qual [checker-qual] (Copyright 2004 by the Checker Framework developers)
+SLF4J API Module [slf4j-api] (Copyright 2005 QOS.ch)
 SLF4J API Module [slf4j-api] (QOS.ch)
 SLF4J JDK14 Binding [slf4j-jdk14] (QOS.ch)
 ansi-regex (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))

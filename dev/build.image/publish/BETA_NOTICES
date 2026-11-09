@@ -666,7 +666,7 @@ Extended StAX API [stax-ex] (Copyright 1997-2020 Oracle and/or its affiliates) (
 Extended StAX API [stax-ex] (Copyright 1997-2021 Oracle and) (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
 Extended StAX API [stax-ex] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
 GMBAL (API only) [gmbal-api-only] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2019-2021 Oracle and/or its affiliates) (Eclipse Foundation)
-Hamcrest Core [hamcrest-core] (Copyright 2000-2006 www.hamcrest.org) (Hamcrest)
+Hamcrest Core [hamcrest-core] (Copyright 2000-2006 www.hamcrest.org) (Copyright 2006 Hamcrest)
 JAX-WS RI Runtime (jaxws-rt) [jaxws-rt] (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 JAX-WS RI Tools (jaxws-tools) [jaxws-tools] (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020 Oracle and/or its affiliates) (Eclipse Foundation)
@@ -1041,11 +1041,9 @@ Party Code for which you are requesting the source code.
 
 
 JBoss Logging I18n Annotation Processor [jboss-logging-processor] (Copyright 2010 Red Hat Inc., and individual contributors)
-LRA Coordinator jar [lra-coordinator-jar] (Copyright 2017 Red Hat, Inc., and individual contributors)
 Narayana LRA [narayana-lra] (Copyright 2017 Red Hat, Inc. and/or its affiliates)
 Narayana: ArjunaCore arjuna [arjuna] (Copyright 2008 Red Hat Middleware)
 Narayana: common [common] (Copyright 2008 Red Hat Middleware LLC, and others contributors as indicated by the @authors tag)
-lra-service-base (Copyright 2017 Red Hat, Inc., and individual contributors)
 
 
                   GNU LESSER GENERAL PUBLIC LICENSE
@@ -1581,6 +1579,7 @@ Animal Sniffer Annotations [animal-sniffer-annotations] (Codehaus) (Copyright 20
 Animal Sniffer Annotations [animal-sniffer-annotations] (Copyright 2009 codehaus.org) (MojoHaus)
 Checker Qual [checker-compat-qual](Copyright Not Found)
 Checker Qual [checker-qual] (Copyright 2004 by the Checker Framework developers)
+SLF4J API Module [slf4j-api] (Copyright 2005 QOS.ch)
 SLF4J API Module [slf4j-api] (QOS.ch)
 SLF4J JDK14 Binding [slf4j-jdk14] (QOS.ch)
 ansi-regex (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
