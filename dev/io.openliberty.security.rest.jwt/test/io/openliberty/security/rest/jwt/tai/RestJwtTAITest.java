@@ -89,6 +89,8 @@ public class RestJwtTAITest {
                 will(returnValue("/IBMJMXConnectorREST"));
                 allowing(request).getHeader("Authorization");
                 will(returnValue("Bearer " + token));
+                allowing(request).getCookies();
+                will(returnValue(null));
             }
         });
     }
@@ -147,6 +149,8 @@ public class RestJwtTAITest {
                 will(returnValue("/service"));
                 allowing(request).getContextPath();
                 will(returnValue("/myApp"));
+                allowing(request).getCookies();
+                will(returnValue(null));
             }
         });
 
@@ -176,7 +180,7 @@ public class RestJwtTAITest {
     }
 
     @Test
-    public void testIsTargetInterceptor_MatchesLtpaToken2Cookie() throws Exception {
+    public void testIsTargetInterceptor_RejectsLtpaToken2Cookie() throws Exception {
         mockery.checking(new Expectations() {
             {
                 allowing(request).getRequestURI();
@@ -194,22 +198,7 @@ public class RestJwtTAITest {
             }
         });
 
-        assertTrue("Should claim a request that carries an LtpaToken2 cookie so it can be rejected", tai.isTargetInterceptor(request));
-    }
-
-    @Test
-    public void testNegotiate_LtpaToken2CookieWithoutBearer_Unauthorized() throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                allowing(request).getHeader("Authorization");
-                will(returnValue(null));
-                allowing(request).getCookies();
-                will(returnValue(new Cookie[] { new Cookie("LtpaToken2", "abc") }));
-            }
-        });
-
-        TAIResult result = tai.negotiateValidateandEstablishTrust(request, response);
-        assertEquals("An LtpaToken2 cookie must be rejected", HttpServletResponse.SC_UNAUTHORIZED, result.getStatus());
+        assertFalse("Should not target a request that carries an LtpaToken2 cookie", tai.isTargetInterceptor(request));
     }
 
     @Test
