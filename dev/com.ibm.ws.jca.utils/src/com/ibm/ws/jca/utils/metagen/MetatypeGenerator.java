@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.ModuleAnnotations;
 import com.ibm.ws.jca.utils.Utils;
 import com.ibm.ws.jca.utils.Utils.ConstructType;
@@ -1430,7 +1429,7 @@ public class MetatypeGenerator {
     }
 
     private ModuleAnnotations getModuleAnnotations() throws UnableToAdaptException {
-        return AnnotationsBetaHelper.getModuleAnnotations(config.getRarContainer());
+        return config.getRarContainer().adapt(com.ibm.ws.container.service.annocache.ModuleAnnotations.class);
     }
 
     /**

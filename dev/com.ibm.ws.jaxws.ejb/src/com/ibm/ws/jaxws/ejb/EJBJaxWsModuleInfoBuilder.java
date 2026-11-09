@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.ModuleAnnotations;
 import com.ibm.ws.container.service.app.deploy.EJBModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
@@ -72,7 +71,7 @@ public class EJBJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
             return null;
         }
 
-        ModuleAnnotations moduleAnnotations = AnnotationsBetaHelper.getModuleAnnotations(containerToAdapt); // throws UnableToAdaptException
+        ModuleAnnotations moduleAnnotations = containerToAdapt.adapt(com.ibm.ws.container.service.annocache.ModuleAnnotations.class); // throws UnableToAdaptException
         InfoStore infoStore = moduleAnnotations.getInfoStore(); // throws UnableToAdaptException
 
         try {

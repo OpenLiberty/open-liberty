@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.ejs.container.EJBConfigurationException;
 import com.ibm.ws.container.service.annotations.ModuleAnnotations;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.app.deploy.ClientModuleInfo;
 import com.ibm.ws.container.service.app.deploy.EJBModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
@@ -129,7 +128,7 @@ public class ModuleInitDataAdapter implements ContainerAdapter<ModuleInitDataImp
                     // Retrieval of the web annotations, web annotation targets, and web info store
                     // seems to be premature.  Will these be used if the web module is metadata-complete?
 
-                    WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations( webModuleInfo.getContainer() );
+                    WebAnnotations webAnno = webModuleInfo.getContainer().adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
                     AnnotationTargets_Targets webAnnoTargets = webAnno.getAnnotationTargets();
                     InfoStore webInfoStore = webAnno.getInfoStore();
 
@@ -144,7 +143,7 @@ public class ModuleInitDataAdapter implements ContainerAdapter<ModuleInitDataImp
                         // Retrieval of the client annotations, client annotation targets, and client info store
                         // seems to be premature.  Will these be used if the client module is metadata-complete?
 
-                        ModuleAnnotations clientAnno = AnnotationsBetaHelper.getModuleAnnotations( clientModuleInfo.getContainer() );
+                        ModuleAnnotations clientAnno = clientModuleInfo.getContainer().adapt(com.ibm.ws.container.service.annocache.ModuleAnnotations.class);
                         AnnotationTargets_Targets clientAnnoTargets = clientAnno.getAnnotationTargets();
                         InfoStore clientInfoStore = clientAnno.getInfoStore();
 

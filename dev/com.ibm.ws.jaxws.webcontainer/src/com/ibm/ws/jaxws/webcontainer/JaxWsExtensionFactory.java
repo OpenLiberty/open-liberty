@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.jaxws.JaxWsConstants;
 import com.ibm.ws.jaxws.endpoint.EndpointPublisher;
 import com.ibm.ws.jaxws.endpoint.EndpointPublisherManager;
@@ -112,7 +111,7 @@ public class JaxWsExtensionFactory implements ExtensionFactory {
         WebApp webApp = (WebApp) servletContext;
         publisherContext.setAttribute(JaxWsWebContainerConstants.NAMESPACE_COLLABORATOR, webApp.getCollaboratorHelper().getWebAppNameSpaceCollaborator());
 
-        WebAnnotations webAnnotations = AnnotationsBetaHelper.getWebAnnotations(servletContext.getModuleContainer());
+        WebAnnotations webAnnotations = servletContext.getModuleContainer().adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
         InfoStore infoStore = webAnnotations.getInfoStore();
 
         publisherContext.setAttribute(

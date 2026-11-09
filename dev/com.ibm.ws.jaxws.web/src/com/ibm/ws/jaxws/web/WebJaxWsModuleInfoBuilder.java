@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ import javax.xml.ws.WebServiceProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.jaxws.JaxWsConstants;
@@ -103,7 +102,7 @@ public class WebJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
         //       obtaining the store is expensive and should be avoided whenever
         //       possible.
 
-        WebAnnotations webAnnotations = AnnotationsBetaHelper.getWebAnnotations(containerToAdapt);
+        WebAnnotations webAnnotations = containerToAdapt.adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
         InfoStore infoStore = webAnnotations.getInfoStore();
 
         EndpointInfoBuilderContext endpointInfoBuilderContext = new EndpointInfoBuilderContext(infoStore, containerToAdapt);
