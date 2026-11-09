@@ -192,7 +192,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Creating AutoScaler with minThreads: " + minThreads + ", maxThreads: " + maxThreads + ", windowSize: " + windowSize + ", downThreshold: " + downThreshold + ", upThreshold: " + upThreshold + ", upStep: " + upStep + ", downStep: " + downStep + ", cycles: " + cycles);
         }
-        return new AutoScalingEventExecutorChooserFactory(minThreads, maxThreads, windowSize, TimeUnit.MILLISECONDS, downThreshold, upThreshold, upStep, downStep, cycles);
+        return new AutoScalingEventExecutorChooserFactory(minThreads, maxThreads, windowSize, TimeUnit.MILLISECONDS, downThreshold, upThreshold, upStep, downStep, cycles, this.scheduledExecutorService);
     }
 
     private Double parseDouble(String property, double defaultValue) {
