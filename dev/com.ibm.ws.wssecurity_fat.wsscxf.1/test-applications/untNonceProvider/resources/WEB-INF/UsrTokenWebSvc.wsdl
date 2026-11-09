@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- No embedded policy: the policy is supplied by WEB-INF/policy-attachments-server.xml -->
+<wsdl:definitions name="UsrTokenWebSvc" targetNamespace="http://wssec.basic.cxf.fats"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="http://wssec.basic.cxf.fats"
+    xmlns:x1="http://wssec.basic.cxf.fats/types"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <wsdl:types>
+        <schema targetNamespace="http://wssec.basic.cxf.fats/types"
+            xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+            <element name="getVer">
+                <complexType>
+                    <sequence>
+                        <element name="requestType" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="getVerResponse">
+                <complexType>
+                    <sequence>
+                        <element name="responseType" type="xsd:string"/>
+                    </sequence>
+                </complexType>
+            </element>
+        </schema>
+    </wsdl:types>
+
+    <wsdl:message name="getVerRequest">
+        <wsdl:part element="x1:getVer" name="in"/>
+    </wsdl:message>
+    <wsdl:message name="getVerResponse">
+        <wsdl:part element="x1:getVerResponse" name="out"/>
+    </wsdl:message>
+
+    <wsdl:portType name="UsrToken">
+        <wsdl:operation name="invoke">
+            <wsdl:input message="tns:getVerRequest" name="getVerRequest"/>
+            <wsdl:output message="tns:getVerResponse" name="getVerResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="UsrToken_SOAPBinding" type="tns:UsrToken">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="invoke">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getVerRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getVerResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="SOAPService3">
+        <wsdl:port binding="tns:UsrToken_SOAPBinding" name="SoapPort3">
+            <soap:address location="http://localhost:8010/untNonceProvider/SOAPService3"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>
