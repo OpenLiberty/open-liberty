@@ -66,6 +66,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
     private String jwkEndpointUrl;
     private boolean validationRequired = true;
     private boolean useSystemPropertiesForHttpClientConnections = false;
+    private boolean tokenReuse = false;
     private List<String> amrClaim;
     private String keyManagementKeyAlias;
     String sslRef;
@@ -131,6 +132,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
         sslRef = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_SSL_REF));
         useSystemPropertiesForHttpClientConnections = (Boolean) props
                 .get(JwtUtils.CFG_KEY_USE_SYSPROPS_FOR_HTTPCLIENT_CONNECTONS);
+        tokenReuse = (Boolean) props.get(JwtUtils.CFG_KEY_TOKEN_REUSE);
         amrClaim = JwtUtils.trimIt((String[]) props.get(JwtUtils.CFG_AMR_CLAIM));
         keyManagementKeyAlias = JwtUtils.trimIt((String) props.get(JwtUtils.CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS));
 
@@ -278,9 +280,7 @@ public class JwtConsumerConfigImpl implements JwtConsumerConfig {
 
     @Override
     public boolean getTokenReuse() {
-        // The common JWT code is not allowed to reuse JWTs. This could be
-        // revisited later as a potential config option.
-        return false;
+        return tokenReuse;
     }
 
     @Override

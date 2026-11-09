@@ -159,6 +159,7 @@ build.bnd.plugins: \
   io.openliberty.security.openidconnect.internal.clients.common;project=com.ibm.ws.security.openidconnect.clients.common;source=none, \
   io.openliberty.security.openidconnect.internal.server;project=com.ibm.ws.security.openidconnect.server;source=none, \
   io.openliberty.security;project=com.ibm.websphere.appserver.api.security;source=none, \
+  io.openliberty.security.rest.jwt.internal;project=io.openliberty.security.rest.jwt;source=none, \
   io.openliberty.security.saml.internal.wab.2.0;project=com.ibm.ws.security.saml.wab;source=none, \
   io.openliberty.security.social.internal;project=com.ibm.ws.security.social;source=none, \
   io.openliberty.security.spnego.internal;project=com.ibm.ws.security.spnego;source=none, \
