@@ -46,6 +46,37 @@ public class ExpectedAppFailureValidator {
     }
 
     /**
+     * Deploys a WAR to an already-running server and asserts that the app fails to start.
+     * Use this overload inside a suite where the server lifecycle is managed externally.
+     *
+     * @param server      the already-running liberty server
+     * @param appName     the name of the app (also used as the WAR file name)
+     * @param packageInfo the package containing the test classes
+     * @throws Exception
+     */
+    public static void deployAppToAssertFailureOnRunningServer(LibertyServer server, String appName, Package packageInfo) throws Exception {
+        server.setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, appName + ".war").addPackage(packageInfo);
+        ShrinkHelper.exportDropinAppToServer(server, war, DISABLE_VALIDATION, SERVER_ONLY);
+        assertThatAppHasFailedUsingMark(server, appName);
+    }
+
+    /**
+     * Removes the failed-to-start WAR from the server's {@code dropins/} directory.
+     * Use this in {@code @AfterClass} instead of
+     * {@link io.openliberty.mcp.internal.fat.suite.ServerLifecycleRule#undeployDropinApp}
+     * because a failed app was never registered via {@code addInstalledAppForValidation},
+     * so calling {@code removeInstalledAppForValidation} would be incorrect.
+     *
+     * @param server the running liberty server
+     * @param appName the app name (without {@code .war} suffix)
+     * @throws Exception if the file cannot be deleted
+     */
+    public static void undeployFailedDropinApp(LibertyServer server, String appName) throws Exception {
+        server.deleteFileFromLibertyServerRoot("dropins/" + appName + ".war");
+    }
+
+    /**
      * Asserts that a log message is found indicating that an app has failed to start.
      * This should usually be called before checking for any other validation messages.
      *
@@ -54,6 +85,15 @@ public class ExpectedAppFailureValidator {
      */
     private static void assertThatAppHasFailed(LibertyServer server, String appName) throws Exception {
         String logLine = server.waitForStringInLog(APP_STARTED_CODE + "|" + APP_START_FAILED_CODE + ".*" + Pattern.quote(appName));
+        assertThat("App " + appName + " start failed. Found log: " + logLine, logLine, allOf(notNullValue(), Matchers.containsPattern(APP_START_FAILED_CODE)));
+    }
+
+    /**
+     * Mark-aware variant — only looks at log entries written after the last {@code setMarkToEndOfLog()}.
+     * Used by {@link #deployAppToAssertFailureOnRunningServer}.
+     */
+    private static void assertThatAppHasFailedUsingMark(LibertyServer server, String appName) throws Exception {
+        String logLine = server.waitForStringInLogUsingMark(APP_STARTED_CODE + "|" + APP_START_FAILED_CODE + ".*" + Pattern.quote(appName));
         assertThat("App " + appName + " start failed. Found log: " + logLine, logLine, allOf(notNullValue(), Matchers.containsPattern(APP_START_FAILED_CODE)));
     }
 

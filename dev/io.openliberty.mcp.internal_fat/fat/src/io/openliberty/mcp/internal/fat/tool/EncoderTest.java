@@ -9,9 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -22,12 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.encoderToolApp.EncoderTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -35,30 +32,25 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class EncoderTest extends FATServletClient {
 
-    @Server("mcp-server")
-    public static LibertyServer server;
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String APP_NAME = "encoderTest";
 
     @Rule
-    public McpClient client = McpClient.builder(server, "/encoderTest").build();
-
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
+    
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "encoderTest.war")
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0019E"));
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(EncoderTools.class.getPackage());
-
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
-
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/encoderTest/mcp"
-
+        serverLifecycle.deployDropinApp(war);
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(
-          "CWMCM0019E" // encoder excepetion
-        ); 
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
@@ -631,13 +623,15 @@ public class EncoderTest extends FATServletClient {
                         }
                         """;
 
+        serverLifecycle.getServer().setMarkToEndOfLog();
         client.callMCP(request);
 
         assertNotNull("Expected CWMCM0019E to be logged when ContentEncoder throws",
-                      server.waitForStringInLog("CWMCM0019E.*ThrowingContentEncoder.*testThrowingContentEncoder"));
+                      serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0019E.*ThrowingContentEncoder.*testThrowingContentEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an encoder exception",
-                   server.findStringsInLogs("CWMCM0010E.*testThrowingContentEncoder").isEmpty());
+                   serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0010E.*testThrowingContentEncoder",
+                                                                          serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
     }
 
     /**
@@ -658,13 +652,15 @@ public class EncoderTest extends FATServletClient {
                         }
                         """;
 
+        serverLifecycle.getServer().setMarkToEndOfLog();
         client.callMCP(request);
 
         assertNotNull("Expected CWMCM0019E to be logged when ToolResponseEncoder throws",
-                      server.waitForStringInLog("CWMCM0019E.*ThrowingToolResponseEncoder.*testThrowingToolResponseEncoder"));
+                      serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0019E.*ThrowingToolResponseEncoder.*testThrowingToolResponseEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an encoder exception",
-                   server.findStringsInLogs("CWMCM0010E.*testThrowingToolResponseEncoder").isEmpty());
+                   serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0010E.*testThrowingToolResponseEncoder",
+                                                                          serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
     }
 
     /**
@@ -684,13 +680,15 @@ public class EncoderTest extends FATServletClient {
                         }
                         """;
 
+        serverLifecycle.getServer().setMarkToEndOfLog();
         client.callMCP(request);
 
         assertNotNull("Expected CWMCM0019E to be logged when async ContentEncoder throws",
-                      server.waitForStringInLog("CWMCM0019E.*ThrowingContentEncoder.*testAsyncThrowingContentEncoder"));
+                      serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0019E.*ThrowingContentEncoder.*testAsyncThrowingContentEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an async encoder exception",
-                   server.findStringsInLogs("CWMCM0010E.*testAsyncThrowingContentEncoder").isEmpty());
+                   serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0010E.*testAsyncThrowingContentEncoder",
+                                                                          serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
     }
 
     /**
@@ -710,12 +708,14 @@ public class EncoderTest extends FATServletClient {
                         }
                         """;
 
+        serverLifecycle.getServer().setMarkToEndOfLog();
         client.callMCP(request);
 
         assertNotNull("Expected CWMCM0019E to be logged when async ToolResponseEncoder throws",
-                      server.waitForStringInLog("CWMCM0019E.*ThrowingToolResponseEncoder.*testAsyncThrowingToolResponseEncoder"));
+                      serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0019E.*ThrowingToolResponseEncoder.*testAsyncThrowingToolResponseEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an async encoder exception",
-                   server.findStringsInLogs("CWMCM0010E.*testAsyncThrowingToolResponseEncoder").isEmpty());
+                   serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0010E.*testAsyncThrowingToolResponseEncoder",
+                                                                          serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
     }
 }

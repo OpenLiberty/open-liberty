@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -23,11 +23,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.exceptionToolApp.ExceptionToolApp;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -38,30 +34,26 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class ExceptionLoggingTest extends FATServletClient {
 
-    @Server("mcp-server")
-    public static LibertyServer server;
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String APP_NAME = "exceptionLoggingTest";
 
     @Rule
-    public McpClient client = McpClient.builder(server, "/exceptionLoggingTest").build();
-
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
+    
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "exceptionLoggingTest.war")
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        // Expected: the tool method throws an unexpected exception
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E"));
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(ExceptionToolApp.class.getPackage());
-
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
-
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/exceptionLoggingTest/mcp"
-
+        serverLifecycle.deployDropinApp(war);
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("MCP server endpoint: .*/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(
-                          "CWMCM0010E" // general exception
-        );
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
@@ -76,13 +68,15 @@ public class ExceptionLoggingTest extends FATServletClient {
                           }
                         }
                         """;
+        serverLifecycle.getServer().setMarkToEndOfLog();
         client.callMCP(request);
         List<String> expectedErrorHeaders = List.of("Caused by: java.lang.RuntimeException: Root Exception", "Caused by: java.lang.Exception: Exception at level 0",
                                                     "Caused by: java.lang.Exception: Exception at level 1", "Caused by: java.lang.Exception: Exception at level 2",
                                                     "CWMCM0010E: The exceptionTool tool method threw an unexpected exception. The exception is java.lang.Exception: Exception at level 3");
 
         for (String exc : expectedErrorHeaders) {
-            assertTrue("Expected header not found: " + exc, !server.findStringsInLogs(exc).isEmpty());
+            assertTrue("Expected header not found: " + exc,
+                       !serverLifecycle.getServer().findStringsInLogsUsingMark(exc, serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
         }
 
     }

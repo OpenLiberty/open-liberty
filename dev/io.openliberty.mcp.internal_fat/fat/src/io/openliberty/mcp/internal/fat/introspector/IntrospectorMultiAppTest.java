@@ -10,7 +10,7 @@
 
 package io.openliberty.mcp.internal.fat.introspector;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -34,17 +34,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
-import componenttest.topology.impl.LibertyServer;
+import io.openliberty.mcp.internal.fat.suite.BetaRepeatAction;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 
+/**
+ * Skipped on the beta runtime repeat: this test does not depend on the protocol version, and each server dump
+ * takes about a minute, so repeating it adds about three minutes to the build.
+ */
 @RunWith(FATRunner.class)
 @Mode(Mode.TestMode.LITE)
+@SkipForRepeat(BetaRepeatAction.ID)
 public class IntrospectorMultiAppTest {
 
     private static final String BASIC_TOOLS = "BasicTools";
@@ -62,11 +66,11 @@ public class IntrospectorMultiAppTest {
                     </web-ext>
                     """;
 
-    @Server("mcp-server")
-    public static LibertyServer server;
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
 
     @BeforeClass
     public static void setup() throws Exception {
+        serverLifecycle.getServer().setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, BASIC_TOOLS + ".war")
                                    .addClasses(BasicTools.class);
 
@@ -77,16 +81,19 @@ public class IntrospectorMultiAppTest {
                                        .addClasses(IntrospectorTestTools.class)
                                        .addAsWebInfResource(new StringAsset(IBM_WEB_EXT_ROOT), "ibm-web-ext.xml");
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        ShrinkHelper.exportDropinAppToServer(server, testApp, SERVER_ONLY);
-        ShrinkHelper.exportDropinAppToServer(server, rootWar, SERVER_ONLY);
-
-        server.startServer();
+        serverLifecycle.deployDropinApp(war);
+        serverLifecycle.deployDropinApp(testApp);
+        serverLifecycle.deployDropinApp(rootWar);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        serverLifecycle.undeployDropinApp(ROOT_CONTEXT_APP);
+        serverLifecycle.undeployDropinApp(BASIC_TOOLS);
+        // INTROSPECTOR_TESTAPP may already be undeployed by the test — only remove if still present
+        if (serverLifecycle.getServer().fileExistsInLibertyServerRoot("dropins/" + INTROSPECTOR_TESTAPP + ".war")) {
+            serverLifecycle.undeployDropinApp(INTROSPECTOR_TESTAPP);
+        }
     }
 
     @Test
@@ -112,12 +119,12 @@ public class IntrospectorMultiAppTest {
                    introspection1.contains("Context path: BasicTools") && introspection1.contains("Tool:"));
 
         // Undeploy Testapp manually
-        Path testAppPath = Paths.get(server.getServerRoot(), "dropins", "Testapp.war");
-        server.deleteFileFromLibertyServerRoot("dropins/IntrospectorTestapp.war");
+        Path testAppPath = Paths.get(serverLifecycle.getServer().getServerRoot(), "dropins", "Testapp.war");
+        serverLifecycle.getServer().deleteFileFromLibertyServerRoot("dropins/IntrospectorTestapp.war");
         assertFalse("Testapp.war was not deleted", Files.exists(testAppPath));
 
         // Wait for undeploy to take effect
-        server.removeInstalledAppForValidation(INTROSPECTOR_TESTAPP);
+        serverLifecycle.getServer().removeInstalledAppForValidation(INTROSPECTOR_TESTAPP);
 
         // Redump and verify Testapp tools are gone, BasicIntroSpector still there
         String introspection2 = getIntrospectorDumpContents();
@@ -158,7 +165,7 @@ public class IntrospectorMultiAppTest {
      * @throws Exception if the dump file or introspector entry is missing or cannot be read
      */
     private String getIntrospectorDumpContents() throws Exception {
-        ProgramOutput output = server.serverDump(null);
+        ProgramOutput output = serverLifecycle.getServer().serverDump(null);
         String stdout = output.getStdout();
 
         Pattern zipPathPattern = Pattern.compile("dump complete in (.*?\\.zip)\\.");

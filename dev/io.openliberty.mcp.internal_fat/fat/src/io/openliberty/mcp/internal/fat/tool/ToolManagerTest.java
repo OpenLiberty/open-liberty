@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.tool.toolManagerApp.ToolEditorServlet.DYNAMIC_REPEATER;
 import static java.util.function.Function.identity;
 import static org.hamcrest.Matchers.hasKey;
@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.skyscreamer.jsonassert.JSONCompareMode.STRICT;
 
 import java.io.StringReader;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -38,9 +39,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -59,27 +57,27 @@ public class ToolManagerTest extends FATServletClient {
 
     private static final String APP_NAME = "ToolManagerTest";
 
+    // Server is managed by McpMainServerSuite — do NOT add @Server here.
     @TestServlet(contextRoot = APP_NAME, servlet = ToolManagerTestServlet.class)
-    @Server("mcp-server")
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = McpClient.builder(server, APP_NAME).build();
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
     @BeforeClass
     public static void setup() throws Exception {
-
-        WebArchive ToolManagerTest = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                                               .addPackage(ToolManagerTestServlet.class.getPackage());
-
-        ShrinkHelper.exportDropinAppToServer(server, ToolManagerTest, SERVER_ONLY);
-
-        server.startServer();
+        server = serverLifecycle.getServer();
+        server.setMarkToEndOfLog();
+        WebArchive toolManagerTestWar = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                                                  .addPackage(ToolManagerTestServlet.class.getPackage());
+        serverLifecycle.deployDropinApp(toolManagerTestWar);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWMCM0010E"); // The - tool method threw an unexpected exception.
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWMCM0010E")); // The - tool method threw an unexpected exception.
+        serverLifecycle.undeployDropinApp(APP_NAME);
+        server = null;
     }
 
     /**
@@ -91,7 +89,7 @@ public class ToolManagerTest extends FATServletClient {
      */
     @Test
     public void testDynamicToolUpdate() throws Exception {
-        ToolEditorClient toolEditorClient = new ToolEditorClient(server, APP_NAME);
+        ToolEditorClient toolEditorClient = new ToolEditorClient(serverLifecycle.getServer(), APP_NAME);
         try {
             // List all tools, test our dynamic tool is not registered
             assertThat(getTools(), not(hasKey(DYNAMIC_REPEATER)));
@@ -419,10 +417,11 @@ public class ToolManagerTest extends FATServletClient {
         String successDefaultValueResponse = client.callMCP(successDefaultValueRequest);
         JSONAssert.assertEquals(expectedSuccessDefaultValueResponse, successDefaultValueResponse, STRICT);
 
-        server.setMarkToEndOfLog();
+        serverLifecycle.getServer().setMarkToEndOfLog();
         String exceptionResponse = client.callMCP(exceptionRequest);
         JSONAssert.assertEquals(exceptionErrorResponse, exceptionResponse, STRICT);
-        assertNotNull(server.waitForStringInLogUsingMark("CWMCM0010E: The sync-test-tool tool method threw an unexpected exception. The exception is .*Test Exception"));
+        assertNotNull(serverLifecycle.getServer()
+                                     .waitForStringInLogUsingMark("CWMCM0010E: The sync-test-tool tool method threw an unexpected exception. The exception is .*Test Exception"));
     }
 
     /**
@@ -552,10 +551,11 @@ public class ToolManagerTest extends FATServletClient {
                         }
                         """;
 
-        server.setMarkToEndOfLog();
+        serverLifecycle.getServer().setMarkToEndOfLog();
         String exceptionResponse = client.callMCP(exceptionRequest);
         JSONAssert.assertEquals(expectedExceptionResponse, exceptionResponse, STRICT);
-        assertNotNull(server.waitForStringInLogUsingMark("CWMCM0010E: The async-test-tool tool method threw an unexpected exception. The exception is .*Test Exception"));
+        assertNotNull(serverLifecycle.getServer()
+                                     .waitForStringInLogUsingMark("CWMCM0010E: The async-test-tool tool method threw an unexpected exception. The exception is .*Test Exception"));
 
         String asyncExceptionRequest = """
                         {
@@ -584,10 +584,11 @@ public class ToolManagerTest extends FATServletClient {
                         }
                         """;
 
-        server.setMarkToEndOfLog();
+        serverLifecycle.getServer().setMarkToEndOfLog();
         String asyncExceptionResponse = client.callMCP(asyncExceptionRequest);
         JSONAssert.assertEquals(expectedAsyncExceptionResponse, asyncExceptionResponse, STRICT);
-        assertNotNull(server.waitForStringInLogUsingMark("CWMCM0010E: The async-test-tool tool method threw an unexpected exception. The exception is .*Test Async Exception"));
+        assertNotNull(serverLifecycle.getServer()
+                                     .waitForStringInLogUsingMark("CWMCM0010E: The async-test-tool tool method threw an unexpected exception. The exception is .*Test Async Exception"));
     }
 
     /**
