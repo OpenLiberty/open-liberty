@@ -280,11 +280,7 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
      */
     protected JwtToken parseJwt(@Sensitive String token) throws Exception {
         JwtConsumerConfig config = jwtConsumerConfigRef.getService(DEFAULT_JWT_CONSUMER_ID);
-        MpConfigProperties mpProps = getKeyLocationProperties(config);
-        if (mpProps == null) {
-            return JwtConsumer.create(DEFAULT_JWT_CONSUMER_ID).createJwt(token);
-        }
-        return config.getConsumerUtils().parseJwt(token, config, mpProps);
+        return config.getConsumerUtils().parseJwt(token, config);
     }
 
     /**
