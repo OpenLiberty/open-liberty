@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,3 +51,7 @@ OSGI_ERROR_MSG.useraction=Inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hiba\u00f
 OSGI_BUNDLE_EXCEPTION=CWWKE0702E: {0}
 OSGI_BUNDLE_EXCEPTION.explanation=BundleException kiv\u00e9telt dobott az OSGi keretrendszer.
 OSGI_BUNDLE_EXCEPTION.useraction=Inform\u00e1ci\u00f3k\u00e9rt tekintse meg a kiv\u00e9tel\u00fczenetet.
+
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W=CWWKE0710W: A {0} helyettes\u00edt\u0151 karakterrel jel\u00f6lt \u00fczenet-azonos\u00edt\u00f3 \u00e9rv\u00e9nytelen. A v\u00e1rt szintaxis: <prefix>*[<log-level]], ahol a log-level egy opcion\u00e1lis, egy karakterb\u0151l \u00e1ll\u00f3 sz\u00f6vegr\u00e9sz, amely a k\u00f6vetkez\u0151 napl\u00f3szintek egyik\u00e9t jel\u00f6li: I (inform\u00e1ci\u00f3), A (ellen\u0151rz\u00e9s), W (figyelmeztet\u00e9s) vagy E (hiba).
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W.explanation=A helyettes\u00edt\u0151 karaktert tartalmaz\u00f3 \u00fczenet-azonos\u00edt\u00f3 nem felel meg a v\u00e1rt szintaxisnak. A v\u00e1rt szintaxis: <prefix>*[<log-level]]. A napl\u00f3szint \u00e9rt\u00e9ke egy opcion\u00e1lis, egy karakterb\u0151l \u00e1ll\u00f3 jel, amely az \u201eInform\u00e1ci\u00f3\u201d, \u201eAudit\u201d, \u201eFigyelmeztet\u00e9s\u201d vagy \u201eHiba\u201d napl\u00f3szintet jel\u00f6li.
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W.useraction=Friss\u00edtsd az \u00fczenet-azonos\u00edt\u00f3t \u00fagy, hogy az a v\u00e1rt szintaxist haszn\u00e1lja: <prefix>*[<log-level]. Adjon meg egy \u00e9rv\u00e9nyes karaktert: I (inform\u00e1ci\u00f3), A (ellen\u0151rz\u00e9s), W (figyelmeztet\u00e9s), E (hiba), vagy hagyja ki a napl\u00f3szint \u00e9rt\u00e9k\u00e9t. Ha nem hajt v\u00e9gre semmilyen m\u0171veletet, akkor ez az \u00fczenet-azonos\u00edt\u00f3 figyelmen k\u00edv\u00fcl marad, \u00e9s az ehhez tartoz\u00f3 \u00fczenetek nem ker\u00fclnek napl\u00f3z\u00e1sra.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018,2022 IBM Corporation and others.
+# Copyright (c) 2018, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,6 +72,11 @@ CONFIG_ATTRIBUTE_IGNORED.useraction=Nincs teend\u0151.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: A {0} HTTP munkamenet gyors\u00edt\u00f3t\u00e1r konfigur\u00e1ci\u00f3s attrib\u00fatum megv\u00e1ltozott a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9se \u00f3ta. Ha az attrib\u00fatum \u00e9rt\u00e9ke a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont ut\u00e1n m\u00f3dosul, de a kiszolg\u00e1l\u00f3 folyamat vissza\u00e1ll\u00edt\u00e1sa el\u0151tt az alkalmaz\u00e1s nem haszn\u00e1lja a friss\u00edtett \u00e9rt\u00e9ket.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=A megadott konfigur\u00e1ci\u00f3s attrib\u00fatum nem m\u00f3dos\u00edthat\u00f3 a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont \u00e9s a kiszolg\u00e1l\u00f3 folyamat vissza\u00e1ll\u00edt\u00e1sa k\u00f6z\u00f6tt.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=\u00c1ll\u00edtsa be az attrib\u00fatum \u00e9rt\u00e9k\u00e9t a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont v\u00e9grehajt\u00e1sa el\u0151tt.
+
+# do not translate: httpSessionCache, cacheManagerRef
+FALLBACK_LIBRARY_NOT_REGISTERED=SESN0313I: Az httpSessionCache -konfigur\u00e1ci\u00f3 tartal\u00e9k k\u00f6nyvt\u00e1ra nem ker\u00fclt regisztr\u00e1l\u00e1sra, mivel a {0} k\u00f6nyvt\u00e1rszolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
+FALLBACK_LIBRARY_NOT_REGISTERED.explanation=Az \u201e httpSessionCache \u201d konfigur\u00e1ci\u00f3 meghat\u00e1rozza a \u201e cacheManagerRef, \u201d \u00e9rt\u00e9ket, amely egy tartal\u00e9k k\u00f6nyvt\u00e1rregisztr\u00e1ci\u00f3t haszn\u00e1l a k\u00f6nyvt\u00e1rf\u00fcgg\u0151s\u00e9g kiel\u00e9g\u00edt\u00e9s\u00e9re. A regisztr\u00e1ci\u00f3 megk\u00eds\u00e9rl\u00e9sekor a {0} k\u00f6nyvt\u00e1ri szolg\u00e1ltat\u00e1s nem volt el\u00e9rhet\u0151, ez\u00e9rt a regisztr\u00e1ci\u00f3t kihagyt\u00e1k.
+FALLBACK_LIBRARY_NOT_REGISTERED.useraction=Nincs sz\u00fcks\u00e9g semmilyen int\u00e9zked\u00e9sre, kiv\u00e9ve, ha az HTTP -munkamenet-gyors\u00edt\u00f3t\u00e1r nem indul el. Ha nem indul el, ellen\u0151rizze a gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 k\u00f6nyvt\u00e1r\u00e1nak be\u00e1ll\u00edt\u00e1sait, \u00e9s keresse meg az ezzel kapcsolatos \u00fczeneteket.
 
 INTERNAL_SERVER_ERROR=Bels\u0151 kiszolg\u00e1l\u00f3hiba
 

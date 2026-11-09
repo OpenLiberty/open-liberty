@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #ISMESSAGEFILE TRUE
 #NLS_ENCODING=UNICODE
@@ -28,3 +25,7 @@
 OSGI_SERVICE_ERROR=CWWKO1350E: O servi\u00e7o OSGi {0} n\u00e3o est\u00e1 dispon\u00edvel.
 OSGI_SERVICE_ERROR.explanation=Esse erro do servidor interno \u00e9 lan\u00e7ado porque o servi\u00e7o especificado n\u00e3o est\u00e1 dispon\u00edvel.
 OSGI_SERVICE_ERROR.useraction=Reinicie o servidor com a op\u00e7\u00e3o de limpeza.
+
+CORS_UNSUPPORTED_ORIGIN_WILDCARD=CWWKO1351W: O valor allowedOrigins {0} na configura\u00e7\u00e3o CORS para o dom\u00ednio {1} cont\u00e9m um curinga n\u00e3o suportado e \u00e9 ignorado. Somente o valor * permite todas as origens.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.explanation=O atributo ` allowedOrigins ` aceita um \u00fanico asterisco (*) para permitir todas as origens ou uma lista de origens espec\u00edficas. Uma origem que contenha um asterisco junto com outros caracteres n\u00e3o \u00e9 um padr\u00e3o compat\u00edvel; portanto, ela \u00e9 ignorada e n\u00e3o permite nenhuma origem.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.useraction=Especifique explicitamente cada origem permitida ou use * para permitir todas as origens.

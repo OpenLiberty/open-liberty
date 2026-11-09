@@ -104,6 +104,7 @@ createLTPAKeys.createdFile=File di chiavi LTPA creato: {0}\n Includere la seguen
 configureFIPS.notIbmSdkNorSemeru=L'installazione Java non proviene n\u00e9 da IBMSemeru Runtimes n\u00e9 da IBM SDK, oppure, se proviene da questi, non supporta FIPS 140-3.\nInstallare Java da Runtimes IBMSemeru o IBM SDK utilizzando una versione e un sistema operativo che supportino FIPS 140-3.\nSe si utilizzano IBMSemeru Runtime, utilizzare la versione 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.1.0, o superiore.\nSe utilizzi IBM l'SDK, utilizza la versione 8.0.8.30 o superiore.
 
 configureFIPS.zosNotAvailable=Il comando securityUtility configureFIPS non \u00e8 supportato su z/OS.
+configureFIPS.zosEvaluation=Il comando configureFIPS, parte del pacchetto securityUtility di z/OS, \u00e8 destinato esclusivamente a scopi di valutazione.
 
 configureFIPS.configureSemeru=Configurazione di FIPS 140-3 per i runtime di IBM Semeru.
 configureFIPS.configureIbmSdk=Configurazione di FIPS 140-3 per IBM SDK.

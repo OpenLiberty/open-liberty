@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018,2022 IBM Corporation and others.
+# Copyright (c) 2018, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,6 +72,11 @@ CONFIG_ATTRIBUTE_IGNORED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: The {0} HTTP Session Cache configuration atributul schimbat de c\u00e2nd serverul a fost verificat. Dac\u0103 valoarea atributului este modificat\u0103 dup\u0103 punctul de control al serverului, dar \u00eenainte ca procesul de server s\u0103 fie restabilit, aplica\u021bia nu folose\u0219te valoarea actualizat\u0103.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=Atributul de configurare specificat nu poate fi modificat \u00een timpul dintre punctul de control al serverului \u0219i procesul de restaurare a serverului.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Seta\u021bi valoarea pentru atributul \u00eenainte de a efectua punctul de control al serverului.
+
+# do not translate: httpSessionCache, cacheManagerRef
+FALLBACK_LIBRARY_NOT_REGISTERED=SESN0313I: Biblioteca de rezerv\u0103 pentru configura\u021bia httpSessionCache nu a fost \u00eenregistrat\u0103, deoarece serviciul bibliotecii {0} nu este disponibil.
+FALLBACK_LIBRARY_NOT_REGISTERED.explanation=Configura\u021bia httpSessionCache specific\u0103 cacheManagerRef, care utilizeaz\u0103 o \u00eenregistrare de rezerv\u0103 a bibliotecii pentru a satisface o dependen\u021b\u0103 de bibliotec\u0103. Serviciul bibliotecii {0} nu era disponibil \u00een momentul \u00eencerc\u0103rii de \u00eenregistrare, astfel \u00eenc\u00e2t \u00eenregistrarea a fost omis\u0103.
+FALLBACK_LIBRARY_NOT_REGISTERED.useraction=Nu este necesar\u0103 nicio ac\u021biune, cu excep\u021bia cazului \u00een care cache-ul sesiunii HTTP nu reu\u0219e\u0219te s\u0103 porneasc\u0103. Dac\u0103 nu porne\u0219te, verifica\u021bi configura\u021bia bibliotecii furnizorului de cache \u0219i c\u0103uta\u021bi mesaje relevante.
 
 INTERNAL_SERVER_ERROR=Eroare intern\u0103 de server
 

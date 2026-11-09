@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -71,6 +71,26 @@ INVALID_PROVIDER_CWWKW1305W.useraction=V\u00e9rifiez le code de l'application po
 INVALID_LONG_PROPERTY_CWWKW1306W=CWWKW1306W: La propri\u00e9t\u00e9 client {0} doit \u00eatre un entier long, mais elle a \u00e9t\u00e9 configur\u00e9e incorrectement avec {1}. Ce param\u00e8tre est ignor\u00e9.
 INVALID_LONG_PROPERTY_CWWKW1306W.explanation=Les propri\u00e9t\u00e9s client, comme les param\u00e8tres de d\u00e9lai, doivent \u00eatre configur\u00e9es sous forme d'entier long positif ou de cha\u00eene pouvant \u00eatre convertie en entier long. Ce message indique qu'une propri\u00e9t\u00e9 client a \u00e9t\u00e9 configur\u00e9e avec une valeur non valide. Par cons\u00e9quent, cette propri\u00e9t\u00e9 est ignor\u00e9e.
 INVALID_LONG_PROPERTY_CWWKW1306W.useraction=V\u00e9rifiez le code d'application et la configuration du serveur pour d\u00e9terminer o\u00f9 cette propri\u00e9t\u00e9 a \u00e9t\u00e9 d\u00e9finie incorrectement et retirez la propri\u00e9t\u00e9 ou remplacez sa valeur par un entier long valide.
+
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W=CWWKW1307W: Impossible d''attribuer la valeur ''{1}'' \u00e0 l''attribut ''{0}''.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.explanation=L'impl\u00e9mentation de ` TransformerFactory ` XML ne prend pas en charge l'attribut sp\u00e9cifi\u00e9. Le traitement se poursuit avec la configuration par d\u00e9faut du transformateur.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.useraction=Configurez ou passez \u00e0 une impl\u00e9mentation de ` TransformerFactory ` XML prenant en charge l''attribut ''{0}'' afin de garantir un renforcement ad\u00e9quat de la s\u00e9curit\u00e9.
+
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W=CWWKW1308W: La configuration du filtre CORS sp\u00e9cifie une origine g\u00e9n\u00e9rique (*) et d\u00e9finit l'attribut allowCredentials sur \u00ab true \u00bb. Les navigateurs n'autorisent pas les identifiants dont l'origine est repr\u00e9sent\u00e9e par un caract\u00e8re g\u00e9n\u00e9rique; le filtre CORS d\u00e9sactive donc la prise en charge de ces identifiants. Pour prendre en charge les informations d'identification, sp\u00e9cifiez les origines autoris\u00e9es exactes plut\u00f4t qu'une origine avec caract\u00e8re g\u00e9n\u00e9rique.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.explanation=La sp\u00e9cification \u00ab Cross-Origin Resource Sharing \u00bb ( W3C ) interdit l'utilisation de l'en-t\u00eate de r\u00e9ponse `Access-Control-Allow-Credentials` lorsque la valeur de l'en-t\u00eate de r\u00e9ponse `Access-Control-Allow-Origin` est le caract\u00e8re g\u00e9n\u00e9rique (*). Par cons\u00e9quent, le filtre CORS d\u00e9sactive la prise en charge des identifiants afin de se conformer \u00e0 la sp\u00e9cification.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.useraction=Si des identifiants sont requis, configurez le filtre CORS en sp\u00e9cifiant explicitement les origines autoris\u00e9es, plut\u00f4t qu'une origine g\u00e9n\u00e9rique. Si les informations d'identification ne sont pas requises, supprimez l'attribut allowCredentials ou d\u00e9finissez allowCredentials le sur false.
+
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E=CWWKW1309E: Dimensions d''image non valides : {0} x {1}
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.explanation=Les dimensions de l'image indiqu\u00e9es dans l'en-t\u00eate de l'image ne sont pas valides. La largeur et la hauteur de l'image doivent toutes deux \u00eatre des valeurs positives. Cette erreur peut se produire si le fichier image est corrompu ou si les informations d'en-t\u00eate sont incompl\u00e8tes.
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.useraction=Assurez-vous que l'image t\u00e9l\u00e9charg\u00e9e est un fichier image valide et non endommag\u00e9.
+
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E=CWWKW1310E: Dimensions de la vignette non valides : {0} x {1}
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.explanation=Les dimensions de la vignette indiqu\u00e9es dans l'en-t\u00eate de l'image ne sont pas valides. La largeur et la hauteur de la vignette doivent toutes deux \u00eatre des valeurs positives. Cette erreur peut se produire si le fichier image est endommag\u00e9 ou s'il contient des informations de vignette incompl\u00e8tes.
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.useraction=Assurez-vous que l'image t\u00e9l\u00e9charg\u00e9e est un fichier image valide et intact, dont les dimensions de la vignette sont correctes.
+
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E=CWWKW1311E: La taille de l''image {0} x {1} ( {2} ) d\u00e9passe le seuil maximal {3}
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.explanation=La taille estim\u00e9e de l'image apr\u00e8s d\u00e9codage d\u00e9passe le seuil maximal d\u00e9fini. Afin de limiter l'utilisation de la m\u00e9moire, la requ\u00eate est rejet\u00e9e avec un code d'\u00e9tat HTTP 400.
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.useraction=R\u00e9duisez les dimensions de l'image ou augmentez le seuil en d\u00e9finissant la propri\u00e9t\u00e9 syst\u00e8me \u00ab dev.resteasy.image.threshold \u00bb sur une valeur plus \u00e9lev\u00e9e (par exemple, 500 Mo). D\u00e9finissez la valeur sur -1 pour d\u00e9sactiver compl\u00e8tement la v\u00e9rification.
 
 # Same message as in /com.ibm.ws.jaxrs.2.0.common/resources/com/ibm/ws/jaxrs20/common/internal/resources/JaxRsCommonMessages.nlsprops
 

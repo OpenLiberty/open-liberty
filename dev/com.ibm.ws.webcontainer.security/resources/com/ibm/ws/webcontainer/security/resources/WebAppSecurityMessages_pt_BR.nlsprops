@@ -156,3 +156,7 @@ OLD_LOGOUT_TOKENS_MIGRATED.useraction=Para garantir que os tokens de logout util
 JCACHE_MIGRATION_FAILURE=CWWKS9133E: O cache de cookies de logout encontrou um erro ao migrar tokens antigos para vers\u00f5es com hash. O erro \u00e9: {0}
 JCACHE_MIGRATION_FAILURE.explanation=O cache de cookies de logout encontrou um erro durante a migra\u00e7\u00e3o \u00fanica dos tokens de logout antigos para o novo formato com hash.
 JCACHE_MIGRATION_FAILURE.useraction=Analise a mensagem de erro e os logs do servidor para determinar a causa da falha. A migra\u00e7\u00e3o ser\u00e1 tentada novamente na pr\u00f3xima reinicializa\u00e7\u00e3o do servidor.
+
+SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED=CWWKS9134E: A URL de redirecionamento da p\u00e1gina de erro {0} est\u00e1 bloqueada. O host na URL de redirecionamento n\u00e3o corresponde ao host da solicita\u00e7\u00e3o atual nem a nenhum dom\u00ednio na propriedade wasReqURLRedirectDomainNames : {1}
+SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED.explanation=A URL de redirecionamento da p\u00e1gina de erro deve estar no mesmo host que a solicita\u00e7\u00e3o atual, ou o host deve corresponder a um dom\u00ednio na propriedade wasReqURLRedirectDomainNames.
+SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED.useraction=Verifique se o host da URL de redirecionamento da p\u00e1gina de erro \u00e9 o mesmo do host da solicita\u00e7\u00e3o atual ou adicione o nome de dom\u00ednio da URL de redirecionamento \u00e0 propriedade wasReqURLRedirectDomainNames na configura\u00e7\u00e3o webAppSecurity.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018,2022 IBM Corporation and others.
+# Copyright (c) 2018, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -72,6 +72,11 @@ CONFIG_ATTRIBUTE_IGNORED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ri
 UPDATED_CONFIG_NOT_USED_AT_RESTORE=SESN0312W: O atributo de configura\u00e7\u00e3o do Cache de Sess\u00e3o HTTP {0} foi mudado desde que o servidor foi verificado. Se o valor do atributo for alterado ap\u00f3s o ponto de verifica\u00e7\u00e3o do servidor, mas antes do processo do servidor ser restaurado, o aplicativo n\u00e3o usar\u00e1 o valor atualizado.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE.explanation=O atributo de configura\u00e7\u00e3o especificado n\u00e3o pode ser modificado durante o tempo entre o ponto de verifica\u00e7\u00e3o e a restaura\u00e7\u00e3o do processo do servidor.
 UPDATED_CONFIG_NOT_USED_AT_RESTORE.useraction=Configure o valor do atributo antes de executar o ponto de verifica\u00e7\u00e3o do servidor.
+
+# do not translate: httpSessionCache, cacheManagerRef
+FALLBACK_LIBRARY_NOT_REGISTERED=SESN0313I: A biblioteca alternativa para a configura\u00e7\u00e3o httpSessionCache n\u00e3o foi registrada porque o servi\u00e7o da biblioteca {0} n\u00e3o est\u00e1 dispon\u00edvel.
+FALLBACK_LIBRARY_NOT_REGISTERED.explanation=A configura\u00e7\u00e3o ` httpSessionCache ` especifica ` cacheManagerRef, ` que utiliza um registro de biblioteca alternativa para atender a uma depend\u00eancia de biblioteca. O servi\u00e7o da biblioteca {0} n\u00e3o estava dispon\u00edvel no momento em que se tentou fazer o cadastro; portanto, o cadastro foi ignorado.
+FALLBACK_LIBRARY_NOT_REGISTERED.useraction=N\u00e3o \u00e9 necess\u00e1rio realizar nenhuma a\u00e7\u00e3o, a menos que o cache de sess\u00e3o HTTP n\u00e3o consiga iniciar. Se n\u00e3o iniciar, verifique a configura\u00e7\u00e3o da biblioteca do provedor de cache e procure por mensagens relacionadas.
 
 INTERNAL_SERVER_ERROR=Erro interno do servidor
 

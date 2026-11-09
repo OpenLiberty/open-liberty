@@ -159,14 +159,14 @@ netty.handler.removed.from.pipeline=CWWKO0231W: Le gestionnaire de canal \u00ab 
 netty.handler.removed.from.pipeline.explanation=Un gestionnaire de canal \u00ab Netty \u00bb, indispensable au bon fonctionnement de la connexion, a \u00e9t\u00e9 supprim\u00e9 de mani\u00e8re inattendue alors que le canal \u00e9tait actif.
 netty.handler.removed.from.pipeline.useraction=Si ce message persiste, recueillez les informations de trace de diagnostic et contactez le support technique d' IBM.
 
-read.timeout=CWWKO1713W: Une op\u00e9ration de lecture de l'' HTTP a expir\u00e9 : {0}
-read.timeout.explanation=Une connexion entrante de type \u00ab HTTP \u00bb n'a pas re\u00e7u de donn\u00e9es dans le d\u00e9lai d'expiration de lecture configur\u00e9.
-read.timeout.useraction=V\u00e9rifiez la connexion r\u00e9seau ou augmentez la valeur du d\u00e9lai d'expiration de lecture dans la configuration du point de terminaison HTTP.
+# read.timeout=CWWKO1713W: An HTTP read operation timed out: {0}
+# read.timeout.explanation=An inbound HTTP connection did not receive data within the configured read timeout period.
+# read.timeout.useraction=Check the network connection or increase the read timeout value in the HTTP endpoint configuration.
 
-write.timeout=CWWKO1714W: Une op\u00e9ration d''\u00e9criture sur HTTP a d\u00e9pass\u00e9 le d\u00e9lai d''attente : {0}
-write.timeout.explanation=Une op\u00e9ration d'\u00e9criture sortante vers HTTP ne s'est pas achev\u00e9e dans le d\u00e9lai d'expiration configur\u00e9.
-write.timeout.useraction=V\u00e9rifiez la connexion r\u00e9seau ou augmentez la valeur du d\u00e9lai d'expiration d'\u00e9criture dans la configuration du point de terminaison HTTP.
+# write.timeout=CWWKO1714W: An HTTP write operation timed out: {0}
+# write.timeout.explanation=An outbound HTTP write operation did not complete within the configured write timeout period.
+# write.timeout.useraction=Check the network connection or increase the write timeout value in the HTTP endpoint configuration.
 
-h2.idle.timeout=CWWKO1715W: Une connexion \u00e0 HTTP/2 a \u00e9t\u00e9 ferm\u00e9e en raison d''un d\u00e9lai d''inactivit\u00e9 : {0}
-h2.idle.timeout.explanation=La connexion HTTP/2 est rest\u00e9e inactive pendant une dur\u00e9e sup\u00e9rieure au d\u00e9lai d'inactivit\u00e9 configur\u00e9; le serveur a donc ferm\u00e9 la connexion.
-h2.idle.timeout.useraction=V\u00e9rifiez la connexion r\u00e9seau ou augmentez la valeur du d\u00e9lai d'inactivit\u00e9 de la connexion \u00ab HTTP/2 \u00bb dans la configuration du point de terminaison \u00ab HTTP \u00bb.
+# h2.idle.timeout=CWWKO1715W: An HTTP/2 connection closed because of an idle timeout: {0}
+# h2.idle.timeout.explanation=The HTTP/2 connection was idle for longer than the configured idle timeout period, so the server closed the connection.
+# h2.idle.timeout.useraction=Check the network connection or increase the HTTP/2 connection idle timeout value in the HTTP endpoint configuration.

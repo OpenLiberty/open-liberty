@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,3 +51,7 @@ OSGI_ERROR_MSG.useraction=Consulte el mensaje de error para obtener informaci\u0
 OSGI_BUNDLE_EXCEPTION=CWWKE0702E: {0}
 OSGI_BUNDLE_EXCEPTION.explanation=La infraestructura OSGi ha generado una BundleException.
 OSGI_BUNDLE_EXCEPTION.useraction=Consulte el mensaje de excepci\u00f3n para obtener m\u00e1s informaci\u00f3n.
+
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W=CWWKE0710W: El identificador de mensaje comod\u00edn para {0} no es v\u00e1lido. La sintaxis esperada es <prefijo>*[<nivel de registro]], donde \u00abnivel de registro\u00bb es un car\u00e1cter \u00fanico opcional que representa uno de los siguientes niveles de registro: I para informaci\u00f3n, A para auditor\u00eda, W para advertencia o E para error.
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W.explanation=Un ID de mensaje que contiene un comod\u00edn no se ajusta a la sintaxis esperada. La sintaxis esperada es <prefijo>*[<nivel de registro]]. El valor del nivel de registro es un car\u00e1cter \u00fanico opcional que representa los niveles de registro \u00abInformaci\u00f3n\u00bb, \u00abAuditor\u00eda\u00bb, \u00abAdvertencia\u00bb o \u00abError\u00bb.
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W.useraction=Actualiza el ID del mensaje para que utilice la sintaxis prevista: <prefijo>*[<nivel de registro]]. Especifica un car\u00e1cter v\u00e1lido: \u00abI\u00bb para informaci\u00f3n, \u00abA\u00bb para auditor\u00eda, \u00abW\u00bb para advertencia, \u00abE\u00bb para error u omite el valor del nivel de registro. Si no realizas ninguna acci\u00f3n, este ID de mensaje se ignorar\u00e1 y los mensajes coincidentes no se registrar\u00e1n.

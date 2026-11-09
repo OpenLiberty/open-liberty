@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #ISMESSAGEFILE TRUE
 #NLS_ENCODING=UNICODE
@@ -28,3 +25,7 @@
 OSGI_SERVICE_ERROR=CWWKO1350E: Slu\u017eba OSGi {0} nen\u00ed k dispozici.
 OSGI_SERVICE_ERROR.explanation=Tato intern\u00ed chyba serveru je generovan\u00e1 v d\u016fsledku nedostupnosti uveden\u00e9 slu\u017eby.
 OSGI_SERVICE_ERROR.useraction=Restartujte server s volbou clean.
+
+CORS_UNSUPPORTED_ORIGIN_WILDCARD=CWWKO1351W: Hodnota allowedOrigins {0} v konfiguraci CORS pro dom\u00e9nu {1} obsahuje nepodporovan\u00fd z\u00e1stupn\u00fd znak a je ignorov\u00e1na. Pouze hodnota * povoluje v\u0161echny po\u010d\u00e1tky.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.explanation=Atribut \u201e allowedOrigins \u201c p\u0159ij\u00edm\u00e1 bu\u010f jednu hv\u011bzdi\u010dku (*), kter\u00e1 povoluje v\u0161echny zdroje, nebo seznam konkr\u00e9tn\u00edch zdroj\u016f. P\u016fvod, kter\u00fd obsahuje hv\u011bzdi\u010dku spolu s dal\u0161\u00edmi znaky, nen\u00ed podporovan\u00fdm vzorem, a proto je ignorov\u00e1n a neumo\u017e\u0148uje \u017e\u00e1dn\u00fd p\u016fvod.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.useraction=Zadejte v\u00fdslovn\u011b ka\u017ed\u00fd povolen\u00fd zdroj, nebo zadejte znak *, chcete-li povolit v\u0161echny zdroje.

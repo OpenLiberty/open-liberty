@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #ISMESSAGEFILE TRUE
 #NLS_ENCODING=UNICODE
@@ -28,3 +25,7 @@
 OSGI_SERVICE_ERROR=CWWKO1350E: A(z) {0} OSGi szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
 OSGI_SERVICE_ERROR.explanation=Ezt a bels\u0151 kiszolg\u00e1l\u00f3hib\u00e1t az\u00e9rt dobja a rendszer, mert a megadott szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el.
 OSGI_SERVICE_ERROR.useraction=Ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a clean param\u00e9terrel.
+
+CORS_UNSUPPORTED_ORIGIN_WILDCARD=CWWKO1351W: A {1} tartom\u00e1ny CORS -konfigur\u00e1ci\u00f3j\u00e1ban szerepl\u0151 allowedOrigins \u00e9rt\u00e9k {0} nem t\u00e1mogatott helyettes\u00edt\u0151 karaktert tartalmaz, ez\u00e9rt figyelmen k\u00edv\u00fcl marad. Csak a * \u00e9rt\u00e9k enged\u00e9lyezi az \u00f6sszes kiindul\u00e1si helyet.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.explanation=Az ` allowedOrigins ` attrib\u00fatum vagy egy csillagot (*) fogad el \u2013 amely minden eredetet enged\u00e9lyez \u2013, vagy pedig a pontos eredetek list\u00e1j\u00e1t. Az a forr\u00e1s, amely csillagot \u00e9s egy\u00e9b karaktereket tartalmaz, nem t\u00e1mogatott minta, ez\u00e9rt a rendszer figyelmen k\u00edv\u00fcl hagyja, \u00e9s nem enged\u00e9lyez semmilyen forr\u00e1st.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.useraction=Adja meg kifejezetten az egyes megengedett forr\u00e1sokat, vagy \u00edrja be a * jelet, ha minden forr\u00e1st enged\u00e9lyezni szeretne.

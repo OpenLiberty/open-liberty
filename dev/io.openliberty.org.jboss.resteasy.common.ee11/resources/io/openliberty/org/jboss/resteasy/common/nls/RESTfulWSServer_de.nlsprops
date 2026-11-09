@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -71,6 +71,26 @@ INVALID_PROVIDER_CWWKW1305W.useraction=\u00dcberpr\u00fcfen Sie den Anwendungsco
 INVALID_LONG_PROPERTY_CWWKW1306W=CWWKW1306W: Die Clienteigenschaft {0} muss ein Integer vom Typ long sein. Sie wurde mit der Angabe {1} jedoch falsch konfiguriert. Diese Einstellung wird ignoriert.
 INVALID_LONG_PROPERTY_CWWKW1306W.explanation=Clienteigenschaften, wie z. B. Einstellungen f\u00fcr die Zeitlimit\u00fcberschreitung, m\u00fcssen als positiver Integer vom Typ long oder als Zeichenfolge definiert werden, die in einen Integer vom Typ long konvertiert werden kann. Diese Nachricht gibt an, dass eine Clienteigenschaft mit einem ung\u00fcltigen Wert konfiguriert wurde. Daher wird diese Eigenschaft ignoriert.
 INVALID_LONG_PROPERTY_CWWKW1306W.useraction=\u00dcberpr\u00fcfen Sie den Anwendungscode und die Serverkonfiguration, um zu ermitteln, an welcher Stelle diese Eigenschaft falsch definiert wurde. Entfernen Sie entweder die Eigenschaft oder \u00e4ndern Sie den Wert in einen Integer vom Typ long.
+
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W=CWWKW1307W: Das Attribut ''{0}'' konnte nicht auf den Wert ''{1}'' gesetzt werden.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.explanation=Die XML- TransformerFactory -Implementierung unterst\u00fctzt das angegebene Attribut nicht. Die Verarbeitung wird mit der Standardkonfiguration des Transformators fortgesetzt.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.useraction=Konfigurieren Sie eine XML- TransformerFactory -Implementierung oder f\u00fchren Sie ein Upgrade auf eine solche durch, die das Attribut ''{0}'' unterst\u00fctzt, um eine angemessene Sicherheitsh\u00e4rtung zu gew\u00e4hrleisten.
+
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W=CWWKW1308W: Die CORS -Filterkonfiguration legt eine Ursprungs-Platzhalterzeichenfolge (*) fest und setzt das Attribut \u201e allowCredentials \u201c auf \u201etrue\u201c. Browser lassen keine Anmeldedaten mit einem Ursprung mit Platzhaltern zu, daher deaktiviert der CORS -Filter die Unterst\u00fctzung f\u00fcr Anmeldedaten. Um Anmeldeinformationen zu unterst\u00fctzen, geben Sie die genauen zul\u00e4ssigen Urspr\u00fcnge an, anstatt einen Ursprung mit Platzhaltern zu verwenden.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.explanation=Die W3C -Spezifikation \u201eCross-Origin Resource Sharing\u201c verbietet die Verwendung des Antwort-Headers \u201eAccess-Control-Allow-Credentials\u201c, wenn der Wert des Antwort-Headers \u201eAccess-Control-Allow-Origin\u201c das Platzhalterzeichen (*) ist. Daher deaktiviert der CORS -Filter die Unterst\u00fctzung von Anmeldedaten, um der Spezifikation zu entsprechen.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.useraction=Falls Anmeldedaten erforderlich sind, konfigurieren Sie den CORS -Filter mit explizit zugelassenen Urspr\u00fcngen anstelle eines Ursprungs mit Platzhaltern. Wenn keine Anmeldedaten erforderlich sind, entfernen Sie entweder das Attribut \u201e allowCredentials \u201c oder setzen Sie das Attribut \u201e allowCredentials \u201c auf \u201efalse\u201c.
+
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E=CWWKW1309E: Ung\u00fcltige Bildabmessungen: {0} x {1}
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.explanation=Die im Bildheader angegebenen Bildabmessungen sind ung\u00fcltig. Sowohl die Breite als auch die H\u00f6he des Bildes m\u00fcssen positive Werte sein. Dieser Fehler kann auftreten, wenn die Bilddatei besch\u00e4digt ist oder unvollst\u00e4ndige Header-Informationen enth\u00e4lt.
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.useraction=Stellen Sie sicher, dass es sich bei dem hochgeladenen Bild um eine g\u00fcltige, fehlerfreie Bilddatei handelt.
+
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E=CWWKW1310E: Ung\u00fcltige Abmessungen der Miniaturansicht: {0} x {1}
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.explanation=Die im Bild-Header angegebenen Abmessungen der Miniaturansicht sind ung\u00fcltig. Sowohl die Breite als auch die H\u00f6he der Miniaturansicht m\u00fcssen positive Werte sein. Dieser Fehler kann auftreten, wenn die Bilddatei besch\u00e4digt ist oder unvollst\u00e4ndige Miniaturansichtsdaten enth\u00e4lt.
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.useraction=Stellen Sie sicher, dass es sich bei dem hochgeladenen Bild um eine g\u00fcltige, fehlerfreie Bilddatei mit g\u00fcltigen Abmessungen f\u00fcr die Miniaturansicht handelt.
+
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E=CWWKW1311E: Die Bildgr\u00f6\u00dfe {0} \u00d7 {1} ( {2} ) \u00fcberschreitet den H\u00f6chstwert {3}
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.explanation=Die gesch\u00e4tzte Gr\u00f6\u00dfe des dekodierten Bildes \u00fcberschreitet den konfigurierten H\u00f6chstwert. Um den Speicherverbrauch zu begrenzen, wird die Anfrage mit dem HTTP -Statuscode 400 abgelehnt.
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.useraction=Verringern Sie die Bildabmessungen oder erh\u00f6hen Sie den Schwellenwert, indem Sie die Systemeigenschaft \u201e dev.resteasy.image.threshold \u201c auf einen h\u00f6heren Wert (beispielsweise 500 MB) setzen. Stellen Sie den Wert auf -1 ein, um die \u00dcberpr\u00fcfung vollst\u00e4ndig zu deaktivieren.
 
 # Same message as in /com.ibm.ws.jaxrs.2.0.common/resources/com/ibm/ws/jaxrs20/common/internal/resources/JaxRsCommonMessages.nlsprops
 
