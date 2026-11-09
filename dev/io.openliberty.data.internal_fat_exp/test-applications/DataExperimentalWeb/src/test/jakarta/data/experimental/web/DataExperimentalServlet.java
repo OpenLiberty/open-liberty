@@ -891,11 +891,19 @@ public class DataExperimentalServlet extends FATServlet {
      */
     @Test
     public void testPartialQueryAnnotations() {
+        // Use a fixed point in time, rather than the current time, because the
+        // results are ordered by orderedAt and relative times near a daylight
+        // saving time change can store as ambiguous local times that sort
+        // differently from the actual order.
+        OffsetDateTime base = OffsetDateTime.of(2025, 6, 15, //
+                                                12, 0, 0, 0, //
+                                                ZoneOffset.UTC);
+
         Shipment s1 = new Shipment();
         s1.setDestination("200 1st Ave SW, Rochester, MN 55902");
         s1.setLocation("44.027354, -92.468482");
         s1.setId(1);
-        s1.setOrderedAt(OffsetDateTime.now().minusMinutes(45));
+        s1.setOrderedAt(base.minusMinutes(45));
         s1.setStatus("IN_TRANSIT");
         shipments.save(s1);
 
@@ -903,7 +911,7 @@ public class DataExperimentalServlet extends FATServlet {
         s2.setDestination("201 4th St SE, Rochester, MN 55904");
         s2.setLocation("2800 37th St NW, Rochester, MN 55901");
         s2.setId(2);
-        s2.setOrderedAt(OffsetDateTime.now().minusMinutes(20));
+        s2.setOrderedAt(base.minusMinutes(20));
         s2.setStatus("READY_FOR_PICKUP");
         shipments.save(s2);
 
@@ -911,7 +919,7 @@ public class DataExperimentalServlet extends FATServlet {
         s3.setDestination("151 4th St SE, Rochester, MN 55904");
         s3.setLocation("44.057840, -92.496301");
         s3.setId(3);
-        s3.setOrderedAt(OffsetDateTime.now().minusMinutes(13));
+        s3.setOrderedAt(base.minusMinutes(13));
         s3.setStatus("IN_TRANSIT");
         shipments.save(s3);
 
@@ -919,7 +927,7 @@ public class DataExperimentalServlet extends FATServlet {
         s4.setDestination("151 4th St SE, Rochester, MN 55904");
         s4.setLocation("2800 37th St NW, Rochester, MN 55901 ");
         s4.setId(4);
-        s4.setOrderedAt(OffsetDateTime.now().minusMinutes(4));
+        s4.setOrderedAt(base.minusMinutes(4));
         s4.setStatus("READY_FOR_PICKUP");
         shipments.save(s4);
 
@@ -927,7 +935,7 @@ public class DataExperimentalServlet extends FATServlet {
         s5.setDestination("201 4th St SE, Rochester, MN 55904");
         s5.setLocation("2800 37th St NW, Rochester, MN 55901");
         s5.setId(5);
-        s5.setOrderedAt(OffsetDateTime.now().minusSeconds(50));
+        s5.setOrderedAt(base.minusSeconds(50));
         s5.setStatus("PREPARING");
         shipments.save(s5);
 
