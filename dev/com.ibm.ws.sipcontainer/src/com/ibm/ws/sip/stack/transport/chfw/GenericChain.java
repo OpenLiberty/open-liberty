@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -538,7 +538,13 @@ abstract public class GenericChain extends GenericChainBase implements ChainEven
             // save the new/changed configuration before we start setting up the new chain
             setCurrentConfig(newConfig);
 
-            stopChain(oldConfig.toString());
+            if (oldConfig != null) {
+                stopChain(oldConfig.toString());
+            } else {
+                if (c_logger.isTraceDebugEnabled()) {
+                    c_logger.traceDebug("Configuration oldConfig was found to be null, skipping chain stop and returning.");
+                }
+            }
             return;
             
         } 
