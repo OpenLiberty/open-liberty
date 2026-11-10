@@ -1,0 +1,81 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+apply plugin: 'war'
+
+// We aren't making a war for the entire project
+war { enabled = false }
+
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               project(':com.ibm.ws.security.audit_fat.common.tooling'),
+               project(':com.ibm.ws.security.fat.common'),
+               project(':com.ibm.json4j')
+}
+
+/*
+ * The audit test application and the keystores are provided by the tooling project.
+ */
+autoFVT.dependsOn ':com.ibm.ws.security.audit_fat.common.tooling:assemble'
+
+autoFVT.doLast {
+  def tooling = project(':com.ibm.ws.security.audit_fat.common.tooling')
+  def appDir = new File(tooling.buildDir, 'test-application')
+  def keyDir = new File(tooling.projectDir, 'securitykeys')
+  def serverDir = { String server -> new File(autoFvtDir, "publish/servers/${server}") }
+
+  /*
+   * auditUtility writes its output to auditout, so the directory must exist
+   * (empty directories are not kept in source control).
+   */
+  ['com.ibm.ws.security.audit.reader.fat',
+   'com.ibm.ws.security.audit.reader.fat.e2e'].each { server ->
+    new File(serverDir(server), 'auditout').mkdirs()
+  }
+
+  /*
+   * The end-to-end server runs the basic auth application.
+   */
+  copy {
+    from new File(appDir, 'AuditBasicAuthServlet.war')
+    into new File(serverDir('com.ibm.ws.security.audit.reader.fat.e2e'), 'apps')
+  }
+
+  /*
+   * Copy the keystores used to sign and encrypt the audit logs.
+   */
+  copy {
+    from keyDir
+    include 'AuditEncryptionKeyStore2.jks',
+            'AuditEncryptionKeyStore.jks',
+            'AuditSigningKeyStore.jks',
+            'AuditSigningKeyStore2.jks',
+            'AuditCertPasswordKeystore.jks',
+            'JCEKSKeystore',
+            'PKCS12Keystore'
+    into new File(serverDir('com.ibm.ws.security.audit.reader.fat'), 'resources/security')
+  }
+  copy {
+    from keyDir
+    include 'AuditEncryptionKeyStore2.jks',
+            'AuditSigningKeyStore.jks'
+    into new File(serverDir('com.ibm.ws.security.audit.reader.fat.e2e'), 'resources/security')
+  }
+}
