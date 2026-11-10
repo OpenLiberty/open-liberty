@@ -166,8 +166,14 @@ public class OSGiInjectionScopeDataTest {
 
         scopeData.addDeferredReferenceData(refData);
         scopeData.removeDeferredReferenceData(refData);
-        Assert.assertFalse("Should not have processed anything", scopeData.processDeferredReferenceData());
+        Assert.assertTrue("Should return true since deferred reference data was removed/completed", scopeData.processDeferredReferenceData());
         Assert.assertFalse("Should not have called refData", refData.called);
+
+        // Test unregister/cancel without processing
+        OSGiInjectionScopeData scopeData2 = new OSGiInjectionScopeData(null, null, null, null);
+        scopeData2.addDeferredReferenceData(refData);
+        scopeData2.removeDeferredReferenceData(refData, false);
+        Assert.assertFalse("Should return false when removed without processing", scopeData2.processDeferredReferenceData());
     }
 
     @Test
