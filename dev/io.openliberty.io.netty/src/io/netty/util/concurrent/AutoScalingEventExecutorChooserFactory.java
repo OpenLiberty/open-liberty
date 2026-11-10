@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+// Liberty specific: imports for injecting Liberty's managed daemon scheduler
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -94,6 +95,7 @@ public final class AutoScalingEventExecutorChooserFactory implements EventExecut
     private final int maxRampUpStep;
     private final int maxRampDownStep;
     private final int scalingPatienceCycles;
+    // Liberty specific: optional scheduler for running periodic utilization checks (uses Liberty's managed daemon thread pool)
     private final ScheduledExecutorService scheduler;
 
     /**
@@ -119,6 +121,8 @@ public final class AutoScalingEventExecutorChooserFactory implements EventExecut
 
     /**
      * Creates a new factory for a scaling-enabled {@link EventExecutorChooser} with an explicit scheduler.
+     * Liberty specific: Allows passing Liberty's managed {@link ScheduledExecutorService} so periodic monitoring
+     * runs on daemon threads, avoiding Netty's default non-daemon {@link GlobalEventExecutor#INSTANCE}.
      *
      * @param minThreads               the minimum number of threads to keep active.
      * @param maxThreads               the maximum number of threads to scale up to.
@@ -206,6 +210,7 @@ public final class AutoScalingEventExecutorChooserFactory implements EventExecut
             AutoScalingState initialState = new AutoScalingState(maxChildren, 0L, executors);
             state = new AtomicReference<>(initialState);
 
+            // Liberty specific: Use injected daemon scheduler if provided, otherwise default to Netty GlobalEventExecutor
             ScheduledFuture<?> utilizationMonitoringTask;
             if (scheduler != null) {
                 utilizationMonitoringTask = scheduler.scheduleAtFixedRate(
