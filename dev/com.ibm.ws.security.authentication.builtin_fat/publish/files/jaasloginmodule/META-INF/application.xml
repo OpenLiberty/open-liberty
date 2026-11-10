@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application id="Application_ID" version="6" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd">
+  <description>jaasloginmodule.ear</description>
+  <display-name>jaasloginmodule.ear</display-name>
+  <module id="WebModule_1">
+    <web>
+      <web-uri>basicauth.war</web-uri>
+      <context-root>/basicauth</context-root>
+    </web>
+  </module>            
+  <module id="WebModule_2">
+    <web>
+      <web-uri>formlogin.war</web-uri>
+      <context-root>/formlogin</context-root>
+    </web>
+  </module>
+  <module id="WebModule_3">
+    <web>
+      <web-uri>formloginPageSessionFalse.war</web-uri>
+      <context-root>/formloginPageSessionFalse</context-root>
+    </web>
+  </module>
+</application>
