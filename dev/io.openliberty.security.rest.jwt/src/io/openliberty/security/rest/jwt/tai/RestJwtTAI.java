@@ -198,86 +198,44 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
 
     @Override
     public boolean isTargetInterceptor(HttpServletRequest request) throws WebTrustAssociationException {
-        String methodName = "isTargetInterceptor";
-        if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, request);
-        }
-
         // 1. Verify this request targets the REST admin endpoint
         if (!isTargetRestAdminRequest(request)) {
-            if (tc.isDebugEnabled()) {
-                Tr.exit(tc, methodName, false);
-            }
             return false;
         }
 
         // 2. Check if authentication filter accepts this request
         if (!isAcceptedByAuthFilter(request)) {
-            if (tc.isDebugEnabled()) {
-                Tr.exit(tc, methodName, false);
-            }
             return false;
         }
 
-        // 3. Verify that the request carries a Bearer JWT token in the Authorization header, and that the
-        //    token was issued for the REST admin endpoint (REST issuer and REST audience). A Bearer token
-        //    from any other issuer or for any other audience is not processed by this TAI.
-        //    A request that carries an LTPA cookie instead is also claimed, so that it is rejected
-        //    rather than authenticated by LTPA SSO: the REST admin endpoint only accepts JWT.
-        String token = getBearerToken(request);
-        boolean isTarget;
-        if (token != null && !token.isEmpty()) {
-            isTarget = isRestJwt(token);
-        } else {
-            isTarget = hasLtpaCookie(request);
+        // 3. If the request carries an LTPA cookie, do not target it
+        if (hasLtpaCookie(request)) {
+            return false;
         }
 
-        if (tc.isDebugEnabled()) {
-            Tr.exit(tc, methodName, isTarget);
+        // 4. Verify that the request carries a Bearer JWT token in the Authorization header, and that the
+        //    token was issued for the REST admin endpoint (REST issuer and REST audience). A Bearer token
+        //    from any other issuer or for any other audience is not processed by this TAI.
+        String token = getBearerToken(request);
+        if (token != null && !token.isEmpty()) {
+            return isRestJwt(token);
         }
-        return isTarget;
+
+        return false;
     }
 
     @Override
     public TAIResult negotiateValidateandEstablishTrust(HttpServletRequest request, HttpServletResponse response) throws WebTrustAssociationFailedException {
-        String methodName = "negotiateValidateandEstablishTrust";
-        if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, request, response);
-        }
-
         String token = getBearerToken(request);
-        if ((token == null || token.isEmpty()) && hasLtpaCookie(request)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Rejecting request with an " + LTPA_COOKIE_NAME + " cookie; the REST admin endpoint only accepts a JWT");
-            }
-            TAIResult result = TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED);
-            if (tc.isDebugEnabled()) {
-                Tr.exit(tc, methodName, result);
-            }
-            return result;
-        }
         if (token == null || token.isEmpty()) {
-            TAIResult result = getResultForMissingToken(request);
-            if (tc.isDebugEnabled()) {
-                Tr.exit(tc, methodName, result);
-            }
-            return result;
+            return getResultForMissingToken(request);
         }
 
-        TAIResult result = validateJwtAndCreateResult(token);
-        if (tc.isDebugEnabled()) {
-            Tr.exit(tc, methodName, result);
-        }
-        return result;
+        return validateJwtAndCreateResult(token);
     }
 
     @FFDCIgnore({ Exception.class, IllegalArgumentException.class })
     protected TAIResult validateJwtAndCreateResult(@Sensitive String token) throws WebTrustAssociationFailedException {
-        String methodName = "validateJwtAndCreateResult";
-        if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, token);
-        }
-
         JwtToken jwtToken = null;
         try {
             jwtToken = parseJwt(token);
@@ -285,19 +243,11 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Error validating JWT token: " + e.getMessage(), e);
             }
-            TAIResult result = TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED);
-            if (tc.isDebugEnabled()) {
-                Tr.exit(tc, methodName, result);
-            }
-            return result;
+            return TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
         if (jwtToken == null) {
-            TAIResult result = TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED);
-            if (tc.isDebugEnabled()) {
-                Tr.exit(tc, methodName, result);
-            }
-            return result;
+            return TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
         // The node agent builds the JWT with a server or user access ID as the subject and plain group names. Either the
@@ -309,31 +259,18 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Error mapping JWT token claims: " + e.getMessage());
             }
-            TAIResult result = TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED);
-            if (tc.isDebugEnabled()) {
-                Tr.exit(tc, methodName, result);
-            }
-            return result;
+            return TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED);
         }
         String username = mappingHelper.getUsername();
         if (username == null || username.isEmpty()) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Could not extract username from JWT token claims");
             }
-            TAIResult result = TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED);
-            if (tc.isDebugEnabled()) {
-                Tr.exit(tc, methodName, result);
-            }
-            return result;
+            return TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
         Subject subject = mappingHelper.createSubject();
-        TAIResult result = TAIResult.create(HttpServletResponse.SC_OK, username, subject);
-
-        if (tc.isDebugEnabled()) {
-            Tr.exit(tc, methodName, result);
-        }
-        return result;
+        return TAIResult.create(HttpServletResponse.SC_OK, username, subject);
     }
 
     /**
@@ -343,11 +280,7 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
      */
     protected JwtToken parseJwt(@Sensitive String token) throws Exception {
         JwtConsumerConfig config = jwtConsumerConfigRef.getService(DEFAULT_JWT_CONSUMER_ID);
-        MpConfigProperties mpProps = getKeyLocationProperties(config);
-        if (mpProps == null) {
-            return JwtConsumer.create(DEFAULT_JWT_CONSUMER_ID).createJwt(token);
-        }
-        return config.getConsumerUtils().parseJwt(token, config, mpProps);
+        return config.getConsumerUtils().parseJwt(token, config);
     }
 
     /**
@@ -473,10 +406,6 @@ public class RestJwtTAI implements TrustAssociationInterceptor {
             return null;
         }
         String authHeader = request.getHeader(HEADER_AUTHORIZATION);
-        if (tc.isDebugEnabled()) {
-            // TEMPORARY diagnostic: logs the raw header, which contains the credential. Remove after the 401 investigation.
-            Tr.debug(tc, "Raw Authorization header: " + authHeader);
-        }
         if (authHeader != null && authHeader.regionMatches(true, 0, BEARER_PREFIX, 0, BEARER_PREFIX.length())) {
             String token = authHeader.substring(BEARER_PREFIX.length()).trim();
             if (!token.isEmpty()) {

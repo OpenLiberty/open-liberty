@@ -60,20 +60,11 @@ public class RestJwtMappingHelper {
      * @throws IllegalArgumentException if neither the subject nor any group is an access ID, so there is no realm
      */
     public RestJwtMappingHelper(@Sensitive JwtToken jwtToken) {
-        String methodName = "<init>";
-        if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, jwtToken);
-        }
-
         if (jwtToken != null) {
             Claims claims = jwtToken.getClaims();
             if (claims != null) {
                 mapClaims(claims);
             }
-        }
-
-        if (tc.isDebugEnabled()) {
-            Tr.exit(tc, methodName);
         }
     }
 
@@ -187,18 +178,9 @@ public class RestJwtMappingHelper {
     }
 
     public Subject createSubject() {
-        String methodName = "createSubject";
-        if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName);
-        }
-
         Subject subject = new Subject();
         if (!customProperties.isEmpty()) {
             subject.getPrivateCredentials().add(customProperties);
-        }
-
-        if (tc.isDebugEnabled()) {
-            Tr.exit(tc, methodName, subject);
         }
         return subject;
     }
