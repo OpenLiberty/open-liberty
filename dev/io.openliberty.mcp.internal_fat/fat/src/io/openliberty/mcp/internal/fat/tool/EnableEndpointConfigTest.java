@@ -13,6 +13,8 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -30,6 +32,7 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.tool.enableEndpointAnnotatedApp.AnnotatedToolsBean;
 import io.openliberty.mcp.internal.fat.tool.enableEndpointApp.DynamicOnlyToolsBean;
 import io.openliberty.mcp.internal.fat.tool.enableEndpointNoToolsApp.NoToolsBean;
+import io.openliberty.mcp.internal.fat.tool.inactiveCdiApp.InactiveCdiTool;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 /**
@@ -50,6 +53,14 @@ public class EnableEndpointConfigTest {
     private static final String ANNOTATED_DEFAULT = "annotatedDefault";
     private static final String ANNOTATED_FALSE = "annotatedFalse";
     private static final String NO_TOOLS = "noTools";
+    private static final String DYNAMIC_TRUE_SPACES = "dynamicTrueSpaces";
+    private static final String ANNOTATED_FALSE_SPACES = "annotatedFalseSpaces";
+    /** Standalone (non-EAR) WARs with no CDI beans, so that CDI is inactive for them */
+    private static final String NO_CDI_FALSE = "noCdiFalseApp";
+    private static final String NO_CDI_AUTO = "noCdiAutoApp";
+
+    /** Trace event logged by {@code McpServletInitializer} when {@code ToolRegistry.get()} fails because CDI is inactive */
+    private static final String CDI_INACTIVE = "unavailable due to CDI being inactive";
 
     /** Logged by the web container when a request is made to a path with no registered servlet */
     private static final String FILE_NOT_FOUND = "SRVE0190E";
@@ -66,19 +77,26 @@ public class EnableEndpointConfigTest {
         WebArchive annotatedFalse = annotatedWar(ANNOTATED_FALSE);
         WebArchive noTools = ShrinkWrap.create(WebArchive.class, NO_TOOLS + ".war")
                                        .addPackage(NoToolsBean.class.getPackage());
-
+        WebArchive dynamicTrueSpaces = dynamicWar(DYNAMIC_TRUE_SPACES);
+        WebArchive annotatedFalseSpaces = annotatedWar(ANNOTATED_FALSE_SPACES);
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, EAR_NAME + ".ear")
                                           .addAsModule(dynamicTrue)
                                           .addAsModule(dynamicAuto)
                                           .addAsModule(annotatedAuto)
                                           .addAsModule(annotatedDefault)
                                           .addAsModule(annotatedFalse)
-                                          .addAsModule(noTools);
+                                          .addAsModule(noTools)
+                                          .addAsModule(dynamicTrueSpaces)
+                                          .addAsModule(annotatedFalseSpaces);
 
         ShrinkHelper.exportAppToServer(server, ear, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, noCdiWar(NO_CDI_FALSE), SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, noCdiWar(NO_CDI_AUTO), SERVER_ONLY);
         server.startServer();
-        assertNotNull("Web application was not available",
-                      server.waitForStringInLogUsingMark("CWWKT0016I:.*" + ANNOTATED_AUTO));
+        for (String app : new String[] { ANNOTATED_AUTO, NO_CDI_FALSE, NO_CDI_AUTO }) {
+            assertNotNull("Web application " + app + " was not available",
+                          server.waitForStringInLogUsingMark("CWWKT0016I:.*" + app));
+        }
     }
 
     @AfterClass
@@ -94,6 +112,12 @@ public class EnableEndpointConfigTest {
     private static WebArchive annotatedWar(String name) {
         return ShrinkWrap.create(WebArchive.class, name + ".war")
                          .addPackage(AnnotatedToolsBean.class.getPackage());
+    }
+
+    /** A module with no CDI beans (the {@code @Tool} class has no bean defining annotation), so CDI is inactive */
+    private static WebArchive noCdiWar(String name) {
+        return ShrinkWrap.create(WebArchive.class, name + ".war")
+                         .addPackage(InactiveCdiTool.class.getPackage());
     }
 
     private static McpClient client(String contextRoot) {
@@ -202,6 +226,34 @@ public class EnableEndpointConfigTest {
     @Test
     public void testFalseWithAnnotatedToolsHasNoEndpoint() throws Exception {
         assertNoEndpoint(ANNOTATED_FALSE);
+    }
+
+    /** Surrounding whitespace in {@code enableEndpoint=" false "} must not make it fall back to {@code auto}. */
+    @Test
+    public void testFalseWithSurroundingWhitespaceHasNoEndpoint() throws Exception {
+        assertNoEndpoint(ANNOTATED_FALSE_SPACES);
+    }
+
+    /** Surrounding whitespace in {@code enableEndpoint=" true "} must still enable the endpoint. */
+    @Test
+    public void testTrueWithSurroundingWhitespaceHasEndpoint() throws Exception {
+        assertToolCall(DYNAMIC_TRUE_SPACES, "dynamic-only-tool", "{}", "dynamic-ok");
+    }
+
+    /**
+     * {@code false} must turn the endpoint off without touching CDI. Two standalone WARs without CDI are
+     * deployed: the {@code false} one must not look up the tool registry, so only the default ({@code auto})
+     * one reports that CDI is inactive.
+     */
+    @Test
+    public void testFalseWithoutCdiDoesNotResolveCdi() throws Exception {
+        assertNoEndpoint(NO_CDI_FALSE);
+        assertNoEndpoint(NO_CDI_AUTO);
+        List<String> inactive = server.findStringsInLogsAndTrace(CDI_INACTIVE);
+        assertTrue("Expected the default (auto) module " + NO_CDI_AUTO + " to report CDI as inactive but found: " + inactive,
+                   inactive.stream().anyMatch(s -> s.contains(NO_CDI_AUTO)));
+        assertTrue("The disabled (false) module " + NO_CDI_FALSE + " must not look up CDI but found: " + inactive,
+                   inactive.stream().noneMatch(s -> s.contains(NO_CDI_FALSE)));
     }
 
     // ---- multiple modules in one EAR ------------------------------------------------------

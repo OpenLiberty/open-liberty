@@ -50,8 +50,6 @@ public class McpServletInitializer implements ServletContainerInitializer {
     @FFDCIgnore(IllegalStateException.class)
     public void onStartup(Set<Class<?>> c, ServletContext context) throws ServletException, IllegalStateException {
         try {
-            ToolRegistry registry = ToolRegistry.get();
-
             ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             String appName = getApplicationName(componentMetaData);
             String moduleName = getModuleName(componentMetaData);
@@ -74,6 +72,8 @@ public class McpServletInitializer implements ServletContainerInitializer {
             if (enableEndpoint == EnableEndpoint.FALSE) {
                 return;
             }
+
+            ToolRegistry registry = ToolRegistry.get();
 
             if (enableEndpoint == EnableEndpoint.AUTO && !registry.hasAnnotatedTools()) {
                 return;

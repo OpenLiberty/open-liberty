@@ -13,8 +13,17 @@
     <mcp moduleName="annotatedAuto" enableEndpoint="auto"/>
     <!-- @Tool annotated methods, but endpoint explicitly disabled -->
     <mcp moduleName="annotatedFalse" enableEndpoint="false"/>
+    <!-- Values with leading/trailing whitespace must behave like their trimmed equivalents -->
+    <mcp moduleName="dynamicTrueSpaces" enableEndpoint=" true "/>
+    <mcp moduleName="annotatedFalseSpaces" enableEndpoint=" false "/>
     <!-- dynamicAuto, annotatedDefault and noTools have no config, so they use the default ("auto") -->
   </application>
+
+  <!-- Standalone WARs with no CDI beans: with "false" CDI must not be consulted at all -->
+  <application location="noCdiFalseApp.war">
+    <mcp enableEndpoint="false"/>
+  </application>
+  <application location="noCdiAutoApp.war"/>
 
   <include location="../fatTestPorts.xml" />
 

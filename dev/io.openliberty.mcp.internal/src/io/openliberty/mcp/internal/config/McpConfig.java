@@ -66,7 +66,7 @@ public interface McpConfig {
             if (value == null) {
                 return AUTO;
             }
-            return switch (value.toLowerCase()) {
+            return switch (value.trim().toLowerCase()) {
                 case "true" -> TRUE;
                 case "false" -> FALSE;
                 default -> AUTO;
