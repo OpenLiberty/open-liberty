@@ -1201,7 +1201,6 @@ public class GenericOidcClientTests extends CommonTest {
     public void OidcClientSSLTest_BadOPTrustStore() throws Exception {
 
         String algorithm = KeyManagerFactory.getDefaultAlgorithm();
-        boolean isPKIX = algorithm.equalsIgnoreCase("PKIX") ? true : false;
 
             // Reconfigure OP server with SSL settings
             // Reconfigure RP server with SSL settings

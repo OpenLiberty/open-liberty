@@ -181,9 +181,6 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
     @Mode(Mode.TestMode.FULL)
     public void testCertInClientKeyStoreButNotInServerTrustStore() throws Exception {
         String algorithm = KeyManagerFactory.getDefaultAlgorithm();
-        boolean isPKIX = algorithm.equalsIgnoreCase("PKIX") ? true : false;
-
-        if(!isPKIX){
 
         prepareForTest("serverConfigs/" + PATCHY_SERVER_TRUST_STORE_CONFIG, "clientCert_provider_web.xml",
                        "bindings/certInClientKSButNotInServerTS.xml");
@@ -196,9 +193,6 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
         server.waitForDefaultHTTPEndpointSSLStart();
 
         runTest(params, CERT_NOT_TRUST_SERVER_INFO);
-        } else {
-            Log.info(c, name.getMethodName(), "Skipping test for PKIX provider - " + name.getMethodName());
-        }
 
     }
 

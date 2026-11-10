@@ -295,28 +295,20 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
             }
 
             if (isPKIX) {
-                // error case, list of aliases is empty
-                if (list == null || list.length == 0) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                        Tr.exit(tc, "chooseClientAlias (no aliases available)", null);
-                    return null;
-                }
-                
-                // error case, alias not found in the list.
-                String prefixedClientAlias = clientAlias;
-                String prefix = getPrefix(list[0]);
-                
-                if (prefix != null && !clientAlias.startsWith(prefix)) {
-                    prefixedClientAlias = prefix + clientAlias;
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Applied prefix to client alias",
-                                 new Object[] { "Original: " + clientAlias, "Prefixed: " + prefixedClientAlias });
+                String[] unfilteredList = km.getClientAliases(keyType, null);
+                if (unfilteredList != null) {
+                    for (String candidate : unfilteredList) {
+                        if (resolvePKIXAlias(clientAlias, candidate)) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                                Tr.exit(tc, "chooseClientAlias (issuers ignored)", new Object[] { candidate });
+                            return candidate.toLowerCase();
+                        }
                     }
                 }
-                
+
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                    Tr.exit(tc, "chooseClientAlias (default)", new Object[] { prefixedClientAlias });
-                return prefixedClientAlias;
+                    Tr.exit(tc, "chooseClientAlias (no alias for key type)", null);
+                return null;
 
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -503,20 +495,6 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
         return false;
     }
 
-    /**
-     * Extract the numeric prefix from an alias string (e.g., "1.0." from "1.0.default")
-     *
-     * @param alias The alias to extract the prefix from
-     * @return The numeric prefix or null if no prefix pattern is found
-     */
-    public String getPrefix(String alias) {
-        Pattern pattern = Pattern.compile("^(\\d+\\.\\d+\\.)");
-        Matcher matcher = pattern.matcher(alias);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return null;
-    }
 
     /*
      * @see javax.net.ssl.X509KeyManager#getClientAliases(java.lang.String,
