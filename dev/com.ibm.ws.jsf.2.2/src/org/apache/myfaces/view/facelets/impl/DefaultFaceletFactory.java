@@ -468,6 +468,20 @@ public final class DefaultFaceletFactory extends FaceletFactory
         return true;
     }
 
+    /** Suffixes always accepted in addition to the configured Facelet suffixes and view mappings. */
+    private static final Set<String> DEFAULT_ALLOWED_SUFFIXES;
+    static
+    {
+        Set<String> s = new HashSet<>();
+        s.add(".html");
+        s.add(".jsf");
+        s.add(".faces");
+        s.add(".xhtml");
+        s.add(".jsp");
+        s.add(".jspx");
+        DEFAULT_ALLOWED_SUFFIXES = Collections.unmodifiableSet(s);
+    }
+
     /** Returns cached set of allowed Facelet suffixes built from init parameters. */
     private Set<String> getAllowedSuffixes(FacesContext context)
     {
@@ -508,6 +522,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
                     allowed.add(ext);
                 }
             }
+
+            allowed.addAll(DEFAULT_ALLOWED_SUFFIXES);
 
             if (log.isLoggable(Level.FINE))
             {
