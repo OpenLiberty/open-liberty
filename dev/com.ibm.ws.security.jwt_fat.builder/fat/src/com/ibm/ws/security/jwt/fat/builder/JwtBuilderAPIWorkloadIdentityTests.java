@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025, 2026 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import javax.json.JsonObject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import javax.json.JsonObject;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,7 +49,7 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
-@Mode(TestMode.LITE)
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class JwtBuilderAPIWorkloadIdentityTests extends CommonSecurityFat {
     @Server("com.ibm.ws.security.jwt_fat.builder")
@@ -66,10 +67,16 @@ public class JwtBuilderAPIWorkloadIdentityTests extends CommonSecurityFat {
         builderServer.addInstalledAppForValidation(JWTBuilderConstants.JWT_BUILDER_SERVLET);
         builderServer.startServerUsingExpandedConfiguration("server_workloadIdentity.xml", CommonWaitForAppChecks.getSecurityReadyMsgs());
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
+
+        builderServer.addIgnoredErrors(Arrays.asList(
+                JwtBuilderMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE,
+                JwtBuilderMessageConstants.CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED,
+                "CWWKS6074W"));
     }
 
+    @Mode(TestMode.LITE)
     @Test
-    public void workloadIdentityClaimIsPresent() throws Exception {
+    public void testWorkloadIdentityClaimIsPresent() throws Exception {
         // Make an HTTP request to the jwtbuilderclient servlet "create" endpoint on builderServer
         // This returns an HTTP response in which the created JWT is contained in the body
         Page response = actions.invokeJwtBuilder_create(_testName, builderServer, "workloadIdentityBuilder");
@@ -93,8 +100,9 @@ public class JwtBuilderAPIWorkloadIdentityTests extends CommonSecurityFat {
         assertEquals("app name part should match", "jwtbuilderclient", parts[3].trim());
     }
 
+    @Mode(TestMode.LITE)
     @Test
-    public void workloadIdentityClaimCannotBeOverwritten() throws Exception {
+    public void testWorkloadIdentityClaimCannotBeOverwritten() throws Exception {
         // Use the workload identity builder config so the claim name is reserved
         String builderId = "workloadIdentityBuilder";
         // Attempt to overwrite the workload identity claim via the .claim() API
@@ -102,7 +110,7 @@ public class JwtBuilderAPIWorkloadIdentityTests extends CommonSecurityFat {
         JSONObject testSettings = new JSONObject();
         // The JSON object that holds the parameters to be passed to .claim()
         JSONObject claimsToSet = new JSONObject();
-        claimsToSet.put("workload-identity", "fake-attacker-value");
+        claimsToSet.put("workload-identity", "xyz");
         // Packages the claim attempt under the claim_api key
         // The servlet knows any entry under claim_api should be passed to .claim()
         testSettings.put(JWTBuilderConstants.JWT_BUILDER_CLAIM_API, claimsToSet);
@@ -120,8 +128,9 @@ public class JwtBuilderAPIWorkloadIdentityTests extends CommonSecurityFat {
         validationUtils.validateResult(response, expectations);
     }
 
+    @Mode(TestMode.LITE)
     @Test
-    public void workloadIdentityClaimCannotBeRemoved() throws Exception {
+    public void testWorkloadIdentityClaimCannotBeRemoved() throws Exception {
         // Use the workload identity builder config so the claim name is reserved
         String builderId = "workloadIdentityBuilder";
         // Attempt to remove the workload identity claim via the .remove() API

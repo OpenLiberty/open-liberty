@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025, 2026 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ public class BuildJwtServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             JwtToken token = JwtBuilder.create("workloadIdentityBuilder").subject("jdoe").buildJwt();
+            // testJwtBuilderCannotBuildDuringCheckpointButCanBuildAfterRestore expects the string to start with "workload-identity="
             resp.getWriter().println("workload-identity=" + token.getClaims().get("workload-identity"));
         } catch (Exception e) {
             resp.getWriter().println("Caught an exception: " + e);

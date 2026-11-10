@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025, 2026 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -79,16 +80,12 @@ public class JwtBuilderCheckpointTest {
     }
 
     @Test
-    public void jwtBuilderCannotBuildDuringCheckpoint() throws Exception {
-        // The assertion lives in the postCheckpointLambda, which ran during startServer() in setUp().
-        // Restore so the server can be stopped cleanly.
-        server.checkpointRestore();
-    }
-
-    @Test
-    public void jwtBuilderCanBuildAfterRestore() throws Exception {
+    public void testJwtBuilderCannotBuildDuringCheckpointButCanBuildAfterRestore() throws Exception {
+        // The assertion that the JwtBuilder failed during checkpoint lives in the postCheckpointLambda,
+        // which ran during startServer() in setUp(). Restore so the server can be stopped cleanly.
         server.checkpointRestore();
 
+        // Test that the JwtBuilder works as normal after restore
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort()
                           + "/" + APP_NAME + "/build");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -106,5 +103,18 @@ public class JwtBuilderCheckpointTest {
         assertTrue("Expected workload-identity claim not found in response: " + response, response.contains("workload-identity="));
         assertFalse("Workload-identity claim was not injected: " + response, response.contains("workload-identity=null"));
         assertFalse("Unexpected exception building JWT after restore: " + response, response.contains("Caught an exception"));
+        // Verify the workload-identity claim is as expected
+        String workloadIdentity = response.substring("workload-identity=".length()).trim();
+        String[] parts = workloadIdentity.split(",");
+        // Validates the format contract: exactly 4 parts
+        assertEquals("workload-identity claim should have 4 comma-separated parts", 4, parts.length);
+        // parts[0] = hostname
+        // parts[1] = usr dir
+        // parts[2] = server name
+        // parts[3] = app name
+        assertFalse("hostname part should not be empty", parts[0].isEmpty());
+        assertFalse("usr dir part should not be empty", parts[1].isEmpty());
+        assertEquals("server name part should match", "checkpointJwtBuilder", parts[2].trim());
+        assertEquals("app name part should match", APP_NAME, parts[3].trim());
     }
 }
