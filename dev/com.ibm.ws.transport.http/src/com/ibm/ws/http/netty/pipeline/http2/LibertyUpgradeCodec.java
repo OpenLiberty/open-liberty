@@ -393,8 +393,11 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
          * <li>here, before queuing: a lower bound on what will still be parked after the next flush. If
          * even that crosses maxQueuedBytes, this frame is rejected (as legacy deferDataWrite rejects the
          * frame that would cross). This catches a peer that starves its windows with no overshoot.</li>
-         * <li>{@link #afterPendingBytesWritten}: the exact amount still parked after the flush. This catches the rest (bytes held back
-         * by a slow socket, not by the windows), at most one flushed batch late.</li>
+         * <li>{@link #afterPendingBytesWritten}: the exact amount the windows still hold back after the flush
+         * ({@link #windowBlockedBytes}). This catches the rest, at most one flushed batch late. Bytes that are
+         * parked only because the socket is backed up are not counted: legacy writeSync blocks on the socket
+         * rather than deferring, so they never counted there. A peer that stops reading TCP is bounded by
+         * writeTimeout (WriteTimeoutHandler), not by maxQueuedBytes.</li>
          * </ol>
          */
         @Override
@@ -490,7 +493,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         }
 
         /**
-         * Enforce maxQueuedBytes against what the flow controller still holds, then start write timeouts
+         * Enforce maxQueuedBytes against what the HTTP/2 windows hold back, then start write timeouts
          * for streams that are stuck on flow control.
          */
         private void checkParkedBytes() {
@@ -498,11 +501,12 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                 return;
             }
 
-            switch (rateState.checkQueuedBytes()) {
+            switch (rateState.checkQueuedBytes(windowBlockedBytes())) {
                 case FIRST_TO_EXCEED:
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "checkParkedBytes: queued bytes limit exceeded on channel " + ctx.channel()
-                                     + " (parked " + rateState.getParkedBytes() + ", timed out " + rateState.getTimedOutBytes()
+                                     + " (parked " + rateState.getParkedBytes() + ", blocked by windows " + windowBlockedBytes()
+                                     + ", timed out " + rateState.getTimedOutBytes()
                                      + "); closing the connection");
                     }
                     closeForQueuedBytes(ctx, queuedBytesExceeded());
@@ -528,6 +532,33 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                     }
                 }
             }
+        }
+
+        /**
+         * The bytes the flow controller holds that would not leave even if the socket were infinitely fast:
+         * parked minus the most the windows can release. The flow controller releases, per stream,
+         * min(stream window, parked) and, in total, at most the connection window, so
+         * <pre>blocked = max( sum over streams of max(0, parked - window), parked total - connection window )</pre>
+         * Windows are clamped at 0 (a SETTINGS decrease can make one negative). Streams that are gone or
+         * already reset by us are skipped: their frames are about to be dropped, and timed-out bytes are
+         * charged separately.
+         */
+        private long windowBlockedBytes() {
+            Http2RemoteFlowController controller = flowController();
+            long connectionWindow = Math.max(0, controller.windowSize(connection().connectionStream()));
+            long parkedTotal = 0;
+            long blockedByStreamWindows = 0;
+            for (Integer streamId : rateState.getStreamsWithParkedBytes()) {
+                Http2Stream stream = connection().stream(streamId);
+                if (stream == null || stream.isResetSent()) {
+                    continue;
+                }
+                long parked = rateState.getParkedBytes(streamId);
+                long streamWindow = Math.max(0, controller.windowSize(stream));
+                parkedTotal += parked;
+                blockedByStreamWindows += Math.max(0, parked - streamWindow);
+            }
+            return Math.max(blockedByStreamWindows, parkedTotal - connectionWindow);
         }
 
         private Http2Exception queuedBytesExceeded() {
