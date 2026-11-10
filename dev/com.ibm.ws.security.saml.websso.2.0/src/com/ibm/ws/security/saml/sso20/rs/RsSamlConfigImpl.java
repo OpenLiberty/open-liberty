@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,8 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
     static final String KEY_useRelayStateForTarget = "useRelayStateForTarget";
     static final String KEY_servletRequestLogoutPerformsSamlLogout = "spLogout";
     static final String KEY_cspHeader = "contentSecurityPolicy";
+    static final String KEY_replayCacheRef = "replayCacheRef";
+    static final String KEY_replayCacheFailOpen = "replayCacheFailOpen";
 
     static final String[] notInUseAttributes = new String[] {
                                                               KEY_authnRequestsSigned, KEY_forceAuthn, KEY_isPassive,
@@ -110,7 +112,8 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
                                                               KEY_sessionNotOnOrAfter, KEY_includeTokenInSubject, KEY_spCookieName,
                                                               KEY_spHostAndPort, KEY_targetPageUrl, KEY_httpsRequired,
                                                               KEY_allowCustomCacheKey, KEY_createSession, KEY_reAuthnOnAssertionExpire,
-                                                              KEY_reAuthnCushion, KEY_cspHeader
+                                                              KEY_reAuthnCushion, KEY_cspHeader,
+                                                              KEY_replayCacheRef, KEY_replayCacheFailOpen
     };
 
     static final String ignoreAttributes;
