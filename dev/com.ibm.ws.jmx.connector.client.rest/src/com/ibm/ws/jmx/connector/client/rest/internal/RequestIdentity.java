@@ -80,7 +80,9 @@ final class RequestIdentity {
     }
 
     /**
-     * Removes the binding from the current thread and returns it so it can be passed to {@link #restore}.
+     * Removes the binding from the current thread and returns it so it can be passed to {@link #restore}. The
+     * returned value is {@code null} when nothing was bound, which is the normal case for a caller that is not inside
+     * {@code runWithBearerToken}.
      */
     static RequestIdentity unbind() {
         RequestIdentity previous = CURRENT.get();
@@ -89,7 +91,11 @@ final class RequestIdentity {
     }
 
     /**
-     * Puts back a binding returned by {@link #unbind()} (or removes the binding if it was {@code null}).
+     * Puts back a binding returned by {@link #unbind()} or read before {@link #runAs}.
+     *
+     * <p>{@code previous} is {@code null} when the thread had no binding to begin with, for example when
+     * {@code close()} or a notification call is made outside {@code runWithBearerToken}. Restoring that state means
+     * clearing the thread, so {@code null} is a valid value here and not an error.
      */
     static void restore(RequestIdentity previous) {
         if (previous == null) {
