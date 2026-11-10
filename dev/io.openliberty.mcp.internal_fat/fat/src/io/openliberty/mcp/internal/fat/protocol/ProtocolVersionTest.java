@@ -283,6 +283,95 @@ public class ProtocolVersionTest {
         }
     }
 
+    @Test
+    public void testMcpRequestUsesSessionClientInfoOnNonBeta() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "unannotatedArgTool",
+                            "arguments": {
+                              "name": "World",
+                              "count": 1
+                            },
+                            "_meta": {
+                              "io.modelcontextprotocol/clientInfo": {
+                                "name": "ignored-client",
+                                "title": "Ignored Client Title",
+                                "version": "9.9.9"
+                              }
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        String expectedResponse = """
+                        {
+                          "id": 1,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "hello World of FAT Test Client"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }""";
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
+    }
+
+    @Test
+    public void testMcpRequestUsesSessionDataAndIgnoresMetaOnNonBeta() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "checkMcpRequest",
+                            "_meta": {
+                              "io.modelcontextprotocol/clientInfo": {
+                                "name": "ignored-client",
+                                "title": "Ignored Client Title",
+                                "version": "9.9.9",
+                                "description": "Ignored Description",
+                                "websiteUrl": "https://ignored.org"
+                              },
+                              "io.modelcontextprotocol/clientCapabilities": {
+                                "ignoredCap": true
+                              }
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        String expectedResponse = """
+                        {
+                          "id": 1,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "OK"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }""";
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
+    }
+
     private String initialize(String protocolVersion) throws Exception {
         String request = """
                         {
