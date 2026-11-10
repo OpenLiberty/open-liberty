@@ -37,7 +37,7 @@ public class FindActionTest extends  FeatureUtilityToolTest {
         //don't connect to Maven Central to reduce network issue
         copyFileToMinifiedRoot("etc",
     		    "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo1);
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo);
 
         Log.exiting(c, methodName);
     }

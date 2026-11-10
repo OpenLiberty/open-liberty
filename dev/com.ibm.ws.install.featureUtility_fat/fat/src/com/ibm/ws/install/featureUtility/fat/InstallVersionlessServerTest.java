@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,19 +32,18 @@ public class InstallVersionlessServerTest extends FeatureUtilityToolTest {
 
     @BeforeClass
     public static void beforeClassSetup() throws Exception {
-	final String methodName = "beforeClassSetup";
+        final String methodName = "beforeClassSetup";
         Log.entering(c, methodName);
         /* Enable tests only if running on a zOS machine, otherwise skip class */
         Assume.assumeTrue(!isZos);
-	deleteFeaturesAndLafilesFolders("beforeClassSetup");
-	replaceWlpProperties("24.0.0.8");
+        deleteFeaturesAndLafilesFolders("beforeClassSetup");
         Log.exiting(c, methodName);
     }
 
     @Before
     public void beforeSetUp() throws Exception {
 	copyFileToMinifiedRoot("etc", "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
-	writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo2);
+	writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo);
     }
 
     @After
