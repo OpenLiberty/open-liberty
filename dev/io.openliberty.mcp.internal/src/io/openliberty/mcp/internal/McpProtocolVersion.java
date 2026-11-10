@@ -95,6 +95,17 @@ public enum McpProtocolVersion {
         return this != V_2025_03_26;
     }
 
+    /**
+     * Return true if this protocol version sends client information (clientInfo and capabilities) in
+     * request _meta rather than establishing it exclusively during session initialization.
+     * Supported in protocol version 2026-07-28 and later.
+     *
+     * @return true if request-level client info is supported
+     */
+    public boolean supportsRequestLevelClientInfo() {
+        return this == V_2026_07_28;
+    }
+
     public static class McpProtocolVersionAdapter implements JsonbAdapter<McpProtocolVersion, String> {
 
         @Override

@@ -217,6 +217,230 @@ public class ProtocolVersionBetaTest {
         }
     }
 
+    @Test
+    public void testMcpRequestExtractsClientInfoFromMetaOnBeta() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "unannotatedArgTool",
+                            "arguments": {
+                              "name": "World",
+                              "count": 1
+                            },
+                            "_meta": {
+                              "io.modelcontextprotocol/clientInfo": {
+                                "name": "beta-test-client",
+                                "title": "Beta Custom Client",
+                                "version": "2.0.0"
+                              }
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCPRaw(request)
+                                .protocolVersion("2026-07-28")
+                                .run()
+                                .body();
+
+        String expectedResponse = """
+                        {
+                          "id": 1,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "hello World of Beta Custom Client"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }""";
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
+    }
+
+    @Test
+    public void testMcpRequestExtractsClientInfoFromShortMetaKeyOnBeta() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "unannotatedArgTool",
+                            "arguments": {
+                              "name": "World",
+                              "count": 1
+                            },
+                            "_meta": {
+                              "clientInfo": {
+                                "name": "beta-short-client",
+                                "title": "Beta Short Client",
+                                "version": "1.0.0"
+                              }
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCPRaw(request)
+                                .protocolVersion("2026-07-28")
+                                .run()
+                                .body();
+
+        String expectedResponse = """
+                        {
+                          "id": 1,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "hello World of Beta Short Client"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }""";
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
+    }
+
+    @Test
+    public void testMcpRequestExtractsClientInfoWithNameOnlyOnBeta() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "unannotatedArgTool",
+                            "arguments": {
+                              "name": "World",
+                              "count": 1
+                            },
+                            "_meta": {
+                              "clientInfo": {
+                                "name": "only-name-client",
+                                "version": "1.0.0"
+                              }
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCPRaw(request)
+                                .protocolVersion("2026-07-28")
+                                .run()
+                                .body();
+
+        String expectedResponse = """
+                        {
+                          "id": 1,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "hello World of only-name-client"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }""";
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
+    }
+
+    @Test
+    public void testMcpRequestReturnsUnknownClientInfoWhenNoMetaOnBeta() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "unannotatedArgTool",
+                            "arguments": {
+                              "name": "World",
+                              "count": 1
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCPRaw(request)
+                                .protocolVersion("2026-07-28")
+                                .run()
+                                .body();
+
+        String expectedResponse = """
+                        {
+                          "id": 1,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "hello World of Unknown"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }""";
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
+    }
+
+    @Test
+    public void testMcpRequestWithInvalidClientInfoFallsBackSafelyOnBeta() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 200,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "unannotatedArgTool",
+                            "arguments": {
+                              "name": "World",
+                              "count": 1
+                            },
+                            "_meta": {
+                              "clientInfo": "not-an-object",
+                              "capabilities": 12345
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCPRaw(request)
+                                .protocolVersion("2026-07-28")
+                                .run()
+                                .body();
+
+        String expectedResponse = """
+                        {
+                          "id": 200,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "hello World of Unknown"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }""";
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
+    }
+
     /**
      * Asserts that the supported values listed in an unsupported-version error response are exactly the beta
      * version followed by the GA versions, in order.
