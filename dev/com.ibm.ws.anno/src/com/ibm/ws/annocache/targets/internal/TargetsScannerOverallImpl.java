@@ -1337,6 +1337,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                "[ {0} ] ANNO_TARGETS_CACHE_EXCEPTION [ {1} ]",
                new Object[] { getHashText(), e });
             logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
+        } finally {
+            readPool.shutdown();
         }
 
         if ( useHashText != null ) {
@@ -1413,6 +1415,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                "[ {0} ] ANNO_TARGETS_CACHE_EXCEPTION [ {1} ]",
                new Object[] { getHashText(), e });
             logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
+        } finally {
+            validatorPool.shutdown();
         }
 
         int changedContainers = 0;
@@ -1524,6 +1528,8 @@ public class TargetsScannerOverallImpl extends TargetsScannerBaseImpl {
                "[ {0} ] ANNO_TARGETS_CACHE_EXCEPTION [ {1} ]",
                new Object[] { getHashText(), e });
             logger.logp(Level.WARNING, CLASS_NAME, methodName, "Cache error", e);
+        } finally {
+            completionPool.shutdown();
         }
 
         if ( useHashText != null ) {
