@@ -189,7 +189,6 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     static {
         // TODO remove this temporary toleration for the persistence-3.2 feature
-        ClassLoader cl = EntityManager.class.getClassLoader();
         boolean jpa32 = EntityManager.class.getClasses().length == 0;
         if (jpa32) {
             EA_CREATION_OPTION_ARRAY_CLASS = null;
@@ -206,6 +205,7 @@ public class Data_1_1 implements DataVersionCompatibility {
             RESOURCE_ACCESSOR_CLASSES_STATELESS = RESOURCE_ACCESSOR_CLASSES_STATEFUL;
         } else { // Persistence 4.0
             try {
+                ClassLoader cl = EntityManager.class.getClassLoader();
                 Class<?> CreationOption_EA = cl //
                                 .loadClass("jakarta.persistence.EntityAgent$CreationOption");
                 EA_CREATION_OPTION_ARRAY_CLASS = CreationOption_EA.arrayType();

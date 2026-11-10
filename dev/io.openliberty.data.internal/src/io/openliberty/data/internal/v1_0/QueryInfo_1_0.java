@@ -135,8 +135,8 @@ public class QueryInfo_1_0 extends QueryInfo {
     }
 
     @Override
-    protected jakarta.persistence.Query //
-                    ehCreateNativeQuery(AutoCloseable entityHandler) {
+    protected <T> TypedQuery<T> ehCreateNativeQuery(AutoCloseable entityHandler,
+                                                    Class<?> resultClass) {
         throw new UnsupportedOperationException("jakarta.persistence.query.NativeQuery");
     }
 
@@ -291,6 +291,12 @@ public class QueryInfo_1_0 extends QueryInfo {
     @Trivial
     protected String getQueryAnnoValue() {
         return methodTypeAnno instanceof Query query ? query.value() : null;
+    }
+
+    @Override
+    @Trivial
+    protected long getResultCount(TypedQuery<?> query) {
+        return (long) query.getSingleResult();
     }
 
     @Override

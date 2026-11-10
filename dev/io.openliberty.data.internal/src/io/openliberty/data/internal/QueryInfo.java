@@ -217,11 +217,15 @@ public abstract class QueryInfo {
     String jpqlBeforeCursor;
 
     /**
-     * For counting the total number of results across all pages.
-     * If less than Util.MIN_COUNT_QUERY_LENGTH characters long, indicates a
-     * query keyword that prevents computation of a count.
-     * Null if pagination is not used or if pagination without totals is used
-     * or the query is a NativeQuery.
+     * DATA 1.1+/Persistence 4.0+:
+     * _ A base query upon which TypedQuery.getResultCount can be used
+     * _ (excludes Order/Sort JPQL parameters).
+     * DATA 1.0:
+     * _ A query that counts the total number of results across all pages.
+     * _ Or, if a string less than Util.MIN_COUNT_QUERY_LENGTH characters long,
+     * _ a query keyword that prevents computation of a count.
+     * NULL:
+     * _ if pagination is not used, or if pagination is without totals.
      */
     String jpqlCount;
 
@@ -1031,6 +1035,13 @@ public abstract class QueryInfo {
                 info.generateSort(order, sort, forward, orderJPQLParams);
             }
 
+        if (jpqlCount == null &&
+            compat.atLeast(1, 1) &&
+            entityInfo.isHibernate && // TODO remove this condition, and do for all 1.1/4.0+
+            (Page.class.equals(multiType) ||
+             CursoredPage.class.equals(multiType)))
+            info.jpqlCount = q.toString();
+
         if (pageReq == null ||
             pageReq.mode() == PageRequest.Mode.OFFSET) {
             // offset pagination can be a starting point for cursor pagination
@@ -1518,12 +1529,12 @@ public abstract class QueryInfo {
      * native SQL query that returns query results.
      *
      * @param entityHandler EntityAgent or EntityManager
+     * @param resultType    result type of the query (Object.class if unknown)
      * @return the query
      */
-    // TODO once we have persistence providers that support Persistence 4.0,
-    // see if we can have this method return TypedQuery<T> like ehCreateTypedQuery
-    protected abstract jakarta.persistence.Query //
-                    ehCreateNativeQuery(AutoCloseable entityHandler);
+    protected abstract <T> TypedQuery<T> //
+                    ehCreateNativeQuery(AutoCloseable entityHandler,
+                                        Class<?> resultType);
 
     /**
      * Delegates to the EntityAgent or EntityManager to create a Jakarta
@@ -3471,6 +3482,18 @@ public abstract class QueryInfo {
     }
 
     /**
+     * Invokes TypedQuery,getResultCount() if Data 1.1+/Persistence 4.0+.
+     * Otherwise, runs a generated count query.
+     *
+     * @param query query for which to obtain the result count.
+     *                  For Data 1.0, the query is a generated SELECT COUNT.
+     *                  For Data 1.1+, it is the base query for the repository
+     *                  method
+     * @return the result count
+     */
+    protected abstract long getResultCount(TypedQuery<?> query);
+
+    /**
      * Identifies conflicts between other repository method annotations and the
      * QueryOptions or Fetching annotation(s).
      * This method is only invoked when there are known to be annotations on the
@@ -4717,7 +4740,16 @@ public abstract class QueryInfo {
                 returnValue = toReturnValue(query.executeUpdate(),
                                             singleType);
             } else {
-                query = ehCreateNativeQuery(entityHandler);
+                // If the repository method return type is the entity class or
+                // multiple entities, consider the entity class to be the result
+                // type. Otherwise the result could be a count or single entity
+                // attribute.
+                Class<?> resultClass = singleType != null && entityInfo //
+                                .entityClass.isAssignableFrom(singleType) //
+                                                ? entityInfo.entityClass //
+                                                : Object.class;
+
+                query = ehCreateNativeQuery(entityHandler, resultClass);
 
                 int startAt = limit != null //
                                 ? computeOffset(limit) //

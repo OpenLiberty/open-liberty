@@ -32,7 +32,6 @@ import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Mode;
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
 /**
@@ -127,9 +126,10 @@ public class PageImpl<T> implements Page<T> {
                       queryInfo.method.getGenericReturnType().getTypeName(),
                       CursoredPage.class.getName());
 
-        Query query;
+        TypedQuery<T> query;
         if (queryInfo.type == NATIVE)
-            query = queryInfo.ehCreateNativeQuery(entityHandler);
+            query = queryInfo.ehCreateNativeQuery(entityHandler,
+                                                  queryInfo.singleType);
         else
             query = queryInfo.ehCreateTypedQuery(entityHandler,
                                                  queryInfo.ql,
@@ -147,9 +147,7 @@ public class PageImpl<T> implements Page<T> {
                         ? Integer.MAX_VALUE //
                         : (maxPageSize + 1)); // extra result indicates if next page exists
 
-        @SuppressWarnings("unchecked")
-        List<T> resultList = query.getResultList();
-        results = resultList;
+        results = query.getResultList();
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "<init>");
@@ -218,32 +216,38 @@ public class PageImpl<T> implements Page<T> {
             pageRequest.size() < Integer.MAX_VALUE)
             return results.size();
 
-        if (queryInfo.type == QueryType.NATIVE ||
-            queryInfo.jpqlCount.length() < Util.MIN_COUNT_QUERY_LENGTH)
+        if (queryInfo.jpqlCount.length() < Util.MIN_COUNT_QUERY_LENGTH &&
+            !queryInfo.producer.compat().atLeast(1, 1))
             Fail.totalsNotSupported(queryInfo);
 
-        boolean stateful = queryInfo.producer.stateful();
         EntityHandlerFactory factory = queryInfo.entityInfo.factory;
         EntityHandlerFactory.Sync<? extends AutoCloseable> entityHandlerSync = null;
         try {
+            boolean stateful = queryInfo.producer.stateful();
             entityHandlerSync = stateful || queryInfo.entityInfo.simulateStateless() //
                             ? factory.getEntityManager(stateful) //
                             : factory.getEntityAgent();
 
+            AutoCloseable entityHandler = entityHandlerSync.entityHandler();
+            TypedQuery<?> query;
+            if (queryInfo.type == NATIVE)
+                query = queryInfo.ehCreateNativeQuery(entityHandler,
+                                                      queryInfo.singleType);
+            else
+                query = queryInfo.ehCreateTypedQuery(entityHandler,
+                                                     queryInfo.jpqlCount,
+                                                     Object.class);
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "query for count: " + queryInfo.jpqlCount);
 
-            TypedQuery<Long> query = queryInfo //
-                            .ehCreateTypedQuery(entityHandlerSync.entityHandler(),
-                                                queryInfo.jpqlCount,
-                                                Long.class);
             queryInfo.setParameters(query,
                                     args,
                                     deferredConstraints,
                                     requiredJPQLParams,
                                     null); // count query does not use Sort/Order
 
-            return query.getSingleResult();
+            return queryInfo.getResultCount(query);
         } catch (Exception x) {
             throw RepositoryImpl.failure(x, factory);
         } finally {
