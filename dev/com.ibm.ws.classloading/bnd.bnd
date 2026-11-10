@@ -34,6 +34,9 @@ Export-Package: \
 Import-Package: \
   !com.ibm.ws.classloading.java2sec, \
   org.eclipse.osgi.internal.loader, \
+  com.ibm.ws.runtime.update;resolution:=optional, \
+  com.ibm.ws.threading.listeners;resolution:=optional, \
+  com.ibm.wsspi.application.lifecycle;resolution:=optional, \
   ${defaultPackageImport}
 
 Include-Resource: \
@@ -51,6 +54,7 @@ Private-Package: \
   com.ibm.ws.classloading.internal.ApplicationClassloadingServiceImpl,\
   com.ibm.ws.classloading.internal.ClassLoadingButlerAdapter,\
   com.ibm.ws.classloading.internal.ClassLoadingServiceImpl,\
+  com.ibm.ws.classloading.internal.ClassLoadingUpdateRecycleListener,\
   com.ibm.ws.classloading.internal.NativeLibraryAdapter,\
   com.ibm.ws.classloading.internal.util.ClassRedefiner,\
   com.ibm.ws.classloading.java2sec.PermissionManager,\
