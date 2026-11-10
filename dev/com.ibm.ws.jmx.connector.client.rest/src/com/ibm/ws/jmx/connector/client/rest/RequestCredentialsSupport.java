@@ -39,8 +39,6 @@ import java.util.concurrent.Callable;
  * <li><b>Certificate connections:</b> not supported. A connection made with
  * {@link ConnectorSettings#CERTIFICATE_AUTHENTICATION} throws {@link IllegalStateException}.</li>
  * </ul>
- *
- * @ibm-api
  */
 public interface RequestCredentialsSupport {
 
