@@ -433,9 +433,11 @@ public class SubsystemFeatureDefinitionImpl implements ProvisioningFeatureDefini
                     // headers. So we need to add a new property for osgi.identity (filter key) that contains the value of the
                     // Subsystem-SymbolicName (manifest header).
                     // We also have to do this for the Subsystem-Type(manifest header) and the type (filter key).
-                    Map<String, String> filterProps = new HashMap<String, String>();
+                    // The Subsystem-Version header is mapped to version so OSGi filter version comparisons work.
+                    Map<String, Object> filterProps = new HashMap<String, Object>();
 
                     filterProps.put(FeatureDefinitionUtils.FILTER_FEATURE_KEY, featureDef.getSymbolicName());
+                    filterProps.put(FeatureDefinitionUtils.FILTER_VERSION_KEY, featureDef.getVersion());
                     try {
                         filterProps.put(FeatureDefinitionUtils.FILTER_TYPE_KEY,
                                         mfDetails.getMainAttributeValue(FeatureDefinitionUtils.TYPE));
