@@ -334,4 +334,16 @@ LOGOUT_CANNOT_PERFORM_SLO.useraction=Make sure that the logout application is as
 
 LOGOUT_CANNOT_FIND_SAMLTOKEN=CWWKS5218E: The logout service cannot complete the SAML Single Logout since it cannot locate the user security session.
 LOGOUT_CANNOT_FIND_SAMLTOKEN.explanation=The service provider cannot locate the  user security session to create the SAML Single logout request message. The user was logged out from the service provider, but might still have an active security session with the Identity Provider (IdP).
-LOGOUT_CANNOT_FIND_SAMLTOKEN.useraction=Consider implementing the Identity Provider (IdP) initiated logout and redirect the user to the Identity Provider (IdP) to logout, especially if the service provider logout fails or is not complete. 
+LOGOUT_CANNOT_FIND_SAMLTOKEN.useraction=Consider implementing the Identity Provider (IdP) initiated logout and redirect the user to the Identity Provider (IdP) to logout, especially if the service provider logout fails or is not complete.
+
+# 0=Error message from the shared replay cache
+# do not translate replayCacheRef
+SAML20_REPLAY_STORE_ERROR=CWWKS5219E: The service provider (SP) cannot process the SAML response because the shared SAML replay cache could not be checked. The error is [{0}].
+SAML20_REPLAY_STORE_ERROR.explanation=The replayCacheRef attribute is configured for the SAML Web SSO service provider, and the JCache that stores consumed SAML assertion IDs is not available. The SP rejects the response so that a replayed assertion cannot be accepted.
+SAML20_REPLAY_STORE_ERROR.useraction=Verify that the JCache provider and the cache that is referenced by the replayCacheRef attribute are running and reachable. To continue processing SAML responses with only local replay detection while the cache is unavailable, set the replayCacheFailOpen attribute to true.
+
+# 0=Error message from the shared replay cache
+# do not translate replayCacheFailOpen
+SAML20_REPLAY_STORE_FALLBACK=CWWKS5220W: The shared SAML replay cache could not be checked, and the replayCacheFailOpen attribute is true. Only local replay detection was applied. The error is [{0}].
+SAML20_REPLAY_STORE_FALLBACK.explanation=The JCache that stores consumed SAML assertion IDs is not available, so replay detection is limited to this server.
+SAML20_REPLAY_STORE_FALLBACK.useraction=Restore the JCache so that replay detection is shared across servers again.

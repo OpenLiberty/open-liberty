@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -46,6 +47,7 @@ import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.error.SamlException;
+import com.ibm.ws.security.saml.sso20.internal.utils.JCacheSamlReplayStore;
 import com.ibm.ws.security.saml.sso20.internal.utils.SamlResponseReplayCache;
 import com.ibm.ws.security.saml.sso20.rs.RsSamlConfigImpl;
 import com.ibm.ws.ssl.KeyStoreService;
@@ -53,6 +55,8 @@ import com.ibm.ws.webcontainer.security.WebProviderAuthenticatorHelper;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
+
+import io.openliberty.jcache.CacheService;
 
 public class SsoServiceImpl implements SsoSamlService {
     public static final TraceComponent tc = Tr.register(SsoServiceImpl.class,
@@ -84,7 +88,13 @@ public class SsoServiceImpl implements SsoSamlService {
 
     static final HashMap<String, Cache> acsCookieCacheMap = new HashMap<String, Cache>();
 
-    static final HashMap<String, SamlResponseReplayCache> replayCacheMap = new HashMap<String, SamlResponseReplayCache>();
+    static final ConcurrentHashMap<String, SamlResponseReplayCache> replayCacheMap = new ConcurrentHashMap<String, SamlResponseReplayCache>();
+
+    /** Configuration key: continue with local-only replay detection if the shared replay cache is unavailable. */
+    static final String KEY_replayCacheFailOpen = "replayCacheFailOpen";
+
+    /** Optional JCache used as the shared SAML replay store (samlWebSso20 replayCacheRef). */
+    private volatile CacheService replayCacheService;
 
     protected SsoConfig samlConfig = new SsoConfigImpl();
 
@@ -149,6 +159,16 @@ public class SsoServiceImpl implements SsoSamlService {
         }
     }
 
+    // The reference is static (not in the 'dynamic' list in bnd.bnd), so a change re-activates
+    // this component and initProps() re-wires the shared replay store.
+    protected void setReplayCacheService(CacheService service) {
+        this.replayCacheService = service;
+    }
+
+    protected void unsetReplayCacheService(CacheService service) {
+        this.replayCacheService = null;
+    }
+
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         providerId = (String) props.get(KEY_PROVIDER_ID);
@@ -181,12 +201,11 @@ public class SsoServiceImpl implements SsoSamlService {
                 acsCookieCacheMap.put(providerId, cache); // SsoServiceImpl
             }
         }
-        if (replayCacheMap.get(providerId) == null) {
-            SamlResponseReplayCache cache = new SamlResponseReplayCache(0, 0, getSamlConfig().getClockSkew());
-            synchronized (acsCookieCacheMap) {
-                replayCacheMap.put(providerId, cache); // SsoServiceImpl
-            }
-        }
+        // Create the replay cache if absent and wire the optional shared store. Without
+        // replayCacheRef the shared store is null, i.e. replay detection stays local to this JVM.
+        CacheService cs = replayCacheService;
+        getSamlResponseReplayCache(providerId).setSharedStore(cs == null ? null : new JCacheSamlReplayStore(cs),
+                                                              Boolean.TRUE.equals(props.get(KEY_replayCacheFailOpen)));
     }
 
     @Modified
@@ -206,7 +225,10 @@ public class SsoServiceImpl implements SsoSamlService {
         sslSupportRef.deactivate(cc);
         synchronized (acsCookieCacheMap) {
             acsCookieCacheMap.remove(providerId);
-            replayCacheMap.remove(providerId);
+        }
+        SamlResponseReplayCache removed = replayCacheMap.remove(providerId);
+        if (removed != null) {
+            removed.shutdown();
         }
         Tr.info(tc, "SAML20_CONFIG_DEACTIVATED", providerId);
     }
@@ -273,13 +295,8 @@ public class SsoServiceImpl implements SsoSamlService {
 
     @Override
     public SamlResponseReplayCache getSamlResponseReplayCache(String providerId) {
-        SamlResponseReplayCache cache = replayCacheMap.get(providerId);
-        if (cache == null) {
-            cache = new SamlResponseReplayCache(0, 0, this.getSamlConfig().getClockSkew());
-            synchronized (replayCacheMap) {
-                replayCacheMap.put(providerId, cache); //
-            }
-        }
+        SamlResponseReplayCache cache = replayCacheMap.computeIfAbsent(providerId,
+                                                                       id -> new SamlResponseReplayCache(0, 0, this.getSamlConfig().getClockSkew(), id));
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "replayCacheMap providerId:" + providerId + " cache:" + cache);
         }
