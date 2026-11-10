@@ -1,0 +1,14 @@
+<server>
+<!-- certSupported_noAuth_assertionNoTrust -->
+    <include location="imports/downstream_defaultIiopEndpoint.xml"/>
+
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="true" trustedIdentities="unknownIdentity"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </serverPolicy.csiv2>
+    </orb>
+
+</server>

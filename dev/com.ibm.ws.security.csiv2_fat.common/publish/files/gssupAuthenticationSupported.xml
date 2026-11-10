@@ -1,0 +1,23 @@
+<server>
+<!--  gssupAuthenticationSupported -->
+    <include location="imports/downstream_defaultIiopEndpoint.xml"/>
+    <include location="imports/upstream_clientWar.xml"/>
+	
+	<logging suppressSensitiveTrace="true" />
+
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+                <authenticationLayer mechanisms="GSSUP" establishTrustInClient="Supported"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </serverPolicy.csiv2>
+        <clientPolicy.csiv2>
+            <layers>
+                <authenticationLayer mechanisms="GSSUP" establishTrustInClient="Supported"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+</server>

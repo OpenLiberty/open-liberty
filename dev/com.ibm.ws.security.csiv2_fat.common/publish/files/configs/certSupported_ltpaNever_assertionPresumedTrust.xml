@@ -1,0 +1,15 @@
+<server>
+<!-- certSupported_ltpaNever_assertionPresumedTrust -->
+    <include location="imports/downstream_defaultIiopEndpoint.xml"/>
+
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+				<attributeLayer identityAssertionEnabled="true" trustedIdentities="*"/>
+				<authenticationLayer mechanisms="LTPA" establishTrustInClient="Never"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </serverPolicy.csiv2>
+    </orb>
+
+</server>

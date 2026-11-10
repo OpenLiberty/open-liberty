@@ -1,0 +1,17 @@
+<server>
+<!-- client_certSupported_ltpaNever_noAssertion -->
+    <include location="imports/upstreamIncludes_outboundDefaultSSL.xml"/>
+
+    <sslDefault sslRef="supportedClientAuthenticationSSLConfig" outboundSSLRef="supportedClientAuthenticationTLSConfig"/>
+
+    <orb id="defaultOrb">
+        <clientPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="false"/>
+                <authenticationLayer mechanisms="LTPA" establishTrustInClient="Never"/>
+                <transportLayer sslRef="outboundDefaultSSL"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+</server>

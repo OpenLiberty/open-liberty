@@ -1,0 +1,22 @@
+<server>
+<!--  identityAssertionWithAnonymous -->
+    <include location="imports/upstreamIncludes.xml"/>
+
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="true" trustedIdentities="*"/>
+                <authenticationLayer mechanisms="LTPA" establishTrustInClient="Supported"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </serverPolicy.csiv2>
+        <clientPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="true" trustedIdentity="trustedId1"/>
+                <authenticationLayer mechanisms="LTPA" establishTrustInClient="Supported"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+</server>

@@ -1,0 +1,51 @@
+<server>
+<!-- intermediate_assertionAnonymous.xml -->
+
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>ldapRegistry-3.0</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <include location="imports/ldapRegistry.xml"/>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP.tertiary}" >
+        <iiopsOptions iiopsPort="${bvt.prop.IIOP.tertiary.secure}"  sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+    
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="false"/>
+                <authenticationLayer mechanisms="LTPA,GSSUP" establishTrustInClient="Required"/>
+                <transportLayer/>
+            </layers>
+        </serverPolicy.csiv2>
+        <clientPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="true" identityAssertionTypes="ITTAnonymous" trustedIdentity="user3"/>
+                <authenticationLayer mechanisms="LTPA,GSSUP" establishTrustInClient="Supported"/>
+                <transportLayer/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+    
+    <application type="ear" id="IntermediateApp" name="IntermediateApp" location="${server.config.dir}/apps/IntermediateApp.ear">
+        <application-bnd>
+            <security-role name="Tester">
+                <user name="user1" />
+            </security-role>
+            <security-role name="Admin">
+                <user name="user1" />
+                <user name="user2" />
+            </security-role>
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </application>
+    <include location="imports/intermediate_fatTestPorts.xml"/>
+</server>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app id="ClientServlets">
+  <display-name>CSIv2 Client Servlets</display-name>
+  <description>These are servlets to test CSIv2 support.</description>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="ClientServlet">
+    <servlet-name>ClientServlet</servlet-name>
+    <display-name>ClientServlet</display-name>
+    <description>ClientServlet</description>
+    <servlet-class>web.ClientServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="CSIv2ClientServlet_Mapping_1">
+    <servlet-name>ClientServlet</servlet-name>
+    <url-pattern>/ClientServlet</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping id="CSIv2ClientServlet_Mapping_2">
+    <servlet-name>ClientServlet</servlet-name>
+    <url-pattern>/UnprotectedClientServlet</url-pattern>
+  </servlet-mapping>
+
+  <!-- SECURITY CONSTRAINTS -->  
+  <security-constraint id="SecurityConstraint_1">
+    <web-resource-collection id="WebResourceCollection_1">
+      <web-resource-name>Protected with Tester role</web-resource-name>
+        <url-pattern>/ClientServlet</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+    </web-resource-collection>
+    <auth-constraint id="AuthConstraint_1">
+      <role-name>Tester</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <!-- CHALLENGE TYPE -->
+  <login-config id="LoginConfig_Basic">
+    <auth-method>BASIC</auth-method>
+    <realm-name>Basic Authentication</realm-name>
+  </login-config>  
+  
+  <!-- ROLES DEFINITION -->
+  <security-role id="SecurityRole_Tester">
+    <description>Tester role</description>
+    <role-name>Tester</role-name>
+  </security-role>
+
+</web-app>

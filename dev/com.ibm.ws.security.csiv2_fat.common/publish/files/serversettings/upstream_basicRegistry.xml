@@ -1,0 +1,10 @@
+<server>
+
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="user1" password="user1pwd" />
+        <user name="user2" password="user2pwd" />
+        <user name="user42" password="user42pwd" />
+        <user name="trustedId1" password="trustedId1pwd" />
+    </basicRegistry>
+
+</server>

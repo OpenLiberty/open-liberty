@@ -1,0 +1,13 @@
+<server>
+<!--  clientCertSupportedWithTLSSupported -->
+    <orb id="defaultOrb">
+        <clientPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="false"/>
+                <authenticationLayer establishTrustInClient="Never"/>
+                <transportLayer sslRef="supportedClientAuthenticationTLSConfig"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+</server>

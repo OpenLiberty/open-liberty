@@ -1,0 +1,9 @@
+<server>
+    <include location="downstreamIncludes.xml"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" >
+        <iiopsOptions id="first" iiopsPort="${bvt.prop.IIOP.secure}"  sslRef="requiredClientAuthenticationSSLConfig"/>
+        <iiopsOptions id="second" iiopsPort="${bvt.prop.IIOP.tertiary.secure}"  sslRef="requiredClientAuthenticationSSLConfig"/>
+    </iiopEndpoint>
+
+</server>

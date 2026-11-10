@@ -1,0 +1,14 @@
+<server>
+
+    <ssl id="outboundDefaultSSL" clientAuthenticationSupported="true" keyStoreRef="testKeyStore" trustStoreRef="testTrustStore" />
+
+    <ssl id="noClientAuthenticationSSLConfig" keyStoreRef="defaultKeyStore" />
+
+    <ssl id="supportedClientAuthenticationSSLConfig" clientAuthenticationSupported="true" keyStoreRef="defaultKeyStore" />
+
+    <ssl id="requiredClientAuthenticationSSLConfig" clientAuthentication="true" keyStoreRef="defaultKeyStore" />
+
+    <ssl id="supportedClientAuthenticationTLSConfig" sslProtocol="TLSv1.2" clientAuthenticationSupported="true" keyStoreRef="defaultKeyStore" />
+
+
+</server>

@@ -1,0 +1,35 @@
+<server>
+<!-- certSupported_gssupSupported_noAssertion -->
+<!-- include the contents of imports/downstream_defaultIiopEndpoint.xml except for the basic registry -->
+<!--     <include location="imports/downstream_defaultIiopEndpoint.xml"/> -->
+
+    <include location="imports/downstream_serverFeatures.xml"/>
+    
+    <include location="imports/keystores.xml"/>
+    
+    <include location="imports/sslConfigs.xml"/>
+    
+<!--     <include location="imports/downstream_basicRegistry.xml"/> -->
+    
+    <include location="imports/downstream_downstreamApp.xml"/>
+
+    <include location="imports/downstream_fatTestPorts.xml"/>
+
+    <!-- TODO: Remove the following jaas configuration when defect 161706 is fixed -->
+    <jaasLoginContextEntry id="WSLogin" name="WSLogin" loginModuleRef="proxy" />
+    
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" >
+        <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}"  sslRef="supportedClientAuthenticationSSLConfig"/>
+    </iiopEndpoint>
+
+
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+                <authenticationLayer mechanisms="GSSUP" establishTrustInClient="Supported"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </serverPolicy.csiv2>
+    </orb>
+
+</server>

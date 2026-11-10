@@ -1,0 +1,27 @@
+<server>
+<!-- client_noSSL_authNever_assertionPrincipalName -->
+    <include location="imports/upstream_serverFeatures.xml"/>
+    
+    <include location="imports/keystores.xml"/>
+
+    <include location="imports/sslConfigs.xml"/>
+    
+    <include location="imports/upstream_basicRegistry.xml"/>
+    
+    <include location="imports/upstream_clientWar.xml"/>
+
+    <include location="imports/upstream_fatTestPorts.xml" />
+    
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP.secondary}" />
+
+    <orb id="defaultOrb">
+        <clientPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="true"/>
+                <authenticationLayer establishTrustInClient="Never"/>
+                <transportLayer sslEnabled="false"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+</server>

@@ -1,0 +1,36 @@
+<server>
+<!-- intermediate_certRequired_ltpaNever_noAssertion -->
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <include location="imports/sslConfigs.xml"/>
+    <include location="imports/keystores.xml"/>
+    <include location="imports/basicRegistry.xml"/>
+    <include location="imports/intermediateApp.xml"/>
+    <include location="imports/intermediate_fatTestPorts.xml"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP.tertiary}" >
+        <iiopsOptions iiopsPort="${bvt.prop.IIOP.tertiary.secure}"  sslRef="requiredClientAuthenticationSSLConfig"/>
+    </iiopEndpoint>
+
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="false"/>
+                <authenticationLayer mechanisms="LTPA" establishTrustInClient="Supported"/>
+                <transportLayer sslRef="requiredClientAuthenticationSSLConfig"/>
+            </layers>
+        </serverPolicy.csiv2>
+        <clientPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="true" identityAssertionTypes="ITTX509CertChain" trustedIdentity="trustedId1"/>
+                <authenticationLayer mechanisms="LTPA" establishTrustInClient="Supported"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+</server>
