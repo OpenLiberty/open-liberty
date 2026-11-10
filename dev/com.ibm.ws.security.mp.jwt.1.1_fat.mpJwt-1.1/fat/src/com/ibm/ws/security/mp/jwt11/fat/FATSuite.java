@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import com.ibm.ws.security.mp.jwt11.fat.configInAppTests.MPJwtMPOtherSigAlgConfi
 import com.ibm.ws.security.mp.jwt11.fat.featureSupportTests.MPJwtNoMpJwtConfig;
 import com.ibm.ws.security.mp.jwt11.fat.propagationTests.MPJwtPropagationTests_notUsingWebTarget;
 import com.ibm.ws.security.mp.jwt11.fat.propagationTests.MPJwtPropagationTests_usingWebTarget;
+import com.ibm.ws.security.mp.jwt11.fat.MPJwtRealmConfigTests;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
@@ -43,6 +44,7 @@ import componenttest.rules.repeater.RepeatTests;
         MPJwtBasicTests.class,
         // More targeted tests
         MPJwtConfigUsingBuilderTests.class,
+        MPJwtRealmConfigTests.class,
         MPJwtApplicationAndSessionScopedClaimInjectionTests.class,
         MPJwtLoginConfig_ignoreApplicationAuthMethodTrueTests.class,
         MPJwtLoginConfig_ignoreApplicationAuthMethodFalseTests.class,
