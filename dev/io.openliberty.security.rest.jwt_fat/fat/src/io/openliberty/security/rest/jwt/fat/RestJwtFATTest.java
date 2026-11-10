@@ -16,10 +16,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
+import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.NumericDate;
 import org.junit.AfterClass;
@@ -36,21 +43,38 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
+/**
+ * The jwtConsumer of RestJwtServer validates RS256 tokens with the public key in the JSON Web Key Set in
+ * resources/security/jwks.json, named by the jwkEndpointUrl in server.xml. Every token has the kid of its
+ * signing key in the header.
+ */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class RestJwtFATTest {
 
     private static final Class<?> c = RestJwtFATTest.class;
 
+    private static final String KEY_ID = "restJwtKey1";
+
     @Server("RestJwtServer")
     public static LibertyServer server;
+
+    // The key that is in the key set, and a key that is not in it
+    private static RsaJsonWebKey signingKey;
+    private static RsaJsonWebKey unknownKey;
 
     @BeforeClass
     public static void setUp() throws Exception {
         String methodName = "setUp";
+
+        // Generate the key pairs at run time so that no private key is checked in.
+        signingKey = FATSuite.generateRsaKey(KEY_ID);
+        unknownKey = FATSuite.generateRsaKey("restJwtUnknownKey");
+        FATSuite.writeJwks(server, signingKey);
+
         // The restJwt-1.0 auto-feature is provisioned from the product image because jwt-1.0 and
         // restConnector-2.0 are enabled in server.xml.
-        Log.info(c, methodName, "Starting RestJwtServer...");
+        Log.info(c, methodName, "Starting RestJwtServer with the JWKS file " + FATSuite.getJwksFile(server).getAbsolutePath());
         server.startServer();
         assertNotNull("IBMJMXConnectorREST application was not ready",
                       server.waitForStringInLog("SRVE0242I.*IBMJMXConnectorREST"));
@@ -147,14 +171,49 @@ public class RestJwtFATTest {
                      FATSuite.getResponseCode(server, token));
     }
 
+    /**
+     * The kid of the token is in the key set, so its public key is found, but the token is signed with another key.
+     */
     @Test
     @Mode(TestMode.LITE)
     @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     public void testInvalidSignatureJwt_Unauthorized() throws Exception {
-        String token = FATSuite.createHs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS), FATSuite.WRONG_KEY);
+        String token = FATSuite.createRs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS),
+                                               unknownKey.getPrivateKey(), KEY_ID);
         assertEquals("Expected 401 Unauthorized for a JWT with the admin subject and groups but signed with the wrong key",
                      HttpURLConnection.HTTP_UNAUTHORIZED,
                      FATSuite.getResponseCode(server, token));
+    }
+
+    /**
+     * The jwkEndpointUrl can also name a file with a single public key in PEM format. server_pemKeyFile.xml points it
+     * at resources/security/jwtPublic.pem, and a token signed with the private key of that key is accepted.
+     */
+    @Test
+    public void testTokenSignedWithKeyFromPemFile_Success() throws Exception {
+        KeyPair pair = generatePemKeyFile();
+        useServerConfigWithPemKeyFile();
+        try {
+            String token = FATSuite.createRs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS), pair.getPrivate());
+            assertEquals("Expected 200 OK when the signature matches the public key in the PEM file",
+                         HttpURLConnection.HTTP_OK, FATSuite.getResponseCode(server, token));
+        } finally {
+            restoreServerConfig();
+        }
+    }
+
+    @Test
+    @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    public void testTokenSignedWithOtherKeyThanPemFile_Unauthorized() throws Exception {
+        generatePemKeyFile();
+        useServerConfigWithPemKeyFile();
+        try {
+            String token = FATSuite.createRs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS), unknownKey.getPrivateKey());
+            assertEquals("Expected 401 Unauthorized when the signature does not match the public key in the PEM file",
+                         HttpURLConnection.HTTP_UNAUTHORIZED, FATSuite.getResponseCode(server, token));
+        } finally {
+            restoreServerConfig();
+        }
     }
 
     @Test
@@ -388,8 +447,37 @@ public class RestJwtFATTest {
                      FATSuite.getResponseCode(server, createToken(claims)));
     }
 
-    /** @return the claims signed with the shared key of the jwtConsumer */
+    /** Generates a key pair and writes its public key in PEM format to the file that server_pemKeyFile.xml refers to */
+    private static KeyPair generatePemKeyFile() throws Exception {
+        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+        generator.initialize(2048);
+        KeyPair pair = generator.generateKeyPair();
+        String pem = "-----BEGIN PUBLIC KEY-----\n"
+                     + Base64.getMimeEncoder(64, "\n".getBytes(StandardCharsets.US_ASCII)).encodeToString(pair.getPublic().getEncoded())
+                     + "\n-----END PUBLIC KEY-----\n";
+        File pemFile = new File(server.getServerRoot() + "/resources/security/jwtPublic.pem");
+        pemFile.getParentFile().mkdirs();
+        Files.write(pemFile.toPath(), pem.getBytes(StandardCharsets.US_ASCII));
+        return pair;
+    }
+
+    private static void useServerConfigWithPemKeyFile() throws Exception {
+        server.saveServerConfiguration();
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFromFilePath("server_pemKeyFile.xml");
+        assertNotNull("The server configuration update was not completed",
+                      server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I"));
+    }
+
+    private static void restoreServerConfig() throws Exception {
+        server.setMarkToEndOfLog();
+        server.restoreServerConfiguration();
+        server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I");
+        new File(server.getServerRoot() + "/resources/security/jwtPublic.pem").delete();
+    }
+
+    /** @return the claims signed with the first key of the key set, with the kid of that key in the header */
     private static String createToken(JwtClaims claims) throws Exception {
-        return FATSuite.createHs256Jwt(claims, FATSuite.SHARED_KEY);
+        return FATSuite.createRs256Jwt(claims, signingKey);
     }
 }

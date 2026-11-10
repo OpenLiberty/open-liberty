@@ -35,7 +35,7 @@ autoFVT {
   def jwtCommonProject = project(':com.ibm.ws.security.fat.common.jwt')
 
   doLast {
-    ['RestJwtServer', 'RestJwtNoConnectorServer', 'RestJwtKeyFileServer'].each { server ->
+    ['RestJwtServer', 'RestJwtNoConnectorServer', 'RestJwtNoJwtServer', 'RestJwtKeyFileServer', 'RestJwtKeyRotationServer'].each { server ->
       // Copy server files
       copy {
         from file('publish/servers/' + server)

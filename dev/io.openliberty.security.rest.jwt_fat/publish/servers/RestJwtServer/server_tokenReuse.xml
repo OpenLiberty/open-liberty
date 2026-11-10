@@ -21,8 +21,9 @@
     <jwtConsumer id="JMXConnectorRESTConsumer"
                  issuer="IBMJMXConnectorRESTIssuer"
                  audiences="IBMJMXConnectorREST"
-                 sharedKey="superSecretSharedKeyForRestJwtTesting123456"
-                 signatureAlgorithm="HS256"
+                 jwkEnabled="true"
+                 jwkEndpointUrl="file:${server.config.dir}resources/security/jwks.json"
+                 signatureAlgorithm="RS256"
                  clockSkew="1m"
                  tokenReuse="true" />
 
