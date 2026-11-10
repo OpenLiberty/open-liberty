@@ -5375,6 +5375,7 @@ public class H2FATDriverServlet extends FATServlet {
 
         int currentStream = 1;
         // create another 100 streams
+        // Attempting to reproduce intermittent Windows failure (312958): server sends GOAWAY and closes while the client's last RST_STREAM is unread.
         for (int i = 0; i < server_max_streams + 1; i++) {
             currentStream += 2;
             if (i % 2 == 0) {
