@@ -85,16 +85,17 @@ public class HeaderValidation {
         }
 
         if (!headerVersion.getVersion().equals(bodyVersion)) {
-            String message;
-            if (bodyVersion == null) {
-                message = Tr.formatMessage(tc, "header.mismatch.protocol.version.missing",
-                                           headerVersion.getVersion(), META_PROTOCOL_VERSION);
-            } else {
-                message = Tr.formatMessage(tc, "header.mismatch.protocol.version",
-                                           headerVersion.getVersion(), META_PROTOCOL_VERSION, bodyVersion);
-            }
+            String message = buildVersionMismatchMessage(headerVersion.getVersion(), bodyVersion);
             throw new JSONRPCException(JSONRPCErrorCode.HEADER_MISMATCH, List.of(message));
         }
+    }
+
+    private static String buildVersionMismatchMessage(String headerVersion, String bodyVersion) {
+        return bodyVersion == null
+                                   ? Tr.formatMessage(tc, "header.mismatch.protocol.version.missing",
+                                                      headerVersion, META_PROTOCOL_VERSION)
+                                   : Tr.formatMessage(tc, "header.mismatch.protocol.version",
+                                                      headerVersion, META_PROTOCOL_VERSION, bodyVersion);
     }
 
 }
