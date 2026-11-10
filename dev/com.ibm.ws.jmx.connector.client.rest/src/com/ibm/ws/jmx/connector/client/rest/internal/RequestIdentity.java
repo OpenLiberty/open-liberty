@@ -31,10 +31,10 @@ final class RequestIdentity {
 
     private static final ThreadLocal<RequestIdentity> CURRENT = new ThreadLocal<RequestIdentity>();
 
-    private final Object owner;
+    private final RESTMBeanServerConnection owner;
     private final String authHeader;
 
-    private RequestIdentity(Object owner, String authHeader) {
+    private RequestIdentity(RESTMBeanServerConnection owner, String authHeader) {
         this.owner = owner;
         this.authHeader = authHeader;
     }
@@ -60,7 +60,7 @@ final class RequestIdentity {
     /**
      * Returns the header to send for a request made by {@code owner} on the current thread.
      */
-    static String resolve(Object owner, String connectHeader) {
+    static String resolve(RESTMBeanServerConnection owner, String connectHeader) {
         RequestIdentity id = CURRENT.get();
         return (id != null && id.owner == owner) ? id.authHeader : connectHeader;
     }
@@ -69,7 +69,7 @@ final class RequestIdentity {
      * Runs the action with {@code authHeader} bound to the current thread for {@code owner}. The previous binding
      * is restored afterwards, so calls can be nested.
      */
-    static <T> T runAs(Object owner, String authHeader, Callable<T> action) throws Exception {
+    static <T> T runAs(RESTMBeanServerConnection owner, String authHeader, Callable<T> action) throws Exception {
         RequestIdentity previous = CURRENT.get();
         CURRENT.set(new RequestIdentity(owner, authHeader));
         try {
