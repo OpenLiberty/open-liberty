@@ -109,6 +109,10 @@ public class SRTServletResponse31 extends com.ibm.ws.webcontainer.srt.SRTServlet
             flushData();
 
         }
+        // Netty needs to submit the 101 before handler.init; legacy sends it when its stream closes.
+        if (((IResponse31Impl)_response).isUsingNetty() && !_response.isCommitted()) {
+            ((IResponse31Impl)_response).flushHeaders();
+        }
         super.cleanupFromFinish();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
         {  

@@ -67,6 +67,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 /**
  * Test exporting traces to a Zipkin server with the OpenTelemetry Collector
  */
+@SuppressWarnings("deprecation")
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class ZipkinOtelCollectorTest {

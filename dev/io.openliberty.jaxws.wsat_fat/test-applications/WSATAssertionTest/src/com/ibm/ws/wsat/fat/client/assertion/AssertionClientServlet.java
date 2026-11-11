@@ -31,8 +31,8 @@ public class AssertionClientServlet extends HttpServlet {
                          HttpServletResponse response) throws ServletException, IOException {
         try {
             String BASE_URL = request.getParameter("baseurl");
-            if (BASE_URL == null || BASE_URL.equals(""))
-                BASE_URL = "http://localhost:8010";
+            if (BASE_URL == null || BASE_URL.isEmpty())
+                throw new ServletException("Required parameter 'baseurl' is missing");
             Hello proxy;
             String endpointAddress = "";
             URL wsdlLocation = new URL(BASE_URL

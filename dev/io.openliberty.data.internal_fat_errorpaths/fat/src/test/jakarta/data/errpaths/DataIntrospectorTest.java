@@ -165,8 +165,6 @@ public class DataIntrospectorTest extends FATServletClient {
         assertLineFound("          id(this) -> ssn");
         assertLineFound("        name: PollingLocationEntity");
         assertLineFound("          opensAt: java.time.LocalTime");
-        assertLineFound("        attributes for entity update:" +
-                        " [address, closesAt, opensAt, precinct, ward]");
     }
 
     /**

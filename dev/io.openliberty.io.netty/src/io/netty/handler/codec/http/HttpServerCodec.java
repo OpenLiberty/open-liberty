@@ -21,6 +21,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.CombinedChannelDuplexHandler;
 import io.netty.handler.codec.DefaultHeaders.ValueValidator;
+import io.netty.util.ReferenceCountUtil;
+import io.netty.util.internal.ObjectUtil;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -51,6 +53,7 @@ import static io.netty.handler.codec.http.HttpObjectDecoder.DEFAULT_MAX_INITIAL_
 public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequestDecoder, HttpResponseEncoder>
         implements HttpServerUpgradeHandler.SourceCodec {
 
+    // Liberty specific logic for parity with Channel Framework
     private static final DefaultHttpHeadersFactory STANDARD_HEADERS_FACTORY =
             DefaultHttpHeadersFactory.headersFactory();
     private static final ValueValidator<CharSequence> STANDARD_VALUE_VALIDATOR =
@@ -64,6 +67,13 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
     };
     private static final DefaultHttpHeadersFactory REQUEST_HEADERS_FACTORY =
             STANDARD_HEADERS_FACTORY.withValueValidator(REQUEST_VALUE_VALIDATOR);
+
+    /**
+     * The maximum number of pipelined requests we allow to be awaiting a response by default, before
+     * decoding of further requests is rejected. This bounds the memory a single connection can force us
+     * to hold onto if the peer pipelines requests without reading the corresponding responses.
+     */
+    static final int DEFAULT_MAX_PIPELINE_DEPTH = 128;
 
     private static final byte METHOD_FLAG_HEAD = 1;
     private static final byte METHOD_FLAG_CONNECT = 2;
@@ -86,6 +96,7 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
     private long methodQueue;
     private int methodQueueSize;
     private Queue<Byte> methodOverflowQueue;
+    private final int maxPipelineDepth;
 
     /**
      * When set, the connection will be closed after the next response is written.
@@ -181,6 +192,13 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
     }
 
     /**
+     * Creates a new instance with the specified decoder configuration.
+     */
+    public HttpServerCodec(HttpDecoderConfig config) {
+        this(config, DEFAULT_MAX_PIPELINE_DEPTH);
+    }
+
+    /**
      * Creates a server codec instance with liberty specific http options.
      */
     public HttpServerCodec(int maxInitialLineLength , int maxChunkSize, int limitFieldSize, int limitNumHeaders) {
@@ -197,11 +215,19 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
 
     /**
      * Creates a new instance with the specified decoder configuration.
+     *
+     * @param config the decoder configuration.
+     * @param maxPipelineDepth the maximum number of requests that may be decoded while awaiting the
+     *                         corresponding responses to be written, before decoding of further requests
+     *                         is rejected with an {@link IllegalStateException}.
      */
-    public HttpServerCodec(HttpDecoderConfig config) {
+    public HttpServerCodec(HttpDecoderConfig config, int maxPipelineDepth) {
+        this.maxPipelineDepth = ObjectUtil.checkPositive(maxPipelineDepth, "maxPipelineDepth");
+        // Liberty specific changes for building wrapped decoder config
         init(new HttpServerRequestDecoder(requestDecoderConfig(config)), new HttpServerResponseEncoder());
     }
 
+    // Liberty specific changes adding Liberty specific logic with header behavior parity with Channel Framework
     private static HttpDecoderConfig requestDecoderConfig(HttpDecoderConfig config) {
         if (config == null) {
             return null;
@@ -230,7 +256,13 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
         ctx.pipeline().remove(this);
     }
 
-    private void enqueueMethod(HttpMethod method) {
+    private boolean enqueueMethod(HttpMethod method) {
+        Queue<Byte> overflowQueue = methodOverflowQueue;
+        int currentDepth = methodQueueSize + (overflowQueue != null ? overflowQueue.size() : 0);
+        if (currentDepth >= maxPipelineDepth) {
+            return false;
+        }
+
         final byte flag;
         if (HttpMethod.HEAD.equals(method)) {
             flag = METHOD_FLAG_HEAD;
@@ -241,10 +273,9 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
         }
 
         // Once we have overflow, always append there until it drains completely.
-        Queue<Byte> overflowQueue = methodOverflowQueue;
         if (overflowQueue != null) {
             overflowQueue.add(flag);
-            return;
+            return true;
         }
 
         if (methodQueueSize < INLINE_QUEUE_CAPACITY) {
@@ -255,6 +286,7 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
             overflowQueue.add(flag);
             methodOverflowQueue = overflowQueue;
         }
+        return true;
     }
 
     private byte pollMethod() {
@@ -279,12 +311,15 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
     }
 
     private final class HttpServerRequestDecoder extends HttpRequestDecoder {
+        private boolean discard;
+
         HttpServerRequestDecoder(HttpDecoderConfig config) {
             super(config);
         }
 
         @Override
         protected HttpMessage createMessage(String[] initialLine) {
+            // Liberty overlay for matching logic to original behavior
             HttpVersion version;
             try {
                 version = HttpVersion.valueOf(initialLine[2], true);
@@ -296,13 +331,28 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
 
         @Override
         protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
+            if (discard) {
+                buffer.skipBytes(buffer.readableBytes());
+                return;
+            }
             int oldSize = out.size();
             super.decode(ctx, buffer, out);
             int size = out.size();
             for (int i = oldSize; i < size; i++) {
                 Object obj = out.get(i);
                 if (obj instanceof HttpRequest) {
-                    enqueueMethod(((HttpRequest) obj).method());
+                    if (!enqueueMethod(((HttpRequest) obj).method())) {
+                        // We hit the limit, let's discard everything and release everything and also ensure
+                        // we close the connection once the first response is written back.
+                        mustCloseAfterResponse = true;
+                        discard = true;
+                        ReferenceCountUtil.release(obj);
+                        while (++i < size) {
+                            ReferenceCountUtil.release(out.get(i));
+                        }
+                        out.clear();
+                        throw new IllegalStateException("maxPipelineDepth exceeded: " + maxPipelineDepth);
+                    }
                 }
             }
         }

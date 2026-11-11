@@ -6,6 +6,7 @@ singleton=true
 -bundles=\
   io.openliberty.io.netty, \
   io.openliberty.io.netty.ssl, \
+  io.openliberty.transport.config.internal, \
   io.openliberty.netty.internal, \
   io.openliberty.netty.internal.tls.impl
 kind=ga

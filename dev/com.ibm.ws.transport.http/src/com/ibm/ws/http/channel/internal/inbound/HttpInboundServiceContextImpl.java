@@ -704,7 +704,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         }
 
         if (getHttpConfig().useNetty()) {
-            sendHeaders(this.nettyResponse);
+            HttpResponse responseToWrite = this.nettyResponse;
+            if (getResponse() instanceof NettyResponseMessage) {
+                responseToWrite = ((NettyResponseMessage) getResponse()).getResponse();
+                prepareNettyHeadersToSend();
+            }
+            writeNettyResponse(responseToWrite);
         } else {
             sendHeaders(getResponseImpl());
 

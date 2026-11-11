@@ -22,7 +22,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 H2Test.class,
-                H2SecurityTest.class
+                H2SecurityTest.class,
+                H2XATest.class
 })
 public class FATSuite {
 }

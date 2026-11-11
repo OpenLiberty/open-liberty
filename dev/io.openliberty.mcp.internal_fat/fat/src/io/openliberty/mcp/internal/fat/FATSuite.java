@@ -23,6 +23,7 @@ import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.mcp.internal.fat.conformance.tests.ConformanceTests;
 import io.openliberty.mcp.internal.fat.oidc.tests.AuthorizationFlowTests;
 import io.openliberty.mcp.internal.fat.oidc.tests.OidcTests;
+import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionConfigBetaTest;
 import io.openliberty.mcp.internal.fat.serverinfo.CustomServerInfoTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatelessConfigChangeOnRestoreTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatelessModeTest;
@@ -39,6 +40,7 @@ import io.openliberty.mcp.internal.fat.tool.ConfigurableMcpPathTest;
 import io.openliberty.mcp.internal.fat.tool.ConfigurableSessionTelemetryTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.DualConfigurableMcpPathTest;
+import io.openliberty.mcp.internal.fat.tool.DynamicMcpConfigTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateTest;
 import io.openliberty.mcp.internal.fat.tool.EnableEndpointConfigTest;
 import io.openliberty.mcp.internal.fat.tool.InvalidSessionTimeoutTest;
@@ -65,10 +67,12 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 ConfigurableAsyncTimeoutTest.class,
                 CustomServerInfoTest.class,
                 DualConfigurableMcpPathTest.class,
+                DynamicMcpConfigTest.class,
                 DynamicMcpPathUpdateTest.class,
                 EnableEndpointConfigTest.class,
                 InvalidAsyncTimeoutTest.class,
                 InvalidSessionTimeoutTest.class,
+                ProtocolVersionConfigBetaTest.class,
                 StatelessConfigChangeOnRestoreTest.class,
                 StatelessModeTest.class,
                 // These deploy intentionally failing apps on "mcp-server" and start/stop it

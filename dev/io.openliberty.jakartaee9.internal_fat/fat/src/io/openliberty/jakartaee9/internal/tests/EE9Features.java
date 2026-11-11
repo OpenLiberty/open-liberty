@@ -268,6 +268,9 @@ public class EE9Features {
             features.remove("wmqJmsClient-1.1");
             features.remove("wmqJmsClient-2.0");
 
+            // supports EE10
+            features.remove("more-1.0.5");
+
             features.remove("heritageAPIs-1.0");
             features.remove("heritageAPIs-1.1");
         }

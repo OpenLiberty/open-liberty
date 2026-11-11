@@ -19,6 +19,7 @@ import java.util.List;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
+import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.inject.Inject;
@@ -107,5 +108,34 @@ public class DataErrPaths_1_1_Servlet extends FATServlet {
                 !x.getMessage().contains("NativeQuery"))
                 throw x;
         }
+    }
+
+    /**
+     * An attempt to update multiple entities at once, where one of the
+     * entities is not found in the database, must result in
+     * OptimisticLockingFailureException.
+     */
+    @Test
+    public void testOptimisticLockingFailureExceptionOnUpdateMultiple() {
+        try {
+            ops.revise(Operation.of("division", 2, Character.valueOf('/')),
+                       Operation.of("modulus", 2, Character.valueOf('%')));
+            fail("Should not be able to update multiple entities" +
+                 " because the second entity does not exist in the" +
+                 " database");
+        } catch (OptimisticLockingFailureException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1050E") ||
+                !x.getMessage().contains("name=modulus"))
+                throw x;
+        }
+
+        assertEquals(false,
+                     ops.named("modulus").isPresent());
+
+        Operation division = ops.named("division")
+                        .orElseThrow();
+        assertEquals(Character.valueOf('÷'),
+                     division.symbol);
     }
 }

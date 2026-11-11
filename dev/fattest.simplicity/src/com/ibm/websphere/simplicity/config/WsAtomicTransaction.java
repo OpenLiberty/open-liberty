@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 public class WsAtomicTransaction extends ConfigElement {
     private Boolean sslEnabled;
     private String externalURLPrefix;
+    private String propagation;
 
     @XmlAttribute(name = "sslEnabled")
     public void setSslEnabled(Boolean sslEnabled) {
@@ -40,6 +41,15 @@ public class WsAtomicTransaction extends ConfigElement {
         return this.externalURLPrefix;
     }
 
+    @XmlAttribute(name = "propagation")
+    public void setPropagation(String propagation) {
+        this.propagation = propagation;
+    }
+
+    public String getPropagation() {
+        return this.propagation;
+    }
+
     /**
      * Returns a String listing the properties and their values used on this
      * wsAtomicTransaction element.
@@ -51,6 +61,8 @@ public class WsAtomicTransaction extends ConfigElement {
             buf.append("sslEnabled=\"" + sslEnabled + "\" ");
         if (externalURLPrefix != null)
             buf.append("externalURLPrefix=\"" + externalURLPrefix + "\" ");
+        if (propagation != null)
+            buf.append("propagation=\"" + propagation + "\" ");
         buf.append("}");
         return buf.toString();
     }

@@ -1,0 +1,20 @@
+<server description="Server for testing readWebInfJandex with an absent, empty, or corrupt Jandex index in WEB-INF/classes">
+
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <javaPermission
+    className="java.util.PropertyPermission"
+    name="org.glassfish.web.rfc2109_cookie_names_enforced"
+    actions="read"
+    codebase="${server.config.dir}dropins/TestServlet40_WebInf_corrupt.ear"/>
+
+  <!-- readWebInfJandex is enabled, but the index in WEB-INF/classes/META-INF/jandex.idx
+       is absent, empty, or corrupt, depending on the test. -->
+  <application location="TestServlet40_WebInf_corrupt.ear" useJandex="true" readWebInfJandex="true"/>
+  <applicationManager useJandex="true"/>
+
+</server>

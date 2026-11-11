@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import jakarta.servlet.annotation.WebServlet;
 
@@ -59,6 +60,22 @@ public class H2SecurityTestServlet extends FATServlet {
 
 	@Resource(lookup = "jdbc/h2ds-file-lock-socket")
 	DataSource fileLockDs;
+
+	/**
+	 * The PASSWORD_HASH database is in-memory, so it only exists inside this server JVM and is
+	 * created by whichever connection reaches it first; that connection's user/password become
+	 * the admin credentials. Connect with the valid credentials before any test runs so that the
+	 * results do not depend on test method order (e.g. a wrong-hash connection creating the
+	 * database with the wrong admin password).
+	 */
+	@PostConstruct
+	private void initPasswordHashDatabase() {
+		try (Connection con = passwordHashDs.getConnection()) {
+			con.isValid(0);
+		} catch (SQLException e) {
+			throw new RuntimeException("Could not create the PASSWORD_HASH database with valid credentials", e);
+		}
+	}
 
 	@Test
 	public void testCipherAES() throws Exception {

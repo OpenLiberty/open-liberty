@@ -15,9 +15,9 @@
   	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
   	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
   	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
-  	<javaPermission className="java.net.URLPermission" name="http://localhost:8091/policyAttachmentsService1/HelloService1" actions="POST:Accept,SOAPAction,User-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8091/policyAttachmentsService2/HelloService2" actions="POST:Accept,SOAPAction,User-Agent"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8091/policyAttachmentsService3/HelloService3" actions="POST:Accept,SOAPAction,User-Agent"/>
+  	<javaPermission className="java.net.URLPermission" name="http://localhost:${bvt.prop.HTTP_secondary}/policyAttachmentsService1/HelloService1" actions="POST:Accept,SOAPAction,User-Agent"/>
+  	 <javaPermission className="java.net.URLPermission" name="http://localhost:${bvt.prop.HTTP_secondary}/policyAttachmentsService2/HelloService2" actions="POST:Accept,SOAPAction,User-Agent"/>
+  	 <javaPermission className="java.net.URLPermission" name="http://localhost:${bvt.prop.HTTP_secondary}/policyAttachmentsService3/HelloService3" actions="POST:Accept,SOAPAction,User-Agent"/>
     
     <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
     <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>

@@ -28,7 +28,6 @@ public class ReadListenerGetTrailers implements ReadListener {
     private HttpServletRequest request = null;
     private AsyncContext ac = null;
     private PrintWriter pw = null;
-    private boolean usingNetty;
 
     private static final Logger LOG = Logger.getLogger(ReadListenerGetTrailers.class.getName());
 
@@ -38,7 +37,6 @@ public class ReadListenerGetTrailers implements ReadListener {
         res = r;
         ac = c;
         request = req;
-        this.usingNetty = usingNetty;
     }
 
     @Override
@@ -49,22 +47,16 @@ public class ReadListenerGetTrailers implements ReadListener {
 
         pw.println("ReadListenerGetTrailers onDataAvailable method called");
 
-        // This should have the same functionality as Legacy once we implement
-        // https://github.com/OpenLiberty/open-liberty/issues/30702
-        if(!usingNetty){
-            if (request.isTrailerFieldsReady()) {
-                pw.println("FAIL : isTrailerFieldsReady() returned true before data was read.");
-            } else {
-                pw.println("PASS : isTrailerFieldsReady() returned false before data was read.");
-                try {
-                    request.getTrailerFields();
-                    pw.println("FAIL : getTrailerFields() did not throw IllegalStateException before data was read.");
-                } catch (IllegalStateException ise) {
-                    pw.println("PASS : getTrailerFields() threw IllegalStateException before data was read.");
-                }
+        if (request.isTrailerFieldsReady()) {
+            pw.println("FAIL : isTrailerFieldsReady() returned true before data was read.");
+        } else {
+            pw.println("PASS : isTrailerFieldsReady() returned false before data was read.");
+            try {
+                request.getTrailerFields();
+                pw.println("FAIL : getTrailerFields() did not throw IllegalStateException before data was read.");
+            } catch (IllegalStateException ise) {
+                pw.println("PASS : getTrailerFields() threw IllegalStateException before data was read.");
             }
-        } else if(!request.isTrailerFieldsReady()){
-            pw.println("FAIL : isTrailerFieldsReady() returned false while using Netty.");
         }
 
         int len = -1;

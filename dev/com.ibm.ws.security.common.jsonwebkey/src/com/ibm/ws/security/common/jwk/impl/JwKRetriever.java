@@ -194,7 +194,8 @@ public class JwKRetriever {
         if (isHttp) {
             key = this.getJwkRemote(kid, x5t, x5tS256, use, useSystemPropertiesForHttpClientConnections, keyType);
         } else {
-            key = this.getJwkLocal(kid, x5t, x5tS256, keyText, keyLocation, use, keyType);
+            String location = (jwkEndpointUrl != null) ? jwkEndpointUrl : keyLocation;
+            key = this.getJwkLocal(kid, x5t, x5tS256, keyText, location, use, keyType);
         }
         return key;
     }
@@ -232,6 +233,8 @@ public class JwKRetriever {
             } else if (keyLocation != null && !keyLocation.startsWith("http")) {
                 isHttp = false;
             }
+        } else if (jwksUri.startsWith("file:")) {
+            return false;
         }
         return isHttp;
     }

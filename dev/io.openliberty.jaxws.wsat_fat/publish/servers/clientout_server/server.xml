@@ -15,7 +15,7 @@
   	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
   	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
   	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
-    <javaPermission className="java.net.URLPermission" name="http://localhost:8010/simpleTestService/SimpleEchoProviderService" actions="POST:Accept,SOAPAction,User-Agent"/>
+    <javaPermission className="java.net.URLPermission" name="http://localhost:${bvt.prop.HTTP_default}/simpleTestService/SimpleEchoProviderService" actions="POST:Accept,SOAPAction,User-Agent"/>
     <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*"/>
     <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
     

@@ -55,6 +55,7 @@ import io.opentracing.tag.Tags;
  * Tests propagating traces between liberty servers running mpOpenTracing-3.0 and mpTelemetry-1.0, feeding traces to the same trace server.
  * Spans are exported to Zipkin
  */
+@SuppressWarnings("deprecation")
 @RunWith(FATRunner.class)
 public class CrossFeatureZipkinTest {
 

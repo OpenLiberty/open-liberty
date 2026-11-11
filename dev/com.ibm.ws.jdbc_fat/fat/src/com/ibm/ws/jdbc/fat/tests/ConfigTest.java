@@ -1264,7 +1264,7 @@ public class ConfigTest extends FATServletClient {
 
         List<String> messages = server.findStringsInLogs("J2CA8040E");
         if (messages.isEmpty())
-            throw new Exception("Did not find J2CA8040E for multiple dataSources (dsfat5derby and dsfat11derby) using same connectionManager.");
+            throw new Exception("Did not find J2CA8040E for multiple dataSources (dsfat5derby and dsfat11h2) using same connectionManager.");
         else
             Log.info(c, method, "Found expected: " + messages);
 
@@ -1287,7 +1287,7 @@ public class ConfigTest extends FATServletClient {
         if (!foundBadVendorProperty)
             throw new Exception("Did not find DSRA8020E warning for invalid vendor data source property.");
 
-        // Use the other data source (dsfat5derby), to ensure it hasn't been corrupted by dsfat11derby
+        // Use the other data source (dsfat5derby), to ensure it hasn't been corrupted by dsfat11h2
         runTest(basicfat, "testConfigChangeDataSourceOriginalConfig");
 
         // Switch to onError=FAIL
@@ -1299,7 +1299,7 @@ public class ConfigTest extends FATServletClient {
         conMgr11.setMaxPoolSize("5");
         conMgr11.setMinPoolSize("10");
         config.addConnectionManager(conMgr11);
-        DataSource dsfat11 = config.getDataSources().getBy("id", "dsfat11derby");
+        DataSource dsfat11 = config.getDataSources().getBy("id", "dsfat11h2");
         dsfat11.setConnectionManagerRef("conMgr11");
 
         try {

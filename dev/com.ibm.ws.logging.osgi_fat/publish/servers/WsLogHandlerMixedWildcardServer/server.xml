@@ -1,0 +1,30 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="WsLogHandler FAT Test Server - Mixed Valid and Invalid Wildcard IDs">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>wsLogHandler-1.0</feature>
+    </featureManager>
+
+    <!-- A mix of valid and invalid patterns. Keep in sync with GOOD_PATTERNS and
+         BAD_PATTERNS in WsLogHandlerInvalidWildcardTest.
+
+         Valid  : CWLFA* (prefix), CWLFB*W (prefix + level), CWLFC0001I (exact ID)
+         Invalid: CWLFD*K (unrecognised level), CWLFE** (multiple asterisks)
+
+         The router must register the valid patterns, and reject each invalid one with CWWKE0710W. -->
+    <wsLogHandler routerThing="CWLFA*,CWLFD*K,CWLFB*W,CWLFE**,CWLFC0001I" />
+
+</server>

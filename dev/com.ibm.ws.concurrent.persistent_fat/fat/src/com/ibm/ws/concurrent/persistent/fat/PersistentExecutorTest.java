@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,7 +47,7 @@ public class PersistentExecutorTest extends FATServletClient {
     @TestServlet(servlet = SchedulerFATServlet.class, path = APP_NAME)
     public static LibertyServer server;
     
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create(DatabaseContainerType.H2);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -67,9 +67,6 @@ public class PersistentExecutorTest extends FATServletClient {
                       server.waitForStringInLog("CWWKF0008I"));
         assertNotNull("Server should report it has started",
                       server.waitForStringInLog("CWWKF0011I"));
-
-        // Wait for the Derby start messages from DataSource/database creation to avoid servlet init trying to concurrently start Derby.
-        server.waitForStringInLog("DSRA8206I"); // connected to Derby
     }
 
     /**

@@ -48,6 +48,8 @@ import com.ibm.ws.springboot.support.fat.JPAHibernateAppTests30;
 import com.ibm.ws.springboot.support.fat.JPAHibernateAppTests30War;
 import com.ibm.ws.springboot.support.fat.JPALibertyAppTests30War;
 import com.ibm.ws.springboot.support.fat.JSPTests30;
+import com.ibm.ws.springboot.support.fat.JTAAppDropinsTests30;
+import com.ibm.ws.springboot.support.fat.JTAAppNoEEContextTests30;
 import com.ibm.ws.springboot.support.fat.JTAAppTests30;
 import com.ibm.ws.springboot.support.fat.JTAAppTests30War;
 import com.ibm.ws.springboot.support.fat.JakartaFeatureTests30;
@@ -126,6 +128,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 MultiModuleProjectTests30.class,
                 ApplicationStartedEventTests30.class,
                 JTAAppTests30.class,
+                JTAAppDropinsTests30.class,
+                JTAAppNoEEContextTests30.class,
                 JTAAppTests30War.class,
                 JPAHibernateAppTests30War.class,
                 JPALibertyAppTests30War.class,

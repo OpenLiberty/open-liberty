@@ -1194,6 +1194,135 @@ public class WsMessageRouterImplTest extends MessageRouterImplTest {
     }
 
     /**
+     * Test that "*I" (zero-length prefix, level suffix only) is rejected as an invalid
+     * wildcard by the modified() / MessageRouter.properties path, emits CWWKE0710W,
+     * and does not dispatch any messages to the handler.
+     *
+     * Rule: the prefix before '*' must be at least one character long.
+     * "*I" has an empty prefix (lastStar == 0), so the new lastStar > 0 guard must
+     * reject it into the invalid-pattern branch.
+     */
+    @Test
+    public void testZeroPrefixWildcardViaModifiedEmitsWarning() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        outputMgr.resetStreams();
+        outputMgr.restoreStreams();
+        outputMgr.captureStreams();
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+            msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+
+            // "*I" has no prefix before the '*' — must be rejected
+            Properties props = new Properties();
+            props.setProperty("*I", "+MYLOGHANDLER");
+            msgRouter.modified(props);
+
+            // CWWKE0710W must be emitted naming the offending pattern
+            assertTrue("Expected CWWKE0710W warning for *I",
+                       outputMgr.checkForMessages("CWWKE0710W.*\\*I"));
+
+            // No routing — handler must NOT be called (no expectations set)
+            RoutedMessage infoMsg = new TestRoutedMessage("ABCD1234I: Should not route via *I");
+            assertTrue("Message should not route to handler via rejected *I pattern",
+                       msgRouter.route(infoMsg, false));
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
+     * Test that "*I" (zero-length prefix, level suffix only) is rejected as an invalid
+     * wildcard by the addMsgToLogHandler() / programmatic API path, emits CWWKE0710W,
+     * and does not dispatch any messages to the handler.
+     *
+     * Also covers the related zero-prefix patterns "*E", "*W", "*A", and bare "*"
+     * (the bare "*" goes through the exact-ID map and is NOT rejected — that is
+     * intentional; the others share the same zero-prefix code path).
+     */
+    @Test
+    public void testZeroPrefixWildcardViaAddMsgToLogHandlerEmitsWarning() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        outputMgr.resetStreams();
+        outputMgr.restoreStreams();
+        outputMgr.captureStreams();
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+            msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+
+            // All zero-prefix wildcard patterns must be rejected
+            msgRouter.addMsgToLogHandler("*I", "MYLOGHANDLER");
+            msgRouter.addMsgToLogHandler("*E", "MYLOGHANDLER");
+            msgRouter.addMsgToLogHandler("*W", "MYLOGHANDLER");
+            msgRouter.addMsgToLogHandler("*A", "MYLOGHANDLER");
+
+            // Each must emit CWWKE0710W naming the offending pattern
+            assertTrue("Expected CWWKE0710W warning for *I",
+                       outputMgr.checkForMessages("CWWKE0710W.*\\*I"));
+            assertTrue("Expected CWWKE0710W warning for *E",
+                       outputMgr.checkForMessages("CWWKE0710W.*\\*E"));
+            assertTrue("Expected CWWKE0710W warning for *W",
+                       outputMgr.checkForMessages("CWWKE0710W.*\\*W"));
+            assertTrue("Expected CWWKE0710W warning for *A",
+                       outputMgr.checkForMessages("CWWKE0710W.*\\*A"));
+
+            // None of the rejected patterns should cause handler dispatch
+            RoutedMessage infoMsg  = new TestRoutedMessage("ABCD1234I: Should not route via *I");
+            RoutedMessage errorMsg = new TestRoutedMessage("ABCD1234E: Should not route via *E");
+            RoutedMessage warnMsg  = new TestRoutedMessage("ABCD1234W: Should not route via *W");
+            RoutedMessage auditMsg = new TestRoutedMessage("ABCD1234A: Should not route via *A");
+            // No expectations set — any handler call would fail the JMock assertion
+
+            assertTrue("Info message should not dispatch via rejected *I",  msgRouter.route(infoMsg,  false));
+            assertTrue("Error message should not dispatch via rejected *E",  msgRouter.route(errorMsg, false));
+            assertTrue("Warn message should not dispatch via rejected *W",   msgRouter.route(warnMsg,  false));
+            assertTrue("Audit message should not dispatch via rejected *A",  msgRouter.route(auditMsg, false));
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
+     * Verify that when a single handler is registered under multiple overlapping patterns
+     * — a broad prefix wildcard ("CWW*"), a narrower level-qualified wildcard ("CWW*I"),
+     * and an exact message ID ("CWW12345I") — an incoming message that matches all three
+     * ("CWW12345I: some text") is delivered to the handler exactly once.
+     *
+     * The merger in {@code getLogHandlersForMsgIdWC()} uses a {@code Set}, so the same
+     * handler ID cannot appear more than once.  This test makes that guarantee explicit
+     * and detectable: JMock's {@code oneOf} expectation will fail if {@code publish} is
+     * called more than once.
+     *
+     * Also verifies that a message matching only "CWW*" (non-INFO level, e.g. "CWW12345W")
+     * is still routed exactly once, and that a message matching none of the three patterns
+     * ("XXXX0001I") is not routed at all.
+     */
+    @Test
+    public void testOverlappingPatternsRouteHandlerExactlyOnce() {
+        System.setProperty("com.ibm.ws.beta.edition", "true");
+        try {
+            WsMessageRouterImpl msgRouter = getWsMessageRouterImpl();
+            msgRouter.setWsLogHandler("MYLOGHANDLER", mockWsLogHandler);
+
+            // Same handler subscribed to three overlapping patterns:
+            //   "CWW*"      — any message starting with "CWW", any level
+            //   "CWW*I"     — any message starting with "CWW" that is INFO level
+            //   "CWW12345I" — exact message ID (goes into the exact-ID map)
+            msgRouter.addMsgToLogHandler("CWW*",      "MYLOGHANDLER");
+            msgRouter.addMsgToLogHandler("CWW*I",     "MYLOGHANDLER");
+            msgRouter.addMsgToLogHandler("CWW12345I", "MYLOGHANDLER");
+
+            // "CWW12345I" matches all three — handler must be called EXACTLY ONCE.
+            RoutedMessage tripleMatch = new TestRoutedMessage("CWW12345I: server started");
+            setupWsLogHandlerExpectations(mockWsLogHandler, tripleMatch);   // oneOf → exactly once
+            assertTrue("CWW12345I should route and return true",
+                       msgRouter.route(tripleMatch, false));
+
+        } finally {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        }
+    }
+
+    /**
      * Verify that wildcard subscriptions registered in the router do NOT affect
      * strict SPI LogHandler routing via MessageRouterImpl.route(String, LogRecord).
      *

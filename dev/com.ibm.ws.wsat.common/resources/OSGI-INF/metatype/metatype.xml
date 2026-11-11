@@ -17,6 +17,13 @@
 			type="String" ibm:type="duration" default="30s" required="false"  min="0" />
 		<AD id="virtualHostRef" name="internal" description="internal use only"
 			type="String" default="default_host" required="false" ibmui:uiReference="com.ibm.ws.http.virtualhost" />
+		<!-- No default here: the default (always) is supplied by the public wsAtomicTransaction-1.2 feature
+		     through its default instance, so the attribute only has a value when that feature is enabled. -->
+		<AD id="propagation" name="%propagation.name" description="%propagation.description"
+			type="String" required="false" ibm:beta="true">
+			<Option label="%propagation.always" value="always"/>
+			<Option label="%propagation.check_wsdl" value="check_wsdl"/>
+		</AD>
 	</OCD>
 
 	<Designate pid="com.ibm.ws.wsat.service.wsatconfigservice">

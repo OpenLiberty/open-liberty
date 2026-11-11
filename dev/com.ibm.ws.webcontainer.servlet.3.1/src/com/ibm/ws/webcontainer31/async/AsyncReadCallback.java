@@ -87,6 +87,21 @@ public class AsyncReadCallback implements InterChannelCallback {
             //Once isReady returns false once, we don't want to change it back until the next call into onDataAvailable
             //This variable prevents isReady from returning true if there is an outstanding read
             this.in.setAsyncReadOutstanding(false);
+
+            // A queued channel completion may still arrive afterward
+            // Like a second firePendingAsyncRead for the LastHttpContent frame
+            // but must not reach the application's listener.
+            // Both terminal flags are protected by this lock.
+            if (onAllDataReadCalled || onErrorDriven) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "ReadListener terminal callback has already been driven; ignoring subsequent completion callback: " + this.context);
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.exit(tc, "complete");
+                }
+                return;
+            }
+
             ReadListener listener = this.in.getReadListener();
             if (listener == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

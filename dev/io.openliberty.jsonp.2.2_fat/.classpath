@@ -2,6 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/CustomProviderApp/src"/>
+	<classpathentry kind="src" path="test-applications/BundledProviderApp/src"/>
+	<classpathentry kind="src" path="test-applications/CacheCheckerApp/src"/>
+	<classpathentry kind="src" path="test-applications/GCTestLib/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21"/>
 	<classpathentry kind="output" path="bin"/>
