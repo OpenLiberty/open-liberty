@@ -63,7 +63,10 @@ public class JwtBuilderAPIWithLDAPConfigTests extends JwtBuilderCommonLDAPFat {
         SecurityFatHttpUtils.saveServerPorts(builderServer, JWTBuilderConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
         // the server's default config contains an invalid value (on purpose), tell the fat framework to ignore it!
-        builderServer.addIgnoredErrors(Arrays.asList(JwtBuilderMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE, JwtBuilderMessageConstants.CWWKS6059W_KEY_MANAGEMENT_KEY_ALIAS_MISSING));
+        builderServer.addIgnoredErrors(Arrays.asList(
+                JwtBuilderMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE,
+                JwtBuilderMessageConstants.CWWKS6059W_KEY_MANAGEMENT_KEY_ALIAS_MISSING,
+                JwtBuilderMessageConstants.CWWKS6074W_JWK_KEY_COVERAGE_WINDOW_TOO_SHORT));
 
     }
 

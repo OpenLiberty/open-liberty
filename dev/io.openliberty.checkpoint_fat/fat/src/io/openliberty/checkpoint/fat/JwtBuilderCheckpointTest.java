@@ -57,6 +57,7 @@ public class JwtBuilderCheckpointTest {
     @Before
     public void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, APP_NAME);
+        FATSuite.copyAppsAppToDropins(server, APP_NAME);
 
         // Checkpoint at AFTER_APP_START.
         // autoRestore=false: the framework pauses after the snapshot is taken so the postCheckpointLambda can run while the server is frozen.
