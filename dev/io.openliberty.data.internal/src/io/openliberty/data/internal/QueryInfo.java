@@ -953,6 +953,12 @@ public abstract class QueryInfo {
         info.sorts = sortsOverride == null ? sorts : sortsOverride;
         info.validateParams = validateParams;
 
+        // Data 1.1+ can apply the Persistence 4.0+ getResultCount method to the
+        // base query if a count is needed.
+        boolean genCountQuery = (!compat.atLeast(1, 1) || compat.isJPA32()) &&
+                                jpqlCount != null && // source has a count query
+                                jpqlCount.length() >= Util.MIN_COUNT_QUERY_LENGTH;
+
         StringBuilder q;
 
         if (constraints.isEmpty()) {
@@ -980,8 +986,7 @@ public abstract class QueryInfo {
                 else
                     q.append(ql).append(' ');
 
-                int restrictAtForCount = jpqlCount == null || jpqlCount.length() < //
-                                Util.MIN_COUNT_QUERY_LENGTH ? -1 : q.length();
+                int restrictAtForCount = genCountQuery ? q.length() : -1;
 
                 q.append(info.hasWhere ? "AND " : "WHERE ");
                 info.hasWhere = true;
@@ -998,16 +1003,10 @@ public abstract class QueryInfo {
             }
         } else {
             // Constraints were deferred until execution
-            // Generate new JPQL for Query by Parameters
-
-            boolean countPages = Page.class.equals(multiType) ||
-                                 CursoredPage.class.equals(multiType);
-
-            q = info.initQueryByParameters(countPages, constraints, reqJPQLParams);
+            q = info.initQueryByParameters(genCountQuery, constraints, reqJPQLParams);
 
             if (restriction != null) {
-                int restrictAtForCount = jpqlCount == null || jpqlCount.length() < //
-                                Util.MIN_COUNT_QUERY_LENGTH ? -1 : q.length();
+                int restrictAtForCount = genCountQuery ? q.length() : -1;
 
                 q.append(info.hasWhere ? " AND " : " WHERE ");
                 info.hasWhere = true;
@@ -1035,11 +1034,10 @@ public abstract class QueryInfo {
                 info.generateSort(order, sort, forward, orderJPQLParams);
             }
 
-        if (jpqlCount == null &&
+        if (jpqlCount != null && // source has a count query
+            jpqlCount.length() >= Util.MIN_COUNT_QUERY_LENGTH &&
             compat.atLeast(1, 1) &&
-            entityInfo.isHibernate && // TODO remove this condition, and do for all 1.1/4.0+
-            (Page.class.equals(multiType) ||
-             CursoredPage.class.equals(multiType)))
+            !compat.isJPA32())
             info.jpqlCount = q.toString();
 
         if (pageReq == null ||
@@ -2554,29 +2552,29 @@ public abstract class QueryInfo {
      * Count, Delete, Exists, Find, or Update.
      * Allowed special parameter types vary by method annotation.
      *
-     * @param q           JPQL query to which to append a WHERE clause.
-     *                        Or null in the case of Find/Update methods
-     *                        to create a new JPQL query.
-     * @param methodAnno  Count, Delete, Exists, Find, or Update. Never null.
-     * @param countPages  indicates whether or not to count pages.
-     *                        Only applies for find queries.
-     * @param constraints map of method parameter index (0-based) to deferred
-     *                        Constraint at the position. Empty if Constraint
-     *                        values are not yet available or there are no
-     *                        deferred Constraints.
-     * @param jpqlParams  Map to be populated with JPQL parameter names and values
-     *                        for Constraints and Restrictions. Map keys are the
-     *                        named parameter name or positional parameter index.
-     *                        Map values are obtained from the Constraints or
-     *                        Restrictions. The first positional parameter index
-     *                        starts at qlParamCount, which is updated by this
-     *                        method when JPQL parameters for repository method
-     *                        special parameters are added.
+     * @param q             JPQL query to which to append a WHERE clause.
+     *                          Or null in the case of Find/Update methods
+     *                          to create a new JPQL query.
+     * @param methodAnno    Count, Delete, Exists, Find, or Update. Never null.
+     * @param genCountQuery indicates whether or not to count pages.
+     *                          Only applies for find queries.
+     * @param constraints   map of method parameter index (0-based) to deferred
+     *                          Constraint at the position. Empty if Constraint
+     *                          values are not yet available or there are no
+     *                          deferred Constraints.
+     * @param jpqlParams    Map to be populated with JPQL parameter names and values
+     *                          for Constraints and Restrictions. Map keys are the
+     *                          named parameter name or positional parameter index.
+     *                          Map values are obtained from the Constraints or
+     *                          Restrictions. The first positional parameter index
+     *                          starts at qlParamCount, which is updated by this
+     *                          method when JPQL parameters for repository method
+     *                          special parameters are added.
      */
     @Trivial
     private StringBuilder generateParamBasedQuery(StringBuilder q,
                                                   Annotation methodAnno,
-                                                  boolean countPages,
+                                                  boolean genCountQuery,
                                                   Map<Integer, Object> constraints,
                                                   Map<Object, Object> jpqlParams) {
         boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -2584,7 +2582,7 @@ public abstract class QueryInfo {
             Tr.entry(this, tc, "generateParamBasedQuery",
                      q,
                      Util.toString(methodAnno),
-                     countPages,
+                     genCountQuery,
                      constraints.keySet(),
                      jpqlParams == null ? null : jpqlParams.keySet());
 
@@ -2791,8 +2789,10 @@ public abstract class QueryInfo {
         if (hasWhere)
             q.append(')');
 
-        if (countPages && type == FIND)
-            generateCount(numConstraints == 0 ? null : q.substring(startIndexForWhereClause));
+        if (genCountQuery && type == FIND)
+            generateCount(numConstraints == 0 //
+                            ? null //
+                            : q.substring(startIndexForWhereClause));
 
         specialParamsStartAt = locateSpecialParameters(paramTypes);
 
@@ -3612,8 +3612,9 @@ public abstract class QueryInfo {
                 validateResult = v[1];
             }
 
-            boolean countPages = Page.class.equals(multiType) ||
-                                 CursoredPage.class.equals(multiType);
+            boolean generateCountQuery = (!compat.atLeast(1, 1) || compat.isJPA32()) &&
+                                         (Page.class.equals(multiType) ||
+                                          CursoredPage.class.equals(multiType));
             StringBuilder q = null;
             boolean validateNumberOfMethodArgs = true;
 
@@ -3627,6 +3628,7 @@ public abstract class QueryInfo {
                                         compat);
             } else if (queryAnnoValue != null) { // query language method
                 initQueryLanguage(queryAnnoValue,
+                                  generateCountQuery,
                                   entityInfos,
                                   repository.primaryEntityInfoFuture,
                                   compat);
@@ -3639,10 +3641,10 @@ public abstract class QueryInfo {
             } else {
                 if (methodTypeAnno == null) {
                     // Query by Method Name
-                    q = initQueryByMethodName(countPages);
+                    q = initQueryByMethodName(generateCountQuery);
                 } else {
                     // Query by Parameters
-                    q = initQueryByParameters(countPages,
+                    q = initQueryByParameters(generateCountQuery,
                                               NO_CONSTRAINTS_DEFERRED,
                                               null);
 
@@ -3671,7 +3673,7 @@ public abstract class QueryInfo {
                         q.append(" FROM ").append(entityInfo.name);
                         if (entityVar != THIS)
                             q.append(' ').append(entityVar);
-                        if (countPages)
+                        if (generateCountQuery)
                             generateCount(null);
                     } else {
                         q = new StringBuilder(ql);
@@ -3708,6 +3710,12 @@ public abstract class QueryInfo {
                 initEntityGraph();
 
             ql = q == null ? ql : q.toString();
+
+            if (!generateCountQuery &&
+                (type == FIND || type == NATIVE) &&
+                (Page.class.equals(multiType) ||
+                 CursoredPage.class.equals(multiType)))
+                jpqlCount = ql; // for TypedQuery.getResultCount
 
             validate(validateNumberOfMethodArgs);
 
@@ -3824,12 +3832,14 @@ public abstract class QueryInfo {
      * Initializes query information based on the Query or JakartaQuery annotation.
      *
      * @param jpql                    Query.value() might be JPQL or JDQL
+     * @param generateCountQuery      Whether to generate a query to count results
      * @param entityInfos             map of entity name to entity information.
      * @param primaryEntityInfoFuture future for the repository's primary entity
      *                                    type if it has one, otherwise null.
      * @param compat                  isolates Jakarta Data version-dependent behavior
      */
     private void initQueryLanguage(String jpql,
+                                   boolean generateCountQuery,
                                    Map<String, CompletableFuture<EntityInfo>> entityInfos,
                                    CompletableFuture<EntityInfo> primaryEntityInfoFuture,
                                    DataVersionCompatibility compat) {
@@ -3887,6 +3897,7 @@ public abstract class QueryInfo {
                                   startAt,
                                   false,
                                   addsToWHERE,
+                                  generateCountQuery,
                                   entityInfos,
                                   jpqlParamNames);
         } else if ((firstChar == 'U' || firstChar == 'u') &&
@@ -3915,6 +3926,7 @@ public abstract class QueryInfo {
                                   startAt,
                                   false,
                                   addsToWHERE,
+                                  generateCountQuery,
                                   entityInfos,
                                   jpqlParamNames);
 
@@ -3939,6 +3951,7 @@ public abstract class QueryInfo {
                                   startAt,
                                   select0 >= 0,
                                   addsToWHERE,
+                                  generateCountQuery,
                                   entityInfos,
                                   jpqlParamNames);
         }
@@ -3949,7 +3962,7 @@ public abstract class QueryInfo {
         if (modifyAt.isEmpty())
             ql = jpql;
         else
-            ql = replaceQuery(jpql, modifyAt);
+            ql = replaceQuery(jpql, generateCountQuery, modifyAt);
 
         // Validation of method parameters vs parameters in the query
         int qlParamNameCount = jpqlParamNames.size();
@@ -4005,10 +4018,11 @@ public abstract class QueryInfo {
     /**
      * Handles Query by Method Name.
      *
-     * @param countPages whether to generate a count query (for Page.totalElements and Page.totalPages).
+     * @param genCountQuery whether to generate a count query
+     *                          (for Page.totalElements and Page.totalPages).
      * @return the generated query written to a StringBuilder.
      */
-    private StringBuilder initQueryByMethodName(boolean countPages) {
+    private StringBuilder initQueryByMethodName(boolean genCountQuery) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         String methodName = method.getName();
@@ -4033,7 +4047,7 @@ public abstract class QueryInfo {
             if (by > 0) {
                 int where = q.length();
                 generateWhereClause(methodName, by + 2, orderBy > 0 ? orderBy : methodName.length(), q);
-                if (countPages)
+                if (genCountQuery)
                     generateCount(q.substring(where));
             }
 
@@ -4109,31 +4123,31 @@ public abstract class QueryInfo {
      * which requires one of the following annotations:
      * Count, Delete, Exists, Find, or Update.
      *
-     * @param countPages  whether to generate a count query (for Page.totalElements
-     *                        and Page.totalPages).
-     * @param constraints map of method parameter index (0-based) to deferred
-     *                        Constraint at the position. Null indicates
-     *                        Constraint values are not yet avaiable or there
-     *                        are no deferred Constraints.
-     * @param jpqlParams  Map to be populated with JPQL parameter names and values
-     *                        for Constraints and Restrictions. Map keys are the
-     *                        named parameter name or positional parameter index.
-     *                        Map values are obtained from the Constraints or
-     *                        Restrictions. The first positional parameter index
-     *                        starts at qlParamCount, which is updated by this
-     *                        method when JPQL parameters for repository method
-     *                        special parameters are added.
-     * @return the generated query written to a StringBuilder.
+     * @param genCountQuery whether to generate a count query
+     *                          (for Page.totalElements and Page.totalPages)
+     * @param constraints   map of method parameter index (0-based) to deferred
+     *                          Constraint at the position. Null indicates
+     *                          Constraint values are not yet avaiable or there
+     *                          are no deferred Constraints
+     * @param jpqlParams    Map to be populated with JPQL parameter names and values
+     *                          for Constraints and Restrictions. Map keys are the
+     *                          named parameter name or positional parameter index.
+     *                          Map values are obtained from the Constraints or
+     *                          Restrictions. The first positional parameter index
+     *                          starts at qlParamCount, which is updated by this
+     *                          method when JPQL parameters for repository method
+     *                          special parameters are added
+     * @return the generated query written to a StringBuilder
      */
     @Trivial
-    private StringBuilder initQueryByParameters(boolean countPages,
+    private StringBuilder initQueryByParameters(boolean genCountQuery,
                                                 Map<Integer, Object> constraints,
                                                 Map<Object, Object> jpqlParams) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "initQueryByParameters",
                      methodTypeAnno == null ? null : methodTypeAnno.annotationType().getSimpleName(),
-                     countPages,
+                     genCountQuery,
                      constraints.keySet(),
                      jpqlParams == null ? null : jpqlParams.keySet());
 
@@ -4142,10 +4156,12 @@ public abstract class QueryInfo {
 
         if (methodTypeAnno instanceof Find) {
             type = FIND;
-            q = generateParamBasedQuery(null, methodTypeAnno, countPages, constraints, jpqlParams);
+            q = generateParamBasedQuery(null, methodTypeAnno, genCountQuery, //
+                                        constraints, jpqlParams);
         } else if (methodTypeAnno instanceof Update) {
             type = QM_UPDATE;
-            q = generateParamBasedQuery(null, methodTypeAnno, countPages, constraints, jpqlParams);
+            q = generateParamBasedQuery(null, methodTypeAnno, genCountQuery, //
+                                        constraints, jpqlParams);
         } else if (methodTypeAnno instanceof Delete) {
             if (isFindAndDelete()) {
                 type = FIND_AND_DELETE;
@@ -4155,19 +4171,22 @@ public abstract class QueryInfo {
                 jpqlDelete = generateDeleteById();
             } else { // DELETE
                 type = QM_DELETE;
-                q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name);
+                q = new StringBuilder(150) //
+                                .append("DELETE FROM ").append(entityInfo.name);
                 if (o != THIS)
                     q.append(' ').append(o);
             }
             if (method.getParameterCount() > 0)
-                generateParamBasedQuery(q, methodTypeAnno, countPages, constraints, jpqlParams);
+                generateParamBasedQuery(q, methodTypeAnno, genCountQuery, //
+                                        constraints, jpqlParams);
         } else if ("Count".equals(methodTypeAnno.annotationType().getSimpleName())) {
             type = COUNT;
             q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name);
             if (o != THIS)
                 q.append(' ').append(o);
             if (method.getParameterCount() > 0)
-                generateParamBasedQuery(q, methodTypeAnno, countPages, constraints, jpqlParams);
+                generateParamBasedQuery(q, methodTypeAnno, genCountQuery, //
+                                        constraints, jpqlParams);
         } else if ("Exists".equals(methodTypeAnno.annotationType().getSimpleName())) {
             type = EXISTS;
             validateReturnForExists();
@@ -4177,7 +4196,8 @@ public abstract class QueryInfo {
             if (o != THIS)
                 q.append(' ').append(o);
             if (method.getParameterCount() > 0)
-                generateParamBasedQuery(q, methodTypeAnno, countPages, constraints, jpqlParams);
+                generateParamBasedQuery(q, methodTypeAnno, genCountQuery, //
+                                        constraints, jpqlParams);
         } else {
             // unreachable
             throw new IllegalArgumentException(methodTypeAnno.toString());
@@ -5010,6 +5030,7 @@ public abstract class QueryInfo {
      * @param encloseWhereClause indicates if the WHERE clause must be enclosed in
      *                               parentheses so that conditions can be added
      *                               to it (for cursor pagination or Restriction).
+     * @param genCountQuery      whether to generate a query to count results
      * @param entityInfos        map of entity name to entity information.
      * @param jpqlParamNames     list to populate with the names of named parameters.
      * @return indices at which the query needs to be modified, along with the type
@@ -5020,6 +5041,7 @@ public abstract class QueryInfo {
                                final int startAt,
                                boolean startsWithSelect,
                                boolean encloseWhereClause,
+                               boolean genCountQuery,
                                Map<String, CompletableFuture<EntityInfo>> entityInfos,
                                LinkedHashSet<String> jpqlParamNames) {
         TreeMap<Integer, QueryEdit> modifyAt = new TreeMap<>();
@@ -5027,9 +5049,7 @@ public abstract class QueryInfo {
         int length = ql.length();
         boolean hasTopLevelSelectClause = startsWithSelect;
         boolean isCursoredPage = CursoredPage.class.equals(multiType);
-        boolean countPages = type == FIND &&
-                             (isCursoredPage || Page.class.equals(multiType));
-        int countReplacesFirstSelectAt = hasTopLevelSelectClause && countPages //
+        int countReplacesFirstSelectAt = hasTopLevelSelectClause && genCountQuery //
                         ? startAt // position after SELECT
                         : -1; // SELECT clause is not present
         int countReplacesFirstSelectEndingAt = -1;
@@ -5207,13 +5227,12 @@ public abstract class QueryInfo {
 
                                 if (countReplacesFirstSelectAt < 0)
                                     countReplacesFirstSelectAt = i;
-                            } else if (isOrder) {
-                                if (countPages)
+                            } else if (genCountQuery) {
+                                if (isOrder)
                                     modifyAt.put(-i, // avoid possible collision
                                                  QueryEdit.OMIT_ORDER_IN_COUNT);
-                            } else {
-                                if (jpqlCount == null)
-                                    // indicates that the keyword prevents computing a count
+                                else if (jpqlCount == null)
+                                    // the keyword prevents generating a count query
                                     jpqlCount = ql.substring(i - l, i);
                             }
                             i--; // balances loop increment when already positioned correctly
@@ -5245,7 +5264,7 @@ public abstract class QueryInfo {
         if (paramName != null)
             jpqlParamNames.add(paramName.toString());
 
-        if (countPages && countReplacesFirstSelectAt >= 0) {
+        if (genCountQuery && countReplacesFirstSelectAt >= 0) {
             modifyAt.put(countReplacesFirstSelectAt,
                          QueryEdit.REPLACE_SELECT_IN_COUNT_BEGIN);
             if (countReplacesFirstSelectEndingAt < 0)
@@ -5456,6 +5475,7 @@ public abstract class QueryInfo {
      * @return a query that contains the requested modifications.
      */
     private String replaceQuery(String ql,
+                                boolean genCountQuery,
                                 TreeMap<Integer, QueryEdit> modifyAt) {
 
         final String recordName = entityInfo.recordClass == null //
@@ -5471,11 +5491,11 @@ public abstract class QueryInfo {
         int qStartAt = 0; // index into the original query (ql)
 
         // for generating the count query
-        StringBuilder c = jpqlCount == null &&
-                          (Page.class.equals(multiType) ||
-                           CursoredPage.class.equals(multiType)) //
-                                           ? new StringBuilder(qlLen + 50) //
-                                           : null;
+        // (but not if parseQuery found a keyword, such as GROUP BY, that
+        // prevents computing a count, and recorded it in jpqlCount)
+        StringBuilder c = genCountQuery && jpqlCount == null //
+                        ? new StringBuilder(qlLen + 50) //
+                        : null;
         int cStartAt = 0; // index into the original query (ql)
         int cEndAt = qlLen;
         int cSelectClauseEndAt = -1;

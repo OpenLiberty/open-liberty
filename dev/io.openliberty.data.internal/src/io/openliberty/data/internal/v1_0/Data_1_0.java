@@ -204,6 +204,12 @@ public class Data_1_0 implements DataVersionCompatibility {
 
     @Override
     @Trivial
+    public boolean isJPA32() {
+        return true;
+    }
+
+    @Override
+    @Trivial
     public boolean isRestriction(Object param) {
         return false;
     }

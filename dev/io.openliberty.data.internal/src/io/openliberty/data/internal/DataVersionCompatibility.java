@@ -176,6 +176,14 @@ public interface DataVersionCompatibility {
     String[] getSelections(AnnotatedElement element);
 
     /**
+     * Indicates if Jakarta Persistence 3.2 is used.
+     * TODO remove this method once we have Data 1.1 no longer needs to tolerate JPA 3.2
+     *
+     * @return true if at Jakarta Persistence 3.2, otherwise false
+     */
+    boolean isJPA32();
+
+    /**
      * Determines if the special parameter value is a Restriction.
      *
      * @param param possible special parameter value.

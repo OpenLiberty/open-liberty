@@ -152,7 +152,7 @@ public class Data_1_1 implements DataVersionCompatibility {
     private static final Set<Class<? extends Annotation>> QUERY_LANGUAGE_ANNOS;
 
     /**
-     * jakarta.persistence.query.Query.class
+     * jakarta.persistence.query.QueryOptions.class
      */
     static final Class<? extends Annotation> QUERY_OPTIONS_CLASS;
 
@@ -367,6 +367,12 @@ public class Data_1_1 implements DataVersionCompatibility {
         for (int i = 0; i < selects.length; i++)
             values[i] = selects[i].value();
         return values;
+    }
+
+    @Override
+    @Trivial
+    public boolean isJPA32() {
+        return JAKARTA_QUERY_CLASS == null; // Persistence 3.2
     }
 
     @Override
