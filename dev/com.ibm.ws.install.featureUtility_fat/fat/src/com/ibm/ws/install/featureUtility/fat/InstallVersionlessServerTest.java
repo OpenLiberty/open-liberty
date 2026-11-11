@@ -37,6 +37,7 @@ public class InstallVersionlessServerTest extends FeatureUtilityToolTest {
         /* Enable tests only if running on a zOS machine, otherwise skip class */
         Assume.assumeTrue(!isZos);
         deleteFeaturesAndLafilesFolders("beforeClassSetup");
+        replaceWlpProperties(libertyVersion);
         Log.exiting(c, methodName);
     }
 
