@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -379,6 +379,16 @@ public class ParsedScheduleExpression implements Serializable {
      */
     public ScheduleExpression getSchedule() {
         return ivSchedule;
+    }
+
+    /**
+     * Returns the inclusive upper bound for the last timeout of the expression.
+     *
+     * @return the end time in milliseconds, rounded up to the nearest second, or
+     *         Long.MAX_VALUE if the expression has no end time
+     */
+    public long getEnd() {
+        return end;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2020 IBM Corporation and others.
+ * Copyright (c) 2003, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ package com.ibm.ws.ejbcontainer.timer.persistent.osgi.internal;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -197,12 +196,19 @@ class PersistentTimerTaskHandlerImpl extends PersistentTimerTaskHandler implemen
             // -1, therefore the first (and only) timeout has passed while creating the timer.
             // In this scenario, run the timer immediately by returning the creation time.
             if (nextTimeout == -1) {
-                //Need to shave off milliseconds from timerCreationTime
-                GregorianCalendar cal = new GregorianCalendar();
-                cal.setTime(timerCreationTime);
-                cal.set(GregorianCalendar.MILLISECOND, 0);
-                cal.add(GregorianCalendar.SECOND, 1);
-                return cal.getTime();
+                // Need to shave off milliseconds from timerCreationTime and advance to the
+                // next second. Use epoch arithmetic rather than Calendar fields, which are
+                // sensitive to the default time zone and DST transitions.
+                long creationMillis = timerCreationTime.getTime();
+                long roundedCreationTime = creationMillis - (creationMillis % 1000) + 1000;
+
+                // The timerCreationTime is the time the task was added to the persistent
+                // store, which may be well after the timer was created by the application,
+                // and thus after the end of the schedule. The run time must not be later
+                // than the end, otherwise calculating the next timeout after this run
+                // would fail. Use the end (already rounded to a second) when it is earlier.
+                // The end is Long.MAX_VALUE when the schedule has no end.
+                return new Date(Math.min(roundedCreationTime, parsedSchedule.getEnd()));
             }
         }
         if (nextTimeout == -1) {
