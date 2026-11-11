@@ -19,6 +19,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.Properties;
 
+import componenttest.topology.impl.JavaInfo;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -222,15 +223,18 @@ public class SecurityUtilityTLSProfilerTest {
     @Test
     @Mode(TestMode.FULL)
     public void testDifferentTLSVersionProfiling() throws Exception {
-        // TLSv1.1 server — profiler completes but no successful handshakes
-        switchServerConfig(SERVER_XML_TLSv11);
-        ProgramOutput tlsv11Output = runTlsProfiler();
+        // FIPS140-3 prohibits the use of TLSv1.1 causing errors on the server, so skip testing TLSv1.1
+        if(!server.isFIPS140_3EnabledAndSupported(JavaInfo.forServer(server))) {
+            // TLSv1.1 server — profiler completes but no successful handshakes
+            switchServerConfig(SERVER_XML_TLSv11);
+            ProgramOutput tlsv11Output = runTlsProfiler();
 
-        Log.info(thisClass, testName.getMethodName(), "TLSv1.1 stdout:\n" + tlsv11Output.getStdout());
+            Log.info(thisClass, testName.getMethodName(), "TLSv1.1 stdout:\n" + tlsv11Output.getStdout());
 
-        assertEquals("TLSv1.1 server should exit cleanly", SUCCESS_RC, tlsv11Output.getReturnCode());
-        assertTrue("stdout should be empty when no handshakes succeed (TLSv1.1 server)",
-                tlsv11Output.getStdout().trim().isEmpty());
+            assertEquals("TLSv1.1 server should exit cleanly", SUCCESS_RC, tlsv11Output.getReturnCode());
+            assertTrue("stdout should be empty when no handshakes succeed (TLSv1.1 server)",
+                    tlsv11Output.getStdout().trim().isEmpty());
+        }
 
         // TLSv1.3 server — profiler must report successful handshakes
         switchServerConfig(SERVER_XML_TLSv13);
