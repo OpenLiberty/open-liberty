@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,10 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
+
+import javax.batch.runtime.StepExecution;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -105,6 +108,30 @@ public class MemoryPersistenceManagerImplTest {
 
         validateStepAggregate(steps);
 
+    }
+
+    /**
+     * A step execution exists in the store (with a null startTime) from the moment it is created until
+     * the step controller calls startStep(). Requesting the top-level step executions of the job in that
+     * window must not fail.
+     */
+    @Test
+    public void testGetStepExecutionsTopLevelFromJobExecutionIdWithStepNotYetStarted() {
+
+        // Earlier step of the job which has already started.
+        topLevelStepExecution.setStartTime(new Date());
+
+        // Next step: created, but startStep() has not yet set its startTime.
+        TopLevelStepExecutionEntity notYetStarted = service.createTopLevelStepExecutionAndNewThreadInstance(jobExecutionEntity.getExecutionId(),
+                                                                                                           new TopLevelStepInstanceKey(jobInstanceEntity.getInstanceId(), "mockStep2"),
+                                                                                                           false);
+
+        List<StepExecution> steps = service.getStepExecutionsTopLevelFromJobExecutionId(jobExecutionEntity.getExecutionId());
+
+        // The step without a startTime sorts last.
+        assertEquals(2, steps.size());
+        assertEquals(topLevelStepExecution.getStepExecutionId(), steps.get(0).getStepExecutionId());
+        assertEquals(notYetStarted.getStepExecutionId(), steps.get(1).getStepExecutionId());
     }
 
     private void validateStepAggregate(WSStepThreadExecutionAggregate steps) {
