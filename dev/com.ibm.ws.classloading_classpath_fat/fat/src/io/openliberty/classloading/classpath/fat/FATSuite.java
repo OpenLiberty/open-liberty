@@ -126,6 +126,7 @@ import test.bundle.api4.c.API_C4;
     DynamicFeatureGlobalSharedLibTest.class,
     DynamicFeatureEarTest.class,
     DynamicFeatureMultiGatewayTest.class,
+    MinimalFeatureServerTest.class,
 })
 public class FATSuite {
     static final String CLASSPATH_TEST_WAR_LOADER_SERVER = "classpathTestWarLoader";
@@ -152,6 +153,7 @@ public class FATSuite {
     static final String DYNAMIC_FEATURE_EAR_TEST_SERVER = "dynamicFeatureEarTest";
     static final String DYNAMIC_FEATURE_MULTI_GATEWAY_TEST_SERVER = "dynamicFeatureMultiGatewayTest";
     static final String DYNAMIC_FEATURE_LIB_JAR_REMOVED_TEST_SERVER = "dynamicFeatureLibJarRemovedTest";
+    static final String MINIMAL_FEATURE_SERVER = "minimalFeatureServer";
 
     // ##### ARCHIVE NAMES #####
     // WAR archive names

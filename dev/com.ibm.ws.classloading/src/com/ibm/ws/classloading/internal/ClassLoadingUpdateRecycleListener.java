@@ -16,20 +16,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.Constants;
 import org.osgi.framework.SynchronousBundleListener;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -38,16 +36,18 @@ import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.ws.threading.listeners.CompletionListener;
-import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * Dedicated Declarative Services component that listens for runtime feature update
  * events and recycles affected applications when dynamic features are added or removed.
  *
- * <p>Separated from {@link ClassLoadingServiceImpl} to allow the core classloading service
- * to resolve and function in minimal runtime environments where the runtime update service
- * and application lifecycle packages are absent.</p>
+ * <p>Separated from {@link ClassLoadingServiceImpl} so that feature-update handling lives in
+ * its own component. The runtime update and threading packages are provided by the kernel and
+ * are always present, so this component is active in every server. The application recycle
+ * coordinator (package {@code com.ibm.wsspi.application.lifecycle}, which may be absent) is
+ * deliberately not referenced here; recycling is delegated to
+ * {@link ClassLoadingServiceImpl#recycleApplications(Set)}.</p>
  */
 @Component(service = { RuntimeUpdateListener.class },
            immediate = true,
@@ -60,29 +60,19 @@ public class ClassLoadingUpdateRecycleListener implements RuntimeUpdateListener 
     private ClassLoadingServiceImpl classLoadingService;
 
     /**
-     * Optional reference to the application recycle coordinator; used to recycle applications
-     * when a feature bundle is uninstalled. OPTIONAL/DYNAMIC to avoid an OSGi dependency cycle
-     * (com.ibm.ws.app.manager.lifecycle must not depend on com.ibm.ws.classloading).
+     * State captured while a FEATURE_BUNDLES_RESOLVED notification is outstanding.
+     * Immutable reference, concurrent contents; readers get a consistent view with one read.
      */
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
-    protected volatile ApplicationRecycleCoordinator recycleCoordinator;
+    private static final class Window {
+        /** ACLs whose gateway went UNRESOLVED; used only to drive aclStore.remove(). */
+        final Set<AppClassLoader> acls = ConcurrentHashMap.<AppClassLoader> newKeySet();
 
-    /**
-     * Capture window: the FEATURE_BUNDLES_RESOLVED notification for the current UPDATE, or null.
-     */
-    private volatile RuntimeUpdateNotification captureNotification = null;
+        /** App names to recycle, collected from GatewayClassLoader.getOwnerAppNames(). */
+        final Set<String> appNames = ConcurrentHashMap.<String> newKeySet();
+    }
 
-    /**
-     * ACLs whose gateway went UNRESOLVED during the current capture window.
-     * Used only to drive aclStore.remove(); app names come from capturedAppNames.
-     */
-    private volatile Set<AppClassLoader> capturedAcls = null;
-
-    /**
-     * App names to recycle, collected directly from GCL.getOwnerAppNames() during
-     * the capture window.
-     */
-    private volatile Set<String> capturedAppNames = null;
+    /** The open capture window for the current UPDATE, or null. */
+    private final AtomicReference<Window> window = new AtomicReference<Window>();
 
     /**
      * Captures the AppClassLoader whose gateway bundle went UNRESOLVED during a
@@ -94,7 +84,8 @@ public class ClassLoadingUpdateRecycleListener implements RuntimeUpdateListener 
             if (event.getType() != BundleEvent.UNRESOLVED) {
                 return;
             }
-            if (captureNotification == null) {
+            Window w = window.get();
+            if (w == null) {
                 return; // window not open
             }
             Bundle bundle = event.getBundle();
@@ -103,23 +94,18 @@ public class ClassLoadingUpdateRecycleListener implements RuntimeUpdateListener 
                 || !"true".equalsIgnoreCase(bundle.getHeaders("").get(GatewayBundleFactory.GATEWAY_BUNDLE_MARKER))) {
                 return; // not a gateway bundle
             }
-            Set<AppClassLoader> aclsToEvict = capturedAcls;
-            Set<String> appNames = capturedAppNames;
-            if (aclsToEvict == null || appNames == null) {
-                return; // window closed
-            }
             synchronized (classloaders) {
                 Set<GatewayClassLoader> gcls = classloaders.get(bundle);
                 if (gcls != null) {
                     for (GatewayClassLoader gcl : gcls) {
-                        appNames.addAll(gcl.getOwnerAppNames());
+                        w.appNames.addAll(gcl.getOwnerAppNames());
                     }
                 }
                 Set<AppClassLoader> appClassLoaders = classLoadingService.getAppClassLoaders();
                 synchronized (appClassLoaders) {
                     for (AppClassLoader acl : appClassLoaders) {
                         if (bundle.equals(acl.getBundle())) {
-                            aclsToEvict.add(acl);
+                            w.acls.add(acl);
                         }
                     }
                 }
@@ -128,7 +114,7 @@ public class ClassLoadingUpdateRecycleListener implements RuntimeUpdateListener 
     };
 
     @Activate
-    protected void activate(ComponentContext cc) {
+    protected void activate() {
         BundleContext bundleContext = classLoadingService.getBundleContext();
         if (bundleContext != null) {
             Bundle systemBundle = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
@@ -142,7 +128,7 @@ public class ClassLoadingUpdateRecycleListener implements RuntimeUpdateListener 
     }
 
     @Deactivate
-    protected void deactivate(ComponentContext cc) {
+    protected void deactivate() {
         BundleContext bundleContext = classLoadingService.getBundleContext();
         if (bundleContext != null) {
             Bundle systemBundle = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
@@ -153,9 +139,7 @@ public class ClassLoadingUpdateRecycleListener implements RuntimeUpdateListener 
                 }
             }
         }
-        captureNotification = null;
-        capturedAcls = null;
-        capturedAppNames = null;
+        window.set(null);
     }
 
     @Override
@@ -171,41 +155,36 @@ public class ClassLoadingUpdateRecycleListener implements RuntimeUpdateListener 
             return; // not an UPDATE operation, or already completed — nothing to do
         }
 
-        // Open the capture window bound to this notification object.
-        capturedAcls = ConcurrentHashMap.<AppClassLoader> newKeySet();
-        capturedAppNames = ConcurrentHashMap.<String> newKeySet();
-        captureNotification = notification;
+        // Open the capture window for this notification.
+        final Window w = new Window();
+        window.set(w);
 
         // Register the recycle listener; it fires synchronously on the FeatureManager thread
         // when featureBundlesResolved.setResult(true) is called at the end of provisioning.
+        // Each listener acts on its own window object and only closes the shared slot if it
+        // is still that window, so an overlapping notification's window is never cleared or
+        // consumed by this one.
         notification.onCompletion(new CompletionListener<Boolean>() {
             @Override
             public void successfulCompletion(Future<Boolean> future, Boolean result) {
-                runRecycleListener();
+                runRecycleListener(w);
             }
 
             @Override
             public void failedCompletion(Future<Boolean> future, Throwable t) {
                 // Close the window without recycling on failure path
-                captureNotification = null;
-                capturedAcls = null;
-                capturedAppNames = null;
+                window.compareAndSet(w, null);
             }
         });
     }
 
-    private void runRecycleListener() {
+    private void runRecycleListener(Window w) {
         try {
-            // Step 1: close window.
-            captureNotification = null;
+            // Step 1: close the window, only if it is still ours. If a newer window replaced
+            // it, our captured data is still valid and is processed below.
+            window.compareAndSet(w, null);
 
-            // Step 2: take the captured ACLs and app names.
-            Set<AppClassLoader> aclsToEvict = capturedAcls;
-            capturedAcls = null;
-            Set<String> appsToRecycle = capturedAppNames;
-            capturedAppNames = null;
-
-            if ((aclsToEvict == null || aclsToEvict.isEmpty()) && (appsToRecycle == null || appsToRecycle.isEmpty())) {
+            if (w.acls.isEmpty() && w.appNames.isEmpty()) {
                 return; // nothing to do
             }
 
@@ -213,24 +192,15 @@ public class ClassLoadingUpdateRecycleListener implements RuntimeUpdateListener 
                 return; // server is going down; skip recycling
             }
 
-            // Step 3: evict captured ACLs from aclStore.
-            if (aclsToEvict != null) {
-                for (AppClassLoader acl : aclsToEvict) {
-                    if (!classLoadingService.evictFromAclStore(acl) && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Loader not removed from aclStore (already evicted or replaced): " + acl.getKey());
-                    }
+            // Step 2: evict captured ACLs from aclStore.
+            for (AppClassLoader acl : w.acls) {
+                if (!classLoadingService.evictFromAclStore(acl) && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Loader not removed from aclStore (already evicted or replaced): " + acl.getKey());
                 }
             }
 
-            // Step 4: recycle applications.
-            if (appsToRecycle != null && !appsToRecycle.isEmpty()) {
-                ApplicationRecycleCoordinator coord = recycleCoordinator;
-                if (coord != null) {
-                    coord.recycleApplications(appsToRecycle);
-                } else if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "recycleCoordinator is absent; cannot recycle apps after feature update: " + appsToRecycle);
-                }
-            }
+            // Step 3: recycle applications.
+            classLoadingService.recycleApplications(w.appNames);
         } catch (Throwable t) {
             FFDCFilter.processException(t, "com.ibm.ws.classloading.internal.ClassLoadingUpdateRecycleListener", "runRecycleListener", this);
         }

@@ -107,7 +107,11 @@ import com.ibm.wsspi.logging.Introspector;
 @Component(service = { ClassLoadingService.class, LibertyClassLoadingService.class, ClassLoaderIdentifierService.class, Introspector.class, ClassLoadingServiceImpl.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = "service.vendor=IBM")
+           property = "service.vendor=IBM",
+           reference = @Reference(name = "recycleCoordinator",
+                                  service = ApplicationRecycleCoordinator.class,
+                                  cardinality = ReferenceCardinality.OPTIONAL,
+                                  policy = ReferencePolicy.DYNAMIC))
 public class ClassLoadingServiceImpl implements LibertyClassLoadingService<LibertyLoader>, ClassLoaderIdentifierService, Introspector {
     static final TraceComponent tc = Tr.register(ClassLoadingServiceImpl.class);
 
@@ -125,17 +129,11 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
     });
     
     private final BundleContext bundleContext;
+    private volatile ComponentContext componentContext = null;
     private final CanonicalStore<ClassLoaderIdentity, AppClassLoader> aclStore = new CanonicalStore<ClassLoaderIdentity, AppClassLoader>();
     private final CanonicalStore<String, ThreadContextClassLoader> tcclStore = new CanonicalStore<String, ThreadContextClassLoader>();
     private final RegionDigraph digraph;
     private final ClassRedefiner redefiner;
-    /**
-     * Optional reference to the application recycle coordinator; used to recycle applications
-     * when a shared library fileset changes on disk. OPTIONAL/DYNAMIC to avoid an OSGi dependency cycle
-     * (com.ibm.ws.app.manager.lifecycle must not depend on com.ibm.ws.classloading).
-     */
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
-    protected volatile ApplicationRecycleCoordinator recycleCoordinator;
 
     private final BundleListener listener = new BundleListener() {
         @Override
@@ -216,6 +214,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         // Declared a dependency on the URLStreamHandlerService so the wsjar protocol
         // doesn't go away while we still may still need it; no need to store the instance of wsjar here.
         this.bundleContext = cCtx.getBundleContext();
+        this.componentContext = cCtx;
         this.globalConfig = globalConfig;
         this.digraph = digraph;
         this.metadataIdentifierService = mdiService;
@@ -247,6 +246,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         systemContext.removeBundleListener(listener);
         this.cleanupRememberedBundles();
         this.resourceProviders.clear();
+        this.componentContext = null;
     }
 
     @Reference(name = REFERENCE_GENERATORS, service = ClassGenerator.class, cardinality = MULTIPLE, policy = DYNAMIC)
@@ -607,10 +607,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
                 // shared-library loaders (domain "Shared Library" / SPI) are eviction-only.
                 if (isTopLevelAppDomain(identity.getDomain())) {
                     String appName = extractAppName(identity.getId());
-                    ApplicationRecycleCoordinator coord = recycleCoordinator;
-                    if (coord != null) {
-                        coord.recycleApplications(Collections.singleton(appName));
-                    }
+                    recycleApplications(Collections.singleton(appName));
                 }
             }
         };
@@ -950,6 +947,37 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
 
     boolean evictFromAclStore(AppClassLoader acl) {
         return aclStore.remove(acl);
+    }
+
+    /**
+     * Recycles the named applications if an {@link ApplicationRecycleCoordinator} is available.
+     *
+     * <p>Do NOT declare a field, parameter or return type of type {@code ApplicationRecycleCoordinator}
+     * in this class. The package is an optional import, and Declarative Services reflects over
+     * declared members at activation; an unresolvable type there fails with
+     * {@code NoClassDefFoundError} in servers without {@code appLifecycle}. The coordinator is
+     * obtained through {@code ComponentContext.locateService} and kept in a local variable only.</p>
+     */
+    void recycleApplications(Set<String> appNames) {
+        if (appNames == null || appNames.isEmpty() || FrameworkState.isStopping()) {
+            return;
+        }
+        ApplicationRecycleCoordinator coord = null;
+        ComponentContext cc = componentContext;
+        if (cc != null) {
+            try {
+                coord = (ApplicationRecycleCoordinator) cc.locateService("recycleCoordinator");
+            } catch (Throwable t) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Could not locate recycleCoordinator: " + t);
+                }
+            }
+        }
+        if (coord != null) {
+            coord.recycleApplications(appNames);
+        } else if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "recycleCoordinator is absent; cannot recycle apps: " + appNames);
+        }
     }
 
     static boolean isTopLevelAppDomain(String domain) {
