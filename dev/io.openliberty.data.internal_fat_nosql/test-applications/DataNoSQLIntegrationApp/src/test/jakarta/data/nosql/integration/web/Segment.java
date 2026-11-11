@@ -10,22 +10,41 @@
  *******************************************************************************/
 package test.jakarta.data.nosql.integration.web;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 /**
- * Entity with embeddables that are Java records.
+ * Entity annotated as both a Jakarta Persistence entity and a Jakarta NoSQL
+ * entity, so that either data provider could map it. The Jakarta NoSQL
+ * annotations are fully qualified because their simple names collide with the
+ * Jakarta Persistence annotations.
  */
 @Entity
+@jakarta.nosql.Entity
 public class Segment {
 
     @GeneratedValue
     @Id
+    @jakarta.nosql.Id
     public int id;
 
-    public int x1, y1;
-    public int x2, y2;
+    @Column
+    @jakarta.nosql.Column
+    public int x1;
+
+    @Column
+    @jakarta.nosql.Column
+    public int y1;
+
+    @Column
+    @jakarta.nosql.Column
+    public int x2;
+
+    @Column
+    @jakarta.nosql.Column
+    public int y2;
 
     public static Segment of(int x1, int y1, int x2, int y2) {
         Segment inst = new Segment();
