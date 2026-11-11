@@ -1,0 +1,38 @@
+#*******************************************************************************
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-Name: Hibernate Persistence Service FAT Consumer
+Bundle-SymbolicName: io.openliberty.persistence.service.hibernate.consumer
+Bundle-Description: Test consumer for the Hibernate-backed persistenceService-3.0
+
+Export-Package: \
+  io.openliberty.persistence.service.hibernate.fat.persistence.test;version=1.0
+
+Private-Package: \
+  io.openliberty.persistence.service.hibernate.fat.consumer,\
+  io.openliberty.persistence.service.hibernate.fat.consumer.internal.model
+
+Import-Package: \
+  jakarta.persistence;consumer="persistenceService", \
+  jakarta.persistence.query;consumer="persistenceService", \
+  jakarta.persistence.sql;consumer="persistenceService", \
+  org.antlr.v4.runtime.misc;version="[4.13,5)";resolution:=optional, \
+  *
+
+Include-Resource: \
+  OSGI-INF=test-bundles/io.openliberty.persistence.service.hibernate.consumer/resources/OSGI-INF
+
+-dsannotations: \
+  io.openliberty.persistence.service.hibernate.fat.consumer.ConsumerService

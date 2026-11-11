@@ -1,0 +1,36 @@
+<server>
+    <include location="../fatTestPorts.xml" />
+    <include location="../fatTestCommon.xml" />
+
+    <featureManager>
+        <feature>servlet-6.2</feature>
+        <feature>jdbc-4.3</feature>
+        <feature>hibernateConsumer-1.0</feature>
+        <feature>componenttest-2.0</feature>
+    </featureManager>
+
+    <!-- H2 in-memory database — no external DB required -->
+    <jdbcDriver id="h2">
+        <library>
+            <fileset dir="${shared.resource.dir}/h2" includes="h2.jar" />
+        </library>
+    </jdbcDriver>
+
+    <javaPermission codebase="${shared.resource.dir}/h2/h2.jar"
+                    className="java.security.AllPermission"/>
+
+    <!-- JTA datasource -->
+    <dataSource id="consumerJtaDs" jndiName="consumerJtaDs" jdbcDriverRef="h2">
+        <properties.h2 url="jdbc:h2:mem:consumer;DB_CLOSE_DELAY=-1" />
+    </dataSource>
+
+    <!-- Non-JTA datasource (transactional=false required by metatype target filter) -->
+    <dataSource id="consumerNonJtaDs" jndiName="consumerNonJtaDs"
+                jdbcDriverRef="h2" transactional="false">
+        <properties.h2 url="jdbc:h2:mem:consumer;DB_CLOSE_DELAY=-1" />
+    </dataSource>
+
+    <!-- Activates ConsumerService OSGi DS component via persistenceService-3.0 -->
+    <hibernateConsumer id="consumerConfig" createTables="true"/>
+
+</server>
