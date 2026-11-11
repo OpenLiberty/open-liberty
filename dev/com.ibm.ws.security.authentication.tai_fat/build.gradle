@@ -1,0 +1,88 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':io.openliberty.org.apache.commons.logging'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets')
+}
+
+def appBuildDir = "${buildDir}/test-application"
+def testServletsProject = project(':com.ibm.ws.webcontainer.security_test.servlets')
+
+/******************************************************************
+ ** CustomTAI.jar
+ ** Library for the custom TAI shared library used by the server
+ ******************************************************************/
+task CustomTAI_JAR(type: Jar, dependsOn: compileJava) {
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "CustomTAI.jar"
+
+  from (compileJava.destinationDirectory) {
+    include 'com/ibm/ws/security/authentication/tai/fat/CustomTAI.class'
+    include 'com/ibm/ws/security/authentication/tai/fat/CustomTAI$*.class'
+    include 'com/ibm/ws/security/authentication/tai/fat/HashtableCustomLoginModule.class'
+    include 'com/ibm/ws/security/authentication/tai/fat/HashtableCustomLoginModule$*.class'
+  }
+}
+
+assemble.dependsOn CustomTAI_JAR
+
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
+autoFVT.dependsOn CustomTAI_JAR
+autoFVT.dependsOn jar
+
+autoFVT.doLast {
+  def server = 'com.ibm.ws.security.authentication.tai.fat'
+
+  // Copy basicauth.war to apps
+  copy {
+    from new File(testServletsProject.buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+
+  // Copy CustomTAI.jar into server directory
+  copy {
+    from file("${appBuildDir}/CustomTAI.jar")
+    into new File(autoFvtDir, 'publish/servers/' + server)
+  }
+
+  // Copy tai.server.xml.orig to publish/files / lib/LibertyFATTestFiles
+  copy {
+    from new File(projectDir, 'publish/servers/' + server + '/server.xml')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    rename 'server.xml', 'tai.server.xml.orig'
+  }
+
+  // Copy sample feature JARs from jar outputs into internalfeatures
+  copy {
+    from jar.outputs.files
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/internalfeatures')
+    include 'com.ibm.ws.security.authentication.tai.feature.sample.jar'
+    rename '.*', 'com.ibm.ws.security.authentication.tai.feature.sample_1.0.jar'
+  }
+  copy {
+    from jar.outputs.files
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/internalfeatures')
+    include 'com.ibm.ws.security.authentication.tai.feature.sample2.jar'
+    rename '.*', 'com.ibm.ws.security.authentication.tai.feature.sample2_1.0.jar'
+  }
+}
