@@ -270,6 +270,10 @@ public class SSLOptionsTest{
 
         // Requires info trace
         server.waitForSSLRestart();
+        // A dynamic SSL config update can trigger two rapid channel restarts (one for
+        // the config change and one for the keystore reload). waitForSSLRestart() returns
+        // after the first restart; this pause lets the port fully stabilize before connecting.
+        Thread.sleep(1000);
 
         // Hit the servlet on the SSL port
         hitServer(KEYSTORE, PASSWORD, TRUSTSTORE, PASSWORD);
@@ -281,6 +285,7 @@ public class SSLOptionsTest{
 
         // Requires info trace
         server.waitForSSLRestart();
+        Thread.sleep(1000);
 
         // Hit the servlet on the SSL port
         hitServer(KEYSTORE, PASSWORD, ALTERNATE_TRUSTSTORE, PASSWORD);
