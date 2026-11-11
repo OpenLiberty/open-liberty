@@ -126,8 +126,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     // NEW: per-request marker to avoid double-enqueue when FullHttpRequest is used
     private boolean aggregatedBodyEnqueued;
     
-    // Marker to reject a declared Content-Length over messageSizeLimit before the request dispatch
-    private boolean requestRejected;
+    // Set once an error response has been written for the current request. Any further HttpObjects
+    // that belong to that request are discarded, mirroring the channel framework which stops
+    // processing once an error response is sent. Cleared when the next HttpRequest arrives.    
+    private boolean errorResponseSent;
 
     private final Map<String, HttpInputStream> streamMap = new ConcurrentHashMap<>();
 
@@ -225,6 +227,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+        if (msg instanceof HttpRequest) {
+            errorResponseSent = false;
+        } else if (errorResponseSent) {
+            ReferenceCountUtil.release(msg);
+            return;
+        }
         if (!(msg.decoderResult().isFinished() && msg.decoderResult().isSuccess())) {
             if(context.channel().isActive()) {
                 if (msg.decoderResult().cause() != null) {
@@ -239,6 +247,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                     // rather than sending a duplicate direct transport response.
                     if (!(msg instanceof HttpRequest) && queue != null && !queue.isEosSignaled()) {
                         queue.signalError(failure);
+                        // Wake any armed async ReadListener so it observes the error now rather
+                        // than only when the channel eventually closes.
+                        firePendingAsyncReadError(ctx);
                     } else {
                         sendErrorMessage(failure);
                     }
@@ -271,12 +282,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             // HttpInboundServiceContextImpl.parsingComplete()
             // in the channel framework, so the servlet never runs and no EOFException is
             // signalled to a thread blocked reading the body when the connection closes.
-            requestRejected = false;
             final long sizeLimit = config.getMessageSizeLimit();
             if ((connectionProtocol == ProtocolName.HTTP1 || connectionProtocol == ProtocolName.HTTP10)
                     && HttpConfigConstants.UNLIMITED != sizeLimit
                     && HttpUtil.getContentLength(req, -1L) > sizeLimit) {
-                requestRejected = true;
                 sendErrorMessage(StatusCodes.ENTITY_TOO_LARGE,
                         new TooLongFrameException("Content length exceeded max of " + sizeLimit + " bytes."));
                 ReferenceCountUtil.release(req);
@@ -329,11 +338,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
         if (msg instanceof HttpContent) {
             HttpContent content = (HttpContent) msg;
-
-            if(requestRejected) {
-                ReferenceCountUtil.release(content);
-                return;
-            }
 
             int sizeOfCurrentChunk = content.content().readableBytes();
             if (HttpConfigConstants.UNLIMITED != config.getMessageSizeLimit() && (sizeOfCurrentChunk > config.getMessageSizeLimit() ||
@@ -800,6 +804,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
         loadErrorPage(code.getHttpError());
         HttpUtil.setKeepAlive(errorResponse, false);
+        errorResponseSent = true;
         return this.context.writeAndFlush(errorResponse);
     }
 
@@ -812,6 +817,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         else
             loadErrorPage(StatusCodes.BAD_REQUEST.getHttpError());
         HttpUtil.setKeepAlive(errorResponse, false);
+        errorResponseSent = true;
         this.context.writeAndFlush(errorResponse);
     }
 
