@@ -17,6 +17,7 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_APPLICAT
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -113,11 +114,11 @@ public class ProtocolVersionTest {
                         """;
 
         HttpRequest httpRequest = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
-                                                                                     .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                                     .requestProp(MCP_SESSION_ID, client.getSessionId())
-                                                                                     .jsonBody(request)
-                                                                                     .method("POST")
-                                                                                     .expectCode(200);
+                                                                                                       .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                                                       .requestProp(MCP_SESSION_ID, client.getSessionId())
+                                                                                                       .jsonBody(request)
+                                                                                                       .method("POST")
+                                                                                                       .expectCode(200);
         String response = httpRequest.run(String.class);
 
         String expectedResponse = """
@@ -160,10 +161,10 @@ public class ProtocolVersionTest {
                         """;
 
         HttpRequest httpRequest = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
-                                                                                     .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                                     .jsonBody(request)
-                                                                                     .method("POST")
-                                                                                     .expectCode(200);
+                                                                                                       .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                                                       .jsonBody(request)
+                                                                                                       .method("POST")
+                                                                                                       .expectCode(200);
         String response = httpRequest.run(String.class);
 
         assertTrue("Expected response to contain result", response.contains("\"result\""));
@@ -226,11 +227,11 @@ public class ProtocolVersionTest {
                         """;
 
         String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
-                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                             .jsonBody(request)
-                                                                             .method("POST")
-                                                                             .expectCode(200)
-                                                                             .run(String.class);
+                                                                                               .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                                               .jsonBody(request)
+                                                                                               .method("POST")
+                                                                                               .expectCode(200)
+                                                                                               .run(String.class);
 
         String negotiated = new JSONObject(response).getJSONObject("result").getString("protocolVersion");
         assertEquals("Expected server to respond with its preferred GA version, not the beta version", "2025-11-25", negotiated);
@@ -261,6 +262,22 @@ public class ProtocolVersionTest {
             String response = initialize(version);
             String negotiated = new JSONObject(response).getJSONObject("result").getString("protocolVersion");
             assertEquals("Expected " + version + " to be negotiated as itself", version, negotiated);
+        }
+    }
+
+    /**
+     * Deleting a session must still work on a non-beta runtime with each GA version in the
+     * {@code MCP-Protocol-Version} header, and with no header. A repeated delete must then find no session.
+     */
+    @Test
+    public void testSessionDeleteAcceptsEachGaProtocolVersionHeaderOnNonBeta() throws Exception {
+        String[] headerVersions = { GA_VERSIONS[0], GA_VERSIONS[1], GA_VERSIONS[2], null };
+        for (String version : headerVersions) {
+            String sessionId = ProtocolVersionRequests.initialize(serverLifecycle.getServer(), APP_NAME, null, GA_VERSIONS[0]).sessionId();
+            assertNotNull("Expected a session to be created for the delete with header " + version, sessionId);
+
+            ProtocolVersionRequests.delete(serverLifecycle.getServer(), APP_NAME, version, sessionId, 200);
+            ProtocolVersionRequests.delete(serverLifecycle.getServer(), APP_NAME, version, sessionId, 404);
         }
     }
 
@@ -300,11 +317,11 @@ public class ProtocolVersionTest {
                         """.formatted(protocolVersion);
 
         return new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
-                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                             .jsonBody(request)
-                                                                             .method("POST")
-                                                                             .expectCode(200)
-                                                                             .run(String.class);
+                                                                                    .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                                    .jsonBody(request)
+                                                                                    .method("POST")
+                                                                                    .expectCode(200)
+                                                                                    .run(String.class);
     }
 
     /**

@@ -281,15 +281,16 @@ public class ProtocolVersionConfigBetaTest {
 
     @Test
     public void testEmptyValuesAreTreatedAsNotSet() throws Exception {
-        // An empty value is passed to the component as an empty string. It means "not set", so it is not
-        // reported. The message for an empty value would have no value between "The" and "value", which is why
-        // there are two spaces.
+        // An empty value must behave exactly as if the attribute was not set: no CWMCM0045E, and the default range.
+        // An invalid value would also fall back to the default range, so the absence of the error is what shows the
+        // empty value was treated as not set. The message for an empty value has nothing between "The" and "value".
         assertTrue("An empty minimum protocol version should not be reported",
-                   server.findStringsInLogs("CWMCM0045E: The  value is not valid for the minimumProtocolVersion attribute").isEmpty());
+                   server.findStringsInLogs("CWMCM0045E: The\\s+value is not valid for the minimumProtocolVersion").isEmpty());
         assertTrue("An empty maximum protocol version should not be reported",
-                   server.findStringsInLogs("CWMCM0045E: The  value is not valid for the maximumProtocolVersion attribute").isEmpty());
-        // The defaults are used so every version is accepted
+                   server.findStringsInLogs("CWMCM0045E: The\\s+value is not valid for the maximumProtocolVersion").isEmpty());
+        // Same range as an application with nothing configured
         assertAllVersionsAccepted(EMPTY_VALUES_APP);
+        assertEchoRejected(server, EMPTY_VALUES_APP, "2022-02-02", ALL_VERSIONS);
     }
 
     // ---- Stateful applications ----

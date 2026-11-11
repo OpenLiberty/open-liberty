@@ -56,7 +56,7 @@ public class ProtocolVersionConfigNonBetaTest {
     private static final String RESTRICTED_APP = "protocolVersionNonBetaRestricted";
     /** Configured with values which are not valid versions, which would be reported if they were not ignored */
     private static final String INVALID_APP = "protocolVersionNonBetaInvalid";
-    /** Configured with latest, which would only allow 2026-07-28 if it was not ignored */
+    /** Configured with latest for both attributes, which would restrict the range to 2025-11-25 (the newest available version) if it was not ignored */
     private static final String LATEST_APP = "protocolVersionNonBetaLatest";
 
     /** The versions accepted on a non-beta runtime, which are also listed in the rejection message */
@@ -116,13 +116,16 @@ public class ProtocolVersionConfigNonBetaTest {
 
     @Test
     public void testVersionNewerThanDefaultMaximumIsRejected() throws Exception {
-        // 2026-07-28 is a valid protocol version, but it is above 2025-11-25, the maximum used when the runtime is not beta
+        // 2026-07-28 is a beta version, so it is not available when the runtime is not beta.
+        // It is also above 2025-11-25, the maximum used when the runtime is not beta.
         assertEchoRejected(serverLifecycle.getServer(), RESTRICTED_APP, V_2026_07_28, ALL_VERSIONS);
     }
 
     @Test
-    public void testDeleteUsesDefaultRange() throws Exception {
-        // The header is checked against the non-beta range, not the configured range of 2025-11-25 only
+    public void testDeleteRejectsVersionsOutsideDefaultRange() throws Exception {
+        // A DELETE has no body but its MCP-Protocol-Version header is still validated. A version outside the
+        // default range is rejected with a 400, and the supported values in the message are the default range
+        // rather than the configured 2025-11-25-only range.
         assertDeleteRejected(serverLifecycle.getServer(), RESTRICTED_APP, V_2026_07_28, null, ALL_VERSIONS);
         assertDeleteRejected(serverLifecycle.getServer(), RESTRICTED_APP, "2022-02-02", null, ALL_VERSIONS);
     }
@@ -147,7 +150,8 @@ public class ProtocolVersionConfigNonBetaTest {
 
     @Test
     public void testLatestIsIgnored() throws Exception {
-        // latest is 2026-07-28 in a beta runtime, so if it was honoured only that version would be accepted
+        // latest is the newest version available, which is 2025-11-25 when the runtime is not beta. If it was honoured
+        // the range would be 2025-11-25 only, so 2025-03-26 would be rejected.
         assertEchoAccepted(serverLifecycle.getServer(), LATEST_APP, V_2025_03_26);
         assertEchoAccepted(serverLifecycle.getServer(), LATEST_APP, V_2025_11_25);
         assertEchoAccepted(serverLifecycle.getServer(), LATEST_APP, null);
