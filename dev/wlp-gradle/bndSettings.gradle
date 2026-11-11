@@ -19,6 +19,9 @@ buildscript {
         gradle.userProps.each { prop ->
             workspace.setProperty(prop.key, prop.value.toString())
         }
+        if (startParameter.projectProperties.containsKey('llm')) {
+            workspace.setProperty('llm', startParameter.projectProperties.get('llm') ?: 'true')
+        }
     }
 
     /**

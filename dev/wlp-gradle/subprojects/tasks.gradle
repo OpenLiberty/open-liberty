@@ -160,6 +160,9 @@ compileJava {
     inputs.files { rasInstrumentationInputFiles() }
     outputs.dir compileJava.destinationDirectory
     doLast {
+      if (rootProject.hasProperty('llm') || project.hasProperty('llm')) {
+        System.setProperty('llm', 'true')
+      }
       def instrument = fileTree(dir: compileJava.destinationDirectory.getAsFile().get(), include: bnd.get('instrument.classesIncludes').split("\\s*,\\s*"), exclude: bnd.get('instrument.classesExcludes').split("\\s*,\\s*"))
       if (!instrument.isEmpty()) {
         rasInstrumentationTaskdef(ant)
