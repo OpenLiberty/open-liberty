@@ -66,10 +66,10 @@ public class HeaderValidation {
      * @param headerVersion the protocol version read from the MCP-Protocol-Version header
      * @param request the parsed request
      * @throws JSONRPCException with {@link JSONRPCErrorCode#HEADER_MISMATCH} if the values do not match or
-     *             the body does not carry a protocol version
+     *     the body does not carry a protocol version
      */
     public static void validateProtocolVersionMatchesBody(McpProtocolVersion headerVersion, McpRequest request) throws JSONRPCException {
-        if (headerVersion != McpProtocolVersion.V_2026_07_28 || request.id() == null) {
+        if (headerVersion != McpProtocolVersion.V_2026_07_28) {
             return;
         }
 
@@ -91,11 +91,9 @@ public class HeaderValidation {
     }
 
     private static String buildVersionMismatchMessage(String headerVersion, String bodyVersion) {
-        return bodyVersion == null
-                                   ? Tr.formatMessage(tc, "header.mismatch.protocol.version.missing",
-                                                      headerVersion, META_PROTOCOL_VERSION)
-                                   : Tr.formatMessage(tc, "header.mismatch.protocol.version",
-                                                      headerVersion, META_PROTOCOL_VERSION, bodyVersion);
+        return bodyVersion == null ? Tr.formatMessage(tc, "header.mismatch.protocol.version.missing",
+                                                      headerVersion, META_PROTOCOL_VERSION) : Tr.formatMessage(tc, "header.mismatch.protocol.version",
+                                                                                                               headerVersion, META_PROTOCOL_VERSION, bodyVersion);
     }
 
 }

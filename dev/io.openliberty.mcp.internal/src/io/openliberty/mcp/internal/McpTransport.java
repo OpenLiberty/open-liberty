@@ -170,7 +170,11 @@ public class McpTransport {
      * <p>
      * Per the JSON-RPC 2.0 specification, notifications (requests with no id) must not be
      * responded to, including with error responses. If the current request is a notification,
-     * this method returns without sending anything.
+     * no JSON-RPC error body is sent and the response is an empty 202 Accepted.
+     * <p>
+     * The exception is a {@link JSONRPCErrorCode#HEADER_MISMATCH}. This is a validation failure which means the
+     * server cannot accept the message, so the MCP Streamable HTTP specification requires it to be rejected with
+     * HTTP 400. For a notification that is a 400 with no body.
      *
      * @param e The JSONRPCException to be included in the error response.
      */
@@ -180,15 +184,13 @@ public class McpTransport {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Ignoring JSONRPCException for notification (no id): " + e.getMessage(), e);
             }
-            sendEmptyResponse();
+            if (!rejectedWithHttpError) {
+                sendEmptyResponse();
+            }
             return;
         }
         McpResponse mcpResponse = new McpErrorResponse(requestId, e);
 
-        // The spec requires a header mismatch to be rejected with HTTP 400 as well as a JSON-RPC error
-        if (e.getErrorCode() == JSONRPCErrorCode.HEADER_MISMATCH) {
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        }
         res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }

@@ -117,8 +117,14 @@ public class HeaderProtocolVersionValidationTest {
     }
 
     @Test
-    public void testNotificationNotValidated() {
+    public void testNotificationMismatchRejected() {
         McpRequest notification = request(null, "{}");
+        assertHeaderMismatch(McpProtocolVersion.V_2026_07_28, notification);
+    }
+
+    @Test
+    public void testNotificationMatchingVersionAccepted() {
+        McpRequest notification = request(null, "{\"_meta\": {\"io.modelcontextprotocol/protocolVersion\": \"2026-07-28\"}}");
         HeaderValidation.validateProtocolVersionMatchesBody(McpProtocolVersion.V_2026_07_28, notification);
     }
 
