@@ -5375,7 +5375,6 @@ public class H2FATDriverServlet extends FATServlet {
 
         int currentStream = 1;
         // create another 100 streams
-        // Attempting to reproduce intermittent Windows failure (312958): server sends GOAWAY and closes while the client's last RST_STREAM is unread.
         for (int i = 0; i < server_max_streams + 1; i++) {
             currentStream += 2;
             if (i % 2 == 0) {
@@ -5387,7 +5386,10 @@ public class H2FATDriverServlet extends FATServlet {
                         true, false, false, false, false);
                 frameHeadersToSend.setHeaderEntries(validHeadersToSend);
                 h2Client.sendFrame(frameHeadersToSend);
-                h2Client.sendFrame(new FrameRstStream(currentStream, 0, false));
+                // Last HEADERS already triggers GOAWAY; skip the RST_STREAM, which would be unread when the server closes.
+                if (i < server_max_streams) {
+                    h2Client.sendFrame(new FrameRstStream(currentStream, 0, false));
+                }
 
             } else {
                 if (LOGGER.isLoggable(Level.INFO)) {
