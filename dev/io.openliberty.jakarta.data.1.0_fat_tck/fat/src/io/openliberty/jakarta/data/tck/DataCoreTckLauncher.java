@@ -86,7 +86,7 @@ public class DataCoreTckLauncher {
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.1");
+        additionalProps.put("jakarta.data.tck.version", "1.0.2");
 
         TCKRunner.build(persistenceServer, Type.JAKARTA, "Data")
                         .withPlatformVersion("11")
@@ -138,7 +138,7 @@ public class DataCoreTckLauncher {
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.1");
+        additionalProps.put("jakarta.data.tck.version", "1.0.2");
 
         TCKRunner.build(noSQLServer, Type.JAKARTA, "Data")
                         .withPlatformVersion("11")
