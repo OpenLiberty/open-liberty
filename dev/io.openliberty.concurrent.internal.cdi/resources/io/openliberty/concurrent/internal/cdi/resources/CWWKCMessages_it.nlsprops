@@ -37,3 +37,7 @@ CWWKC1411.qualified.res.err.useraction=Assicurarsi che la risorsa sia configurat
 CWWKC1412.qualifier.conflict=CWWKC1412E: L''artefatto applicativo {0} include pi\u00f9 definizioni di risorse {1} che hanno i qualificatori {2}. I nomi delle definizioni delle risorse {1} in conflitto sono {3}.
 CWWKC1412.qualifier.conflict.explanation=Ogni definizione di risorsa dello stesso tipo che ha un qualificatore deve avere un qualificatore diverso.
 CWWKC1412.qualifier.conflict.useraction=Assicurarsi che ogni definizione di risorsa dello stesso tipo abbia un qualificatore diverso o non abbia alcun qualificatore.
+
+CWWKC1413.sched.method.args=CWWKC1413E: Il metodo ` {0} ` del bean gestito CDI ` {1} ` \u00e8 annotato con `Schedule`, ma non viene pianificato automaticamente poich\u00e9 ai metodi annotati con `Schedule` non \u00e8 consentito avere parametri.
+CWWKC1413.sched.method.args.explanation=I metodi contrassegnati come "Schedule" non devono avere parametri.
+CWWKC1413.sched.method.args.useraction=Rimuovere i parametri dal metodo oppure rimuovere l'annotazione `Schedule` dal metodo.

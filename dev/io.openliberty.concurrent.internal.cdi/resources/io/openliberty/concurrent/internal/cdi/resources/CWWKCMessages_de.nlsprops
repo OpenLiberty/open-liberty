@@ -37,3 +37,7 @@ CWWKC1411.qualified.res.err.useraction=Stellen Sie sicher, dass die Ressource ko
 CWWKC1412.qualifier.conflict=CWWKC1412E: Das {0} Anwendungsartefakt enth\u00e4lt mehrere {1} Ressourcendefinitionen, die die {2} Qualifikatoren aufweisen. Die Namen der widerspr\u00fcchlichen {1} Ressourcendefinitionen sind {3}.
 CWWKC1412.qualifier.conflict.explanation=Jede Ressourcendefinition desselben Typs, die einen Qualifier hat, muss einen anderen Qualifier haben.
 CWWKC1412.qualifier.conflict.useraction=Vergewissern Sie sich, dass jede Ressourcendefinition desselben Typs einen anderen Qualifier oder gar keinen Qualifier hat.
+
+CWWKC1413.sched.method.args=CWWKC1413E: Die Methode \u201e {0} \u201c des CDI-verwalteten Beans \u201e {1} \u201c ist mit der Annotation \u201eSchedule\u201c versehen, wird jedoch nicht automatisch eingeplant, da Methoden mit der Annotation \u201eSchedule\u201c keine Parameter haben d\u00fcrfen.
+CWWKC1413.sched.method.args.explanation=Methoden, die mit \u201eSchedule\u201c gekennzeichnet sind, d\u00fcrfen keine Parameter haben.
+CWWKC1413.sched.method.args.useraction=Entfernen Sie die Parameter aus der Methode oder entfernen Sie die Annotation \u201eSchedule\u201c aus der Methode.

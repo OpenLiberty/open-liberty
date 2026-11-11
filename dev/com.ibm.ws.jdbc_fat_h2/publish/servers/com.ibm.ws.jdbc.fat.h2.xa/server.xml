@@ -1,0 +1,47 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <feature>componenttest-2.0</feature>
+    <feature>jdbc-4.3</feature>
+    <feature>servlet-6.1</feature>
+    <feature>jndi-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="H2XATestApp.war">
+    <classloader commonLibraryRef="H2Lib"/>
+  </application>
+
+  <library id="H2Lib">
+    <file name="${shared.resource.dir}/h2/h2.jar"/>
+  </library>
+
+  <!-- Database 1 XA DataSource -->
+  <dataSource id="h2xa-ds1" jndiName="jdbc/h2xa-ds1" type="javax.sql.XADataSource">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="jdbc:h2:mem:xadb1;DB_CLOSE_DELAY=-1" user="sa" password=""/>
+  </dataSource>
+
+  <!-- Database 2 XA DataSource -->
+  <dataSource id="h2xa-ds2" jndiName="jdbc/h2xa-ds2" type="javax.sql.XADataSource">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 URL="jdbc:h2:mem:xadb2;DB_CLOSE_DELAY=-1" user="sa" password=""/>
+  </dataSource>
+
+  <javaPermission codeBase="${shared.resource.dir}/h2/h2.jar"
+                  className="java.security.AllPermission"/>
+
+</server>

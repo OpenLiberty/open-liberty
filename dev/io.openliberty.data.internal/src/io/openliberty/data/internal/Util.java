@@ -40,10 +40,13 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.cdi.RepositoryProducer;
 import jakarta.data.Order;
@@ -59,6 +62,20 @@ import jakarta.transaction.Status;
  * A location for helper methods that do not require any state.
  */
 public class Util {
+    /**
+     * jakarta.enterprise.concurrent.Asynchronous.class; null if unavailable
+     */
+    private static final Class<? extends Annotation> ASYNCHRONOUS_ANNO_CLASS = //
+                    loadAsyncAnnoClass();
+
+    /**
+     * Asynchronous repository method return types that allow for chaining
+     * dependent stages.
+     */
+    public static final Set<Class<?>> ASYNC_STAGE_RETURN_TYPES = //
+                    Set.of(CompletionStage.class,
+                           CompletableFuture.class);
+
     /**
      * Class name of the Jakarta Persistence AttributeConverter
      */
@@ -80,9 +97,19 @@ public class Util {
                             Update.class.getSimpleName());
 
     /**
+     * Query hint and map key for a fetch graph.
+     */
+    public static final String FETCHGRAPH = "jakarta.persistence.fetchgraph";
+
+    /**
      * Query hint and map key for a load graph.
      */
-    static final String LOADGRAPH = "jakarta.persistence.loadgraph";
+    public static final String LOADGRAPH = "jakarta.persistence.loadgraph";
+
+    /**
+     * Query hint and map key for a lock scope.
+     */
+    public static final String LOCK_SCOPE = "jakarta.persistence.lock.scope";
 
     /**
      * List of valid prefixes for Query by Method Name methods of a stateful
@@ -202,16 +229,6 @@ public class Util {
                            java.util.Calendar.class, // deprecated in JPA 3.2
                            java.util.Date.class, // deprecated in JPA 3.2
                            ZonedDateTime.class); // would be useful if it worked
-
-    /**
-     * Valid types for when a repository method computes an update count
-     */
-    public static final Set<Class<?>> UPDATE_COUNT_TYPES = //
-                    Set.of(boolean.class, Boolean.class,
-                           int.class, Integer.class,
-                           long.class, Long.class,
-                           void.class, Void.class,
-                           Number.class);
 
     /**
      * Valid types for jakarta.persistence.Version, except for
@@ -359,6 +376,24 @@ public class Util {
         NON_ENTITY_RESULT_TYPES.add(BigInteger.class);
         NON_ENTITY_RESULT_TYPES.add(Object.class);
         NON_ENTITY_RESULT_TYPES.add(String.class);
+    }
+
+    /**
+     * Attempt to load the class for Jakarta Concurrency's Asynchronous annotation.
+     *
+     * @return the class if available; otherwise null
+     */
+    @FFDCIgnore(ClassNotFoundException.class)
+    private static Class<? extends Annotation> loadAsyncAnnoClass() {
+        try {
+            @SuppressWarnings("unchecked")
+            Class<? extends Annotation> c = (Class<? extends Annotation>) //
+            Util.class.getClassLoader() //
+                            .loadClass("jakarta.enterprise.concurrent.Asynchronous");
+            return c;
+        } catch (ClassNotFoundException x) {
+            return null;
+        }
     }
 
     /**
@@ -528,6 +563,24 @@ public class Util {
         return types.stream() //
                         .map(Class::getSimpleName) //
                         .collect(Collectors.joining(", ", "[", "]"));
+    }
+
+    /**
+     * Determines if the Jakarta Data provider must submit a repository method
+     * to run asynchronously because it returns a completion stage, but does
+     * not have an Asynchronous annotation that would automatically cause it
+     * to run asynchronously. If the Jakarta Concurrency feature that provides
+     * the Asynchronous annotation is not enabled, the repository method is
+     * considered to not have the annotation.
+     *
+     * @param method a repository method
+     * @return true if the method meets the criteria, otherwise false.
+     */
+    @Trivial
+    static final boolean returnsCompletionStageAndLacksAsync(Method method) {
+        return ASYNC_STAGE_RETURN_TYPES.contains(method.getReturnType()) &&
+               (ASYNCHRONOUS_ANNO_CLASS == null ||
+                !method.isAnnotationPresent(ASYNCHRONOUS_ANNO_CLASS));
     }
 
     /**

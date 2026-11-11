@@ -37,3 +37,7 @@ CWWKC1411.qualified.res.err.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, 
 CWWKC1412.qualifier.conflict=CWWKC1412E: A(z) {0} alkalmaz\u00e1sm\u0171term\u00e9k t\u00f6bb {1} er\u0151forr\u00e1s-defin\u00edci\u00f3t tartalmaz, amelyek rendelkeznek a(z) {2} min\u0151s\u00edt\u0151vel. Az \u00fctk\u00f6z\u0151 {1} er\u0151forr\u00e1s-defin\u00edci\u00f3k nevei: {3} .
 CWWKC1412.qualifier.conflict.explanation=Minden azonos t\u00edpus\u00fa, min\u0151s\u00edt\u0151vel rendelkez\u0151 er\u0151forr\u00e1s-defin\u00edci\u00f3nak m\u00e1s min\u0151s\u00edt\u0151vel kell rendelkeznie.
 CWWKC1412.qualifier.conflict.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy minden azonos t\u00edpus\u00fa er\u0151forr\u00e1s-defin\u00edci\u00f3 m\u00e1s min\u0151s\u00edt\u0151vel rendelkezik, vagy nem rendelkezik min\u0151s\u00edt\u0151vel.
+
+CWWKC1413.sched.method.args=CWWKC1413E: A ` {1} ` CDI-kezel\u00e9s\u0171 bean ` {0} ` met\u00f3dusa `Schedule` annot\u00e1ci\u00f3val van ell\u00e1tva, de nem ker\u00fcl automatikusan \u00fctemez\u00e9sre, mivel a `Schedule` annot\u00e1ci\u00f3val ell\u00e1tott met\u00f3dusok nem tartalmazhatnak param\u00e9tereket.
+CWWKC1413.sched.method.args.explanation=A \u201eSchedule\u201d jel\u00f6l\u00e9ssel ell\u00e1tott met\u00f3dusoknak nem lehetnek param\u00e9tereik.
+CWWKC1413.sched.method.args.useraction=T\u00e1vol\u00edtsa el a param\u00e9tereket a met\u00f3dusb\u00f3l, vagy t\u00e1vol\u00edtsa el a Schedule annot\u00e1ci\u00f3t a met\u00f3dusb\u00f3l.

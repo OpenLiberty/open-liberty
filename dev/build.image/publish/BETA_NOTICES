@@ -660,12 +660,12 @@ Codemodel Core [codemodel] (Copyright 2010-2023 Oracle and/or its affiliates) (C
 DTD Parser [dtd-parser] (Copyright 1998-2018 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
 DTD Parser [dtd-parser] (Copyright 1998-2021 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
 DTD Parser [dtd-parser] (Copyright 1998-2022 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
-EclipseLink Core [org.eclipse.persistence.core] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2019-2025 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Copyright Oracle and/or its affiliates) (Eclipse.org - EclipseLink Project)
+EclipseLink Core [org.eclipse.persistence.core] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2019-2025 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Eclipse.org - EclipseLink Project)
 Extended StAX API [stax-ex] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Eclipse Foundation)
 Extended StAX API [stax-ex] (Copyright 1997-2021 Oracle and) (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
 Extended StAX API [stax-ex] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
 GMBAL (API only) [gmbal-api-only] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2019-2021 Oracle and/or its affiliates) (Eclipse Foundation)
-Hamcrest Core [hamcrest-core] (Copyright 2000-2006 www.hamcrest.org) (Hamcrest)
+Hamcrest Core [hamcrest-core] (Copyright 2000-2006 www.hamcrest.org) (Copyright 2006 Hamcrest)
 JAX-WS RI Runtime (jaxws-rt) [jaxws-rt] (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 JAX-WS RI Tools (jaxws-tools) [jaxws-tools] (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020 Oracle and/or its affiliates) (Eclipse Foundation)
@@ -851,7 +851,7 @@ JavaBeans Activation Framework (JAF) [activation] http://java.sun.com/products/j
 activation (https://github.com/javaee/activation/tree/JAF-1_2_0)
 connector (https://mvnrepository.com/artifact/javax.resource/connector-api)
 el (https://github.com/javaee/uel-ri)
-javax.json(https://repo1.maven.org/maven2/javax/json/javax.json-api/)
+javax.json (https://repo1.maven.org/maven2/javax/json/javax.json-api/)
 jaxrpc (https://github.com/javaee/jax-rpc-ri)
 jaxws-api (https://github.com/javaee/jax-ws-spec)
 jcdi (https://repo1.maven.org/maven2/javax/enterprise/cdi-api/1.0/cdi-api-1.0-sources.jar)
@@ -905,7 +905,7 @@ javax.annotation API [javax.annotation-api] http://jcp.org/en/jsr/detail?id=250
 javax.ejb API [javax.ejb-api] https://glassfish.java.net
 javax.enterprise.concurrent-api http://www.oracle.com/
 javax.interceptor API [javax.interceptor-api] https://glassfish.java.net
-javax.json(https://repo1.maven.org/maven2/javax/json/javax.json-api/)
+javax.json (https://repo1.maven.org/maven2/javax/json/javax.json-api/)
 javax.json.bind-api https://javaee.github.io/jsonb-spec
 javax.resource API [javax.resource-api] https://glassfish.java.net
 javax.ws.rs-api http://www.oracle.com/
@@ -1040,11 +1040,9 @@ Party Code for which you are requesting the source code.
 
 
 JBoss Logging I18n Annotation Processor [jboss-logging-processor] (Copyright 2010 Red Hat Inc., and individual contributors)
-LRA Coordinator jar [lra-coordinator-jar] (Copyright 2017 Red Hat, Inc., and individual contributors)
 Narayana LRA [narayana-lra] (Copyright 2017 Red Hat, Inc. and/or its affiliates)
 Narayana: ArjunaCore arjuna [arjuna] (Copyright 2008 Red Hat Middleware)
 Narayana: common [common] (Copyright 2008 Red Hat Middleware LLC, and others contributors as indicated by the @authors tag)
-lra-service-base (Copyright 2017 Red Hat, Inc., and individual contributors)
 
 
                   GNU LESSER GENERAL PUBLIC LICENSE
@@ -1580,6 +1578,7 @@ Animal Sniffer Annotations [animal-sniffer-annotations] (Codehaus) (Copyright 20
 Animal Sniffer Annotations [animal-sniffer-annotations] (Copyright 2009 codehaus.org) (MojoHaus)
 Checker Qual [checker-compat-qual](Copyright Not Found)
 Checker Qual [checker-qual] (Copyright 2004 by the Checker Framework developers)
+SLF4J API Module [slf4j-api] (Copyright 2005 QOS.ch)
 SLF4J API Module [slf4j-api] (QOS.ch)
 SLF4J JDK14 Binding [slf4j-jdk14] (QOS.ch)
 ansi-regex (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
@@ -1589,7 +1588,7 @@ async (Copyright 2010-2018 Caolan McMahon)
 autolinker (Copyright 2014 Gregory Jacobs (http://greg-jacobs.com))
 available-typed-arrays (Copyright 2020 Inspect JS)
 base64-js (Copyright 2014 Jameson Little)
-bootstrap (Copyright 2011-2021 The Bootstrap Authors) (Copyright 2011-2021 Twitter, Inc) (Copyright the Bootstrap Authors and Twitter, Inc)
+bootstrap (Copyright 2011-2021 The Bootstrap Authors) (Copyright 2011-2021 Twitter, Inc)
 braces (Copyright 2014 Jon Schlinkert) (Copyright 2019 Jon Schlinkert" (https://github.com/jonschlinkert))
 buffer (Copyright Feross Aboukhadijeh, and other contributors)
 cacheable-lookup (Copyright 2019 Szymon Marczak)
@@ -1604,7 +1603,7 @@ character-reference-invalid (Copyright 2015 Titus Wormer <tituswormer@gmail.com>
 ci-info (Copyright 2016-2018 Thomas Watson Steen)
 classnames (Copyright 2018 Jed Watson)
 clone (Copyright 2015 Paul Vorbach)
-clone-response (Copyright 2017 Luke Childs) (Copyright Luke Childs)
+clone-response (Copyright 2017 Luke Childs)
 color (Copyright 2012 Heather Arthur)
 color-convert (Copyright 2011-2016 Heather Arthur <fayearthur@gmail.com>) (Copyright 2011-2016 Heather Arthur and Josh Junon)
 color-name (Copyright 2015 Dmitry Ivanov)
@@ -1745,7 +1744,7 @@ require-directory (Copyright 2011 Troy Goode <troygoode@gmail.com>)
 requires-port (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
 reselect (Copyright 2015-2018 Reselect Contributors)
 resolve-alpn (Copyright 2018 Szymon Marczak)
-responselike (Copyright 2017 Luke Childs) (Copyright Luke Childs)
+responselike (Copyright 2017 Luke Childs)
 ret (Copyright 2011 by fent)
 reusify (Copyright 2015 Matteo Collina)
 run-parallel (Copyright Feross Aboukhadijeh)

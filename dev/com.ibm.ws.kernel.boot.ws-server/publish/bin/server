@@ -674,6 +674,24 @@ addPlatformSpecificJvmFlags()
                   ;;
           esac
       fi
+      # Add --add-exports for FIPS 140-3 collective provider on z/OS IBM Semeru Java 17 and 21,
+      # where com.ibm.crypto.plus.provider resides inside java.base.
+      # (z/OS only supports LTS releases 11, 17, 21, 25; in Java 25 OpenJCEPlus moves to its
+      # own module and this is no longer needed.)
+      if ( [ "${JAVA_VERSION_MAJOR}" -eq 17 ] || [ "${JAVA_VERSION_MAJOR}" -eq 21 ] ) 2>/dev/null; then
+          case "${SERVER_JVM_OPTIONS_QUOTED}" in
+              *--add-exports=java.base/com.ibm.crypto.plus.provider=ALL-UNNAMED*) ;;
+              *)
+                  SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} '--add-exports=java.base/com.ibm.crypto.plus.provider=ALL-UNNAMED'"
+                  ;;
+          esac
+          case "${JVM_OPTIONS_QUOTED}" in
+              *--add-exports=java.base/com.ibm.crypto.plus.provider=ALL-UNNAMED*) ;;
+              *)
+                  JVM_OPTIONS_QUOTED="${JVM_OPTIONS_QUOTED} '--add-exports=java.base/com.ibm.crypto.plus.provider=ALL-UNNAMED'"
+                  ;;
+          esac
+      fi
   fi
 }
 
@@ -1758,7 +1776,11 @@ enableFIPS140_3()
         if [ -n "${SEMERU_FIPS}" ]; then
           saveIFS=$IFS
           IFS=":"
-          ENABLE_FIPS140_3="${WLP_INSTALL_DIR}/lib/security/fips140_3/FIPS140-3-Liberty.properties:${ENABLE_FIPS140_3}"
+          if [ "${uname}" = OS/390 ] && [ -f "${WLP_INSTALL_DIR}/lib/security/fips140_3/FIPS140-3-Liberty-zos.properties" ]; then
+            ENABLE_FIPS140_3="${WLP_INSTALL_DIR}/lib/security/fips140_3/FIPS140-3-Liberty-zos.properties:${ENABLE_FIPS140_3}"
+          else
+            ENABLE_FIPS140_3="${WLP_INSTALL_DIR}/lib/security/fips140_3/FIPS140-3-Liberty.properties:${ENABLE_FIPS140_3}"
+          fi
           for file in ${ENABLE_FIPS140_3}; do
             profileFile=$file
           done

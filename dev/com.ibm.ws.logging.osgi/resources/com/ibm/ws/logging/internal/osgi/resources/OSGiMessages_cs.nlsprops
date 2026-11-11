@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,3 +51,7 @@ OSGI_ERROR_MSG.useraction=Dal\u0161\u00ed informace viz p\u0159\u00edslu\u0161n\
 OSGI_BUNDLE_EXCEPTION=CWWKE0702E: {0}
 OSGI_BUNDLE_EXCEPTION.explanation=V r\u00e1mci OSGi do\u0161lo k v\u00fdjimce BundleException.
 OSGI_BUNDLE_EXCEPTION.useraction=Informace naleznete ve zpr\u00e1v\u011b v\u00fdjimky.
+
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W=CWWKE0710W: ID zpr\u00e1vy s z\u00e1stupn\u00fdm znakem pro {0} nen\u00ed platn\u00e9. O\u010dek\u00e1van\u00e1 syntaxe je <prefix>*[<log-level]], kde log-level je voliteln\u00fd jeden znak, kter\u00fd p\u0159edstavuje jednu z n\u00e1sleduj\u00edc\u00edch \u00farovn\u00ed protokolov\u00e1n\u00ed: I pro informaci, A pro audit, W pro varov\u00e1n\u00ed nebo E pro chybu.
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W.explanation=ID zpr\u00e1vy obsahuj\u00edc\u00ed z\u00e1stupn\u00fd znak neodpov\u00edd\u00e1 o\u010dek\u00e1van\u00e9 syntaxi. O\u010dek\u00e1van\u00e1 syntaxe je <prefix>*[<log-level]]. Hodnota \u00farovn\u011b protokolu je voliteln\u00fd jeden znak, kter\u00fd p\u0159edstavuje \u00farove\u0148 protokolu \u201eInformace\u201c, \u201eAudit\u201c, \u201eVarov\u00e1n\u00ed\u201c nebo \u201eChyba\u201c.
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W.useraction=Aktualizujte ID zpr\u00e1vy tak, aby m\u011blo o\u010dek\u00e1vanou syntaxi: <prefix>*[<log-level]. Zadejte platn\u00fd znak: I pro informace, A pro audit, W pro varov\u00e1n\u00ed, E pro chybu, nebo hodnotu \u00farovn\u011b protokolov\u00e1n\u00ed vynechte. Pokud neprovedete \u017e\u00e1dn\u00e9 kroky, bude toto ID zpr\u00e1vy ignorov\u00e1no a odpov\u00eddaj\u00edc\u00ed zpr\u00e1vy nebudou zaznamen\u00e1ny do protokolu.

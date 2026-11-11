@@ -1,0 +1,19 @@
+<server description="Security authentication FAT configuration for authentication cache disabled">
+
+	<featureManager>
+		<feature>appSecurity-1.0</feature>
+		<feature>securitylibertyinternals-1.0</feature>
+	</featureManager>
+
+	<authentication id="Basic" cacheEnabled="false" />
+
+	<basicRegistry id="basic" realm="BasicRealm">
+		<user name="user1" password="user1pwd" />
+		<group name="group1">
+			<member name="user1" />
+		</group>
+	</basicRegistry>
+
+	<include location="../fatTestPorts.xml"/>
+
+</server>

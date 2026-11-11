@@ -49,3 +49,6 @@ option-key.outputVersion=--outputVersion
 
 # "outputVersion=2.0" is not translated.  "xsd:any" is not translated
 option-desc.outputVersion=Se si specifica outputVersion=2.0, nel file di output viene utilizzato solo l'elemento xsd:any, in modo che gli elementi sconosciuti superino la convalida XSD; tuttavia, ci\u00f2 comporta il mancato superamento della convalida per gli elementi noti.
+
+option-key.strict=--strict
+option-desc.strict=Creare uno schema che consenta di verificare la validit\u00e0 solo degli attributi definiti.

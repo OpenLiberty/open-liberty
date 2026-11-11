@@ -100,10 +100,8 @@ public class StatelessConfigChangeOnRestoreTest extends FATServletClient {
     @Test
     public void testStatelessToStatefulConfigChange() throws Exception {
         // Initialize client in stateful mode (after restore, server is now stateful)
-        McpClient client = new McpClient(server, "/statelessConfigChangeTest", McpClient.StateMode.STATEFUL);
-        client.initialize();
-
-        try {
+        try (McpClient client = McpClient.builder(server, "/statelessConfigChangeTest").build()) {
+            client.initialize();
             // Test a tool call works in stateful mode
             String toolRequest = """
                             {
@@ -145,9 +143,6 @@ public class StatelessConfigChangeOnRestoreTest extends FATServletClient {
                 assertTrue("Response should contain request number",
                            response.contains("Request " + (i + 1)));
             }
-        } finally {
-            // Clean up session
-            client.deleteSession();
         }
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -255,8 +255,7 @@ public class PackageProcessor implements ArchiveProcessor {
                     archive.addEntryConfigs(createAllConfigs(processName, runtimeOnly));
                 } else if (includeUsr(val)) {
                     archive.addEntryConfigs(createUsrConfigs(processName, true));
-                } else if (bootProps.getProcessType() != BootstrapConstants.LOC_PROCESS_TYPE_CLIENT &&
-                           includeMinifyorMinifyRunnable(val)) {
+                } else if (includeMinifyorMinifyRunnable(val)) {
                     archive.addEntryConfigs(createMinifyConfigs(processName));
                 } else {
                     System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warn.packageServer.include.unknownOption"), val));

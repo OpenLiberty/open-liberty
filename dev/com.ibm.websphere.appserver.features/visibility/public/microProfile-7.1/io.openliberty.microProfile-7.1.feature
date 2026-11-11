@@ -7,11 +7,10 @@ IBM-App-ForceRestart: install, \
 IBM-ShortName: microProfile-7.1
 Subsystem-Name: MicroProfile 7.1
 -features=\
-  io.openliberty.cdi-4.0; ibm.tolerates:="4.1", \
+  io.openliberty.microprofile.internal.cdi-4.0; ibm.tolerates:="4.1", \
   io.openliberty.jsonb-3.0, \
   io.openliberty.jsonp-2.1, \
-  io.openliberty.restfulWS-3.1; ibm.tolerates:="4.0", \
-  io.openliberty.restfulWSClient-3.1; ibm.tolerates:="4.0", \
+  io.openliberty.microprofile.internal.rest-3.1; ibm.tolerates:="4.0", \
   io.openliberty.mpCompatible-7.1, \
   io.openliberty.mpConfig-3.1, \
   io.openliberty.mpHealth-4.0, \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import com.ibm.ws.jpa.tests.eclipselink.tests.TestOLGH9018_EJB;
 import com.ibm.ws.jpa.tests.eclipselink.tests.TestOLGH9018_Web;
 import com.ibm.ws.jpa.tests.eclipselink.tests.TestOLGH9035_EJB;
 import com.ibm.ws.jpa.tests.eclipselink.tests.TestOLGH9035_Web;
+import com.ibm.ws.jpa.tests.eclipselink.tests.TestValueTypeLocks_Web;
 
 import componenttest.rules.repeater.RepeatTests;
 
@@ -82,6 +83,7 @@ import componenttest.rules.repeater.RepeatTests;
                 TestOLGH16970_Web.class,
                 TestOLGH19176_EJB.class,
                 TestOLGH19176_Web.class,
+                TestValueTypeLocks_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite extends AbstractFATSuite {

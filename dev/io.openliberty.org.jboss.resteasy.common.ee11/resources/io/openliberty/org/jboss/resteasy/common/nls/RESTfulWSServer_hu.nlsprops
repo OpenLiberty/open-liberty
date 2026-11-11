@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -71,6 +71,26 @@ INVALID_PROVIDER_CWWKW1305W.useraction=Hogy meggy\u0151z\u0151dj\u00f6n arr\u00f
 INVALID_LONG_PROPERTY_CWWKW1306W=CWWKW1306W: A(z) {0} \u00fcgyf\u00e9l tulajdons\u00e1g csak hossz\u00fa eg\u00e9sz sz\u00e1m lehet, de helytelen\u00fcl lett be\u00e1ll\u00edtva a(z) {1} \u00e9rt\u00e9kkel. A be\u00e1ll\u00edt\u00e1s figyelmen k\u00edv\u00fcl marad.
 INVALID_LONG_PROPERTY_CWWKW1306W.explanation=Az \u00fcgyf\u00e9l tulajdons\u00e1gait, p\u00e9ld\u00e1ul az id\u0151korl\u00e1t be\u00e1ll\u00edt\u00e1sokat, pozit\u00edv hossz\u00fa eg\u00e9sz sz\u00e1mk\u00e9nt vagy hossz\u00fa eg\u00e9sz sz\u00e1mm\u00e1 alak\u00edthat\u00f3 karaktersorozatk\u00e9nt kell be\u00e1ll\u00edtani. Ez az \u00fczenet azt jelzi, hogy egy \u00fcgyf\u00e9ltulajdons\u00e1g \u00e9rv\u00e9nytelen \u00e9rt\u00e9kkel ker\u00fclt be\u00e1ll\u00edt\u00e1sra. Ez\u00e9rt ez a tulajdons\u00e1g figyelmen k\u00edv\u00fcl marad.
 INVALID_LONG_PROPERTY_CWWKW1306W.useraction=Tekintse \u00e1t az alkalmaz\u00e1sk\u00f3dot \u00e9s a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1t annak meg\u00e1llap\u00edt\u00e1s\u00e1hoz, hogy a tulajdons\u00e1g hol lett helytelen\u00fcl be\u00e1ll\u00edtva, \u00e9s t\u00e1vol\u00edtsa el a tulajdons\u00e1got, vagy m\u00f3dos\u00edtsa \u00e9rv\u00e9nyes hossz\u00fa eg\u00e9sz sz\u00e1m \u00e9rt\u00e9kre.
+
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W=CWWKW1307W: Nem siker\u00fclt a ''{0}'' attrib\u00fatumot ''{1}'' \u00e9rt\u00e9kre be\u00e1ll\u00edtani.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.explanation=Az XML- TransformerFactory -megval\u00f3s\u00edt\u00e1s nem t\u00e1mogatja a megadott attrib\u00fatumot. A feldolgoz\u00e1s az alap\u00e9rtelmezett transzform\u00e1tor-konfigur\u00e1ci\u00f3val folytat\u00f3dik.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.useraction=\u00c1ll\u00edtsa be vagy friss\u00edtse egy olyan XML- TransformerFactory -megval\u00f3s\u00edt\u00e1sra, amely t\u00e1mogatja a ''{0}'' attrib\u00fatumot, hogy ezzel is hozz\u00e1j\u00e1ruljon a megfelel\u0151 biztons\u00e1gi meger\u0151s\u00edt\u00e9shez.
+
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W=CWWKW1308W: A CORS -sz\u0171r\u0151 konfigur\u00e1ci\u00f3ja egy helyettes\u00edt\u0151 karakterrel ell\u00e1tott eredetet (*) hat\u00e1roz meg, \u00e9s az allowCredentials attrib\u00fatumot true \u00e9rt\u00e9kre \u00e1ll\u00edtja. A b\u00f6ng\u00e9sz\u0151k nem enged\u00e9lyezik a helyettes\u00edt\u0151 karakterrel ell\u00e1tott eredet\u0171 hiteles\u00edt\u0151 adatokat, ez\u00e9rt a CORS -sz\u0171r\u0151 letiltja a hiteles\u00edt\u0151 adatok t\u00e1mogat\u00e1s\u00e1t. A hiteles\u00edt\u0151 adatok t\u00e1mogat\u00e1s\u00e1hoz a helyett, hogy helyettes\u00edt\u0151 karaktert tartalmaz\u00f3 forr\u00e1st adna meg, hat\u00e1rozza meg pontosan a megengedett forr\u00e1sokat.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.explanation=A W3C Cross-Origin Resource Sharing ( W3C ) specifik\u00e1ci\u00f3ja tiltja az Access-Control-Allow-Credentials v\u00e1laszfejl\u00e9c haszn\u00e1lat\u00e1t, ha az Access-Control-Allow-Origin v\u00e1laszfejl\u00e9c \u00e9rt\u00e9ke a helyettes\u00edt\u0151 karakter (*). Ez\u00e9rt a CORS -sz\u0171r\u0151 a specifik\u00e1ci\u00f3nak val\u00f3 megfelel\u00e9s \u00e9rdek\u00e9ben letiltja a hiteles\u00edt\u0151 adatok t\u00e1mogat\u00e1s\u00e1t.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.useraction=Ha hiteles\u00edt\u0151 adatokra van sz\u00fcks\u00e9g, a CORS -sz\u0171r\u0151t \u00fagy \u00e1ll\u00edtsa be, hogy a helyett, hogy helyettes\u00edt\u0151 karaktert haszn\u00e1lna, kifejezetten megadja az enged\u00e9lyezett forr\u00e1sokat. Ha hiteles\u00edt\u0151 adatokra nincs sz\u00fcks\u00e9g, akkor vagy t\u00e1vol\u00edtsa el az allowCredentials attrib\u00fatumot, vagy \u00e1ll\u00edtsa be az allowCredentials attrib\u00fatumot false \u00e9rt\u00e9kre.
+
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E=CWWKW1309E: \u00c9rv\u00e9nytelen k\u00e9pm\u00e9retek: {0} \u00d7 {1}
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.explanation=A k\u00e9pfejl\u00e9cben megadott k\u00e9pm\u00e9retek nem \u00e9rv\u00e9nyesek. A k\u00e9p sz\u00e9less\u00e9g\u00e9nek \u00e9s magass\u00e1g\u00e1nak egyar\u00e1nt pozit\u00edv \u00e9rt\u00e9knek kell lennie. Ez a hiba akkor fordulhat el\u0151, ha a k\u00e9pf\u00e1jl s\u00e9r\u00fclt, vagy hi\u00e1nyos fejl\u00e9cadatokat tartalmaz.
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a felt\u00f6lt\u00f6tt k\u00e9p \u00e9rv\u00e9nyes, s\u00e9r\u00fcl\u00e9smentes k\u00e9pf\u00e1jl.
+
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E=CWWKW1310E: \u00c9rv\u00e9nytelen miniat\u0171r m\u00e9retek: {0} x {1}
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.explanation=A k\u00e9pfejl\u00e9cben megadott miniat\u0171r m\u00e9retek nem \u00e9rv\u00e9nyesek. A miniat\u0171r sz\u00e9less\u00e9g\u00e9nek \u00e9s magass\u00e1g\u00e1nak egyar\u00e1nt pozit\u00edv \u00e9rt\u00e9knek kell lennie. Ez a hiba akkor fordulhat el\u0151, ha a k\u00e9pf\u00e1jl s\u00e9r\u00fclt, vagy hi\u00e1nyos miniat\u0171r-adatokat tartalmaz.
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a felt\u00f6lt\u00f6tt k\u00e9p \u00e9rv\u00e9nyes, s\u00e9r\u00fcl\u00e9smentes k\u00e9pf\u00e1jl, amelynek a miniat\u0171r m\u00e9retei megfelel\u0151ek.
+
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E=CWWKW1311E: A k\u00e9p m\u00e9rete {0} \u00d7 {1} ( {2} ) meghaladja a {3} -es maxim\u00e1lis k\u00fcsz\u00f6b\u00e9rt\u00e9ket
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.explanation=A k\u00e9p becs\u00fclt dek\u00f3dolt m\u00e9rete meghaladja a be\u00e1ll\u00edtott maxim\u00e1lis k\u00fcsz\u00f6b\u00e9rt\u00e9ket. A mem\u00f3riahaszn\u00e1lat korl\u00e1toz\u00e1sa \u00e9rdek\u00e9ben a k\u00e9r\u00e9s elutas\u00edt\u00e1sra ker\u00fcl, HTTP 400-as \u00e1llapotk\u00f3ddal.
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.useraction=Cs\u00f6kkentse a k\u00e9p m\u00e9reteit, vagy n\u00f6velje a k\u00fcsz\u00f6b\u00e9rt\u00e9ket \u00fagy, hogy a ` dev.resteasy.image.threshold ` rendszerbe\u00e1ll\u00edt\u00e1st magasabb \u00e9rt\u00e9kre \u00e1ll\u00edtja be (p\u00e9ld\u00e1ul 500 MB-ra). \u00c1ll\u00edtsd be a \u00e9rt\u00e9ket -1 -re, ha teljesen ki akarod kapcsolni az ellen\u0151rz\u00e9st.
 
 # Same message as in /com.ibm.ws.jaxrs.2.0.common/resources/com/ibm/ws/jaxrs20/common/internal/resources/JaxRsCommonMessages.nlsprops
 

@@ -198,7 +198,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public void setNettyResponse(HttpResponse response) {
         this.nettyResponse = response;
         super.setNettyResponse(response);
-        this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest);
+        this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest, ((NettyRequestMessage)getRequest()).getStreamId());
     }
 
     public FullHttpRequest getNettyRequest() {
@@ -277,6 +277,28 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "updatePersistence(inbound) updated: " + isPersistent());
+        }
+    }
+
+    /**
+     * Netty-path hook called by {@code prepareNettyHeadersToSend} before the
+     * {@code isPersistent()} check that injects {@code Connection: close}.
+     *
+     * <p>Mirrors the error-code rule from the inbound {@link #updatePersistence}
+     * override: any 4xx/5xx response disables persistence so that
+     * {@code Connection: close} is added to the outgoing headers.
+     */
+    @Override
+    protected void updatePersistenceForNettyResponse() {
+        if (getResponse().getStatusCode().isErrorCode()) {
+            // 346196.4 - error code turns off persistence (mirrors legacy updatePersistence override)
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "updatePersistenceForNettyResponse: error status code disabling persistence.");
+            }
+            setPersistent(false);
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "updatePersistenceForNettyResponse updated: " + isPersistent());
         }
     }
 
@@ -568,7 +590,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     @Override
     public HttpResponseMessage getResponse() {
         if (Objects.isNull(this.response) && Objects.nonNull(this.nettyContext)) {
-            this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest);
+            this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest, ((NettyRequestMessage)getRequest()).getStreamId());
 
         }
 
@@ -682,7 +704,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         }
 
         if (getHttpConfig().useNetty()) {
-            sendHeaders(this.nettyResponse);
+            HttpResponse responseToWrite = this.nettyResponse;
+            if (getResponse() instanceof NettyResponseMessage) {
+                responseToWrite = ((NettyResponseMessage) getResponse()).getResponse();
+                prepareNettyHeadersToSend();
+            }
+            writeNettyResponse(responseToWrite);
         } else {
             sendHeaders(getResponseImpl());
 
@@ -1887,7 +1914,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         };
 
         state.arm(success, error);
-        ReadFlowHandler.setBodyReadWanted(this.nettyContext, true);
+        ReadFlowHandler.setBodyReadWanted(this.nettyContext.channel(), true);
     }
 
     public void countDownFirstReadLatch(boolean force) {

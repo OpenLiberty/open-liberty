@@ -36,6 +36,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.jaxws.wsat.components.WSATConfigService;
+import com.ibm.ws.jaxws.wsat.components.WSATFeatureService;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.wsat.service.Handler;
 import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.wsspi.http.VirtualHost;
@@ -64,6 +66,8 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     private static final String SSLRef = "sslRef";
     private static final String proxyRef = "externalURLPrefix";
     private static final String asyncResponseTimeoutRef = "asyncResponseTimeout";
+    private static final String PROPAGATION = "propagation";
+    private static final String PROPAGATION_CHECK_WSDL = "check_wsdl";
     private static final String WSATContextRoot = "/ibm/wsatservice";
 
     private static final String HTTPCONFIGSERVICE_REFERENCE_NAME = "httpOptions";
@@ -74,15 +78,23 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     private static final AtomicServiceReference<Handler> handlerService = new AtomicServiceReference<Handler>(WSATHANDLERSERVICE_REFERENCE_NAME);
     private static final AtomicServiceReference<VariableRegistry> variableRegistryRef = new AtomicServiceReference<VariableRegistry>(VARIABLEREGISTRY_REFERENCE_NAME);
 
-    private boolean enabled;
-    private String sslId;
-    private String proxy;
-    private long asyncResponseTimeout;
-    private boolean clientAuth;
+    // These fields are written by the DS lifecycle thread in modified() and deactivate(), and
+    // read on request threads through the WSATConfigService getters, so they are volatile.
+    private volatile boolean enabled;
+    private volatile String sslId;
+    private volatile String proxy;
+    private volatile long asyncResponseTimeout;
+    private volatile boolean clientAuth;
+    private volatile boolean checkWsdlMode;
+    // The next two are only used by the DS lifecycle methods, so they need no volatile.
     private String configuredVirtualHostId = "default_host";
     private ServiceReference<VirtualHost> configuredVirtualHostRef = null;
+    // The actual VirtualHost service instance for the configured non-default virtual host.
+    // Obtained via BundleContext.getService() (not locateService) so it works regardless
+    // of whether the reference was DS-bound. Null when using default_host.
+    private volatile VirtualHost configuredVirtualHost = null;
 
-    private static WSATConfigService INSTANCE;
+    private static volatile WSATConfigService INSTANCE;
 
     public WSATConfigServiceImpl() {
         INSTANCE = this;
@@ -156,7 +168,14 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     protected void deactivate(ComponentContext cc) {
         // Remove the variable from VariableRegistry on deactivation
         unregisterVirtualHostVariable();
-        
+
+        // Release the directly-obtained VirtualHost service
+        if (configuredVirtualHostRef != null) {
+            cc.getBundleContext().ungetService(configuredVirtualHostRef);
+            configuredVirtualHostRef = null;
+            configuredVirtualHost = null;
+        }
+
         httpOptions.deactivate(cc);
         variableRegistryRef.deactivate(cc);
     }
@@ -166,38 +185,46 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         httpOptions.activate(cc);
         handlerService.activate(cc);
         variableRegistryRef.activate(cc);
-        
+
         // Read the configured virtual host reference from server.xml
         String virtualHostRef = (String) properties.get("virtualHostRef");
         if (virtualHostRef == null || virtualHostRef.isEmpty()) {
             virtualHostRef = "default_host";  // Use default if not configured
         }
-        
+
         if (TC.isDebugEnabled()) {
             Tr.debug(TC, "Configured virtual host: {0}", virtualHostRef);
         }
-        
+
         // Register the virtual host variable for WABInstaller to resolve
         registerVirtualHostVariable(virtualHostRef);
-        
-        // If the configured virtual host is different from what we're currently using,
-        // look it up and update our reference
+
+        // If the configured virtual host has changed, resolve the new VirtualHost service
+        // directly via BundleContext.getService() so getWSATUrl() can use it without going
+        // through AtomicServiceReference (which requires a DS-bound reference to work).
         if (!virtualHostRef.equals(configuredVirtualHostId)) {
             configuredVirtualHostId = virtualHostRef;
-            
+
+            // Release the previously-held service, if any
+            if (configuredVirtualHostRef != null) {
+                cc.getBundleContext().ungetService(configuredVirtualHostRef);
+                configuredVirtualHostRef = null;
+                configuredVirtualHost = null;
+            }
+
             if (!"default_host".equals(virtualHostRef)) {
-                // Look up the configured virtual host
                 ServiceReference<VirtualHost> newRef = lookupVirtualHost(cc, virtualHostRef);
                 if (newRef != null) {
-                    // Update to use the configured virtual host
-                    if (configuredVirtualHostRef != null) {
-                        httpOptions.unsetReference(configuredVirtualHostRef);
-                    }
-                    httpOptions.setReference(newRef);
-                    configuredVirtualHostRef = newRef;
-                    
-                    if (TC.isDebugEnabled()) {
-                        Tr.debug(TC, "Updated to use virtual host: {0}", virtualHostRef);
+                    VirtualHost vh = cc.getBundleContext().getService(newRef);
+                    if (vh != null) {
+                        configuredVirtualHostRef = newRef;
+                        configuredVirtualHost = vh;
+                        if (TC.isDebugEnabled()) {
+                            Tr.debug(TC, "Updated to use virtual host: {0}", virtualHostRef);
+                        }
+                    } else {
+                        Tr.warning(TC, "Configured virtual host {0} could not be resolved, using default_host", virtualHostRef);
+                        configuredVirtualHostId = "default_host";
                     }
                 } else {
                     Tr.warning(TC, "Configured virtual host {0} not found, using default_host", virtualHostRef);
@@ -222,9 +249,19 @@ public class WSATConfigServiceImpl implements WSATConfigService {
 
         clientAuth = (Boolean) properties.get(clientAuthRef);
 
+        // The propagation attribute is beta: it is hidden from the schema (ibm:beta) and,
+        // because the config layer does not enforce that, ignored here unless running a beta edition.
+        // Its default is supplied by the public wsAtomicTransaction-1.2 feature, so a value
+        // that is present without that feature has been set explicitly and can have no effect.
+        String propagationValue = ProductInfo.getBetaEdition() ? (String) properties.get(PROPAGATION) : null;
+        checkWsdlMode = PROPAGATION_CHECK_WSDL.equals(propagationValue);
+        if (propagationValue != null && TC.isDebugEnabled() && !WSATFeatureService.isPublicFeaturePresent()) {
+            Tr.debug(TC, "The propagation attribute is set to [{0}] but has no effect unless the wsAtomicTransaction-1.2 feature is enabled", propagationValue);
+        }
+
         if (TC.isDebugEnabled()) {
-            Tr.debug(TC, "SSLEnabled = [{0}], SSLRefId = [{1}], proxy = [{2}], clientAuth = [{3}], asyncResponseTimeout = [{4}]", enabled, sslId, proxy, clientAuth,
-                     asyncResponseTimeout);
+            Tr.debug(TC, "SSLEnabled = [{0}], SSLRefId = [{1}], proxy = [{2}], clientAuth = [{3}], asyncResponseTimeout = [{4}], propagation = [{5}]",
+                     enabled, sslId, proxy, clientAuth, asyncResponseTimeout, propagationValue);
         }
 
         String host = getWSATUrl();
@@ -343,6 +380,11 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     public String getWSATUrl() {
         if (proxy != null && proxy.length() > 0)
             return proxy + WSATContextRoot;
+        else if (configuredVirtualHost != null)
+            // Use the directly-obtained VirtualHost instance for the configured virtual host.
+            // This bypasses AtomicServiceReference.getService() which requires a DS-bound
+            // reference and would always return the default_host VirtualHost otherwise.
+            return configuredVirtualHost.getUrlString(WSATContextRoot, enabled);
         else
             return httpOptions.getService().getUrlString(WSATContextRoot, enabled);
     }
@@ -356,6 +398,12 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     @Trivial
     public boolean isClientAuthEnabled() {
         return clientAuth;
+    }
+
+    @Override
+    @Trivial
+    public boolean isCheckWsdlMode() {
+        return checkWsdlMode;
     }
 
     /**

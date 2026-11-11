@@ -196,6 +196,24 @@ abstract class JaxbPUnit {
     }
 
     /**
+     * Gets the names listed by {@code <package-descriptor>} elements.
+     * Not available prior to JPA 4.0 persistence schema.
+     * Returns an empty list when not present.
+     */
+    java.util.List<String> getPackageDescriptors() {
+        return java.util.Collections.emptyList();
+    }
+
+    /**
+     * Gets the names listed by {@code <module-descriptor>} elements.
+     * Not available prior to JPA 4.0 persistence schema.
+     * Returns an empty list when not present.
+     */
+    java.util.List<String> getModuleDescriptors() {
+        return java.util.Collections.emptyList();
+    }
+
+    /**
      * Gets the value of the properties property.
      *
      * @return value of the properties property.

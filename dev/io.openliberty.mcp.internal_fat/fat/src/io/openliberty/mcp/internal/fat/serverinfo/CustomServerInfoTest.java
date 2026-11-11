@@ -46,13 +46,13 @@ public class CustomServerInfoTest {
     private static final Class<?> c = CustomServerInfoTest.class;
 
     @Rule
-    public McpClient partialClient = new McpClient(server, "/partialServerInfoTest");
+    public McpClient partialClient = McpClient.builder(server, "/partialServerInfoTest").build();
 
     @Rule
-    public McpClient customClient = new McpClient(server, "/fullyCustomServerInfoTest");
+    public McpClient customClient = McpClient.builder(server, "/fullyCustomServerInfoTest").build();
 
     @Rule
-    public McpClient dynamicClient = new McpClient(server, "/dynamicServerInfoUpdateTest");
+    public McpClient dynamicClient = McpClient.builder(server, "/dynamicServerInfoUpdateTest").build();
 
     @Server("mcp-server-custom-info")
     public static LibertyServer server;
@@ -248,10 +248,8 @@ public class CustomServerInfoTest {
 
         // Re-initialize the session after config update since the old session was invalidated
         // Create a new client which will automatically establish a new session
-        McpClient newClient = new McpClient(server, "/dynamicServerInfoUpdateTest");
-        newClient.initializeSession();
-
-        try {
+        try (McpClient newClient = McpClient.builder(server, "/dynamicServerInfoUpdateTest").build()) {
+            newClient.initialize();
             String updatedResponse = newClient.callMCP(request);
 
             String expectedUpdatedResponse = """
@@ -276,9 +274,6 @@ public class CustomServerInfoTest {
                             """;
 
             JSONAssert.assertEquals(expectedUpdatedResponse, updatedResponse, JSONCompareMode.STRICT);
-        } finally {
-            // Clean up the new client's session
-            newClient.cleanupSession();
         }
     }
 

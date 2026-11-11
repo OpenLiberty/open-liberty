@@ -208,6 +208,8 @@ public class EE11FeatureCompatibilityTest extends FATServletClient {
         specialConflicts.put("jdbc-4.0", "com.ibm.websphere.appserver.jdbc");
         specialConflicts.put("jdbc-4.1", "com.ibm.websphere.appserver.jdbc");
         specialConflicts.put("data-1.1", "io.openliberty.data");
+        // dataContainer-1.1 shares the private jakarta.data singleton with data-1.0 (via webProfile-11.0)
+        specialConflicts.put("dataContainer-1.1", "io.openliberty.jakarta.data");
         specialConflicts.put("persistenceContainer-4.0", "io.openliberty.persistenceContainer");
 
         // opentracing-1.3 and jakartaee-9.1 take over an hour to run on power linux system.

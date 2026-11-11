@@ -49,7 +49,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
-import com.ibm.ws.http.internal.HttpChain.ChainState;
+import com.ibm.ws.http.internal.AbstractHttpChain.ChainState;
 import com.ibm.ws.http.logging.internal.AccessLogger;
 import com.ibm.ws.http.logging.internal.DisabledLogger;
 import com.ibm.ws.http.netty.NettyChain;
@@ -583,8 +583,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
     private void logChainStates(){
         if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-            HttpChain httpChain = getCurrentHttpChain();
-            HttpChain httpsChain = getCurrentHttpsChain();
+            AbstractHttpChain httpChain = getCurrentHttpChain();
+            AbstractHttpChain httpsChain = getCurrentHttpsChain();
 
             Tr.debug(this, tc, "Chain states after resume - HTTP: " + ChainState.printState(httpChain.getChainState())
                 + ", HTTPS: " + ChainState.printState(httpsChain.getChainState()));
@@ -1326,7 +1326,13 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             // endpoint will no longer be accepted (CWWKO0220I: TCP Channel ***(-ssl) has stopped listening for
             // requests on host ****  (IPv6) port ****.).
             processHttpChainWork(false, true);
-            
+
+            if (useNetty) {
+                // NettyChain.stop() returns while the server channel is still closing. Wait for STOPPED so the
+                // port is really released and a resume that follows immediately does not find the chain STOPPING.
+                nettyChain.awaitStopped();
+                nettySecureChain.awaitStopped();
+            }
 
             // Check the state of the HTTP chains. The expectation is that the HTTP chains' states are NOT STARTED
             // (UNITIALIZED, DESTROYED, QUIESCED or STOPPED).
@@ -1365,6 +1371,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Chain work processed, verifying states");
             }
+            // After server start the Netty bind completes inside processHttpChainWork, so this returns
+            // immediately; it only waits if a bind is still pending. Wait for the result before checking states.
+            nettyChain.awaitBindResult();
+            nettySecureChain.awaitBindResult();
             logChainStates();
             verifyResumedChainStates();
 
@@ -1404,8 +1414,8 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             Tr.entry(this, tc, "verifyResumedChainStates");
         }
 
-        HttpChain httpChain = getCurrentHttpChain();
-        HttpChain httpsChain = getCurrentHttpsChain();
+        AbstractHttpChain httpChain = getCurrentHttpChain();
+        AbstractHttpChain httpsChain = getCurrentHttpsChain();
 
         int httpChainState = ChainState.UNINITIALIZED.val;
         int httpsChainState = ChainState.UNINITIALIZED.val;
@@ -1427,6 +1437,13 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
             }
             return;
         }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Chain states invalid after resume - HTTP: " + ChainState.printState(httpChainState)
+                               + ", HTTPS: " + ChainState.printState(httpsChainState));
+        }
+        throw new PauseableComponentException("The request to resume HTTP endpoint " + name + " did not complete successfully. HTTPChain: " + httpChain.toString()
+                                              + ". HTTPSChain: " + httpsChain.toString());
     }
 
 
@@ -1484,7 +1501,11 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         int httpsChainState = getCurrentHttpsChain().getChainState();
 
         // Return true if any of these states apply: UNITIALIZED, DESTROYED, QUIESCED or STOPPED.
-        return (httpChainState != ChainState.STARTED.val && httpsChainState != ChainState.STARTED.val);
+        // A chain that is STARTING has a bind in flight (the Netty bind is deferred until the server
+        // has started) and will be listening shortly, so it is not paused.  A failed bind ends in STOPPED.
+        boolean httpActive = httpChainState == ChainState.STARTED.val || httpChainState == ChainState.STARTING.val;
+        boolean httpsActive = httpsChainState == ChainState.STARTED.val || httpsChainState == ChainState.STARTING.val;
+        return !httpActive && !httpsActive;
     }
 
     /** {@inheritDoc} */
@@ -1498,10 +1519,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         return info;
     }
     
-    private synchronized HttpChain getCurrentHttpChain() {
+    private synchronized AbstractHttpChain getCurrentHttpChain() {
         return useNetty ? nettyChain: httpChain;
     }
-    private synchronized HttpChain getCurrentHttpsChain() {
+    private synchronized AbstractHttpChain getCurrentHttpsChain() {
         return useNetty ? nettySecureChain: httpSecureChain;
     }
 

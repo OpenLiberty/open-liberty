@@ -82,14 +82,15 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
 
     @FFDCIgnore(BodyCompleteException.class)
     public boolean asyncCheckBuffers(InterChannelCallback callback) {
-        // Prefer streaming buffer first
-        try {
-            if (streaming) {
+        if (streaming) {
+            try {
                 return asyncCheckStreamingNettyBuffers(callback);
-            }
-        } catch (IOException ioe) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "asyncCheckBuffers(streaming) checkBuffer exception: " + ioe);
+            } catch (IOException ioe) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "asyncCheckBuffers(streaming) checkBuffer exception: " + ioe);
+                }
+                callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, ioe);
+                return false;
             }
         }
 
@@ -145,7 +146,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 if (!isStreamingReadReady()){
                     rearmed = state.arm(successRef[0], errorRef[0]);
                     if (!isStreamingReadReady()) {
-                        ReadFlowHandler.setBodyReadWanted(context, true);
+                        ReadFlowHandler.setBodyReadWanted(context.channel(), true);
                         return;
                     }
                 }
@@ -186,7 +187,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 }
                 return false;
             }
-            ReadFlowHandler.setBodyReadWanted(context, true);
+            ReadFlowHandler.setBodyReadWanted(context.channel(), true);
             return false;
         } catch (IOException | RuntimeException | Error failure) {
             state.clear(registration);
@@ -227,6 +228,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 }
                 if (isStreamingEndReadyForCallback()) {
                     this.readChannelComplete = true;
+                    markStreamingEosObserved();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "isFinished(streaming): queue EOS and no buffered data; returning true");
                     }

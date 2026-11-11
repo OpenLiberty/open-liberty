@@ -21,6 +21,7 @@
         <AD id="readDir" name="%readDir.name" description="%readDir.desc" required="false" type="String" cardinality="2147483647" ibm:type="location(dir)"/>
         <AD id="writeDir" name="%writeDir.name" description="%writeDir.desc" required="false" type="String" cardinality="2147483647" ibm:type="location(dir)"/>
         <AD id="blockDir" name="%blockDir.name" description="%blockDir.desc" required="false" type="String" cardinality="2147483647" ibm:type="location(dir)"/>
+        <AD id="readableFilePattern" name="%readableFilePattern.name" description="%readableFilePattern.desc" required="false" type="String" cardinality="2147483647" ibm:type="token"/>
     </OCD>
 
     <Designate pid="com.ibm.ws.management.filetransfer">

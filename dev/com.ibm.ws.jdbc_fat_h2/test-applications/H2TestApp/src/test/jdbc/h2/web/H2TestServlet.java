@@ -19,6 +19,7 @@ import static java.sql.Connection.TRANSACTION_REPEATABLE_READ;
 import static java.sql.Connection.TRANSACTION_SERIALIZABLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -29,6 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.annotation.Resource;
@@ -77,6 +79,31 @@ import componenttest.app.FATServlet;
                       url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
                       user = "dbuser1",
                       password = "dbpwd1")
+@DataSourceDefinition(name = "java:module/jdbc/H2MySQLDataSource",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb_mysql;DB_CLOSE_DELAY=-1;MODE=MySQL",
+                      user = "dbuser1",
+                      password = "dbpwd1")
+@DataSourceDefinition(name = "java:module/jdbc/H2PostgreSQLDataSource",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb_pgsql;DB_CLOSE_DELAY=-1;MODE=PostgreSQL",
+                      user = "dbuser1",
+                      password = "dbpwd1")
+@DataSourceDefinition(name = "java:module/jdbc/H2RunScriptDataSource",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb_runscript;DB_CLOSE_DELAY=-1",
+                      user = "dbuser1",
+                      password = "dbpwd1")
+@DataSourceDefinition(name = "java:module/jdbc/H2SessionDataSource",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb_session;DB_CLOSE_DELAY=-1",
+                      user = "dbuser1",
+                      password = "dbpwd1")
+@DataSourceDefinition(name = "java:module/jdbc/H2ListenerDataSource",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb_listener;DB_CLOSE_DELAY=-1;DATABASE_EVENT_LISTENER='test.jdbc.h2.web.H2TestServlet$TestDatabaseEventListener'",
+                      user = "dbuser1",
+                      password = "dbpwd1")
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class H2TestServlet extends FATServlet {
@@ -96,8 +123,77 @@ public class H2TestServlet extends FATServlet {
               shareable = false)
     DataSource h2xaDataSource;
 
+    @Resource(lookup = "java:module/jdbc/H2MySQLDataSource")
+    DataSource h2mysqlDataSource;
+
+    @Resource(lookup = "java:module/jdbc/H2PostgreSQLDataSource")
+    DataSource h2pgsqlDataSource;
+
+    @Resource(lookup = "java:module/jdbc/H2RunScriptDataSource")
+    DataSource h2runscriptDataSource;
+
+    @Resource(lookup = "java:module/jdbc/H2SessionDataSource",
+              shareable = false)
+    DataSource h2sessionDataSource;
+
+    @Resource(lookup = "java:module/jdbc/H2ListenerDataSource")
+    DataSource h2listenerDataSource;
+
     @Resource
     UserTransaction tx;
+
+    private static final int TRANSACTION_SNAPSHOT = 6; // H2-specific, org.h2.engine.Constants.TRANSACTION_SNAPSHOT
+
+    public static class TestDatabaseEventListener implements org.h2.api.DatabaseEventListener {
+        public static volatile String initUrl;
+        public static volatile boolean openedCalled;
+        public static volatile boolean closingDatabaseCalled;
+        public static volatile boolean setProgressCalled;
+        public static volatile boolean exceptionThrownCalled;
+        public static volatile String lastExceptionSql;
+
+        public static void reset() {
+            initUrl = null;
+            openedCalled = false;
+            closingDatabaseCalled = false;
+            setProgressCalled = false;
+            exceptionThrownCalled = false;
+            lastExceptionSql = null;
+        }
+
+        public TestDatabaseEventListener() {
+        }
+
+        @Override
+        public void init(String url) {
+            initUrl = url;
+        }
+
+        @Override
+        public void opened() {
+            openedCalled = true;
+        }
+
+        @Override
+        public void closingDatabase() {
+            closingDatabaseCalled = true;
+        }
+
+        @Override
+        public void setProgress(int state, String name, long current, long max) {
+            setProgressCalled = true;
+        }
+
+        @Override
+        public void exceptionThrown(SQLException e, String sql) {
+            exceptionThrownCalled = true;
+            lastExceptionSql = sql;
+        }
+    }
+
+    public static int tripleInt(int n) {
+        return n * 3;
+    }
 
     static record Compound(
                     String formula,
@@ -510,6 +606,371 @@ public class H2TestServlet extends FATServlet {
             String msg = e.getMessage();
             assertTrue("Expected CWWKN0008E in exception message but got: " + msg, msg.contains("CWWKN0008E"));
             assertTrue("Expected datasource name 'jdbc/h2ds-invalid-password-mixed' in exception message but got: " + msg, msg.contains("jdbc/h2ds-invalid-password-mixed"));
+        }
+    }
+
+    /**
+     * Test H2's SNAPSHOT transaction isolation level using concurrent connections.
+     *
+     * Connection.setTransactionIsolation(6) is used because H2's SNAPSHOT constant
+     * value is 6 (org.h2.engine.Constants.TRANSACTION_SNAPSHOT), which is not part
+     * of the standard JDBC API. getTransactionIsolation() returns 6 through Liberty
+     * to confirm the level was accepted, and INFORMATION_SCHEMA.SESSIONS.ISOLATION_LEVEL
+     * is queried to verify the string "SNAPSHOT".
+     */
+    @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
+    public void testSnapshotIsolation() throws Exception {
+        try (Connection con = h2initDataSource.getConnection();
+             Statement stmt = con.createStatement()) {
+            stmt.execute("CREATE TABLE SNAPSHOT_TEST (ID INT PRIMARY KEY, VAL VARCHAR(50))");
+            stmt.execute("INSERT INTO SNAPSHOT_TEST VALUES (1, 'initial')");
+        }
+
+        try (Connection conA = h2xaDataSource.getConnection()) {
+            conA.setAutoCommit(false);
+            conA.setTransactionIsolation(TRANSACTION_SNAPSHOT);
+            assertEquals(TRANSACTION_SNAPSHOT, conA.getTransactionIsolation());
+
+            // Initial read on connection A
+            try (Statement stmtA = conA.createStatement();
+                 ResultSet rs = stmtA.executeQuery("SELECT COUNT(*), VAL FROM SNAPSHOT_TEST WHERE ID=1 GROUP BY VAL")) {
+                assertTrue(rs.next());
+                assertEquals(1, rs.getInt(1));
+                assertEquals("initial", rs.getString(2));
+            }
+
+            // Connection B inserts and updates rows, then commits in a separate transaction
+            try (Connection conB = h2cpDataSource.getConnection()) {
+                conB.setAutoCommit(false);
+                try {
+                    try (Statement stmtB = conB.createStatement()) {
+                        stmtB.executeUpdate("INSERT INTO SNAPSHOT_TEST VALUES (2, 'concurrent')");
+                        stmtB.executeUpdate("UPDATE SNAPSHOT_TEST SET VAL = 'modified' WHERE ID = 1");
+                    }
+                    conB.commit();
+                } finally {
+                    conB.setAutoCommit(true);
+                }
+            }
+
+            // Reader connection A keeps seeing its original snapshot without blocking
+            try (Statement stmtA = conA.createStatement()) {
+                try (ResultSet rs = stmtA.executeQuery("SELECT COUNT(*) FROM SNAPSHOT_TEST")) {
+                    assertTrue(rs.next());
+                    assertEquals(1, rs.getInt(1));
+                }
+                try (ResultSet rs = stmtA.executeQuery("SELECT VAL FROM SNAPSHOT_TEST WHERE ID=1")) {
+                    assertTrue(rs.next());
+                    assertEquals("initial", rs.getString(1));
+                }
+                try (ResultSet rs = stmtA.executeQuery("SELECT ISOLATION_LEVEL FROM INFORMATION_SCHEMA.SESSIONS WHERE SESSION_ID = SESSION_ID()")) {
+                    assertTrue(rs.next());
+                    assertEquals("SNAPSHOT", rs.getString(1));
+                }
+            }
+
+            // Commit connection A transaction and restore isolation level and autocommit
+            conA.commit();
+            conA.setTransactionIsolation(TRANSACTION_READ_COMMITTED);
+            conA.setAutoCommit(true);
+
+            // New read after commit sees the committed changes
+            try (Statement stmtA = conA.createStatement()) {
+                try (ResultSet rs = stmtA.executeQuery("SELECT COUNT(*) FROM SNAPSHOT_TEST")) {
+                    assertTrue(rs.next());
+                    assertEquals(2, rs.getInt(1));
+                }
+                try (ResultSet rs = stmtA.executeQuery("SELECT VAL FROM SNAPSHOT_TEST WHERE ID=1")) {
+                    assertTrue(rs.next());
+                    assertEquals("modified", rs.getString(1));
+                }
+            }
+        }
+    }
+
+    /**
+     * Test H2's MERGE INTO ... KEY (...) upsert syntax.
+     */
+    @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
+    public void testMergeIntoKeyUpsert() throws Exception {
+        try (Connection con = h2DataSource.getConnection();
+            Statement stmt = con.createStatement()) {
+            stmt.execute("CREATE TABLE MERGE_TEST (ID INT PRIMARY KEY, LABEL VARCHAR(50))");
+            stmt.execute("INSERT INTO MERGE_TEST VALUES (1, 'original')");
+
+            int updated = stmt.executeUpdate("MERGE INTO MERGE_TEST (ID, LABEL) KEY (ID) VALUES (1, 'updated'), (2, 'inserted')");
+            assertEquals(2, updated);
+
+            try (ResultSet rs = stmt.executeQuery("SELECT ID, LABEL FROM MERGE_TEST ORDER BY ID")) {
+                assertTrue(rs.next());
+                assertEquals(1, rs.getInt(1));
+                assertEquals("updated", rs.getString(2));
+
+                assertTrue(rs.next());
+                assertEquals(2, rs.getInt(1));
+                assertEquals("inserted", rs.getString(2));
+
+                assertEquals(false, rs.next());
+            }
+        }
+    }
+
+    /**
+     * Test H2's SYSTEM_RANGE table function.
+     */
+    @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
+    public void testSystemRange() throws Exception {
+        try (Connection con = h2DataSource.getConnection();
+             Statement stmt = con.createStatement()) {
+            // (a) COUNT over range 1 to 10
+            try (ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM SYSTEM_RANGE(1, 10)")) {
+                assertTrue(rs.next());
+                assertEquals(10, rs.getInt(1));
+            }
+
+            // (b) SUM over range 1 to 5
+            try (ResultSet rs = stmt.executeQuery("SELECT SUM(X) FROM SYSTEM_RANGE(1, 5)")) {
+                assertTrue(rs.next());
+                assertEquals(15L, rs.getLong(1));
+            }
+
+            // (c) Ordered selection over range 1 to 3
+            List<Long> values = new ArrayList<>();
+            try (ResultSet rs = stmt.executeQuery("SELECT X FROM SYSTEM_RANGE(1, 3) ORDER BY X")) {
+                while (rs.next()) {
+                    values.add(rs.getLong(1));
+                }
+            }
+            assertEquals(List.of(1L, 2L, 3L), values);
+
+            // (d) Join SYSTEM_RANGE against COMPOUNDS
+            // Returns the number of compounds with 1-3 Hydrogens
+            try (ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM COMPOUNDS c JOIN SYSTEM_RANGE(1, 3) r ON c.HYDROGEN = r.X")) {
+                assertTrue(rs.next());
+                assertEquals(9, rs.getInt(1));
+            }
+        }
+    }
+
+    /**
+     * Test H2's CREATE ALIAS function backed by a Java static method.
+     *
+     * FOR 'test.jdbc.h2.web.H2TestServlet.tripleInt' is used because H2's
+     * JdbcUtils.loadUserClass falls back to the thread context classloader
+     * (the application classloader in Liberty), making the WAR's own classes resolvable.
+     */
+    @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
+    public void testCreateAlias() throws Exception {
+        try (Connection con = h2DataSource.getConnection();
+            Statement stmt = con.createStatement()) {
+            
+            stmt.execute("CREATE ALIAS IF NOT EXISTS TRIPLE_INT FOR 'test.jdbc.h2.web.H2TestServlet.tripleInt'");
+            try (ResultSet rs = stmt.executeQuery("SELECT TRIPLE_INT(7)")) {
+                assertTrue(rs.next());
+                assertEquals(21, rs.getInt(1));
+                assertEquals(false, rs.next());
+            }
+        }
+    }
+
+    /**
+     * Test H2 MySQL compatibility mode (MODE=MySQL).
+     *
+     * Verifies that MySQL-specific syntax such as ON DUPLICATE KEY UPDATE
+     * is accepted and executed properly when MODE=MySQL is configured.
+     */
+    @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
+    public void testCompatibilityModeMySQL() throws Exception {
+        try (Connection con = h2mysqlDataSource.getConnection();
+             Statement stmt = con.createStatement()) {
+            stmt.execute("DROP TABLE IF EXISTS MYSQL_MODE_TEST");
+            stmt.execute("CREATE TABLE MYSQL_MODE_TEST (ID INT PRIMARY KEY, VAL VARCHAR(50))");
+            stmt.execute("INSERT INTO MYSQL_MODE_TEST VALUES (1, 'initial')");
+
+            int updated = stmt.executeUpdate(
+                "INSERT INTO MYSQL_MODE_TEST (ID, VAL) VALUES (1, 'updated') ON DUPLICATE KEY UPDATE VAL = 'updated'");
+            assertTrue("Update count should be positive", updated > 0);
+
+            try (ResultSet rs = stmt.executeQuery("SELECT VAL FROM MYSQL_MODE_TEST WHERE ID = 1")) {
+                assertTrue(rs.next());
+                assertEquals("updated", rs.getString(1));
+                assertEquals(false, rs.next());
+            }
+        }
+    }
+
+    /**
+     * Test H2 PostgreSQL compatibility mode (MODE=PostgreSQL).
+     *
+     * Verifies that the PostgreSQL-specific current_database() function is accepted
+     * in PostgreSQL mode.
+     */
+    @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
+    public void testCompatibilityModePostgreSQL() throws Exception {
+        try (Connection con = h2pgsqlDataSource.getConnection();
+             Statement stmt = con.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT current_database()")) {
+                assertTrue(rs.next());
+                assertEquals("TESTDB_PGSQL", rs.getString(1));
+            }
+        }
+    }
+
+    /**
+     * Test H2's RUNSCRIPT FROM 'classpath:...' feature.
+     *
+     * H2 resolves classpath: resources through the thread context classloader
+     * (which in Liberty is the application classloader), loading scripts packaged
+     * in WEB-INF/classes.
+     */
+    @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
+    public void testRunScriptFromClasspath() throws Exception {
+        try (Connection con = h2runscriptDataSource.getConnection();
+             Statement stmt = con.createStatement()) {
+            stmt.execute("DROP TABLE IF EXISTS RUNSCRIPT_TEST");
+            stmt.execute("RUNSCRIPT FROM 'classpath:h2_runscript_test.sql'");
+
+            try (ResultSet rs = stmt.executeQuery("SELECT ID, NAME FROM RUNSCRIPT_TEST ORDER BY ID")) {
+                assertTrue(rs.next());
+                assertEquals(1, rs.getInt(1));
+                assertEquals("Alpha", rs.getString(2));
+
+                assertTrue(rs.next());
+                assertEquals(2, rs.getInt(1));
+                assertEquals("Beta", rs.getString(2));
+
+                assertTrue(rs.next());
+                assertEquals(3, rs.getInt(1));
+                assertEquals("Gamma", rs.getString(2));
+            }
+        }
+    }
+
+    /**
+     * Test H2 session variables (SET @var = ...).
+     *
+     * Verifies that session variables are scoped to the individual database session
+     * and are not visible across distinct physical connections.
+     */
+    @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
+    public void testSessionVariables() throws Exception {
+        try (Connection conA = h2sessionDataSource.getConnection();
+             Connection conB = h2sessionDataSource.getConnection()) {
+            int sessionIdA = -1;
+            int sessionIdB = -1;
+
+            try (Statement stmtA = conA.createStatement();
+                 ResultSet rsA = stmtA.executeQuery("SELECT SESSION_ID()")) {
+                assertTrue(rsA.next());
+                sessionIdA = rsA.getInt(1);
+            }
+
+            try (Statement stmtB = conB.createStatement();
+                 ResultSet rsB = stmtB.executeQuery("SELECT SESSION_ID()")) {
+                assertTrue(rsB.next());
+                sessionIdB = rsB.getInt(1);
+            }
+
+            assertTrue("Connection A and B must have different session IDs", sessionIdA != sessionIdB);
+
+            try {
+                try (Statement stmtA = conA.createStatement()) {
+                    stmtA.execute("SET @test_var = 'session_a_value'");
+
+                    try (ResultSet rs = stmtA.executeQuery("SELECT @test_var")) {
+                        assertTrue(rs.next());
+                        assertEquals("session_a_value", rs.getString(1));
+                    }
+                }
+
+                try (Statement stmtB = conB.createStatement()) {
+                    try (ResultSet rs = stmtB.executeQuery("SELECT @test_var")) {
+                        assertTrue(rs.next());
+                        assertNull("Session variable should be NULL on connection B", rs.getString(1));
+                    }
+
+                    stmtB.execute("SET @test_var = 'session_b_value'");
+                    try (ResultSet rs = stmtB.executeQuery("SELECT @test_var")) {
+                        assertTrue(rs.next());
+                        assertEquals("session_b_value", rs.getString(1));
+                    }
+                }
+
+                // Verify connection A's variable is still unaffected
+                try (Statement stmtA = conA.createStatement();
+                     ResultSet rs = stmtA.executeQuery("SELECT @test_var")) {
+                    assertTrue(rs.next());
+                    assertEquals("session_a_value", rs.getString(1));
+                }
+            } finally {
+                // Reset the variables so pooled physical connections do not carry state into other runs
+                try (Statement stmtA = conA.createStatement();
+                     Statement stmtB = conB.createStatement()) {
+                    stmtA.execute("SET @test_var = NULL");
+                    stmtB.execute("SET @test_var = NULL");
+                }
+            }
+        }
+    }
+
+    /**
+     * Test H2's DATABASE_EVENT_LISTENER URL setting.
+     *
+     * Verifies that H2 loads the custom DatabaseEventListener through the application
+     * classloader and invokes init and opened callbacks.
+     */
+    @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
+    public void testDatabaseEventListener() throws Exception {
+        // Do not call reset() here: init() and opened() fire only once per database lifetime.
+        // With DB_CLOSE_DELAY=-1 the in-memory database lives for the JVM lifetime, so
+        // initUrl and openedCalled remain set from the first invocation; asserting on them
+        // is always valid regardless of test ordering.
+
+        try (Connection con = h2listenerDataSource.getConnection();
+             Statement stmt = con.createStatement()) {
+            try (ResultSet rs = stmt.executeQuery("SELECT 1")) {
+                assertTrue(rs.next());
+                assertEquals(1, rs.getInt(1));
+            }
+
+            assertNotNull("DatabaseEventListener.init() should have been called with non-null URL",
+                          TestDatabaseEventListener.initUrl);
+            assertTrue("DatabaseEventListener.init() URL should contain 'testdb_listener' but was: " + TestDatabaseEventListener.initUrl,
+                       TestDatabaseEventListener.initUrl.contains("testdb_listener"));
+            assertTrue("DatabaseEventListener.opened() should have been called",
+                       TestDatabaseEventListener.openedCalled);
+
+            // Trigger an exception via a runtime SQL error; the listener should record it.
+            // A constraint violation (duplicate primary key) fails at execution time, not parse
+            // time, so H2's Command layer fires exceptionThrown on the DatabaseEventListener.
+            stmt.execute("DROP TABLE IF EXISTS LISTENER_DUPE_TEST");
+            stmt.execute("CREATE TABLE LISTENER_DUPE_TEST (ID INT PRIMARY KEY)");
+            stmt.execute("INSERT INTO LISTENER_DUPE_TEST VALUES (1)");
+            TestDatabaseEventListener.exceptionThrownCalled = false;
+            TestDatabaseEventListener.lastExceptionSql = null;
+            String dupeSql = "INSERT INTO LISTENER_DUPE_TEST VALUES (1)";
+            try {
+                stmt.executeUpdate(dupeSql);
+                fail("Expected SQLException for duplicate primary key");
+            } catch (SQLException e) {
+                // Expected
+            }
+
+            assertTrue("DatabaseEventListener.exceptionThrown() should have been called after duplicate-key insert",
+                       TestDatabaseEventListener.exceptionThrownCalled);
+            assertNotNull("DatabaseEventListener.exceptionThrown() should have recorded the SQL",
+                          TestDatabaseEventListener.lastExceptionSql);
+            assertTrue("exceptionThrown SQL should contain 'LISTENER_DUPE_TEST' but was: " + TestDatabaseEventListener.lastExceptionSql,
+                       TestDatabaseEventListener.lastExceptionSql.contains("LISTENER_DUPE_TEST"));
         }
     }
 }

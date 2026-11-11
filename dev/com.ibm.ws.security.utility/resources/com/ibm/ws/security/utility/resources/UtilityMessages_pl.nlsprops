@@ -104,6 +104,7 @@ createLTPAKeys.createdFile=Utworzono plik kluczy LTPA: {0}\n Do pliku server.xml
 configureFIPS.notIbmSdkNorSemeru=Instalacja Java nie pochodzi z IBMSemeru Runtimes ani IBM SDK, a je\u015bli tak, to nie obs\u0142uguje FIPS 140-3.\nZainstaluj \u015brodowisko Java z pakietu IBMSemeru Runtimes lub IBM SDK, u\u017cywaj\u0105c wersji i systemu operacyjnego obs\u0142uguj\u0105cego standard FIPS 140-3.\nJe\u015bli korzystasz z IBMSemeru \u015brodowisk uruchomieniowych, u\u017cyj wersji 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.1.0 lub wy\u017cszej.\nJe\u015bli korzystasz z IBM SDK, u\u017cyj wersji 8.0.8.30 lub nowszej.
 
 configureFIPS.zosNotAvailable=Polecenie securityUtility configureFIPS nie jest obs\u0142ugiwane na stronie z/OS.
+configureFIPS.zosEvaluation=Polecenie ` securityUtility configureFIPS ` w systemie z/OS s\u0142u\u017cy wy\u0142\u0105cznie do cel\u00f3w testowych.
 
 configureFIPS.configureSemeru=Konfiguracja FIPS 140-3 dla IBM Semeru Runtimes.
 configureFIPS.configureIbmSdk=Konfiguracja FIPS 140-3 dla IBM SDK.

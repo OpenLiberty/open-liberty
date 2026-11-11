@@ -37,7 +37,6 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
@@ -169,7 +168,6 @@ public abstract class EntityHandlerFactory {
             for (EntityType<?> entityType : model.getEntities()) {
                 Map<String, String> attributeNames = new HashMap<>();
                 Map<String, List<Member>> attributeAccessors = new HashMap<>();
-                SortedSet<String> attributeNamesForUpdate = new TreeSet<>();
                 SortedMap<String, Class<?>> attributeTypes = new TreeMap<>();
                 SortedMap<String, Member> idClassAttributeAccessors = null;
                 Map<String, Class<?>> collectionElementTypes = new HashMap<>();
@@ -193,30 +191,20 @@ public abstract class EntityHandlerFactory {
                 try {
                     for (Attribute<?, ?> attr : entityType.getAttributes()) {
                         String attributeName = attr.getName();
-                        PersistentAttributeType attributeType = attr.getPersistentAttributeType();
-                        switch (attributeType) {
-                            case BASIC:
-                            case ELEMENT_COLLECTION:
-                                if (attributeNamesForUpdate != null)
-                                    attributeNamesForUpdate.add(attributeName);
-                                break;
-                            case ONE_TO_ONE:
-                            case MANY_TO_ONE:
-                                attributeNamesForUpdate = null; // must use merge instead
-                                // continue
-                            case EMBEDDED:
-                                relationAttributeNames.put(attr.getJavaType(), new ArrayList<>());
-                                relationships.add(attr);
-                                relationPrefixes.add(attributeName);
-                                relationAccessors.add(Collections.singletonList(attr.getJavaMember()));
-                                relationEmbeddablesOnly.add(attributeType == PersistentAttributeType.EMBEDDED);
-                                break;
-                            case ONE_TO_MANY:
-                            case MANY_TO_MANY:
-                                attributeNamesForUpdate = null; // must use merge instead
-                                break;
-                            default:
-                                throw new RuntimeException(); // unreachable unless more types are added
+                        PersistentAttributeType type = //
+                                        attr.getPersistentAttributeType();
+                        if (type == PersistentAttributeType.EMBEDDED ||
+                            type == PersistentAttributeType.ONE_TO_ONE ||
+                            type == PersistentAttributeType.MANY_TO_ONE) {
+
+                            relationAttributeNames.put(attr.getJavaType(),
+                                                       new ArrayList<>());
+                            relationships.add(attr);
+                            relationPrefixes.add(attributeName);
+                            relationAccessors.add(Collections //
+                                            .singletonList(attr.getJavaMember()));
+                            relationEmbeddablesOnly.add(type == //
+                                            PersistentAttributeType.EMBEDDED);
                         }
 
                         Member accessor = recordClass == null ? attr.getJavaMember() : recordClass.getMethod(attributeName);
@@ -239,7 +227,6 @@ public abstract class EntityHandlerFactory {
                                 idType = singleAttr.getJavaType();
                             } else if (singleAttr != null && singleAttr.isVersion()) {
                                 versionAttrName = attributeName;
-                                attributeNamesForUpdate = null;
                             } else if (Collection.class.isAssignableFrom(attr.getJavaType())) {
                                 // collection attribute that is not annotated with ElementCollection
                                 collectionElementTypes.put(attributeName, Object.class);
@@ -269,31 +256,19 @@ public abstract class EntityHandlerFactory {
                             relAccessors.add(relAttr.getJavaMember());
                             relAttributeList.add(fullAttributeName);
 
-                            PersistentAttributeType attributeType = relAttr.getPersistentAttributeType();
-                            switch (attributeType) {
-                                case BASIC:
-                                case ELEMENT_COLLECTION:
-                                    if (attributeNamesForUpdate != null)
-                                        attributeNamesForUpdate.add(fullAttributeName);
-                                    break;
-                                case ONE_TO_ONE:
-                                case MANY_TO_ONE:
-                                    attributeNamesForUpdate = null; // must use merge instead
-                                    // continue
-                                case EMBEDDED:
-                                    relationAttributeNames.put(relAttr.getJavaType(), new ArrayList<>());
-                                    relationships.add(relAttr);
-                                    relationPrefixes.add(fullAttributeName);
-                                    relationAccessors.add(relAccessors);
-                                    relationEmbeddablesOnly.add(isEmbeddablesOnly &&
-                                                                attributeType == PersistentAttributeType.EMBEDDED);
-                                    break;
-                                case ONE_TO_MANY:
-                                case MANY_TO_MANY:
-                                    attributeNamesForUpdate = null; // must use merge instead
-                                    break;
-                                default:
-                                    throw new RuntimeException(); // unreachable unless more types are added
+                            PersistentAttributeType type = //
+                                            relAttr.getPersistentAttributeType();
+                            if (type == PersistentAttributeType.EMBEDDED ||
+                                type == PersistentAttributeType.ONE_TO_ONE ||
+                                type == PersistentAttributeType.MANY_TO_ONE) {
+
+                                relationAttributeNames.put(relAttr.getJavaType(),
+                                                           new ArrayList<>());
+                                relationships.add(relAttr);
+                                relationPrefixes.add(fullAttributeName);
+                                relationAccessors.add(relAccessors);
+                                relationEmbeddablesOnly.add(isEmbeddablesOnly && type //
+                                                == PersistentAttributeType.EMBEDDED);
                             }
 
                             // Allow a qualified name such as @OrderBy("address.street.name")
@@ -341,23 +316,16 @@ public abstract class EntityHandlerFactory {
                                                                elementType.getJavaType());
                                 }
                             } else if (relAttr instanceof SingularAttribute) {
-                                SingularAttribute<?, ?> singleAttr = ((SingularAttribute<?, ?>) relAttr);
-                                if (singleAttr.isId() && attributeNames.putIfAbsent(ID, fullAttributeName) == null) {
+                                SingularAttribute<?, ?> singleAttr = //
+                                                ((SingularAttribute<?, ?>) relAttr);
+                                if (singleAttr.isId() && null == attributeNames //
+                                                .putIfAbsent(ID, fullAttributeName))
                                     idType = singleAttr.getJavaType();
-                                } else if (singleAttr.isVersion()) {
-                                    versionAttrName = relationAttributeName_; // to be suitable for query-by-method
-                                    attributeNamesForUpdate = null;
-                                }
+                                else if (singleAttr.isVersion())
+                                    // to be suitable for query-by-method
+                                    versionAttrName = relationAttributeName_;
                             }
                         }
-                    }
-
-                    String idAttrName = attributeNames.get(ID);
-
-                    if (attributeNamesForUpdate != null) {
-                        attributeNamesForUpdate.remove(ID);
-                        if (idAttrName != null)
-                            attributeNamesForUpdate.remove(idAttrName);
                     }
 
                     if (!entityType.hasSingleIdAttribute()) {
@@ -382,7 +350,6 @@ public abstract class EntityHandlerFactory {
                                     recordClass, //
                                     attributeAccessors, //
                                     attributeNames, //
-                                    attributeNamesForUpdate, //
                                     attributeTypes, //
                                     collectionElementTypes, //
                                     relationAttributeNames, //
@@ -392,7 +359,8 @@ public abstract class EntityHandlerFactory {
                                     versionAttrName, //
                                     this);
 
-                    entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).complete(entityInfo);
+                    entityInfoMap.computeIfAbsent(userEntityClass, this::newFuture) //
+                                    .complete(entityInfo);
                 } catch (Throwable x) { // Ignored FFDC
                     if (!(x instanceof DataException))
                         x = exc(DataException.class,
@@ -401,7 +369,7 @@ public abstract class EntityHandlerFactory {
                                 getClassNames(repositoryInterfaces),
                                 dataStore,
                                 x.getMessage()).initCause(x);
-                    entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture) //
+                    entityInfoMap.computeIfAbsent(userEntityClass, this::newFuture) //
                                     .completeExceptionally(x);
                 }
             }
@@ -413,7 +381,7 @@ public abstract class EntityHandlerFactory {
                                       getClassNames(missingEntityTypes),
                                       getClassNames(repositoryInterfaces));
                 for (Class<?> ec : missingEntityTypes)
-                    entityInfoMap.computeIfAbsent(ec, EntityInfo::newFuture) //
+                    entityInfoMap.computeIfAbsent(ec, this::newFuture) //
                                     .completeExceptionally(x);
             }
         }
@@ -752,6 +720,50 @@ public abstract class EntityHandlerFactory {
         return cause instanceof SQLRecoverableException ||
                cause instanceof SQLNonTransientConnectionException ||
                cause instanceof SQLTransientConnectionException;
+    }
+
+    /**
+     * Creates a completed CompletableFuture that will run dependent stages
+     * on the Liberty thread pool.
+     *
+     * @param <T>    type of result
+     * @param result the result of the CompletableFuture
+     * @return the completed CompletableFuture
+     */
+    @Trivial
+    <T> CompletableFuture<T> newCompletedFuture(T result) {
+        CompletableFuture<T> future = //
+                        provider.completionStageFactory.newIncompleteFuture();
+        future.complete(result);
+        return future;
+    }
+
+    /**
+     * Creates an exceptionally completed CompletableFuture that will
+     * run dependent stages on the Liberty thread pool.
+     *
+     * @param <T>     type of the CompletableFuture
+     * @param failure the cause Exception or Error
+     * @return the failed CompletableFuture
+     */
+    @Trivial
+    <T> CompletableFuture<T> newFailedFuture(Throwable failure) {
+        CompletableFuture<T> future = //
+                        provider.completionStageFactory.newIncompleteFuture();
+        future.completeExceptionally(failure);
+        return future;
+    }
+
+    /**
+     * Creates a CompletableFuture that will run dependent stages on the
+     * Liberty thread pool.
+     *
+     * @param entityClass
+     * @return new incomplete CompletableFuture.
+     */
+    @Trivial
+    CompletableFuture<EntityInfo> newFuture(Class<?> entityClass) {
+        return provider.completionStageFactory.newIncompleteFuture();
     }
 
     /**

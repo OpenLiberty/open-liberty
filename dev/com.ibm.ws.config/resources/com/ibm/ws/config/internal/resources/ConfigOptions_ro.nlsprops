@@ -49,3 +49,6 @@ option-key.outputVersion=--outputVersion
 
 # "outputVersion=2.0" is not translated.  "xsd:any" is not translated
 option-desc.outputVersion=\u00cen cazul \u00een care este specificat outputVersion=2.0 doar elementul xsd:any este utilizat \u00een fi\u0219ierul de ie\u0219ire, astfel \u00eenc\u00e2t elementele necunoscute trec de validarea XSD \u00een detrimentul pierderii valid\u0103rii pentru elemente cunoscute.
+
+option-key.strict=--strict
+option-desc.strict=Elabora\u021bi o schem\u0103 care s\u0103 permit\u0103 validarea numai a atributelor definite.

@@ -16,13 +16,14 @@ import static io.openliberty.data.internal.QueryType.DETACH;
 import static io.openliberty.data.internal.QueryType.INSERT;
 import static io.openliberty.data.internal.QueryType.LC_DELETE;
 import static io.openliberty.data.internal.QueryType.LC_UPDATE;
-import static io.openliberty.data.internal.QueryType.LC_UPDATE_MERGE;
 import static io.openliberty.data.internal.QueryType.MERGE;
 import static io.openliberty.data.internal.QueryType.NATIVE;
 import static io.openliberty.data.internal.QueryType.PERSIST;
 import static io.openliberty.data.internal.QueryType.REFRESH;
 import static io.openliberty.data.internal.QueryType.REMOVE;
 import static io.openliberty.data.internal.QueryType.SAVE;
+import static io.openliberty.data.internal.Util.LOADGRAPH;
+import static io.openliberty.data.internal.Util.LOCK_SCOPE;
 import static io.openliberty.data.internal.v1_1.Data_1_1.JAKARTA_QUERY_CLASS;
 import static io.openliberty.data.internal.v1_1.Data_1_1.JAKARTA_QUERY_VALUE;
 import static io.openliberty.data.internal.v1_1.Data_1_1.NATIVE_QUERY_CLASS;
@@ -87,6 +88,7 @@ import jakarta.data.expression.TemporalExpression;
 import jakarta.data.metamodel.Attribute;
 import jakarta.data.metamodel.NavigableAttribute;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Fetching;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Is;
 import jakarta.data.repository.OrderBy;
@@ -118,6 +120,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PessimisticLockScope;
 import jakarta.persistence.QueryHint;
+import jakarta.persistence.Subgraph;
 import jakarta.persistence.TypedQuery;
 
 /**
@@ -439,6 +442,9 @@ public class QueryInfo_1_1 extends QueryInfo {
                 throw new DataException(x.getCause());
             }
 
+        if (eagerlyFetch != null)
+            query.setHint(LOADGRAPH, eagerlyFetch);
+
         return query;
     }
 
@@ -530,6 +536,10 @@ public class QueryInfo_1_1 extends QueryInfo {
                             .invoke(entityHandler, jpql, resultType);
             if (options != null)
                 setReadOptions(options, query, false, entityHandler);
+
+            if (eagerlyFetch != null)
+                query.setHint(LOADGRAPH, eagerlyFetch);
+
             return query;
         } catch (IllegalAccessException | NoSuchMethodException x) {
             throw new RuntimeException(x); // should be impossible
@@ -543,19 +553,26 @@ public class QueryInfo_1_1 extends QueryInfo {
     @FFDCIgnore(InvocationTargetException.class)
     @Override
     @Trivial
-    protected void ehDelete(AutoCloseable entityHandler, Object entity) {
+    protected void ehDelete(AutoCloseable entityHandler, List<?> entities) {
         // TODO Persistence 4.0 API
-        // return entityHandler instanceof EntityAgent agent //
-        //                ? agent.delete(entity) //
-        //                : ((EntityManager) entityHandler).remove(entity);
 
-        if (entityHandler instanceof EntityManager manager)
-            manager.remove(entity);
-        else
+        if (entityHandler instanceof EntityManager manager) {
+            for (Object e : entities)
+                manager.remove(e);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "flush");
+            manager.flush();
+        } else {
             try {
-                entityHandler.getClass() //
-                                .getMethod("delete", Object.class) //
-                                .invoke(entityHandler, entity);
+                if (entities.size() == 1)
+                    entityHandler.getClass() //
+                                    .getMethod("delete", Object.class) //
+                                    .invoke(entityHandler, entities.get(0));
+                else
+                    entityHandler.getClass() //
+                                    .getMethod("deleteMultiple", List.class) //
+                                    .invoke(entityHandler, entities);
             } catch (IllegalAccessException | NoSuchMethodException x) {
                 throw new RuntimeException(x); // should be impossible
             } catch (InvocationTargetException x) {
@@ -563,25 +580,32 @@ public class QueryInfo_1_1 extends QueryInfo {
                     throw rx;
                 throw new DataException(x.getCause());
             }
-        // TODO deleteMultiple
+        }
     }
 
     @FFDCIgnore(InvocationTargetException.class)
     @Override
     @Trivial
-    protected void ehInsert(AutoCloseable entityHandler, Object entity) {
+    protected void ehInsert(AutoCloseable entityHandler, List<?> entities) {
         // TODO Persistence 4.0 API
-        // return entityHandler instanceof EntityAgent agent //
-        //                ? agent.insert(entity) //
-        //                : ((EntityManager) entityHandler).persist(entity);
 
-        if (entityHandler instanceof EntityManager manager)
-            manager.persist(entity);
-        else
+        if (entityHandler instanceof EntityManager manager) {
+            for (Object e : entities)
+                manager.persist(e);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "flush");
+            manager.flush();
+        } else {
             try {
-                entityHandler.getClass() //
-                                .getMethod("insert", Object.class) //
-                                .invoke(entityHandler, entity);
+                if (entities.size() == 1)
+                    entityHandler.getClass() //
+                                    .getMethod("insert", Object.class) //
+                                    .invoke(entityHandler, entities.get(0));
+                else
+                    entityHandler.getClass() //
+                                    .getMethod("insertMultiple", List.class) //
+                                    .invoke(entityHandler, entities);
             } catch (IllegalAccessException | NoSuchMethodException x) {
                 throw new RuntimeException(x); // should be impossible
             } catch (InvocationTargetException x) {
@@ -589,27 +613,36 @@ public class QueryInfo_1_1 extends QueryInfo {
                     throw rx;
                 throw new DataException(x.getCause());
             }
-        // TODO insertMultiple
+        }
     }
 
     @FFDCIgnore(InvocationTargetException.class)
     @Override
     @Trivial
-    protected Object ehUpdate(AutoCloseable entityHandler, Object entity) {
-        // TODO Persistence 4.0 API
-        // return entityHandler instanceof EntityAgent agent //
-        //                ? agent.update(entity) //
-        //                : ((EntityManager) entityHandler).merge(entity);
+    protected ArrayList<Object> ehUpdate(AutoCloseable entityHandler,
+                                         List<Object> entities) throws Exception {
+        ArrayList<Object> updated;
+        if (entityHandler instanceof EntityManager manager) {
+            updated = new ArrayList<>(entities.size());
 
-        Object updated;
-        if (entityHandler instanceof EntityManager manager)
-            updated = manager.merge(entity);
-        else
+            // find and merge updates to the entities
+            for (Object e : entities)
+                updated.add(findAndMerge(e, manager));
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "flush");
+            manager.flush();
+        } else {
             try {
-                entityHandler.getClass() //
-                                .getMethod("update", Object.class) //
-                                .invoke(entityHandler, entity);
-                updated = entity;
+                // TODO Persistence 4.0 API
+                if (entities.size() == 1)
+                    entityHandler.getClass() //
+                                    .getMethod("update", Object.class) //
+                                    .invoke(entityHandler, entities.get(0));
+                else
+                    entityHandler.getClass() //
+                                    .getMethod("updateMultiple", List.class) //
+                                    .invoke(entityHandler, entities);
             } catch (IllegalAccessException | NoSuchMethodException x) {
                 throw new RuntimeException(x); // should be impossible
             } catch (InvocationTargetException x) {
@@ -617,28 +650,49 @@ public class QueryInfo_1_1 extends QueryInfo {
                     throw rx;
                 throw new DataException(x.getCause());
             }
-        // TODO updateMultiple
+            if (entities instanceof ArrayList<?> a) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Object> arrayList = (ArrayList<Object>) a;
+                updated = arrayList;
+            } else {
+                updated = new ArrayList<>(entities.size());
+                updated.addAll(entities);
+            }
+        }
+
         return updated;
     }
 
     @FFDCIgnore(InvocationTargetException.class)
     @Override
     @Trivial
-    protected Object ehUpsert(AutoCloseable entityHandler, Object entity) {
-        // TODO Persistence 4.0 API
-        // return entityHandler instanceof EntityAgent agent //
-        //                ? agent.upsert(entity) //
-        //                : ((EntityManager) entityHandler).merge(entity);
+    protected ArrayList<Object> ehUpsert(AutoCloseable entityHandler,
+                                         List<?> entities) {
+        ArrayList<Object> upserted;
+        if (entityHandler instanceof EntityManager manager) {
+            upserted = new ArrayList<>(entities.size());
+            for (Object e : entities)
+                upserted.add(manager.merge(e));
 
-        Object upserted;
-        if (entityHandler instanceof EntityManager manager)
-            upserted = manager.merge(entity);
-        else
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "flush");
+            manager.flush();
+        } else {
+            // TODO entities that require Id generation:
+            // Per EntityAgent.upsert/upsertMultiple,
+            // "This method never performs id generation and does not accept
+            // an entity instance with a null identifier. When id generation
+            // is required, use {@link #insert(Object)}."
             try {
-                entityHandler.getClass() //
-                                .getMethod("upsert", Object.class) //
-                                .invoke(entityHandler, entity);
-                upserted = entity;
+                // TODO Persistence 4.0 API
+                if (entities.size() == 1)
+                    entityHandler.getClass() //
+                                    .getMethod("upsert", Object.class) //
+                                    .invoke(entityHandler, entities.get(0));
+                else
+                    entityHandler.getClass() //
+                                    .getMethod("upsertMultiple", List.class) //
+                                    .invoke(entityHandler, entities);
             } catch (IllegalAccessException | NoSuchMethodException x) {
                 throw new RuntimeException(x); // should be impossible
             } catch (InvocationTargetException x) {
@@ -646,7 +700,15 @@ public class QueryInfo_1_1 extends QueryInfo {
                     throw rx;
                 throw new DataException(x.getCause());
             }
-        // TODO upsertMultiple
+            if (entities instanceof ArrayList<?> a) {
+                @SuppressWarnings("unchecked")
+                ArrayList<Object> arrayList = (ArrayList<Object>) a;
+                upserted = arrayList;
+            } else {
+                upserted = new ArrayList<>(entities.size());
+                upserted.addAll(entities);
+            }
+        }
         return upserted;
     }
 
@@ -930,7 +992,7 @@ public class QueryInfo_1_1 extends QueryInfo {
             List<?> rr = r.restrictions();
             int count = rr.size();
             if (count == 0)
-                q.append(all ? "TRUE = TRUE" : "FALSE <> FALSE");
+                q.append(all ? "1 = 1" : "1 = 0");
             else // one or more
                 for (int i = 0; i < count; i++) {
                     if (i > 0)
@@ -1069,15 +1131,23 @@ public class QueryInfo_1_1 extends QueryInfo {
 
     @Override
     @Trivial
+    protected void identifyQueryOptionsAndFetchingConflicts(Method method,
+                                                            List<String> conflicts) {
+        if (method.getAnnotationsByType(Fetching.class).length > 0)
+            conflicts.add(Fetching.class.getSimpleName());
+
+        if (QUERY_OPTIONS_CLASS != null &&
+            method.isAnnotationPresent(QUERY_OPTIONS_CLASS))
+            conflicts.add(QUERY_OPTIONS_CLASS.getSimpleName());
+    }
+
+    @Override
+    @Trivial
     protected void identifyType() {
         if (entityParamType != null && methodTypeAnno instanceof Delete)
             setType(Delete.class, LC_DELETE);
         else if (entityParamType != null && methodTypeAnno instanceof Update)
-            setType(Update.class,
-                    entityInfo.attributeNamesForEntityUpdate != null &&
-                                  Util.UPDATE_COUNT_TYPES.contains(singleType) //
-                                                  ? LC_UPDATE //
-                                                  : LC_UPDATE_MERGE);
+            setType(Update.class, LC_UPDATE);
         else if (methodTypeAnno instanceof Insert)
             setType(Insert.class, INSERT);
         else if (methodTypeAnno instanceof Save)
@@ -1092,6 +1162,117 @@ public class QueryInfo_1_1 extends QueryInfo {
             setType(Refresh.class, REFRESH);
         else if (methodTypeAnno instanceof Remove)
             setType(Remove.class, REMOVE);
+    }
+
+    @Override
+    @Trivial
+    protected void initEntityGraph() {
+
+        String graphName = "";
+        if (QUERY_OPTIONS_CLASS != null) {
+            Annotation queryOptions = method.getAnnotation(QUERY_OPTIONS_CLASS);
+            if (queryOptions != null)
+                try {
+                    graphName = (String) QUERY_OPTIONS_CLASS //
+                                    .getMethod("entityGraph") //
+                                    .invoke(queryOptions);
+
+                    QueryHint[] hints = (QueryHint[]) QUERY_OPTIONS_CLASS //
+                                    .getMethod("hints") //
+                                    .invoke(queryOptions);
+
+                    for (QueryHint hint : hints)
+                        if (Util.LOADGRAPH.equals(hint.name()))
+                            if (graphName.length() == 0) {
+                                graphName = hint.value();
+                                break;
+                            } else if (!graphName.equals(hint.value())) {
+                                throw Fail.queryOptionsGraphConflict(this);
+                            }
+
+                } catch (IllegalAccessException | NoSuchMethodException x) {
+                    throw new RuntimeException(x); // should be impossible
+                } catch (InvocationTargetException x) {
+                    if (x.getCause() instanceof RuntimeException rx)
+                        throw rx;
+                    throw new DataException(x.getCause());
+                }
+        }
+
+        Fetching[] fetches = method.getAnnotationsByType(Fetching.class);
+
+        if (fetches.length > 0 || graphName.length() > 0) {
+            // TODO first look for a reusable instance from entityInfo
+
+            if (QUERY_OPTIONS_CLASS == null) { // JPA 3.2
+                try (EntityManager em = entityInfo.factory.createEntityManager()) {
+                    if (graphName.length() > 0)
+                        eagerlyFetch = em.getEntityGraph(graphName);
+                    else
+                        eagerlyFetch = em.createEntityGraph(entityInfo.entityClass);
+                } catch (IllegalArgumentException x) {
+                    // TODO better error for graphName not found
+                    throw x;
+                }
+            } else { // JPA 4+
+                AutoCloseable agent = null;
+                try {
+                    agent = entityInfo.factory.createEntityAgent();
+                    if (graphName.length() > 0)
+                        eagerlyFetch = (EntityGraph<?>) agent.getClass() //
+                                        .getMethod("getEntityGraph", String.class) //
+                                        .invoke(agent, graphName);
+                    else
+                        eagerlyFetch = (EntityGraph<?>) agent.getClass() //
+                                        .getMethod("createEntityGraph", Class.class) //
+                                        .invoke(agent, entityInfo.entityClass);
+                } catch (IllegalAccessException | NoSuchMethodException x) {
+                    throw new RuntimeException(x); // should be impossible
+                } catch (IllegalArgumentException x) {
+                    // TODO better error for graphName not found
+                    throw x;
+                } catch (InvocationTargetException x) {
+                    // TODO better error for IllegalArgumentException that means
+                    // the graphName is not found
+                    if (x.getCause() instanceof RuntimeException rx)
+                        throw rx;
+                    throw new DataException(x.getCause());
+                } finally {
+                    if (agent != null)
+                        try {
+                            agent.close();
+                        } catch (RuntimeException x) {
+                            throw x;
+                        } catch (Exception x) {
+                            throw new RuntimeException(x); // should be impossible
+                        }
+                }
+            }
+
+            if (fetches.length > 0)
+                for (Fetching fetch : fetches) {
+                    String attr = getAttributeName(fetch.value(), true);
+                    int dot = attr.indexOf('.');
+                    if (dot < 0) {
+                        eagerlyFetch.addAttributeNode(attr);
+                    } else {
+                        // Navigate through the path of attributes, such as
+                        // "address.street.name", adding a subgraph for each
+                        // intermediate attribute and an attribute node for the last
+                        Subgraph<?> subgraph = eagerlyFetch //
+                                        .addSubgraph(attr.substring(0, dot));
+                        int sub;;
+                        while ((dot = attr.indexOf('.', sub = dot + 1)) > 0) {
+                            String subAttribute = attr.substring(sub, dot);
+                            subgraph = subgraph.addSubgraph(subAttribute);
+                        }
+                        subgraph.addAttributeNodes(attr.substring(sub));
+                    }
+                }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "using entity graph", eagerlyFetch);
+        }
     }
 
     @Override
@@ -1182,46 +1363,47 @@ public class QueryInfo_1_1 extends QueryInfo {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "setReadOptions", Util.toString(options), query);
 
-        Class<?> QueryOptions = options.getClass();
-        String entityGraph = (String) QueryOptions //
-                        .getMethod("entityGraph") //
-                        .invoke(options);
-        Object flush = QueryOptions //
+        Object flush = QUERY_OPTIONS_CLASS //
                         .getMethod("flush") //
                         .invoke(options); // QueryFlushMode
-        CacheStoreMode cacheStoreMode = (CacheStoreMode) QueryOptions //
+        CacheStoreMode cacheStoreMode = (CacheStoreMode) QUERY_OPTIONS_CLASS //
                         .getMethod("cacheStoreMode") //
                         .invoke(options);
-        CacheRetrieveMode cacheRetrieveMode = (CacheRetrieveMode) QueryOptions //
+        CacheRetrieveMode cacheRetrieveMode = (CacheRetrieveMode) QUERY_OPTIONS_CLASS //
                         .getMethod("cacheRetrieveMode") //
                         .invoke(options);
-        QueryHint[] hints = (QueryHint[]) QueryOptions //
+        QueryHint[] hints = (QueryHint[]) QUERY_OPTIONS_CLASS //
                         .getMethod("hints") //
                         .invoke(options);
-        LockModeType lockMode = (LockModeType) QueryOptions //
+        LockModeType lockMode = (LockModeType) QUERY_OPTIONS_CLASS //
                         .getMethod("lockMode") //
                         .invoke(options);
-        PessimisticLockScope lockScope = (PessimisticLockScope) QueryOptions //
+        PessimisticLockScope lockScope = (PessimisticLockScope) QUERY_OPTIONS_CLASS //
                         .getMethod("lockScope") //
                         .invoke(options);
-        int timeout = (Integer) QueryOptions //
+        int timeout = (Integer) QUERY_OPTIONS_CLASS //
                         .getMethod("timeout") //
                         .invoke(options);
 
         // QueryOptions specified via Hints:
         for (QueryHint hint : hints)
-            query.setHint(hint.name(),
-                          hint);
-        if (entityGraph.length() > 0) {
-            // TODO Persistence 4.0: entityHandler.getEntityGraph(options.entityGraph());
-            EntityGraph<?> loadGraph = (EntityGraph<?>) entityHandler.getClass() //
-                            .getMethod("getEntityGraph", String.class) //
-                            .invoke(entityHandler, entityGraph);
-            query.setHint("jakarta.persistence.loadgraph",
-                          loadGraph);
-        }
+            if (Util.FETCHGRAPH.equals(hint.name()))
+                query.setHint(hint.name(),
+                              entityHandler.getClass() //
+                                              .getMethod("getEntityGraph",
+                                                         String.class) //
+                                              .invoke(entityHandler,
+                                                      hint.value()));
+            else if (Util.LOADGRAPH.equals(hint.name()))
+                ; // already read by initEntityGraph and stored in eagerlyFetch
+            else
+                query.setHint(hint.name(),
+                              hint.value());
 
-        query.setHint("jakarta.persistence.lock.scope",
+        // TODO Hibernate doesn't like this:
+        // "Ignoring unrecognized query hint [jakarta.persistence.lock.scope]"
+        // and would likely prefer setLockScope
+        query.setHint(LOCK_SCOPE,
                       lockScope);
 
         query.setCacheStoreMode(cacheStoreMode);

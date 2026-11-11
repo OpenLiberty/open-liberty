@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.v1_1.web;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -30,8 +31,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -60,10 +64,15 @@ import jakarta.data.restrict.Restrict;
 import jakarta.data.restrict.Restriction;
 import jakarta.data.spi.expression.literal.NumericLiteral;
 import jakarta.inject.Inject;
+import jakarta.persistence.LockTimeoutException;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.Status;
+import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
@@ -73,6 +82,10 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import test.jakarta.data.v1_1.web.Fraction.Decimal;
 import test.jakarta.data.v1_1.web.Fraction.Decimal.Type;
+import test.jakarta.data.v1_1.web.Giver.Category;
+import test.jakarta.data.v1_1.web.Grantee.Focus;
+import test.jakarta.data.v1_1.web.Mail.RecipientAddress;
+import test.jakarta.data.v1_1.web.Mail.SenderAddress;
 
 @SuppressWarnings("serial")
 @WebServlet(loadOnStartup = 1, // ensure data from init is available to other servlets
@@ -93,6 +106,12 @@ public class Data_1_1_Servlet extends FATServlet {
 
     @Inject
     Fractions fractions;
+
+    @Inject
+    Grants grants;
+
+    @Inject
+    Mailbox mailbox;
 
     @Inject
     Sectors sectors; // has security roles that will eventually be enforced
@@ -131,6 +150,53 @@ public class Data_1_1_Servlet extends FATServlet {
                 fractionsToAdd.add(f);
             }
         fractions.supply(fractionsToAdd);
+
+        // TODO enable once EclipseLink issue tracked by #34901 is fixed
+        if (!isHibernatePersistence())
+            return;
+        Giver nih = Giver.of("National Institutes of Health", Category.GOVERNMENT);
+        Giver raf = Giver.of("Rochester Area Foundation", Category.FOUNDATION);
+        Giver mhs = Giver.of("Minnesota Historial Society", Category.FOUNDATION);
+        grants.registerGiver(nih);
+        grants.registerGiver(raf);
+        grants.registerGiver(mhs);
+
+        Grantee rctc = Grantee.of("Rochester Community and Technical College",
+                                  Focus.EDUCATION);
+        Grantee qhnc = Grantee.of("Quarry Hill Nature Center",
+                                  Focus.ENVIRONMENT);
+        Grantee fpr = Grantee.of("Family Promise Rochester",
+                                 Focus.HOUSING);
+        Grantee ochc = Grantee.of("History Center of Olmsted County",
+                                  Focus.EDUCATION);
+        Grantee mayo = Grantee.of("Mayo Clinic",
+                                  Focus.HEALTH);
+        grants.registerRecipient(rctc);
+        grants.registerRecipient(qhnc);
+        grants.registerRecipient(fpr);
+        grants.registerRecipient(ochc);
+        grants.registerRecipient(mayo);
+
+        grants.issue(Grant.of(1001L, "Workforce Development Scholarships",
+                              175000, true, nih, rctc,
+                              List.of(LocalDate.of(2026, 6, 30),
+                                      LocalDate.of(2026, 12, 31))));
+        grants.issue(Grant.of(1002L, "Oak Savanna Restoration",
+                              1200, false, raf, qhnc,
+                              List.of(LocalDate.of(2026, 9, 30))));
+        grants.issue(Grant.of(1003L, "Stoppel Farmstead Restoration Project",
+                              14500, false, mhs, ochc,
+                              List.of(LocalDate.of(2026, 9, 30),
+                                      LocalDate.of(2026, 12, 31))));
+        grants.issue(Grant.of(1004L, "Rural Health Initiative",
+                              95000, true, raf, mayo,
+                              List.of(LocalDate.of(2026, 6, 30),
+                                      LocalDate.of(2026, 12, 31))));
+        grants.issue(Grant.of(1005L, "Clinical and Translational Science Award",
+                              48200000, true, nih, mayo,
+                              List.of(LocalDate.of(2026, 3, 31),
+                                      LocalDate.of(2026, 9, 30),
+                                      LocalDate.of(2026, 12, 31))));
     }
 
     /**
@@ -436,6 +502,163 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * A repository method that returns CompletableFuture runs asynchronously,
+     * even if not annotated Asynchronous, because as of Data 1.1, the Data
+     * provider is required to do so for CompletionStage and Liberty's Data
+     * provider chooses to also apply this to CompletableFuture, which inherits
+     * from CompletionStage.
+     */
+    @Test
+    public void testCompletableFutureWithoutAsyncAnno() //
+                    throws ExecutionException, InterruptedException, //
+                    TimeoutException {
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
+
+        CountDownLatch fractionUpdated = new CountDownLatch(1);
+        CountDownLatch readyToRollBack = new CountDownLatch(1);
+
+        CompletableFuture<Boolean> thread2 = CompletableFuture.supplyAsync(() -> {
+            boolean reduced;
+            try {
+                tx.begin();
+                reduced = fractions.reduce("Twelve Eighteenths", 2, 3);
+                fractionUpdated.countDown();
+
+                if (!readyToRollBack.await(TIMEOUT_S, TimeUnit.SECONDS))
+                    throw new CompletionException(new TimeoutException());
+            } catch (InterruptedException | //
+                            NotSupportedException | //
+                            SystemException x) {
+                throw new CompletionException(x);
+            } finally {
+                try {
+                    tx.rollback();
+                } catch (SystemException x) {
+                    throw new CompletionException(x);
+                }
+            }
+            return reduced;
+        });
+
+        assertEquals(true,
+                     fractionUpdated.await(TIMEOUT_S, TimeUnit.SECONDS));
+
+        CompletableFuture<Optional<Fraction>> futureWriteLock = //
+                        fractions.futureWriteLock("Twelve Eighteenths");
+
+        try {
+            Optional<Fraction> found = futureWriteLock.get(1, TimeUnit.SECONDS);
+            fail("Should not be able to lock this entity: " + found);
+        } catch (TimeoutException x) {
+            // expected because the entity is locked
+        } catch (ExecutionException x) {
+            // can happen if the database times out the lock first
+            boolean lockTimedOut = false;
+            for (Throwable cause = x; cause != null; cause = cause.getCause())
+                if (cause instanceof LockTimeoutException)
+                    lockTimedOut = true;
+            if (!lockTimedOut)
+                throw x;
+        }
+
+        readyToRollBack.countDown();
+
+        Fraction fraction = futureWriteLock.get(TIMEOUT_S, TimeUnit.SECONDS)
+                        .orElseThrow();
+        assertEquals("Twelve Eighteenths",
+                     fraction.name);
+        assertEquals(12,
+                     fraction.numerator);
+        assertEquals(18,
+                     fraction.denominator);
+        assertEquals(false,
+                     fraction.reduced);
+
+        assertEquals(true,
+                     thread2.get(TIMEOUT_S, TimeUnit.SECONDS));
+    }
+
+    /**
+     * A repository method that returns CompletionStage runs asynchronously,
+     * even when not annotated Asynchronous, because as of Data 1.1, the Data
+     * provider is required to do so for CompletionStage.
+     */
+    @Test
+    public void testCompletionStageWithoutAsyncAnno() //
+                    throws ExecutionException, InterruptedException, //
+                    TimeoutException {
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
+
+        CountDownLatch fractionUpdated = new CountDownLatch(1);
+        CountDownLatch readyToRollBack = new CountDownLatch(1);
+
+        CompletableFuture<Boolean> thread2 = CompletableFuture.supplyAsync(() -> {
+            boolean reduced;
+            try {
+                tx.begin();
+                reduced = fractions.reduce("Two Eighteenths", 1, 9);
+                fractionUpdated.countDown();
+
+                if (!readyToRollBack.await(TIMEOUT_S, TimeUnit.SECONDS))
+                    throw new CompletionException(new TimeoutException());
+            } catch (InterruptedException | //
+                            NotSupportedException | //
+                            SystemException x) {
+                throw new CompletionException(x);
+            } finally {
+                try {
+                    tx.rollback();
+                } catch (SystemException x) {
+                    throw new CompletionException(x);
+                }
+            }
+            return reduced;
+        });
+
+        assertEquals(true,
+                     fractionUpdated.await(TIMEOUT_S, TimeUnit.SECONDS));
+
+        CompletionStage<Fraction> pessimisticReadStage = //
+                        fractions.futurePessimisticRead("Two Eighteenths");
+
+        try {
+            Fraction fraction = pessimisticReadStage
+                            .toCompletableFuture()
+                            .get(1, TimeUnit.SECONDS);
+            fail("Should not be able to lock this entity: " + fraction);
+        } catch (TimeoutException x) {
+            // expected because the entity is locked
+        } catch (ExecutionException x) {
+            // can happen if the database times out the lock first
+            boolean lockTimedOut = false;
+            for (Throwable cause = x; cause != null; cause = cause.getCause())
+                if (cause instanceof LockTimeoutException)
+                    lockTimedOut = true;
+            if (!lockTimedOut)
+                throw x;
+        }
+
+        readyToRollBack.countDown();
+
+        Fraction fraction = pessimisticReadStage
+                        .toCompletableFuture()
+                        .get(TIMEOUT_S, TimeUnit.SECONDS);
+        assertEquals("Two Eighteenths",
+                     fraction.name);
+        assertEquals(2,
+                     fraction.numerator);
+        assertEquals(18,
+                     fraction.denominator);
+        assertEquals(false,
+                     fraction.reduced);
+
+        assertEquals(true,
+                     thread2.get(TIMEOUT_S, TimeUnit.SECONDS));
+    }
+
+    /**
      * Use a repository method that has the Is annotation on one method
      * argument and another method argument is a composite All restriction.
      */
@@ -568,6 +791,33 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * A repository method can declare a Constraint on a supertype of an
+     * entity attribute that is convertible to the attribute type. This
+     * behavior works without being explicitly required by Jakarta Data.
+     * This test guards against regression.
+     */
+    @Test
+    public void testConstraintOnSupertypeOfAttribute() {
+        assertEquals(List.of(BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3333, 4),
+                             BigDecimal.valueOf(3500, 4),
+                             BigDecimal.valueOf(3529, 4),
+                             BigDecimal.valueOf(3571, 4),
+                             BigDecimal.valueOf(3636, 4),
+                             BigDecimal.valueOf(3684, 4),
+                             BigDecimal.valueOf(3750, 4),
+                             BigDecimal.valueOf(3750, 4)),
+                     fractions.whereTruncated(Between.bounds(0.333, 0.377))
+                                     .stream()
+                                     .map(f -> f.decimal.truncated())
+                                     .toList());
+    }
+
+    /**
      * Request cursor pagination from a repository method that accepts a
      * Restriction parameter, but specify the unrestricted restriction.
      * Verify the total count of elements and pages is computed correctly.
@@ -661,8 +911,7 @@ public class Data_1_1_Servlet extends FATServlet {
      *
      * Applies scaling due to Oracle stripping trailing 0s
      */
-    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
-    // @Test
+    @Test
     public void testEntityGraphAsQueryOption() {
         assertEquals(List.of(BigDecimal.valueOf(300, 3), // nearest tenth
                              BigDecimal.valueOf(310, 3), // nearest hundreth
@@ -1030,6 +1279,378 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * The Fetching annotation requests eager loading of a value that would
+     * normally be loaded lazily.
+     */
+    @Test
+    public void testFetching1() {
+
+        Fraction f5_8 = fractions.withRoundedValues(5, 8)
+                        .orElseThrow();
+        assertEquals(BigDecimal.valueOf(630, 3),
+                     f5_8.rounded.get(1));
+
+        // EclipseLink eagerly loads the collection regardless, so we can only
+        // test for an exception on Hibernate
+        if (isHibernatePersistence()) {
+            Fraction f3_8 = fractions.withoutRoundedValues(3, 8)
+                            .orElseThrow();
+            try {
+                assertEquals(BigDecimal.valueOf(380, 3),
+                             f3_8.rounded.get(1));
+            } catch (PersistenceException x) {
+                if ("org.hibernate.LazyInitializationException" //
+                                .equals(x.getClass().getName()))
+                    ; // expected
+                else
+                    throw x;
+            }
+        }
+    }
+
+    /**
+     * A repository find method has two Fetching annotations: one requesting
+     * eager loading of an association and another requesting eager fetching
+     * of an element collection, both of which would normally be loaded lazily,
+     * while another association that does not have a Fetching annotation
+     * remains lazy and is not available outside of a persistence context.
+     */
+    @Test
+    public void testFetching2() {
+        // TODO enable once EclipseLink issue tracked by #34901 is fixed
+        if (!isHibernatePersistence())
+            return;
+
+        Grant g = grants.withGiverAndReportingDates(1002L)
+                        .orElseThrow();
+
+        assertEquals(1002L,
+                     g.id);
+        assertEquals("Oak Savanna Restoration",
+                     g.title);
+        assertEquals(1200,
+                     g.amount);
+        assertEquals(false,
+                     g.renewable);
+
+        // giver was eagerly loaded by @Fetching
+        assertEquals(true,
+                     Persistence.getPersistenceUtil().isLoaded(g, "giver"));
+        assertEquals("Rochester Area Foundation",
+                     g.giver.name);
+        assertEquals(Giver.Category.FOUNDATION,
+                     g.giver.category);
+
+        // reportingDates was eagerly loaded by @Fetching
+        assertEquals(true,
+                     Persistence.getPersistenceUtil().isLoaded(g, "reportingDates"));
+        assertEquals(List.of(LocalDate.of(2026, 9, 30)),
+                     g.reportingDates);
+
+        // recipient was not requested by @Fetching
+        // PersistenceUtil.isLoaded is the reliable way to check this because
+        // accessing a public field on a lazy @ManyToOne proxy returns null
+        // rather than raising LazyInitializationException (Hibernate only
+        // intercepts initialization through bytecode-enhanced getters, not
+        // direct public field reads)
+        assertEquals(false,
+                     Persistence.getPersistenceUtil().isLoaded(g, "recipient"));
+    }
+
+    /**
+     * Use a repository method annotated with both {@code @Fetching} and
+     * {@code @QueryOptions(entityGraph=...)} to verify that the two mechanisms
+     * combine: the {@code @Fetching} annotation eagerly loads one association
+     * and the entity graph eagerly loads an element collection, while
+     * another association remains lazy because neither mechanism requests it.
+     */
+    @Test
+    public void testFetchingAddedToQueryOptionEntityGraph() {
+        // TODO enable once EclipseLink issue tracked by #34901 is fixed
+        if (!isHibernatePersistence())
+            return;
+
+        // Grant 1003: MHS -> History Center of Olmsted County
+        Grant g = grants.withRecipientAndReportingDates(1003L)
+                        .orElseThrow();
+
+        assertEquals(1003L,
+                     g.id);
+        assertEquals("Stoppel Farmstead Restoration Project",
+                     g.title);
+        assertEquals(14500,
+                     g.amount);
+        assertEquals(false,
+                     g.renewable);
+
+        // recipient was eagerly loaded by the entity graph
+        assertEquals(true,
+                     Persistence.getPersistenceUtil().isLoaded(g, "recipient"));
+        assertEquals("History Center of Olmsted County",
+                     g.recipient.name);
+        assertEquals(Grantee.Focus.EDUCATION,
+                     g.recipient.focus);
+
+        // reportingDates was eagerly loaded by @Fetching
+        assertEquals(true,
+                     Persistence.getPersistenceUtil().isLoaded(g, "reportingDates"));
+        assertEquals(List.of(LocalDate.of(2026, 9, 30),
+                             LocalDate.of(2026, 12, 31)),
+                     g.reportingDates);
+
+        // giver was not requested by @Fetching or the entity graph;
+        // PersistenceUtil.isLoaded is the reliable way to check this because
+        // accessing a public field on a lazy @ManyToOne proxy returns null
+        // rather than raising LazyInitializationException (Hibernate only
+        // intercepts initialization through bytecode-enhanced getters, not
+        // direct public field reads)
+        assertEquals(false,
+                     Persistence.getPersistenceUtil().isLoaded(g, "giver"));
+    }
+
+    /**
+     * Use a repository method annotated with both {@code @Fetching} and
+     * {@code @QueryOptions} where the latter includes a query hint that
+     * specifies a jakarta.persistence.loadgraph. Verify that the two
+     * mechanisms combine: the load graph loads one association and the
+     * {@code @Fetching} annotation eagerly loads the other association,
+     * while the element collection remains lazy because neither mechanism
+     * requests it.
+     */
+    @Test
+    public void testFetchingAddedToQueryOptionHintsLoadGraph() {
+        // TODO enable once EclipseLink issue tracked by #34901 is fixed
+        if (!isHibernatePersistence())
+            return;
+
+        // Grant 1005: NIH -> Mayo Clinic
+        Grant g = grants.withGiverAndRecipient(1005L)
+                        .orElseThrow();
+
+        assertEquals(1005L,
+                     g.id);
+        assertEquals("Clinical and Translational Science Award",
+                     g.title);
+        assertEquals(48200000,
+                     g.amount);
+        assertEquals(true,
+                     g.renewable);
+
+        // giver was eagerly loaded by @Fetching
+        assertEquals(true,
+                     Persistence.getPersistenceUtil().isLoaded(g, "giver"));
+        assertEquals("National Institutes of Health",
+                     g.giver.name);
+        assertEquals(Giver.Category.GOVERNMENT,
+                     g.giver.category);
+
+        // recipient was eagerly loaded by the load graph
+        assertEquals(true,
+                     Persistence.getPersistenceUtil().isLoaded(g, "recipient"));
+        assertEquals("Mayo Clinic",
+                     g.recipient.name);
+        assertEquals(Grantee.Focus.HEALTH,
+                     g.recipient.focus);
+
+        // reportingDates was not requested by @Fetching or the entity graph;
+        assertEquals(false,
+                     Persistence.getPersistenceUtil().isLoaded(g, "reportingDates"));
+    }
+
+    /**
+     * Use a repostitory method annotated Fetching to eagerly load the value of
+     * an ElementCollection attribute of an embeddable. This verifies that a dot
+     * can be used to navigate from attributes to subattributes and so on.
+     */
+    @Test
+    public void testFetchingAttributeOfEmbeddable() throws Exception {
+        mailbox.empty();
+
+        tx.begin();
+        Mail mail = Mail.of(101L, 82, 0.42f,
+                            RecipientAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jack Karta",
+                                                "H115",
+                                                "Building 50, Floor 2",
+                                                "IBM Rochester Campus")),
+                            SenderAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jay Karta",
+                                                "C220",
+                                                "Building 30, Floor 2",
+                                                "IBM Rochester Campus")));
+        mailbox.send(mail);
+        tx.commit();
+
+        // evict the persisted instance so the query must reload it
+        mailbox.detach(mail);
+
+        mail = mailbox.withRecipientLines(101L)
+                        .orElseThrow();
+
+        // detach the freshly loaded instance so lazy loading can't happen
+        mailbox.detach(mail);
+
+        assertEquals(101L,
+                     mail.id);
+
+        assertEquals(82,
+                     mail.postage);
+
+        assertEquals(0.42f,
+                     mail.weight,
+                     0.001f);
+
+        assertNotNull(mail.recipient);
+        assertNotNull(mail.recipient.address);
+        assertEquals("Rochester",
+                     mail.recipient.address.city);
+        assertEquals("MN",
+                     mail.recipient.address.stateCode);
+        assertEquals(Integer.valueOf(55901),
+                     mail.recipient.address.zip);
+        // should have been eagerly fetched:
+        assertEquals(List.of("Jack Karta",
+                             "H115",
+                             "Building 50, Floor 2",
+                             "IBM Rochester Campus"),
+                     mail.recipient.address.lines);
+
+        assertNotNull(mail.sender);
+        assertNotNull(mail.sender.address);
+        assertEquals("Rochester",
+                     mail.sender.address.city);
+        assertEquals("MN",
+                     mail.sender.address.stateCode);
+        assertEquals(Integer.valueOf(55901),
+                     mail.sender.address.zip);
+        // sender.address.lines was not requested by the Fetching annotation,
+        // but we cannot assert that it is unloaded: Hibernate 8.0.0 Beta 3
+        // loads collection attributes under a nested embeddable eagerly even
+        // with a fetch graph that excludes them, EclipseLink loads them eagerly
+        // regardless, and PersistenceUtil.isLoaded raises an exception for them
+        // on EclipseLink.
+
+        mailbox.empty();
+    }
+
+    /**
+     * Use a repostitory method annotated Fetching to eagerly load the values of
+     * two ElementCollection attributes of an embeddable. This verifies that a dot
+     * can be used to navigate from attributes to subattributes and so on.
+     */
+    @Test
+    public void testFetchingAttributesOfEmbeddable() throws Exception {
+        mailbox.empty();
+
+        tx.begin();
+        Mail mail = Mail.of(102L, 140, 1.81f,
+                            RecipientAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jake Arta",
+                                                "E206",
+                                                "Building 30, Floor 3",
+                                                "IBM Rochester Campus")),
+                            SenderAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jack Karta",
+                                                "A215",
+                                                "Building 50, Floor 3",
+                                                "IBM Rochester Campus")));
+        mailbox.send(mail);
+        tx.commit();
+
+        // evict the persisted instance so the query must reload it
+        mailbox.detach(mail);
+
+        mail = mailbox.withBothLines(102L)
+                        .orElseThrow();
+
+        // detach the freshly loaded instance so lazy loading can't happen
+        mailbox.detach(mail);
+
+        assertEquals(102L,
+                     mail.id);
+
+        assertEquals(140,
+                     mail.postage);
+
+        assertEquals(1.81f,
+                     mail.weight,
+                     0.001f);
+
+        assertNotNull(mail.recipient);
+        assertNotNull(mail.recipient.address);
+        assertEquals("Rochester",
+                     mail.recipient.address.city);
+        assertEquals("MN",
+                     mail.recipient.address.stateCode);
+        assertEquals(Integer.valueOf(55901),
+                     mail.recipient.address.zip);
+        // should have been eagerly fetched:
+        assertEquals(List.of("Jake Arta",
+                             "E206",
+                             "Building 30, Floor 3",
+                             "IBM Rochester Campus"),
+                     mail.recipient.address.lines);
+
+        assertNotNull(mail.sender);
+        assertNotNull(mail.sender.address);
+        assertEquals("Rochester",
+                     mail.sender.address.city);
+        assertEquals("MN",
+                     mail.sender.address.stateCode);
+        assertEquals(Integer.valueOf(55901),
+                     mail.sender.address.zip);
+        // should have been eagerly fetched:
+        assertEquals(List.of("Jack Karta",
+                             "A215",
+                             "Building 50, Floor 3",
+                             "IBM Rochester Campus"),
+                     mail.sender.address.lines);
+
+        mailbox.empty();
+    }
+
+    /**
+     * Use a repostitory method annotated Fetching to eagerly load the value of
+     * an ElementCollection attribute of an embeddable. The method is also
+     * annotated Select to retrieve only the value of the ElementCollection
+     * attribute.
+     */
+    @Test
+    public void testFetchingSelected() throws Exception {
+        mailbox.empty();
+
+        tx.begin();
+        Mail mail = Mail.of(103L, 82, 0.36f,
+                            RecipientAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jie Karta",
+                                                "G124",
+                                                "Building 25, Floor 3",
+                                                "IBM Rochester Campus")),
+                            SenderAddress.of("Rochester", "MN", 55901, List //
+                                            .of("Jack Karta",
+                                                "B115",
+                                                "Building 50, Floor 2",
+                                                "IBM Rochester Campus")));
+        mailbox.send(mail);
+        tx.commit();
+
+        // evict the persisted instance so the query must reload it
+        mailbox.detach(mail);
+
+        List<String> lines = mailbox.senderLines(103L)
+                        .orElseThrow();
+
+        // should have been eagerly fetched:
+        assertEquals(List.of("Jack Karta",
+                             "B115",
+                             "Building 50, Floor 2",
+                             "IBM Rochester Campus"),
+                     lines);
+
+        mailbox.empty();
+    }
+
+    /**
      * Tests a Find method with the First annotation specifying a value
      * larger than 1.
      */
@@ -1075,6 +1696,11 @@ public class Data_1_1_Servlet extends FATServlet {
                                                   reverseAlphabetized));
     }
 
+    /**
+     * Tests interoperability with Jakarta Persistence's Inheritance
+     * and DiscriminatorColumn by defining entities that inherit from
+     * a common abstract ancestor entity, for which a repository is defined.
+     */
     @Test
     public void testInheritanceFromAbstractEntity() {
         ads.removeBySponsorIn(List.of("Open Liberty",
@@ -1389,6 +2015,43 @@ public class Data_1_1_Servlet extends FATServlet {
         assertEquals(1L, page4.numberOfElements());
         assertEquals(true, page4.hasPrevious());
         assertEquals(false, page4.hasNext());
+    }
+
+    /**
+     * A repository method is annotated JakartaQuery and Select and returns
+     * a Java record. The Select annotations on the method determine the
+     * order of and which entity attributes are chosen to construct an
+     * instance of the Java record.
+     */
+    @Test
+    public void testJakartaQueryAndSelectAnnosOnMethod() {
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
+
+        assertArrayEquals(new Ratio[] { new Ratio(7, 8),
+                                        new Ratio(5, 8),
+                                        new Ratio(3, 8) },
+                          fractions.toRatiosIfReduced("% Eighths", true));
+    }
+
+    /**
+     * A repository method is annotated JakartaQuery and returns a
+     * Java record with record components that are annotated Select.
+     * The Select annotations on the record components determine the
+     * order of and which entity attributes are chosen to construct
+     * instances of the Java record.
+     */
+    @Test
+    public void testJakartaQueryAnnoOnMethodAndSelectOnRecordComponent() {
+        if (!atLeastJPA4)
+            return; // TODO remove once using persistence-4.0
+
+        Slope slope = fractions.toSlope("Four Sevenths");
+
+        assertEquals(4,
+                     slope.rise());
+        assertEquals(7,
+                     slope.run());
     }
 
     /**
@@ -2680,6 +3343,48 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * A repository method is annotated by Query and Select and returns
+     * a Java record. The Select annotations on the method determine the
+     * order of and which entity attributes are chosen to construct an
+     * instance of the Java record.
+     */
+    @Test
+    public void testQueryAndSelectAnnosOnMethod() {
+        Ratio ratio = fractions.asRatioOfNumeratorToDenominator("Five Twelfths")
+                        .orElseThrow();
+        assertEquals(5,
+                     ratio.term1());
+        assertEquals(12,
+                     ratio.term2());
+
+        assertEquals(false,
+                     fractions.asRatioOfNumeratorToDenominator("none")
+                                     .isPresent());
+    }
+
+    /**
+     * A repository method is annotated Query and returns a Java record
+     * with record components that are annotated Select. The Select
+     * annotations on the record components determine the order of and
+     * which entity attributes are chosen to construct instances of the
+     * Java record.
+     */
+    @Test
+    public void testQueryAnnoOnMethodAndSelectOnRecordComponents() {
+        assertEquals(List.of(new Slope(2, 15),
+                             new Slope(4, 15),
+                             new Slope(7, 15),
+                             new Slope(8, 15),
+                             new Slope(11, 15),
+                             new Slope(13, 15),
+                             new Slope(14, 15),
+                             new Slope(2, 5),
+                             new Slope(3, 5),
+                             new Slope(4, 5)),
+                     fractions.asSlopesIfReduced("% Fif%ths", true));
+    }
+
+    /**
      * Request offset pagination from a query by method name that accepts a
      * Restriction parameter, and specify a restriction.
      * Verify the total count of elements and pages is computed correctly.
@@ -2767,6 +3472,80 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a repository method annotated QueryOptions that specifies a
+     * hint for jakarta.persistence.loadgraph. Verify that the requested
+     * association is eagerly loaded, while the other association and the
+     * element collection are lazily loaded and therefore unavailable after
+     * the stateless repository method returns the results.
+     */
+    @Test
+    public void testQueryOptionHintsLoadGraph() {
+        // TODO enable once EclipseLink issue tracked by #34901 is fixed
+        if (!isHibernatePersistence())
+            return;
+
+        // Grants from foundations, ordered by recipient focus and name:
+        // 1003: MHS -> History Center of Olmsted County (EDUCATION)
+        // 1002: RAF -> Quarry Hill Nature Center (ENVIRONMENT)
+        // 1004: RAF -> Mayo Clinic (HEALTH)
+        List<Grant> list = grants.withRecipientOnly(Giver.Category.FOUNDATION);
+
+        assertEquals(3,
+                     list.size());
+
+        assertEquals(List.of(1003L, 1002L, 1004L),
+                     list.stream()
+                                     .map(g -> g.id)
+                                     .toList());
+
+        assertEquals(List.of("Stoppel Farmstead Restoration Project",
+                             "Oak Savanna Restoration",
+                             "Rural Health Initiative"),
+                     list.stream()
+                                     .map(g -> g.title)
+                                     .toList());
+
+        // recipient was eagerly loaded by the load graph
+        assertEquals(List.of(true, true, true),
+                     list.stream()
+                                     .map(g -> Persistence.getPersistenceUtil()
+                                                     .isLoaded(g, "recipient"))
+                                     .toList());
+
+        assertEquals(List.of("History Center of Olmsted County",
+                             "Quarry Hill Nature Center",
+                             "Mayo Clinic"),
+                     list.stream()
+                                     .map(g -> g.recipient.name)
+                                     .toList());
+
+        assertEquals(List.of(Grantee.Focus.EDUCATION,
+                             Grantee.Focus.ENVIRONMENT,
+                             Grantee.Focus.HEALTH),
+                     list.stream()
+                                     .map(g -> g.recipient.focus)
+                                     .toList());
+
+        // giver and reportingDates were not requested by the load graph;
+        // PersistenceUtil.isLoaded is the reliable way to check this because
+        // accessing a public field on a lazy @ManyToOne proxy returns null
+        // rather than raising LazyInitializationException (Hibernate only
+        // intercepts initialization through bytecode-enhanced getters, not
+        // direct public field reads)
+        assertEquals(List.of(false, false, false),
+                     list.stream()
+                                     .map(g -> Persistence.getPersistenceUtil()
+                                                     .isLoaded(g, "giver"))
+                                     .toList());
+
+        assertEquals(List.of(false, false, false),
+                     list.stream()
+                                     .map(g -> Persistence.getPersistenceUtil()
+                                                     .isLoaded(g, "reportingDates"))
+                                     .toList());
+    }
+
+    /**
      * Use the QueryOptions annotation to establish a query timeout on a
      * repository method annotated NativeQuery.
      */
@@ -2781,9 +3560,11 @@ public class Data_1_1_Servlet extends FATServlet {
     @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
                    "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
                    "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
-    // TODO need newer Hibernate 8 beta that includes the BatchSize -> BatchFetch rename
-    // @Test
+    @Test
     public void testQueryTimeoutAsQueryOptionOnNativeQuery() throws Exception {
+        // TODO UnsupportedOperationException for change method with NativeQuery and QueryOptions
+        if (!isHibernatePersistence())
+            return;
         // Derby ignores query timeout and the lock timeout ends up applying instead.
         // Hibernate does not honor the query timeout on native queries with DB2.
         if (isDerby() || (isDB2() && isHibernatePersistence()))
@@ -3161,6 +3942,54 @@ public class Data_1_1_Servlet extends FATServlet {
                      (7,
                       9,
                       filter));
+    }
+
+    /**
+     * Use a repository method that imposes restrictions and constraints on
+     * a find-and-delete operation.
+     */
+    @Test
+    public void testRestrictedFindAndDelete() {
+        ads.removeBySponsorIn(List.of("IBM", "Open Liberty"));
+
+        ads.add(Billboard.create(7,
+                                 "Open Liberty",
+                                 LocalDate.now().minusDays(5),
+                                 LocalDate.now(),
+                                 "3222 40th Avenue NW, Rochester, MN 55901"));
+
+        ads.add(Billboard.create(8,
+                                 "IBM",
+                                 LocalDate.now().minusDays(8),
+                                 LocalDate.now(),
+                                 "3222 40th Avenue NW, Rochester, MN 55901"));
+
+        ads.add(Billboard.create(9,
+                                 "Open Liberty",
+                                 LocalDate.now().minusDays(9),
+                                 LocalDate.now().minusDays(1),
+                                 "3222 40th Avenue NW, Rochester, MN 55901"));
+
+        ads.add(Billboard.create(10,
+                                 "Open Liberty",
+                                 LocalDate.now().minusDays(5),
+                                 LocalDate.now(),
+                                 "2800 37th Street NW, Rochester, MN 55901"));
+
+        List<Billboard> removed = ads //
+                        .dismantle("3222 40th Avenue NW, Rochester, MN 55901",
+                                   _Advertisement.sponsor //
+                                                   .upper()
+                                                   .equalTo("OPEN LIBERTY"));
+
+        assertEquals(List.of(7, 9),
+                     removed.stream()
+                                     .map(b -> b.id)
+                                     .sorted()
+                                     .toList());
+
+        assertEquals(2L,
+                     ads.removeBySponsorIn(List.of("IBM", "Open Liberty")));
     }
 
     /**
@@ -3584,12 +4413,6 @@ public class Data_1_1_Servlet extends FATServlet {
                                   AtMost.max(Integer.MAX_VALUE),
                                   Restrict.unrestricted());
         }
-    }
-
-    @Test
-    public void testBooleanRestriction() {
-        fractions.where(Restrict.all(_Fraction.name.contains("Four"),
-                                     _Fraction.reduced.isTrue()));
     }
 
 }

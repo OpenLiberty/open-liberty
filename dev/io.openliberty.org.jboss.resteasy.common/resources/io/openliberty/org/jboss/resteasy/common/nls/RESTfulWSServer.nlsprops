@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -71,6 +71,10 @@ INVALID_PROVIDER_CWWKW1305W.useraction=Review the application code to ensure tha
 INVALID_LONG_PROPERTY_CWWKW1306W=CWWKW1306W: The {0} client property must be a long integer, but was configured incorrectly with {1}. This setting is ignored.
 INVALID_LONG_PROPERTY_CWWKW1306W.explanation=Client properties, such as timeout settings, must be configured as a positive long integer or a string that can be converted to a long integer. This message indicates that a client property was configured with an invalid value. As a result, this property is ignored.
 INVALID_LONG_PROPERTY_CWWKW1306W.useraction=Review the application code and server configuration to determine where this property was set incorrectly and either remove the property or change it to a valid long integer value.
+
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W=CWWKW1307W: Failed to set attribute ''{0}'' to value ''{1}''.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.explanation=The XML TransformerFactory implementation does not support the specified attribute. Processing continues with the default transformer configuration.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.useraction=Configure or upgrade to an XML TransformerFactory implementation that supports the ''{0}'' attribute to help ensure proper security hardening.
 
 # Same message as in /com.ibm.ws.jaxrs.2.0.common/resources/com/ibm/ws/jaxrs20/common/internal/resources/JaxRsCommonMessages.nlsprops
 

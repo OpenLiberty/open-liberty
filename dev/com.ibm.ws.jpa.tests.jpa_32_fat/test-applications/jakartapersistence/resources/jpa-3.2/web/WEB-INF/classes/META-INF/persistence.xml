@@ -33,4 +33,14 @@
             <property name="hibernate.dialect.oracle.value_lob_enabled" value="false"/>
         </properties>
     </persistence-unit>
+    <persistence-unit name="JakartaPersistenceUnitH2">
+        <jta-data-source>jdbc/H2DataSource</jta-data-source>
+        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+        <properties>
+            <!-- Drop and recreate the database schema automatically for clean test runs -->
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.logging.parameters" value="true"/>
+        </properties>
+    </persistence-unit>
+
 </persistence>

@@ -146,9 +146,9 @@ public class WsObjectInputStream extends java.io.ObjectInputStream {
 	private java.lang.Class loadClass(String name, ClassLoader loader)
 			throws ClassNotFoundException {
 		try {
-			return Class.forName(name, true, loader);
+			return Class.forName(name, false, loader);
 		} catch (ClassNotFoundException cnf) {
-			return Class.forName(name);
+			return Class.forName(name, false, WsObjectInputStream.class.getClassLoader());
 		}
 	}
 

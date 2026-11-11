@@ -49,7 +49,7 @@ public class StatefulModeTest extends FATServletClient {
     private static ExecutorService executor;
 
     @Rule
-    public McpClient client = new McpClient(server, "/statefulModeTest");
+    public McpClient client = McpClient.builder(server, "/statefulModeTest").build();
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/statefulModeTest");

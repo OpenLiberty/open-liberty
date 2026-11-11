@@ -10,12 +10,15 @@
 package com.ibm.ws.http.netty;
 
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 
+import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AttributeKey;
 
 /**
@@ -40,11 +43,11 @@ public final class NettyHttpConstants {
     public static final AttributeKey<Long> CONTENT_LENGTH = AttributeKey.valueOf("contentLength");
     public static final AttributeKey<Boolean> IS_OUTBOUND_KEY = AttributeKey.valueOf("isOutbound");
     public static final AttributeKey<String> ENDPOINT_PID = AttributeKey.valueOf("endpointPID");
-    public static final AttributeKey<Boolean> HANDLING_REQUEST = AttributeKey.valueOf("handlingRequest");
     public static final AttributeKey<Boolean> THROW_FFDC = AttributeKey.valueOf("throwFFDC");
     public static final AttributeKey<Integer> NUMBER_OF_HTTP_REQUESTS = AttributeKey.valueOf("numberOfHttpRequests");
     public static final AttributeKey<Integer> STREAMS_REFUSED = AttributeKey.valueOf("streamsRefused");
     public static final AttributeKey<Socket> SOCKET_HANDLE = AttributeKey.valueOf("SocketHandleKey");
+    public static final AttributeKey<SslHandler> SSL_HANDLER = AttributeKey.valueOf("sslHandler");
 
     //AUTOREAD WORK
     public static final AttributeKey<HttpInputStreamImpl> HTTP_INPUT_STREAM = AttributeKey.valueOf("httpInputStream");
@@ -55,8 +58,6 @@ public final class NettyHttpConstants {
     public static final AttributeKey<Boolean> WEBSOCKET_UPGRADE_REQUEST = AttributeKey.valueOf("websocketUpgradeRequest");
     public static final AttributeKey<Boolean> QUIESCING = AttributeKey.valueOf("quiescing");
     public static final AttributeKey<Boolean> INPUT_SHUTDOWN_PENDING = AttributeKey.valueOf("shutdownPending");
-    public static final AttributeKey<Boolean> RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE =
-        AttributeKey.valueOf("responseCloseBeforeRequestBodyComplete");
     public static final AttributeKey<Boolean> ASYNC_STREAM_READ =
         AttributeKey.valueOf("httpAsyncStreamRead");
     public static final AttributeKey<AtomicBoolean> ASYNC_READ_DISPATCHED =
@@ -80,14 +81,19 @@ public final class NettyHttpConstants {
 
         ProtocolName(String protocol) { this.protocol = protocol; }
 
+        private static final Map<String, ProtocolName> PROTOCOLS;
+        static {
+            PROTOCOLS = new HashMap<>(8);
+            for (ProtocolName p : values())
+                PROTOCOLS.put(p.protocol, p);
+        }
+
         /** Reverse-lookup from the string stored on the channel. */
         public static ProtocolName from(String protocol) {
             if (protocol == null)
                 return UNKNOWN;
-            for (ProtocolName p : values())
-                if (p.protocol.equals(protocol))
-                    return p;
-            return UNKNOWN;
+            ProtocolName result = PROTOCOLS.get(protocol);
+            return result != null ? result : UNKNOWN;
         }
     }
 

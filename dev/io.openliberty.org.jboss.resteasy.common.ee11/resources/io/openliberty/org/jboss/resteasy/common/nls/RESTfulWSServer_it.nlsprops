@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -71,6 +71,26 @@ INVALID_PROVIDER_CWWKW1305W.useraction=Esaminare il codice dell'applicazione per
 INVALID_LONG_PROPERTY_CWWKW1306W=CWWKW1306W: La propriet\u00e0 del client {0} deve essere un valore long integer, ma \u00e8 stata configurata in modo non corretto con {1}. Questa impostazione viene ignorata.
 INVALID_LONG_PROPERTY_CWWKW1306W.explanation=Le propriet\u00e0 client, ad esempio le impostazioni del timeout, devono essere configurate come un valore long integer positivo oppure una stringa che possa essere convertita in un valore long integer. Questo messaggio indica che una propriet\u00e0 client \u00e8 stata configurata con un valore non valido. Di conseguenza, questa propriet\u00e0 viene ignorata.
 INVALID_LONG_PROPERTY_CWWKW1306W.useraction=Esaminare il codice dell'applicazione e la configurazione del server per determinare quali siano le impostazioni non corrette di questa propriet\u00e0 e rimuovere la propriet\u00e0 o modificarla in un valore long integer valido.
+
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W=CWWKW1307W: Impossibile impostare l''attributo ''{0}'' sul valore ''{1}''.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.explanation=L'implementazione di XML TransformerFactory non supporta l'attributo specificato. L'elaborazione prosegue con la configurazione predefinita del trasformatore.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.useraction=Configurare o passare a un''implementazione di XML TransformerFactory che supporti l''attributo ''{0}'', al fine di garantire un adeguato rafforzamento della sicurezza.
+
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W=CWWKW1308W: La configurazione del filtro CORS specifica un'origine generica (*) e imposta l'attributo allowCredentials su true. I browser non consentono credenziali con un'origine generica, pertanto il filtro CORS disabilita il supporto delle credenziali. Per supportare le credenziali, specificare le origini esatte consentite anzich\u00e9 un'origine con caratteri jolly.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.explanation=La specifica Cross-Origin Resource Sharing ( W3C ) vieta l'uso dell'intestazione di risposta `Access-Control-Allow-Credentials` quando il valore dell'intestazione di risposta `Access-Control-Allow-Origin` \u00e8 il carattere jolly (*). Pertanto, il filtro CORS disabilita il supporto delle credenziali per conformarsi alla specifica.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.useraction=Se sono richieste credenziali, configurare il filtro CORS specificando le origini consentite in modo esplicito, anzich\u00e9 utilizzare un'origine con carattere jolly. Se allowCredentials credenziali non sono richieste, rimuovere l'attributo allowCredentials oppure impostarlo su false.
+
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E=CWWKW1309E: Dimensioni immagine non valide: {0} x {1}
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.explanation=Le dimensioni dell'immagine specificate nell'intestazione dell'immagine non sono valide. Sia la larghezza che l'altezza dell'immagine devono essere valori positivi. Questo errore pu\u00f2 verificarsi se il file immagine \u00e8 danneggiato o contiene informazioni di intestazione incomplete.
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.useraction=Assicurati che l'immagine caricata sia un file immagine valido e non danneggiato.
+
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E=CWWKW1310E: Dimensioni della miniatura non valide: {0} x {1}
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.explanation=Le dimensioni delle miniature specificate nell'intestazione dell'immagine non sono valide. Sia la larghezza che l'altezza della miniatura devono essere valori positivi. Questo errore pu\u00f2 verificarsi se il file immagine \u00e8 danneggiato o contiene informazioni incomplete sulle miniature.
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.useraction=Assicurati che l'immagine caricata sia un file immagine valido e non danneggiato, con dimensioni della miniatura corrette.
+
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E=CWWKW1311E: Le dimensioni dell''immagine {0} x {1} ( {2} ) superano la soglia massima {3}
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.explanation=La dimensione stimata dell'immagine decodificata supera la soglia massima configurata. Per limitare l'utilizzo della memoria, la richiesta viene respinta con un codice di stato HTTP 400.
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.useraction=Ridurre le dimensioni dell'immagine oppure aumentare la soglia impostando la propriet\u00e0 di sistema ` dev.resteasy.image.threshold ` su un valore pi\u00f9 alto (ad esempio, 500 MB). Impostare il valore su -1 per disattivare completamente il controllo.
 
 # Same message as in /com.ibm.ws.jaxrs.2.0.common/resources/com/ibm/ws/jaxrs20/common/internal/resources/JaxRsCommonMessages.nlsprops
 

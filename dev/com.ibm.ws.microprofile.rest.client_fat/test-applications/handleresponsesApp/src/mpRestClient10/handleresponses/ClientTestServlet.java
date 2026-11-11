@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package mpRestClient10.handleresponses;
 
@@ -105,7 +102,7 @@ public class ClientTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({MP13_ID, MP20_ID, MP22_ID, MP30_ID, MP33_ID, MP40_ID})
+    @SkipForRepeat({MP13_EE7_ID, MP20_ID, MP22_ID, MP30_ID, MP33_ID, MP40_ID})
     public void testEmpty202Response_EE9(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
         Response r = builder.build(HandleResponsesClient.class).batchWidget(new Widget("Markers", 150, 0.2));

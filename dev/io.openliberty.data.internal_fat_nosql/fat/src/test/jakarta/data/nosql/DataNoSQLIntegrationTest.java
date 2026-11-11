@@ -52,6 +52,6 @@ public class DataNoSQLIntegrationTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWJP9991W.*MBeanServerFactory"); // TODO remove once #29521 is fixed
     }
 }

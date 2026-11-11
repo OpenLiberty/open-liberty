@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #ISMESSAGEFILE TRUE
 #NLS_ENCODING=UNICODE
@@ -28,3 +25,7 @@
 OSGI_SERVICE_ERROR=CWWKO1350E: Le service OSGi {0} n''est pas disponible.
 OSGI_SERVICE_ERROR.explanation=Cette erreur de serveur interne est \u00e9mise car le service sp\u00e9cifi\u00e9 n'est pas disponible.
 OSGI_SERVICE_ERROR.useraction=Red\u00e9marrez le serveur en utilisant l'option clean.
+
+CORS_UNSUPPORTED_ORIGIN_WILDCARD=CWWKO1351W: La valeur \u00ab allowedOrigins \u00bb {0} de la configuration CORS pour le domaine {1} contient un caract\u00e8re g\u00e9n\u00e9rique non pris en charge et est ignor\u00e9e. Seule la valeur * autorise toutes les origines.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.explanation=L'attribut \u00ab allowedOrigins \u00bb accepte soit un seul ast\u00e9risque (*) pour autoriser toutes les origines, soit une liste d'origines pr\u00e9cises. Une origine contenant un ast\u00e9risque associ\u00e9 \u00e0 d'autres caract\u00e8res n'est pas un motif pris en charge; elle est donc ignor\u00e9e et n'autorise aucune origine.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.useraction=Indiquez explicitement chaque origine autoris\u00e9e, ou utilisez le caract\u00e8re * pour autoriser toutes les origines.

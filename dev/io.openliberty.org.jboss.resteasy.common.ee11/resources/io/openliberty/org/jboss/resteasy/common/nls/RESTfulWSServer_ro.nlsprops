@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -71,6 +71,26 @@ INVALID_PROVIDER_CWWKW1305W.useraction=Examina\u0163i codul aplica\u0163iei \u01
 INVALID_LONG_PROPERTY_CWWKW1306W=CWWKW1306W: Proprietatea de client {0} trebuie s\u0103 fie un \u00eentreg lung, dar a fost configurat\u0103 incorect cu {1}. Aceast\u0103 setare este ignorat\u0103.
 INVALID_LONG_PROPERTY_CWWKW1306W.explanation=Propriet\u0103\u0163ile de client, cum ar fi set\u0103rile de timeout, trebuie s\u0103 fie configurate ca un \u00eentreg lung pozitiv sau un \u015fir care poate fi convertit la un \u00eentreg lung. Acest mesaj indic\u0103 faptul c\u0103 o proprietate de client a fost configurat\u0103 cu o valoare invalid\u0103. Ca urmare, aceast\u0103 proprietate este ignorat\u0103.
 INVALID_LONG_PROPERTY_CWWKW1306W.useraction=Examina\u0163i codul aplica\u0163iei \u015fi configura\u0163ia serverului pentru a determina unde a fost setat\u0103 incorect aceast\u0103 proprietate \u015fi apoi fie \u00eenl\u0103tura\u0163i proprietatea, fie o modifica\u0163i la o valoare valid\u0103, de tip \u00eentreg lung.
+
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W=CWWKW1307W: Nu s-a putut seta atributul ''{0}'' la valoarea ''{1}''.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.explanation=Implementarea clasei ` TransformerFactory ` din XML nu accept\u0103 atributul specificat. Prelucrarea continu\u0103 cu configura\u021bia implicit\u0103 a transformatorului.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.useraction=Configura\u021bi sau trece\u021bi la o implementare a clasei XML TransformerFactory care accept\u0103 atributul ''{0}'', pentru a asigura un nivel adecvat de securitate.
+
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W=CWWKW1308W: Configura\u021bia filtrului CORS specific\u0103 o origine cu caracter wildcard (*) \u0219i seteaz\u0103 atributul allowCredentials la valoarea \u201etrue\u201d. Browserele nu accept\u0103 creden\u021bialele cu o origine de tip \u201ewildcard\u201d, astfel \u00eenc\u00e2t filtrul CORS dezactiveaz\u0103 suportul pentru creden\u021biale. Pentru a valida datele de autentificare, specifica\u021bi sursele exacte permise, \u00een loc de o surs\u0103 cu caracter wildcard.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.explanation=Specifica\u021bia W3C privind partajarea resurselor \u00eentre origini (CORS) interzice utilizarea antetului de r\u0103spuns \u201eAccess-Control-Allow-Credentials\u201d atunci c\u00e2nd valoarea antetului de r\u0103spuns \u201eAccess-Control-Allow-Origin\u201d este caracterul joker (*). Prin urmare, filtrul CORS dezactiveaz\u0103 suportul pentru creden\u021biale, pentru a se conforma specifica\u021biei.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.useraction=Dac\u0103 sunt necesare date de autentificare, configura\u021bi filtrul CORS cu origini permise \u00een mod explicit, \u00een loc de o origine cu caracter wildcard. Dac\u0103 nu sunt necesare acredit\u0103ri, fie elimina\u021bi atributul allowCredentials, fie seta\u021bi atributul allowCredentials la false.
+
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E=CWWKW1309E: Dimensiuni nevalide ale imaginii: {0} x {1}
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.explanation=Dimensiunile imaginii specificate \u00een antetul imaginii nu sunt valide. At\u00e2t l\u0103\u021bimea, c\u00e2t \u0219i \u00een\u0103l\u021bimea imaginii trebuie s\u0103 fie valori pozitive. Aceast\u0103 eroare poate ap\u0103rea dac\u0103 fi\u0219ierul imagine este corupt sau con\u021bine informa\u021bii incomplete \u00een antet.
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.useraction=Asigura\u021bi-v\u0103 c\u0103 imaginea \u00eenc\u0103rcat\u0103 este un fi\u0219ier imagine valid \u0219i necorupt.
+
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E=CWWKW1310E: Dimensiuni nevalide ale miniaturii: {0} x {1}
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.explanation=Dimensiunile miniaturii specificate \u00een antetul imaginii nu sunt valide. At\u00e2t l\u0103\u021bimea, c\u00e2t \u0219i \u00een\u0103l\u021bimea miniaturii trebuie s\u0103 fie valori pozitive. Aceast\u0103 eroare poate ap\u0103rea dac\u0103 fi\u0219ierul imagine este corupt sau con\u021bine informa\u021bii incomplete despre miniatur\u0103.
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.useraction=Asigura\u021bi-v\u0103 c\u0103 imaginea \u00eenc\u0103rcat\u0103 este un fi\u0219ier imagine valid, necorupt, cu dimensiuni valide ale miniaturii.
+
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E=CWWKW1311E: Dimensiunea imaginii {0} x {1} ( {2} ) dep\u0103\u0219e\u0219te pragul maxim {3}
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.explanation=Dimensiunea estimat\u0103 a imaginii decodate dep\u0103\u0219e\u0219te pragul maxim configurat. Pentru a limita consumul de memorie, solicitarea este respins\u0103 cu un cod de stare HTTP 400.
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.useraction=Reduce\u021bi dimensiunile imaginii sau m\u0103ri\u021bi pragul set\u00e2nd proprietatea de sistem \u201e dev.resteasy.image.threshold \u201d la o valoare mai mare (de exemplu, 500 MB). Seta\u021bi valoarea la -1 pentru a dezactiva complet verificarea.
 
 # Same message as in /com.ibm.ws.jaxrs.2.0.common/resources/com/ibm/ws/jaxrs20/common/internal/resources/JaxRsCommonMessages.nlsprops
 

@@ -371,11 +371,13 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
 
             EntityHandlerFactory factory = futureEHFactory.get(INIT_TIMEOUT_SEC, //
                                                                TimeUnit.SECONDS);
+            AtomicReference<R> interceptedInstanceRef = new AtomicReference<>();
 
             RepositoryImpl<?> handler = new RepositoryImpl<>( //
                             provider, //
                             extension, //
                             factory, //
+                            interceptedInstanceRef, //
                             repositoryInterface, //
                             primaryEntityClass, //
                             queriesPerEntityClass);
@@ -388,6 +390,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
             if (intercept) {
                 R r = interception.createInterceptedInstance(instance);
                 intercepted.put(r, instance);
+                interceptedInstanceRef.set(r);
                 instance = r;
             }
 

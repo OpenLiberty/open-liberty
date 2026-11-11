@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
@@ -36,22 +34,34 @@ public class GrpcServerSecurity {
     /**
      * Helper method to add the "authorized" flag to the byte arrays that will get
      * built into Metadata
-     * 
+     *
      * @param byteArrays
-     * @param req
+     * @param key
      * @param authorized
      */
-    public static void addLibertyAuthHeader(List<byte[]> byteArrays, HttpServletRequest req, boolean authorized) {
+    public static void addLibertyAuthHeader(List<byte[]> byteArrays, String key, boolean authorized) {
         byteArrays.add(LIBERTY_AUTH_KEY.name().getBytes(StandardCharsets.US_ASCII));
-        byteArrays.add((String.valueOf(req.hashCode())).getBytes(StandardCharsets.US_ASCII));
-        authMap.put(String.valueOf(req.hashCode()), authorized);
+        byteArrays.add(key.getBytes(StandardCharsets.US_ASCII));
+        authMap.put(key, authorized);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "adding {0} to authMap with value {1}", req.hashCode(), authorized);
+            Tr.debug(tc, "adding {0} to authMap with value {1}", key, authorized);
+        }
+    }
+
+    /**
+     * Helper method to remove authMap entry for a given key for proper clean up on requests
+     * once finished.
+     *
+     * @param key the map key to remove
+     */
+    public static void removeAuthEntry(String key) {
+        if (key != null) {
+            authMap.remove(key);
         }
     }
     
     /**
-     * 
+     *
      * @param key the LIBERTY_AUTH_KEY to check
      * @return the authorization value for the key in GrpcServletUtils.authMap, or
      *         false if the key is null

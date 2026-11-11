@@ -156,3 +156,7 @@ OLD_LOGOUT_TOKENS_MIGRATED.useraction=Per garantire che i token di disconnession
 JCACHE_MIGRATION_FAILURE=CWWKS9133E: La cache dei cookie di disconnessione ha riscontrato un errore durante la migrazione dei vecchi token alle versioni con hash. L''errore \u00e8: {0}
 JCACHE_MIGRATION_FAILURE.explanation=La cache dei cookie di disconnessione ha riscontrato un errore durante la migrazione una tantum dei vecchi token di disconnessione al nuovo formato con hash.
 JCACHE_MIGRATION_FAILURE.useraction=Esaminare il messaggio di errore e i log del server per individuare la causa dell'errore. La migrazione verr\u00e0 riprovata al prossimo riavvio del server.
+
+SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED=CWWKS9134E: L'' URL di reindirizzamento della pagina di errore {0} \u00e8 bloccato. L''host nell'' URL di reindirizzamento non corrisponde all''host della richiesta corrente n\u00e9 a un dominio presente nella propriet\u00e0 wasReqURLRedirectDomainNames : {1}
+SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED.explanation=L' URL di reindirizzamento della pagina di errore deve trovarsi sullo stesso host della richiesta corrente, oppure l'host deve corrispondere a un dominio presente nella propriet\u00e0 wasReqURLRedirectDomainNames.
+SEC_FORM_ERROR_PAGE_REDIRECT_BLOCKED.useraction=Verificare che l'host dell' URL di reindirizzamento della pagina di errore sia lo stesso della richiesta corrente, oppure aggiungere il nome di dominio dell' URL di reindirizzamento alla propriet\u00e0 wasReqURLRedirectDomainNames nella configurazione di webAppSecurity.

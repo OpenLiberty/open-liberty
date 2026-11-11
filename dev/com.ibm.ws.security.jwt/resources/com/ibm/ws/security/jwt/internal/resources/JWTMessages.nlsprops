@@ -409,4 +409,26 @@ JWT_ERROR_GETTING_CERT_ENTRIES=CWWKS6070E: Cannot load trusted certificate entri
 JWT_ERROR_GETTING_CERT_ENTRIES.explanation=An error occurred while the system was attempting to retrieve the list of trusted certificate entries from the specified truststore. The truststore might be missing from the configuration, or an issue might be preventing access to the truststore.
 JWT_ERROR_GETTING_CERT_ENTRIES.useraction=Verify that the truststore is configured correctly in your server configuration and that it is accessible. Check the error message for more information about the failure.
 
+# Do not translate "JSON Web Token", "JWT", "workloadIdentityClaim"
+# 0=Builder config ID, 1=workloadIdentityClaim value (claim name)
+JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED=CWWKS6071E: The [{0}] JSON Web Token (JWT) builder API rejected an attempt to overwrite or remove the [{1}] workload identity claim from the JWT.
+JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED.explanation=An application used the JWT builder API to try to overwrite or remove the claim that the workloadIdentityClaim attribute specifies. The JWT builder rejects this attempt to overwrite or remove the claim because the server sets its value to identify the workload. The builder does not change the claim.
+JWT_WORKLOAD_IDENTITY_CLAIM_CANNOT_BE_MODIFIED.useraction=Remove any JWT builder API calls that attempt to overwrite or remove the workload identity claim.
 
+# Do not translate "JSON Web Token", "JWT", "workloadIdentityClaim"
+# 0=Builder config ID, 1=workloadIdentityClaim value (claim name), 2=conflicting attribute name, 3=conflicting attribute value
+JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG=CWWKS6072E: The [{0}] JSON Web Token (JWT) builder configuration sets the workloadIdentityClaim attribute value to [{1}] and the [{2}] attribute value to [{3}]. The [{1}] claim cannot be set to both the workloadIdentityClaim attribute value and the [{2}] attribute value. The configuration is not valid.
+JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG.explanation=The workloadIdentityClaim attribute value specifies the JWT claim that the server sets to the workload identity. Another attribute in the JWT builder configuration also sets that claim. This conflict is not allowed because the workload identity claim is protected.
+JWT_WORKLOAD_IDENTITY_CLAIM_CONFLICTS_WITH_CONFIG.useraction=Set the workloadIdentityClaim attribute to a claim that no other attribute in the JWT builder configuration sets. Alternatively, remove the conflicting attribute that sets the claim that the workloadIdentityClaim attribute value specifies.
+
+# Do not translate "JSON Web Token", "JWT"
+# 0=Builder config ID
+JWT_BUILDER_API_CHECKPOINT_NOT_SUPPORTED=CWWKS6073E: The [{0}] JSON Web Token (JWT) builder API cannot be called during the server checkpoint phase because workload identity is enabled.
+JWT_BUILDER_API_CHECKPOINT_NOT_SUPPORTED.explanation=The JWT builder cannot build JWTs during the server checkpoint. Workload identity cannot be generated until the process is restored from the checkpoint.
+JWT_BUILDER_API_CHECKPOINT_NOT_SUPPORTED.useraction=Configure the application to call the JWT builder API only after the server is restored from the checkpoint.
+
+# Do not translate "JSON Web Token", "JWT", "jwkRotationTime", "jwkMaxKeys", "expiry", "expiresInSeconds", "JSON Web Key", "JWK"
+# 0=Builder config ID, 1=jwkRotationTime in minutes, 2=jwkMaxKeys, 3=token lifetime in seconds
+JWK_KEY_COVERAGE_WINDOW_TOO_SHORT=CWWKS6074W: The [{0}] JSON Web Token (JWT) builder configuration has a jwkRotationTime attribute value set to {1} minutes and a jwkMaxKeys attribute value set to {2}, but the token lifetime is set to {3} seconds. Tokens might become unverifiable before they expire.
+JWK_KEY_COVERAGE_WINDOW_TOO_SHORT.explanation=A JSON Web Key (JWK) remains in the JWK set for the number of rotation periods that the jwkMaxKeys attribute value specifies. Therefore, the total key coverage window is the jwkRotationTime attribute value that is multiplied by the jwkMaxKeys attribute value. If the total key coverage window is shorter than the token lifetime, a verifier cannot find the JWK for a token after the window elapses. Therefore, tokens might become unverifiable before they expire.
+JWK_KEY_COVERAGE_WINDOW_TOO_SHORT.useraction=Verify that the jwkRotationTime attribute value that is multiplied by the jwkMaxKeys attribute value is greater than or equal to the token lifetime. Increase the jwkRotationTime attribute value, increase the jwkMaxKeys attribute value, or reduce the token lifetime by setting the expiry attribute value or by setting the expiresInSeconds attribute value.

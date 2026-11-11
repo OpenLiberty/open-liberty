@@ -2447,8 +2447,16 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
             Tr.entry(this, tc, "destroy");
 
         if(isAborted()){
+            if (poolConn != null) {
+                try {
+                    poolConn.close();
+                } catch (Exception e) {
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "destroy: best-effort poolConn.close() after abort", e);
+                }
+            }
             if(isTraceOn && tc.isEntryEnabled())
-                Tr.exit(this, tc, "destroy", "ManagedConnection is aborted -- skipping destroy");
+                Tr.exit(this, tc, "destroy", "ManagedConnection is aborted -- destroy completed after abort");
             return;
         }
         

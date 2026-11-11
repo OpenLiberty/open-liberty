@@ -159,14 +159,14 @@ netty.handler.removed.from.pipeline=CWWKO0231W: \u5df2\u4ece\u6d3b\u52a8\u8fde\u
 netty.handler.removed.from.pipeline.explanation=\u5728\u901a\u9053\u5904\u4e8e\u6d3b\u52a8\u72b6\u6001\u65f6\uff0c\u4e00\u4e2a\u5bf9\u8fde\u63a5\u6b63\u5e38\u8fd0\u884c\u5fc5\u4e0d\u53ef\u5c11\u7684 Netty \u901a\u9053\u5904\u7406\u7a0b\u5e8f\u88ab\u610f\u5916\u79fb\u9664\u4e86\u3002
 netty.handler.removed.from.pipeline.useraction=\u5982\u679c\u8be5\u6d88\u606f\u4ecd\u7136\u5b58\u5728\uff0c\u8bf7\u6536\u96c6\u8bca\u65ad\u8ddf\u8e2a\u4fe1\u606f\uff0c\u5e76\u8054\u7cfb IBM \u6280\u672f\u652f\u6301\u3002
 
-read.timeout=CWWKO1713W: HTTP \u8bfb\u64cd\u4f5c\u8d85\u65f6\uff1a {0}
-read.timeout.explanation=\u4e00\u4e2a\u4f20\u5165\u7684 HTTP \u8fde\u63a5\u5728\u914d\u7f6e\u7684\u8bfb\u53d6\u8d85\u65f6\u671f\u95f4\u5185\u672a\u6536\u5230\u6570\u636e\u3002
-read.timeout.useraction=\u8bf7\u68c0\u67e5\u7f51\u7edc\u8fde\u63a5\uff0c\u6216\u589e\u52a0 HTTP \u7aef\u70b9\u914d\u7f6e\u4e2d\u7684\u8bfb\u53d6\u8d85\u65f6\u503c\u3002
+# read.timeout=CWWKO1713W: An HTTP read operation timed out: {0}
+# read.timeout.explanation=An inbound HTTP connection did not receive data within the configured read timeout period.
+# read.timeout.useraction=Check the network connection or increase the read timeout value in the HTTP endpoint configuration.
 
-write.timeout=CWWKO1714W: HTTP \u5199\u5165\u64cd\u4f5c\u8d85\u65f6\uff1a {0}
-write.timeout.explanation=\u4e00\u6b21\u53d1\u5f80 HTTP \u7684\u5199\u5165\u64cd\u4f5c\u672a\u5728\u914d\u7f6e\u7684\u5199\u5165\u8d85\u65f6\u65f6\u95f4\u5185\u5b8c\u6210\u3002
-write.timeout.useraction=\u8bf7\u68c0\u67e5\u7f51\u7edc\u8fde\u63a5\uff0c\u6216\u589e\u52a0 HTTP \u7aef\u70b9\u914d\u7f6e\u4e2d\u7684\u5199\u5165\u8d85\u65f6\u503c\u3002
+# write.timeout=CWWKO1714W: An HTTP write operation timed out: {0}
+# write.timeout.explanation=An outbound HTTP write operation did not complete within the configured write timeout period.
+# write.timeout.useraction=Check the network connection or increase the write timeout value in the HTTP endpoint configuration.
 
-h2.idle.timeout=CWWKO1715W: HTTP/2 \u8fde\u63a5\u56e0\u7a7a\u95f2\u8d85\u65f6\u800c\u5173\u95ed\uff1a {0}
-h2.idle.timeout.explanation=HTTP/2 \u8fde\u63a5\u7684\u7a7a\u95f2\u65f6\u95f4\u8d85\u8fc7\u4e86\u914d\u7f6e\u7684\u7a7a\u95f2\u8d85\u65f6\u65f6\u95f4\uff0c\u56e0\u6b64\u670d\u52a1\u5668\u5173\u95ed\u4e86\u8be5\u8fde\u63a5\u3002
-h2.idle.timeout.useraction=\u8bf7\u68c0\u67e5\u7f51\u7edc\u8fde\u63a5\uff0c\u6216\u5728 HTTP \u7aef\u70b9\u914d\u7f6e\u4e2d\u589e\u52a0 HTTP/2 \u8fde\u63a5\u7a7a\u95f2\u8d85\u65f6\u503c\u3002
+# h2.idle.timeout=CWWKO1715W: An HTTP/2 connection closed because of an idle timeout: {0}
+# h2.idle.timeout.explanation=The HTTP/2 connection was idle for longer than the configured idle timeout period, so the server closed the connection.
+# h2.idle.timeout.useraction=Check the network connection or increase the HTTP/2 connection idle timeout value in the HTTP endpoint configuration.

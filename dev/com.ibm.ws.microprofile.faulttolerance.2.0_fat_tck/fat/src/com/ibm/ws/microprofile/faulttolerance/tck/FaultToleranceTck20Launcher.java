@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.tck;
 
@@ -33,9 +30,9 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.tck.TCKResultsConstants;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
-import componenttest.topology.utils.tck.TCKResultsConstants;
 
 /**
  * This is a test class that runs the whole Fault Tolerance TCK. The TCK results
@@ -56,7 +53,7 @@ public class FaultToleranceTck20Launcher {
     public static RepeatTests repeat = RepeatFaultTolerance.repeat(SERVER_NAME, TestMode.FULL,
                                                                    MicroProfileActions.MP32,
                                                                    MicroProfileActions.MP22,
-                                                                   MicroProfileActions.MP13,
+                                                                   MicroProfileActions.MP13_EE7,
                                                                    MicroProfileActions.MP20,
                                                                    MicroProfileActions.MP30);
 
@@ -134,7 +131,7 @@ public class FaultToleranceTck20Launcher {
                 // For test configurations which only differ my the version of mpMetrics, just run the metrics tests
                 suiteFileName = "tck-suite-metrics-only.xml";
                 break;
-            case MicroProfileActions.MP13_ID:
+            case MicroProfileActions.MP13_EE7_ID:
                 // For FT 1.0 configurations, run a compatible subset of tests which have fixes in the FT 2.0 TCK
                 suiteFileName = "tck-suite-10-subset.xml";
                 break;

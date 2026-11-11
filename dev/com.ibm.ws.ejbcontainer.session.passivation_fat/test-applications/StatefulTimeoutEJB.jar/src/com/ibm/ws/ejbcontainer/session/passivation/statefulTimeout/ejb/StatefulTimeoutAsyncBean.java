@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2018 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.session.passivation.statefulTimeout.ejb;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +25,8 @@ import javax.ejb.StatefulTimeout;
 @Stateful
 @StatefulTimeout(value = 15, unit = TimeUnit.SECONDS)
 public class StatefulTimeoutAsyncBean {
+    public static volatile CountDownLatch latch;
+
     private long ivLastInvoked = -1;
 
     public long sync() {
@@ -63,6 +66,10 @@ public class StatefulTimeoutAsyncBean {
 
     @Asynchronous
     public void throwUncheckedExceptionInFAFAsyncMethod() {
+        CountDownLatch curLatch = latch;
+        if (curLatch != null) {
+            curLatch.countDown();
+        }
         throw new RuntimeException("now see if you can access this bean again");
     }
 
@@ -74,12 +81,20 @@ public class StatefulTimeoutAsyncBean {
     @Asynchronous
     @Remove
     public void throwUncheckedExceptionInFAFAsyncRemoveMethod() {
+        CountDownLatch curLatch = latch;
+        if (curLatch != null) {
+            curLatch.countDown();
+        }
         throw new RuntimeException("now see if you can access this bean again");
     }
 
     @Asynchronous
     @Remove(retainIfException = true)
     public void throwUncheckedExceptionInFAFAsyncRemoveWithRetainMethod() {
+        CountDownLatch curLatch = latch;
+        if (curLatch != null) {
+            curLatch.countDown();
+        }
         throw new RuntimeException("now see if you can access this bean again");
     }
 }

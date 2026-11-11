@@ -39,7 +39,7 @@ public class EncoderTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/encoderTest");
+    public McpClient client = McpClient.builder(server, "/encoderTest").build();
 
     @BeforeClass
     public static void setup() throws Exception {

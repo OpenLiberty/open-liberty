@@ -49,3 +49,6 @@ option-key.outputVersion=--outputVersion
 
 # "outputVersion=2.0" is not translated.  "xsd:any" is not translated
 option-desc.outputVersion=Je\u015bli podano opcj\u0119 outputVersion=2.0, w pliku wyj\u015bciowym b\u0119d\u0105 zapisywane tylko elementy xsd:any, tak aby nieznane elementy pomy\u015blnie przesz\u0142y sprawdzanie poprawno\u015bci XSD kosztem utraty mo\u017cliwo\u015bci sprawdzania poprawno\u015bci znanych element\u00f3w.
+
+option-key.strict=--strict
+option-desc.strict=Opracuj schemat s\u0142u\u017c\u0105cy do sprawdzania poprawno\u015bci wy\u0142\u0105cznie zdefiniowanych atrybut\u00f3w.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -330,6 +330,12 @@ public abstract class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "cveReporting")
     private CVEReportingElement cveReporting;
+
+    @XmlElement(name = "requestTiming")
+    private ConfigElementList<RequestTimingElement> requestTimings;
+
+    @XmlElement(name = "eventLogging")
+    private ConfigElementList<EventLoggingElement> eventLoggings;
 
     public ServerConfiguration() {
         this.description = "Generation date: " + new Date();
@@ -1186,6 +1192,46 @@ public abstract class ServerConfiguration implements Cloneable {
         }
 
         return this.orb;
+    }
+
+    /**
+     * @return the list of requestTiming configurations for this server
+     */
+    public ConfigElementList<RequestTimingElement> getRequestTimings() {
+        if (this.requestTimings == null) {
+            this.requestTimings = new ConfigElementList<RequestTimingElement>();
+        }
+        return this.requestTimings;
+    }
+
+    /**
+     * @return the list of eventLogging configurations for this server
+     */
+    public ConfigElementList<EventLoggingElement> getEventLoggings() {
+        if (this.eventLoggings == null) {
+            this.eventLoggings = new ConfigElementList<EventLoggingElement>();
+        }
+        return this.eventLoggings;
+    }
+
+    /**
+     * @return the first eventLogging configuration for this server, creating one if empty
+     */
+    public EventLoggingElement getEventLogging() {
+        if (getEventLoggings().isEmpty()) {
+            this.eventLoggings.add(new EventLoggingElement());
+        }
+        return this.eventLoggings.get(0);
+    }
+
+    /**
+     * Removes the eventLogging element from this configuration, so that the
+     * feature runs with its defaults when the configuration is written out.
+     */
+    public void removeEventLogging() {
+        if (this.eventLoggings != null) {
+            this.eventLoggings.clear();
+        }
     }
 
     private List<Field> getAllXmlElements() {

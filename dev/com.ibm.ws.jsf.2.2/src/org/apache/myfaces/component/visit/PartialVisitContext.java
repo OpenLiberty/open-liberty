@@ -47,6 +47,15 @@ import javax.faces.context.FacesContext;
 public class PartialVisitContext extends VisitContext
 {
 
+
+  // Maximum NamingContainer nesting depth (number of separators) registered per client id.
+  // The number of separators in a client id equals its NamingContainer nesting depth; real views never
+  // nest more than a handful deep. Without a bound, a crafted client id made of many separators would make
+  // _addSubtreeClientId retain substring(0, i) for every separator, i.e. O(depth^2) characters and copies,
+  // which is an unauthenticated memory/CPU exhaustion vector. This keeps the work linear and acts
+  // as a backstop for any caller; the primary input caps live in PartialViewContextImpl.
+  private static final int MAX_NAMING_CONTAINER_DEPTH = 64;
+
   /**
    * Creates a PartialVisitorContext instance.
    * @param facesContext the FacesContext for the current request
@@ -326,7 +335,9 @@ public class PartialVisitContext extends VisitContext
     
     int length = clientId.length();
 
-    for (int i = 0; i < length; i++)
+    // Bound the nesting depth we register to keep this method linear (see MAX_NAMING_CONTAINER_DEPTH).
+    int depth = 0;
+    for (int i = 0; i < length && depth < MAX_NAMING_CONTAINER_DEPTH; i++)
     {
       if (clientId.charAt(i) == separator)
       {
@@ -342,13 +353,13 @@ public class PartialVisitContext extends VisitContext
 
         if (c == null)
         {
-          // TODO: smarter initial size?
-          c = new ArrayList<String>();
+          c = new ArrayList<>(5);
           _subtreeClientIds.put(namingContainerClientId, c);
         }
 
         // Stash away the client id
         c.add(clientId);
+        depth++;
       }
     }
   }
@@ -361,14 +372,14 @@ public class PartialVisitContext extends VisitContext
     // the client id to remove should be contained in the corresponding
     // collection - ie. whether the key (the NamingContainer client id)
     // is present at the start of the client id to remove.
-    for (String key : _subtreeClientIds.keySet())
+    for (Map.Entry<String, Collection<String>> stringCollectionEntry : _subtreeClientIds.entrySet())
     {
-      if (clientId.startsWith(key))
+      if (clientId.startsWith(stringCollectionEntry.getKey()))
       {
         // If the clientId starts with the key, we should
         // have an entry for this clientId in the corresponding
         // collection.  Remove it.
-        Collection<String> ids = _subtreeClientIds.get(key);
+        Collection<String> ids = stringCollectionEntry.getValue();
         ids.remove(clientId);
       }
     }

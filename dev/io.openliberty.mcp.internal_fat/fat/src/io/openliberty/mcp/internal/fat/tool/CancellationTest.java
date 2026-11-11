@@ -49,10 +49,10 @@ public class CancellationTest extends FATServletClient {
     private static ExecutorService executor;
 
     @Rule
-    public McpClient clientWithTool = new McpClient(server, "/cancellationTest");
+    public McpClient clientWithTool = McpClient.builder(server, "/cancellationTest").build();
 
     @Rule
-    public McpClient clientOnWrongURL = new McpClient(server, "/clientOnWrongURL");
+    public McpClient clientOnWrongURL = McpClient.builder(server, "/clientOnWrongURL").build();
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/cancellationTest");

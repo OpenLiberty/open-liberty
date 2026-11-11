@@ -24,8 +24,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import io.openliberty.data.internal.Util;
-
 import com.ibm.websphere.ras.annotation.Sensitive;
 
 import jakarta.data.Limit;
@@ -879,6 +877,23 @@ public class Fail {
                   info.repositoryInterface.getName(),
                   queryType,
                   exampleQuery);
+    }
+
+    /**
+     * Raises UnsupportedOperationException because the entityGraph
+     * and the jakarta.persitence.loadgraph hints value cannot point to
+     * different entity graph names on the same QueryOptions annotation.
+     *
+     * @param info query information for the repository method.
+     * @throws the UnsupportedOperationException.
+     */
+    public static UnsupportedOperationException //
+                    queryOptionsGraphConflict(QueryInfo info) {
+        throw new UnsupportedOperationException // TODO NLS
+        ("The " + info.method.getName() + " method of the " +
+         info.repositoryInterface.getName() + " repository has a" +
+         " QueryOptions annotation that configures a " + Util.LOADGRAPH +
+         " hint that conflicts with the " + "entityGraph" + " member.");
     }
 
     /**

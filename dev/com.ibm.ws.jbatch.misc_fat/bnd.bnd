@@ -17,6 +17,7 @@ src: \
 	test-applications/implicit/resources
 
 fat.project: true
+fat.minimum.java.level: 11
 
 tested.features: \
     cdi-2.0,\

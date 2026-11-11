@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -71,6 +71,26 @@ INVALID_PROVIDER_CWWKW1305W.useraction=Sprawd\u017a kod aplikacji, aby upewni\u0
 INVALID_LONG_PROPERTY_CWWKW1306W=CWWKW1306W: W\u0142a\u015bciwo\u015b\u0107 klienta {0} musi by\u0107 d\u0142ug\u0105 liczb\u0105 ca\u0142kowit\u0105, ale zosta\u0142a skonfigurowana niepoprawnie jako {1}. To ustawienie jest ignorowane.
 INVALID_LONG_PROPERTY_CWWKW1306W.explanation=W\u0142a\u015bciwo\u015bci klienta, takie jak ustawienia limit\u00f3w czasu, musz\u0105 by\u0107 konfigurowane jako dodatnie d\u0142ugie liczby ca\u0142kowite lub \u0142a\u0144cuchy mo\u017cliwe do przekszta\u0142cenia w d\u0142ugie liczby ca\u0142kowite. Ten komunikat oznacza, \u017ce w\u0142a\u015bciwo\u015b\u0107 klienta zosta\u0142a skonfigurowana przy u\u017cyciu niepoprawnej warto\u015bci. W wyniku tego w\u0142a\u015bciwo\u015b\u0107 ta jest ignorowana.
 INVALID_LONG_PROPERTY_CWWKW1306W.useraction=Sprawd\u017a kod aplikacji i konfiguracj\u0119 serwera, aby ustali\u0107, w kt\u00f3rym miejscu ta w\u0142a\u015bciwo\u015b\u0107 jest nieprawid\u0142owo ustawiana, i usu\u0144 w\u0142a\u015bciwo\u015b\u0107 lub zmie\u0144 j\u0105 na poprawn\u0105 d\u0142ug\u0105 liczb\u0119 ca\u0142kowit\u0105.
+
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W=CWWKW1307W: Nie uda\u0142o si\u0119 ustawi\u0107 atrybutu ''{0}'' na warto\u015b\u0107 ''{1}''.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.explanation=Implementacja klasy ` TransformerFactory ` w formacie XML nie obs\u0142uguje podanego atrybutu. Przetwarzanie jest kontynuowane przy u\u017cyciu domy\u015blnej konfiguracji transformatora.
+TRANSFORMER_PROPERTY_NOT_SUPPORTED_CWWKW1307W.useraction=Skonfiguruj lub zaktualizuj implementacj\u0119 klasy ` TransformerFactory ` obs\u0142uguj\u0105c\u0105 atrybut ''{0}'', aby zapewni\u0107 odpowiednie wzmocnienie zabezpiecze\u0144.
+
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W=CWWKW1308W: Filtr CORS zosta\u0142 skonfigurowany z u\u017cyciem symbolu wieloznacznego w polu pochodzenia (*) oraz opcj\u0105 allowCredentials=true,, jednak przegl\u0105darki nie zezwalaj\u0105 na u\u017cycie po\u015bwiadcze\u0144 z symbolem wieloznacznym w polu pochodzenia. Obs\u0142uga po\u015bwiadcze\u0144 zosta\u0142a wy\u0142\u0105czona. Aby zapewni\u0107 zgodno\u015b\u0107 z po\u015bwiadczeniami, nale\u017cy okre\u015bli\u0107 dok\u0142adne dozwolone \u017ar\u00f3d\u0142a zamiast u\u017cywa\u0107 symboli wieloznacznych.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.explanation=Specyfikacja W3C dotycz\u0105ca CORS zabrania stosowania nag\u0142\u00f3wka odpowiedzi \u201eAccess-Control-Allow-Credentials\u201d, gdy warto\u015b\u0107 nag\u0142\u00f3wka odpowiedzi \u201eAccess-Control-Allow-Origin\u201d stanowi znak wieloznaczny (*). W zwi\u0105zku z tym filtr CORS wy\u0142\u0105czy\u0142 obs\u0142ug\u0119 po\u015bwiadcze\u0144, aby zachowa\u0107 zgodno\u015b\u0107 ze specyfikacj\u0105.
+CORS_CREDENTIALS_WILDCARD_CWWKW1308W.useraction=Je\u015bli wymagane s\u0105 dane uwierzytelniaj\u0105ce, nale\u017cy skonfigurowa\u0107 filtr CORS, podaj\u0105c konkretne dozwolone \u017ar\u00f3d\u0142a zamiast symboli wieloznacznych. Je\u015bli dane uwierzytelniaj\u0105ce nie s\u0105 wymagane, nale\u017cy usun\u0105\u0107 ustawienie \u201e allowCredentials \u201d lub ustawi\u0107 je na warto\u015b\u0107 \u201efalse\u201d.
+
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E=CWWKW1309E: Nieprawid\u0142owe wymiary obrazu: {0} x {1}
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.explanation=Wymiary obrazu podane w nag\u0142\u00f3wku obrazu s\u0105 nieprawid\u0142owe. Zar\u00f3wno szeroko\u015b\u0107, jak i wysoko\u015b\u0107 musz\u0105 by\u0107 warto\u015bciami dodatnimi.
+IMAGE_INVALID_DIMENSIONS_CWWKW1309E.useraction=Upewnij si\u0119, \u017ce przes\u0142any obraz jest poprawnym, nieuszkodzonym plikiem graficznym.
+
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E=CWWKW1310E: Nieprawid\u0142owe wymiary miniatury: {0} x {1}
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.explanation=Wymiary miniatury podane w nag\u0142\u00f3wku obrazu s\u0105 nieprawid\u0142owe. Zar\u00f3wno szeroko\u015b\u0107, jak i wysoko\u015b\u0107 musz\u0105 by\u0107 warto\u015bciami dodatnimi.
+IMAGE_INVALID_THUMBNAIL_DIMENSIONS_CWWKW1310E.useraction=Upewnij si\u0119, \u017ce przes\u0142any obraz jest poprawnym, nieuszkodzonym plikiem graficznym o prawid\u0142owych wymiarach miniatury.
+
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E=CWWKW1311E: Rozmiar obrazu {0} x {1} ( {2} ) przekracza maksymalny pr\u00f3g {3}
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.explanation=Szacowana wielko\u015b\u0107 obrazu po dekodowaniu przekracza skonfigurowany maksymalny pr\u00f3g. Aby ograniczy\u0107 zu\u017cycie pami\u0119ci, \u017c\u0105danie zosta\u0142o odrzucone z kodem HTTP 400.
+IMAGE_THRESHOLD_EXCEEDED_CWWKW1311E.useraction=Zmniejsz wymiary obrazu lub zwi\u0119ksz pr\u00f3g, ustawiaj\u0105c w\u0142a\u015bciwo\u015b\u0107 systemow\u0105 ` dev.resteasy.image.threshold ` na wy\u017csz\u0105 warto\u015b\u0107 (na przyk\u0142ad 500MB ). Ustaw warto\u015b\u0107 na -1, aby ca\u0142kowicie wy\u0142\u0105czy\u0107 t\u0119 kontrol\u0119.
 
 # Same message as in /com.ibm.ws.jaxrs.2.0.common/resources/com/ibm/ws/jaxrs20/common/internal/resources/JaxRsCommonMessages.nlsprops
 

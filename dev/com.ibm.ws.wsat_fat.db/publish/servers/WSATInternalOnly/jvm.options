@@ -1,0 +1,2 @@
+# propagation is a beta attribute and is only honoured when the beta edition flag is set
+-Dcom.ibm.ws.beta.edition=true

@@ -15,7 +15,6 @@ package io.openliberty.data.internal.v1_0;
 import static io.openliberty.data.internal.QueryType.INSERT;
 import static io.openliberty.data.internal.QueryType.LC_DELETE;
 import static io.openliberty.data.internal.QueryType.LC_UPDATE;
-import static io.openliberty.data.internal.QueryType.LC_UPDATE_MERGE;
 import static io.openliberty.data.internal.QueryType.SAVE;
 import static io.openliberty.data.internal.v1_0.Data_1_0.EM_createQuery_ql;
 import static io.openliberty.data.internal.v1_0.Data_1_0.EM_createQuery_ql_rc;
@@ -23,7 +22,9 @@ import static io.openliberty.data.internal.v1_0.Data_1_0.EM_createQuery_ql_rc;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
@@ -34,7 +35,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import io.openliberty.data.internal.AttributeConstraint;
 import io.openliberty.data.internal.QueryInfo;
 import io.openliberty.data.internal.QueryType;
-import io.openliberty.data.internal.Util;
 import io.openliberty.data.internal.cdi.RepositoryProducer;
 import jakarta.data.Sort;
 import jakarta.data.repository.Delete;
@@ -190,26 +190,60 @@ public class QueryInfo_1_0 extends QueryInfo {
 
     @Override
     @Trivial
-    protected void ehDelete(AutoCloseable entityHandler, Object entity) {
-        ((EntityManager) entityHandler).remove(entity);
+    protected void ehDelete(AutoCloseable entityHandler, List<?> entities) {
+        EntityManager em = ((EntityManager) entityHandler);
+        for (Object e : entities)
+            em.remove(e);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "flush");
+        em.flush();
     }
 
     @Override
     @Trivial
-    protected void ehInsert(AutoCloseable entityHandler, Object entity) {
-        ((EntityManager) entityHandler).persist(entity);
+    protected void ehInsert(AutoCloseable entityHandler, List<?> entities) {
+        EntityManager em = ((EntityManager) entityHandler);
+        for (Object e : entities)
+            em.persist(e);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "flush");
+        em.flush();
     }
 
     @Override
     @Trivial
-    protected Object ehUpdate(AutoCloseable entityHandler, Object entity) {
-        return ((EntityManager) entityHandler).merge(entity);
+    protected ArrayList<Object> ehUpdate(AutoCloseable entityHandler,
+                                         List<Object> entities) throws Exception {
+        ArrayList<Object> results = new ArrayList<>(entities.size());
+        EntityManager em = ((EntityManager) entityHandler);
+
+        // find and merge updates to the entities
+        for (Object e : entities)
+            results.add(findAndMerge(e, em));
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "flush");
+        em.flush();
+
+        return results;
     }
 
     @Override
     @Trivial
-    protected Object ehUpsert(AutoCloseable entityHandler, Object entity) {
-        return ((EntityManager) entityHandler).merge(entity);
+    protected ArrayList<Object> ehUpsert(AutoCloseable entityHandler,
+                                         List<?> entities) {
+        ArrayList<Object> merged = new ArrayList<>(entities.size());
+        EntityManager em = ((EntityManager) entityHandler);
+        for (Object e : entities)
+            merged.add(em.merge(e));
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "flush");
+        em.flush();
+
+        return merged;
     }
 
     @Override
@@ -264,13 +298,8 @@ public class QueryInfo_1_0 extends QueryInfo {
     protected void identifyType() {
         if (entityParamType != null && methodTypeAnno instanceof Delete)
             setType(Delete.class, LC_DELETE);
-
         else if (entityParamType != null && methodTypeAnno instanceof Update)
-            setType(Update.class,
-                    entityInfo.attributeNamesForEntityUpdate != null &&
-                                  Util.UPDATE_COUNT_TYPES.contains(singleType) //
-                                                  ? LC_UPDATE //
-                                                  : LC_UPDATE_MERGE);
+            setType(Update.class, LC_UPDATE);
         else if (methodTypeAnno instanceof Insert)
             setType(Insert.class, INSERT);
         else if (methodTypeAnno instanceof Save)

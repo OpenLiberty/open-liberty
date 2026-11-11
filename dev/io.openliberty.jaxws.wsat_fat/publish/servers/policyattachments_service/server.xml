@@ -5,7 +5,9 @@
 		<feature>jaxws-2.2</feature>
 		<feature>servlet-3.1</feature>
     </featureManager>
-    <httpEndpoint httpPort="8091" httpsPort="9444" id="defaultHttpEndpoint"/>
+    <include location="../fatTestCommon.xml"/>
+
+    <httpEndpoint httpPort="${bvt.prop.HTTP_secondary}" httpsPort="${bvt.prop.HTTP_secondary.secure}" id="defaultHttpEndpoint"/>
     
       	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
   	<javaPermission className="java.lang.RuntimePermission" name="createClassLoader"/>

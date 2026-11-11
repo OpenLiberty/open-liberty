@@ -35,6 +35,7 @@ src: \
     test-applications/olgh16772/src,\
     test-applications/olgh16970/src,\
     test-applications/olgh19176/src,\
+    test-applications/valuetypelocks/src,\
     test-applications/helpers/DatabaseManagement/src
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)

@@ -27,6 +27,7 @@ Bundle-Activator: com.ibm.ws.kernel.service.location.internal.Activator
 Export-Package: \
  com.ibm.websphere.kernel.server;provide:=true, \
  com.ibm.wsspi.kernel.service.condition, \
+ com.ibm.wsspi.kernel.service.jms;provide:=true, \
  com.ibm.wsspi.kernel.service.location, \
  com.ibm.wsspi.kernel.service.utils;provide:=true, \
  com.ibm.ws.kernel.service.util;provide:=true, \
@@ -90,5 +91,5 @@ instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class, \
   com.ibm.ws.logging;version=latest, \
   org.mockito:mockito-core;version=4.11.0, \
   org.mockito:mockito-inline;version=4.11.0, \
-  net.bytebuddy:byte-buddy;version=1.17.8, \
-  net.bytebuddy:byte-buddy-agent;version=1.17.8
+  net.bytebuddy:byte-buddy;version=1.18.10, \
+  net.bytebuddy:byte-buddy-agent;version=1.18.10

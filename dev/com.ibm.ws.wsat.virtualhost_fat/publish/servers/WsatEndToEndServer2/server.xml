@@ -1,0 +1,43 @@
+<server>
+    <featureManager>
+        <feature>wsAtomicTransaction-1.2</feature>
+        <feature>jaxws-2.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>jndi-1.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>timedexit-1.0</feature>
+    </featureManager>
+
+    <!--
+        Participant server: single HTTP endpoint on HTTP_secondary.
+        No virtualHostRef restriction needed — default_host covers HTTP_secondary,
+        so WS-AT can reach the participant on the same port as the application.
+        The test sets server2.setHttpDefaultPort(server2.getHttpSecondaryPort())
+        before start so the FAT framework resolves URLs correctly.
+    -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
+    <!-- Derby in-memory database for testParticipant application -->
+    <jdbcDriver id="DerbyDB" libraryRef="DerbyRef"/>
+    <library id="DerbyRef">
+        <fileset dir="${shared.resource.dir}derby" includes="derby.jar"/>
+    </library>
+    <dataSource id="TestDB" jdbcDriverRef="DerbyDB" jndiName="jdbc/TestDB"
+                type="javax.sql.XADataSource">
+        <properties.derby.embedded createDatabase="create"
+                                   databaseName="memory:database"/>
+    </dataSource>
+
+    <javaPermission codebase="${shared.resource.dir}derby/derby.jar"
+                    className="java.security.AllPermission"/>
+    <javaPermission codebase="${server.config.dir}/dropins/testParticipant.war"
+                    className="java.security.AllPermission"/>
+
+    <logging traceSpecification="Transaction=all:wsat=all"
+             traceFileName="trace.log" maxFileSize="200" maxFiles="5"
+             traceFormat="BASIC"/>
+</server>

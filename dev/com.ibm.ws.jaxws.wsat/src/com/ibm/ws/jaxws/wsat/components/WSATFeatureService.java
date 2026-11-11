@@ -13,7 +13,10 @@
 package com.ibm.ws.jaxws.wsat.components;
 
 import java.util.Map;
+import java.util.Set;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
@@ -79,8 +82,25 @@ public class WSATFeatureService {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "isWSATPresent",
                      "[WSATFeatureService] checking wsat feature....");
-        return featureProvisioner.getService().getInstalledFeatures()
-                        .contains(Constants.FEATURE_WSAT_NAME);
+        Set<String> installedFeatures = featureProvisioner.getService().getInstalledFeatures();
+        // The public feature short-name is "wsAtomicTransaction-1.2".
+        // The private internal feature symbolic names cover ee-6.0, ee-9.0, ee-10.0 and
+        // jaxws-2.2 variants.  Any of these indicates WS-AT runtime bundles are present.
+        return installedFeatures.contains(Constants.FEATURE_WSAT_NAME)
+               || installedFeatures.contains("io.openliberty.wsAtomicTransaction1.2.internal.ee-6.0")
+               || installedFeatures.contains("io.openliberty.wsAtomicTransaction1.2.internal.ee-9.0")
+               || installedFeatures.contains("io.openliberty.wsAtomicTransaction1.2.internal.ee-10.0")
+               || installedFeatures.contains("io.openliberty.wsAtomicTransaction1.2.internal.jaxws-2.2");
+    }
+
+    /**
+     * Returns {@code true} only when the public {@code wsAtomicTransaction-1.2} feature is
+     * installed.  This is distinct from {@link #isWSATPresent()} which also returns {@code true}
+     * for the private internal feature variants (inbound-only).
+     */
+    public static boolean isPublicFeaturePresent() {
+        FeatureProvisioner provisioner = featureProvisioner.getService();
+        return provisioner != null && provisioner.getInstalledFeatures().contains(Constants.FEATURE_WSAT_NAME);
     }
 
     private void goInsertListeners() {

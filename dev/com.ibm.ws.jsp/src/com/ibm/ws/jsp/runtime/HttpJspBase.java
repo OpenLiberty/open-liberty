@@ -221,7 +221,6 @@ public abstract class HttpJspBase extends HttpServlet implements HttpJspPage {
                 logger.logp(Level.FINER, CLASS_NAME, "getPool", "Created new HashMap and set on _threadLocal: ["+_threadLocal+"]");
             }
             Integer threadId = Thread.currentThread().hashCode();
-            JspThreadPoolListener.addThreadLocal(_threadLocal, threadId );
             if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)){
                 logger.logp(Level.FINER, CLASS_NAME, "getPool", "added _threadLocal to JspThreadPoolListener  threadId: ["+threadId+"] _threadLocal: ["+_threadLocal+"]");
             }

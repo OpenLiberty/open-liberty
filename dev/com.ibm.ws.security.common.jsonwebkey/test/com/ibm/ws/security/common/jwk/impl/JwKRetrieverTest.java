@@ -35,6 +35,9 @@ import test.common.SharedOutputManager;
 public class JwKRetrieverTest extends CommonTestClass {
 
     private static final String JWK_RESOURCE_NAME = "jwk_test.json";
+    private static final String JWK_EC_RESOURCE_NAME = "jwk_ec_test.json";
+    private static final String JWKS_RESOURCE_NAME = "jwks_test.json";
+    private static final String JWKS_MULTIPLE_RSA_RESOURCE_NAME = "jwks_rsa_only_test.json";
     private static final String RELATIVE_JWK_LOCATION = "./com/ibm/ws/security/common/jwk/impl/jwk_test.json";
     private static final String RELATIVE_JWK_MINIMUM_LOCATION = "./com/ibm/ws/security/common/jwk/impl/jwk_minimum_test.json";
     private static final String RELATIVE_PEM_LOCATION = "./com/ibm/ws/security/common/jwk/impl/rsa_key.pem";
@@ -135,6 +138,88 @@ public class JwKRetrieverTest extends CommonTestClass {
     }
 
     @Test
+    public void testGetPublicKeyFromJwk_jwkEndpointUrlSetToFile_fileDoesNotExist() throws Exception {
+        URL jwkURL = getClass().getResource(JWK_RESOURCE_NAME);
+        jwkEndpointUrl = "file://" + jwkURL.getPath() + "-does-not-exist";
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, algorithm, publickey, keyLocation);
+
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, false);
+
+        assertNull("Should not have found a public key, but did: " + publicKey, publicKey);
+    }
+
+    @Test
+    public void testGetPublicKeyFromJwk_jwkEndpointUrlSetToFile_jwk_algorithmMismatch() throws Exception {
+        // File is a single EC JWK, but the algorithm to use is set to RS256
+        URL jwkURL = getClass().getResource(JWK_EC_RESOURCE_NAME);
+        String algorithm = "RS256";
+        jwkEndpointUrl = "file://" + jwkURL.getPath();
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, algorithm, publickey, keyLocation);
+
+        String kid = "1";
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, false);
+
+        assertNull("Should not have found a public key, but did: " + publicKey, publicKey);
+    }
+
+    @Test
+    public void testGetPublicKeyFromJwk_jwkEndpointUrlSetToFile_jwk_algorithmMatches() throws Exception {
+        URL jwkURL = getClass().getResource(JWK_RESOURCE_NAME);
+        jwkEndpointUrl = "file://" + jwkURL.getPath();
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, algorithm, publickey, keyLocation);
+
+        String kid = "does-not-match-but-only-one-key-in-jwks";
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, false);
+
+        assertNotNull("There must a public key.", publicKey);
+        assertEquals("RSA", publicKey.getAlgorithm());
+    }
+
+    @Test
+    public void testGetPublicKeyFromJwk_jwkEndpointUrlSetToFile_jwks_noKeyMatchingKid_oneKeyMatchingAlgorithm() throws Exception {
+        // There are multiple JWKs in the file, but only one that matches the configured algorithm
+        URL jwkURL = getClass().getResource(JWKS_RESOURCE_NAME);
+        jwkEndpointUrl = "file://" + jwkURL.getPath();
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, algorithm, publickey, keyLocation);
+
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, false);
+
+        assertNotNull("Expected to get the single RSA key in the JWKS, but did not.", publicKey);
+        assertEquals("RSA", publicKey.getAlgorithm());
+    }
+
+    @Test
+    public void testGetPublicKeyFromJwk_jwkEndpointUrlSetToFile_jwks_noKeyMatchingKid_multipleKeysInJwks() throws Exception {
+        URL jwkURL = getClass().getResource(JWKS_MULTIPLE_RSA_RESOURCE_NAME);
+        jwkEndpointUrl = "file://" + jwkURL.getPath();
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, algorithm, publickey, keyLocation);
+
+        String kid = "should-not-find-match";
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, false);
+
+        assertNull("Should not have found a public key, but did: " + publicKey, publicKey);
+    }
+
+    @Test
+    public void testGetPublicKeyFromJwk_jwkEndpointUrlSetToFile_jwks_withMatchingKid() throws Exception {
+        URL jwkURL = getClass().getResource(JWKS_MULTIPLE_RSA_RESOURCE_NAME);
+        String jwkEndpointUrl = "file://" + jwkURL.getPath();
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, algorithm, publickey, keyLocation);
+
+        String kid = "2011-04-29";
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(kid, null, false);
+
+        assertNotNull("There must a public key.", publicKey);
+        assertEquals("RSA", publicKey.getAlgorithm());
+    }
+
+    @Test
     public void testGetPublicKeyFromJwk_fileURL() throws Exception {
         URL jwkURL = getClass().getResource(JWK_RESOURCE_NAME);
         keyLocation = jwkURL.toString();
@@ -156,7 +241,7 @@ public class JwKRetrieverTest extends CommonTestClass {
 
         assertNotNull("Should have found a key when a relative location to a single, valid PEM key and a kid is specified.", publicKey);
     }
-    
+
     @Test
     public void testGetPublicKeyFromJwk_relativeLocationPEM_x5tSpecified() throws Exception {
         keyLocation = RELATIVE_PEM_LOCATION;
@@ -167,7 +252,7 @@ public class JwKRetrieverTest extends CommonTestClass {
 
         assertNotNull("Should have found a key when a relative location to a single, valid PEM key and x5t is specified.", publicKey);
     }
-    
+
     @Test
     public void testGetPublicKeyFromJwk_relativeLocationPEM_x5tS256Specified() throws Exception {
         keyLocation = RELATIVE_PEM_LOCATION;
@@ -211,7 +296,7 @@ public class JwKRetrieverTest extends CommonTestClass {
 
         assertNotNull("Should have found a key when text for a single, valid PEM key and no kid is specified.", publicKey);
     }
-    
+
     @Test
     public void testGetPublicKeyFromJwk_publicKeyTextPEM_x5tSpecified() throws Exception {
         publickey = PemKeyUtilTest.PEM_KEY_TEXT;
@@ -222,7 +307,7 @@ public class JwKRetrieverTest extends CommonTestClass {
 
         assertNotNull("Should have found a key when text for a single, valid PEM key and x5t is specified.", publicKey);
     }
-    
+
     @Test
     public void testGetPublicKeyFromJwk_publicKeyTextPEM_x5tS256Specified() throws Exception {
         publickey = PemKeyUtilTest.PEM_KEY_TEXT;
@@ -429,7 +514,7 @@ public class JwKRetrieverTest extends CommonTestClass {
         boolean result = jwkRetriever.parseKeyText(keyText, location, jwkset, algorithm, keyType);
         assertTrue("Should have successfully parsed key text, but did not.", result);
     }
-    
+
     @Test
     public void testParseKeyText_keyTypePublic_RSA() throws Exception {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,

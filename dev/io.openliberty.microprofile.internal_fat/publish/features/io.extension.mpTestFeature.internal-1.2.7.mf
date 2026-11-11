@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+Subsystem-Version: 1.0.0
+Subsystem-Content: com.ibm.websphere.appserver.jaxrs-2.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.cdi-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jsonp-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.mpConfig-1.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.mpFaultTolerance-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.mpJwt-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.mpMetrics-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.mpHealth-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.microProfile-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.mpContextPropagation-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.mpReactiveStreams-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.servlet-3.1; type="osgi.subsystem.feature"
+Subsystem-SymbolicName: io.extension.mpTestFeature.internal-1.2.7;visibility:=private; singleton:=true
+Subsystem-ManifestVersion: 1.0
+

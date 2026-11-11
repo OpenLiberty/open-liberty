@@ -27,6 +27,7 @@ import com.ibm.ws.security.authorization.util.UnauthenticatedException;
 import io.openliberty.grpc.internal.GrpcMessages;
 import io.openliberty.grpc.internal.security.GrpcSecurityService;
 import io.openliberty.grpc.internal.servlet.GrpcServletUtils;
+import io.openliberty.grpc.internal.servlet.GrpcServletUtils.GrpcMethodNotFoundException;
 
 @Component(service = GrpcSecurityService.class)
 public class GrpcSecurityComponent implements GrpcSecurityService {
@@ -37,18 +38,25 @@ public class GrpcSecurityComponent implements GrpcSecurityService {
      * Checks if a given request is authorized to access the requested method, by
      * scanning the requested method for @DenyAll, @RolesAllowed, or @AllowAll and
      * validating the request's Subject
-     * 
+     *
      * @param req
      * @param res
      * @param requestPath
      * @return
      */
-    @FFDCIgnore({ UnauthenticatedException.class })
+    @FFDCIgnore({ UnauthenticatedException.class, GrpcMethodNotFoundException.class })
     public boolean doServletAuth(HttpServletRequest req, HttpServletResponse res, String requestPath) {
-        Method method = GrpcServletUtils.getTargetMethod(requestPath);
+        Method method = null;
+        try {
+            method = GrpcServletUtils.getTargetMethod(requestPath);
+        } catch (GrpcMethodNotFoundException e) {
+            // The service is registered but the method could not be resolved — deny.
+            Tr.error(tc, "authorization.error", new Object[] {requestPath, "Unauthorized"});
+            return false;
+        }
         boolean isAuthorized = false;
         if (method == null) {
-            // the requested service doesn't exist - we'll handle this further up
+            // The service is not registered — let the gRPC layer handle this further up.
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "gRPC target service for this path {0} does not exist", requestPath);
             }
@@ -67,7 +75,7 @@ public class GrpcSecurityComponent implements GrpcSecurityService {
             	} else {
             		Tr.error(tc, "authorization.error", new Object[] {requestPath , "Unauthorized"});
             	}
-            } catch (UnauthenticatedException ex) {			
+            } catch (UnauthenticatedException ex) {
                 Tr.error(tc, "authentication.error", new Object[] {requestPath , ex.getMessage()});
             }
         }

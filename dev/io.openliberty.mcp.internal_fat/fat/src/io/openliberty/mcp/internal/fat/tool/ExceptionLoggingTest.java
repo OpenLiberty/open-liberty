@@ -42,7 +42,7 @@ public class ExceptionLoggingTest extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient client = new McpClient(server, "/exceptionLoggingTest");
+    public McpClient client = McpClient.builder(server, "/exceptionLoggingTest").build();
 
     @BeforeClass
     public static void setup() throws Exception {

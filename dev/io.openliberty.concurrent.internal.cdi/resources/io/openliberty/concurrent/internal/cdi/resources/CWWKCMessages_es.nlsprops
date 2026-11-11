@@ -37,3 +37,7 @@ CWWKC1411.qualified.res.err.useraction=Aseg\u00farese de que el recurso est\u00e
 CWWKC1412.qualifier.conflict=CWWKC1412E: El artefacto de aplicaci\u00f3n {0} incluye m\u00faltiples definiciones de recursos {1} que tienen los calificadores {2}. Los nombres de las definiciones de recursos {1} en conflicto son {3}.
 CWWKC1412.qualifier.conflict.explanation=Cada definici\u00f3n de recurso del mismo tipo que tenga un calificador debe tener un calificador diferente.
 CWWKC1412.qualifier.conflict.useraction=Aseg\u00farese de que cada definici\u00f3n de recurso del mismo tipo tiene un calificador diferente o no tiene ning\u00fan calificador.
+
+CWWKC1413.sched.method.args=CWWKC1413E: El m\u00e9todo ` {0} ` del bean gestionado ` {1} ` de CDI lleva la anotaci\u00f3n `Schedule`, pero no se programa autom\u00e1ticamente, ya que los m\u00e9todos con la anotaci\u00f3n `Schedule` no pueden tener par\u00e1metros.
+CWWKC1413.sched.method.args.explanation=Los m\u00e9todos que llevan la anotaci\u00f3n \u00abSchedule\u00bb no deben tener par\u00e1metros.
+CWWKC1413.sched.method.args.useraction=Elimina los par\u00e1metros del m\u00e9todo o elimina la anotaci\u00f3n \u00abSchedule\u00bb del m\u00e9todo.

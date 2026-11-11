@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2013 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,3 +51,7 @@ OSGI_ERROR_MSG.useraction=Pour plus d'informations, voir le message d'erreur.
 OSGI_BUNDLE_EXCEPTION=CWWKE0702E: {0}
 OSGI_BUNDLE_EXCEPTION.explanation=Une exception BundleException a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e par l'infrastructure OSGi.
 OSGI_BUNDLE_EXCEPTION.useraction=Pour plus d'informations, consultez le message d'exception.
+
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W=CWWKE0710W: L''identifiant de message g\u00e9n\u00e9rique pour {0} n''est pas valide. La syntaxe attendue est <pr\u00e9fixe>*[<niveau-journal]], o\u00f9 \u00ab niveau-journal \u00bb est un caract\u00e8re unique facultatif qui repr\u00e9sente l''un des niveaux de journalisation suivants : I pour \u00ab information \u00bb, A pour \u00ab audit \u00bb, W pour \u00ab avertissement \u00bb ou E pour \u00ab erreur \u00bb.
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W.explanation=Un identifiant de message contenant un caract\u00e8re g\u00e9n\u00e9rique ne respecte pas la syntaxe attendue. La syntaxe attendue est <pr\u00e9fixe>*[<niveau-de-journalisation]]. La valeur du niveau de journalisation est un caract\u00e8re unique facultatif qui correspond au niveau de journalisation \u00ab Information \u00bb, \u00ab Audit \u00bb, \u00ab Avertissement \u00bb ou \u00ab Erreur \u00bb.
+MESSAGE.ROUTER.INVALID.WILDCARD.MESSAGE.ID.CWWKE0710W.useraction=Mettez \u00e0 jour l'ID du message afin qu'il respecte la syntaxe attendue : <pr\u00e9fixe>*[<niveau-de-journalisation]]. Indiquez un caract\u00e8re valide : I pour \u00ab information \u00bb, A pour \u00ab audit \u00bb, W pour \u00ab avertissement \u00bb, E pour \u00ab erreur \u00bb; vous pouvez \u00e9galement omettre la valeur du niveau de journalisation. Si vous ne faites rien, cet identifiant de message sera ignor\u00e9 et les messages correspondants ne seront pas enregistr\u00e9s.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -79,9 +79,9 @@ public class ExternalTestServiceDecrypterTest {
      * Must be called in a try-with-resources block
      */
     public MockedStatic<ExternalTestService> failingExternalTestService() {
-        // Mock the ExternalTestService.getService(serviceName) static method
+        // Mock the ExternalTestService.getServiceWithoutProperties(serviceName) static method
         MockedStatic<ExternalTestService> mockExternalTestService = Mockito.mockStatic(ExternalTestService.class);
-        mockExternalTestService.when(() -> ExternalTestService.getService(anyString()))
+        mockExternalTestService.when(() -> ExternalTestService.getServiceWithoutProperties(anyString()))
                         .thenThrow(new Exception("Test failure"));
         return mockExternalTestService;
     }
@@ -118,9 +118,9 @@ public class ExternalTestServiceDecrypterTest {
         when(instance.getPort()).thenReturn(65535);
         when(instance.getServiceName()).thenReturn(testName.getMethodName());
 
-        // Mock the ExternalTestService.getService(serviceName) static method
+        // Mock the ExternalTestService.getServiceWithoutProperties(serviceName) static method
         MockedStatic<ExternalTestService> mockExternalTestService = Mockito.mockStatic(ExternalTestService.class);
-        mockExternalTestService.when(() -> ExternalTestService.getService(anyString()))
+        mockExternalTestService.when(() -> ExternalTestService.getServiceWithoutProperties(anyString()))
                         .thenReturn(instance);
         return mockExternalTestService;
     }

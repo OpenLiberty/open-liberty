@@ -1,0 +1,58 @@
+<server description="Security authentication FAT configuration for jaas login module">
+
+	<featureManager>
+		<feature>appSecurity-1.0</feature>
+		<feature>jsp-2.2</feature>
+		<feature>securitylibertyinternals-1.0</feature>
+	</featureManager>
+
+	<webAppSecurity trackLoggedOutSSOCookies="false" />
+
+	<!-- test WSLogin and system.WEB_INBOUND with no jaas config -->
+
+	<basicRegistry id="basic" realm="BasicRealm">
+		<user name="user0" password="user0pwd" />
+		<user name="user1" password="user1pwd" />
+		<group name="group1">
+			<member name="user0" />
+			<member name="user1" />
+		</group>
+		<user name="user2" password="user2pwd" />
+		<group name="group2">
+			<member name="user2" />
+			<member name="user6" />
+		</group>
+		<user name="user3" password="user3pwd" />
+		<group name="group3">
+			<member name="user3" />
+		</group>
+		<user name="user4" password="user4 pwd" />
+		<group name="group4">
+			<member name="user4" />
+		</group>
+		<user name="user5" password="user5pwd " />
+		<group name="group5">
+			<member name="user5" />
+		</group>
+		<user name="user6" password="user6pwd" />
+	</basicRegistry>
+
+	<application type="ear" id="jaasloginmodule" name="jaasloginmodule" location="${server.config.dir}/apps/jaasloginmodule.ear">
+		<application-bnd>
+			<security-role name="Employee">
+				<user name="user1" />
+				<group name="group1" />
+			</security-role>		
+			<security-role name="Manager">
+				<user name="user2" />
+				<group name="group2" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<include location="../fatTestPorts.xml"/>
+
+</server>

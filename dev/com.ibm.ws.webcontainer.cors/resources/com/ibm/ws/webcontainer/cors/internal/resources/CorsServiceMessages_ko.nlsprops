@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #ISMESSAGEFILE TRUE
 #NLS_ENCODING=UNICODE
@@ -28,3 +25,7 @@
 OSGI_SERVICE_ERROR=CWWKO1350E: OSGi \uc11c\ube44\uc2a4 {0}\uc744(\ub97c) \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 OSGI_SERVICE_ERROR.explanation=\uc9c0\uc815\ub41c \uc11c\ube44\uc2a4\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc73c\ubbc0\ub85c \ub0b4\ubd80 \uc11c\ubc84 \uc624\ub958\uac00 \ucc98\ub9ac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 OSGI_SERVICE_ERROR.useraction=\uc815\ub9ac \uc635\uc158\uc73c\ub85c \uc11c\ubc84\ub97c \ub2e4\uc2dc \uc2dc\uc791\ud558\uc2ed\uc2dc\uc624.
+
+CORS_UNSUPPORTED_ORIGIN_WILDCARD=CWWKO1351W: \ub3c4\uba54\uc778 {1} \uc5d0 \ub300\ud55c CORS \uad6c\uc131\uc5d0\uc11c allowedOrigins \uac12 {0} \uc5d0\ub294 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \uc640\uc77c\ub4dc\uce74\ub4dc\uac00 \ud3ec\ud568\ub418\uc5b4 \uc788\uc5b4 \ubb34\uc2dc\ub429\ub2c8\ub2e4. * \uac12\ub9cc \ubaa8\ub4e0 \uae30\uc810\uc744 \ud5c8\uc6a9\ud569\ub2c8\ub2e4.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.explanation=allowedOrigins \uc18d\uc131\uc740 \ubaa8\ub4e0 \ucd9c\ucc98\ub97c \ud5c8\uc6a9\ud558\ub294 \ub2e8\uc77c \ubcc4\ud45c(*) \ub610\ub294 \uc815\ud655\ud55c \ucd9c\ucc98 \ubaa9\ub85d\uc744 \ubc1b\uc544\ub4e4\uc785\ub2c8\ub2e4. \ubcc4\ud45c\uc640 \ub2e4\ub978 \ubb38\uc790\uac00 \ud568\uaed8 \ud3ec\ud568\ub41c \ucd9c\ucc98\ub294 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 \ud328\ud134\uc774\ubbc0\ub85c \ubb34\uc2dc\ub418\uba70, \uc5b4\ub5a4 \ucd9c\ucc98\ub3c4 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+CORS_UNSUPPORTED_ORIGIN_WILDCARD.useraction=\ud5c8\uc6a9\ub418\ub294 \uac01 \ucd9c\ucc98\ub97c \uba85\uc2dc\uc801\uc73c\ub85c \uc9c0\uc815\ud558\uac70\ub098, *\ub97c \uc9c0\uc815\ud558\uc5ec \ubaa8\ub4e0 \ucd9c\ucc98\ub97c \ud5c8\uc6a9\ud558\uc2ed\uc2dc\uc624.

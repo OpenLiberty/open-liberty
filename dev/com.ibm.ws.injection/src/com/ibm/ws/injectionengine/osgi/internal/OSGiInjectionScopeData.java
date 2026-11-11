@@ -540,7 +540,7 @@ public class OSGiInjectionScopeData extends InjectionScopeData implements Deferr
         deferredReferenceDataEnabled = false;
 
         if (parent != null && deferredReferenceDatas != null) {
-            parent.removeDeferredReferenceData(this);
+            parent.removeDeferredReferenceData(this, false);
         }
 
         deferredReferenceDatas = null;
@@ -556,7 +556,7 @@ public class OSGiInjectionScopeData extends InjectionScopeData implements Deferr
      */
     public synchronized void addDeferredReferenceData(DeferredReferenceData refData) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "addDeferredReferenceData", "this=" + this, refData);
+            Tr.entry(tc, "addDeferredReferenceData : this=" + this, refData);
         }
 
         if (deferredReferenceDatas == null) {
@@ -577,8 +577,16 @@ public class OSGiInjectionScopeData extends InjectionScopeData implements Deferr
      * Remove a child deferred reference data to this scope.
      */
     public synchronized void removeDeferredReferenceData(DeferredReferenceData refData) {
+        removeDeferredReferenceData(refData, true);
+    }
+
+    /**
+     * Remove a child deferred reference data to this scope, indicating whether
+     * deferred reference data was processed.
+     */
+    public synchronized void removeDeferredReferenceData(DeferredReferenceData refData, boolean processed) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "removeDeferredReferenceData", "this=" + this, refData);
+            Tr.entry(tc, "removeDeferredReferenceData : this=" + this + " processed=" + processed, refData);
         }
 
         if (deferredReferenceDatas != null) {
@@ -587,9 +595,18 @@ public class OSGiInjectionScopeData extends InjectionScopeData implements Deferr
             if (deferredReferenceDatas.isEmpty()) {
                 deferredReferenceDatas = null;
 
+                if (parent != null) {
+                    parent.removeDeferredReferenceData(this, processed);
+                }
+
+                // If processed, complete future with current time; otherwise complete with MIN_VALUE and clear
                 if (deferredReferenceDatasFuture != null) {
-                    deferredReferenceDatasFuture.complete(Long.MIN_VALUE);
-                    deferredReferenceDatasFuture = null;
+                    if (processed) {
+                        deferredReferenceDatasFuture.complete(System.nanoTime());
+                    } else {
+                        deferredReferenceDatasFuture.complete(Long.MIN_VALUE);
+                        deferredReferenceDatasFuture = null;
+                    }
                 }
             }
         }
@@ -608,7 +625,7 @@ public class OSGiInjectionScopeData extends InjectionScopeData implements Deferr
     public boolean processDeferredReferenceData() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled()) {
-            Tr.entry(tc, "processDeferredReferenceData", "this=" + this + " future=" + deferredReferenceDatasFuture);
+            Tr.entry(tc, "processDeferredReferenceData : this=" + this + " future=" + deferredReferenceDatasFuture);
         }
 
         Map<DeferredReferenceData, Boolean> deferredReferenceDatas;
@@ -640,7 +657,7 @@ public class OSGiInjectionScopeData extends InjectionScopeData implements Deferr
                 // Removed from parent after processing completes so concurrent access of parent
                 // will block on the parent future until all child processing completes.
                 if (parent != null) {
-                    parent.removeDeferredReferenceData(this);
+                    parent.removeDeferredReferenceData(this, any);
                 }
 
                 // Unblock any concurrent access and clear the future if no longer required.

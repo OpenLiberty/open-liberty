@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,8 +64,9 @@ public class MessageRouterConfigurator implements BundleListener {
 
     /**
      * A reference to the actual MessageRouter.
+     * Protected visibility for unit testing purposes.
      */
-    private WsMessageRouterImpl msgRouter = null;
+    protected WsMessageRouterImpl msgRouter = null;
 
     /**
      * Map of previous logHandler:msgId mappings to compare to incoming updates.

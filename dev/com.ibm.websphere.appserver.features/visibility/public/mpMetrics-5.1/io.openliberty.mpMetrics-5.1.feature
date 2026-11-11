@@ -37,7 +37,7 @@ Subsystem-Name: MicroProfile Metrics 5.1
   io.openliberty.jakarta.annotation-2.1; ibm.tolerates:="3.0",\
   io.openliberty.servlet.internal-6.0; ibm.tolerates:="6.1", \
   io.openliberty.mpCompatible-6.1; ibm.tolerates:="7.0, 7.1", \
-  io.openliberty.cdi-4.0; ibm.tolerates:="4.1", \
+  io.openliberty.microprofile.internal.cdi-4.0; ibm.tolerates:="4.1", \
   io.openliberty.org.eclipse.microprofile.metrics-5.1, \
   com.ibm.websphere.appserver.monitor-1.0
 -bundles=com.ibm.ws.microprofile.metrics.common, \

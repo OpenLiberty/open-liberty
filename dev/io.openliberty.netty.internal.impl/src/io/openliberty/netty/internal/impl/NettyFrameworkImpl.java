@@ -14,7 +14,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -517,59 +516,35 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         // finish the port listening logic, that need to run at the end of server
         // startup
         FutureTask<ChannelFuture> task;
-        CountDownLatch latch = new CountDownLatch(serverStartedTasks.size());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Netty Framework signaled- Server Completely Started signal received");
         }
-        synchronized (syncStarted) {
-            while ((task = serverStartedTasks.poll()) != null) {
-                try {
-                    if (!task.isCancelled()) {
-                        executorService.submit(new StartTaskRunnable(task, latch));
-                    } else
-                        latch.countDown();
-                } catch (Exception e) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
-                    }
+        // Tasks are run on this thread outside of syncStarted, so that a task that needs
+        // other locks (e.g. NettyChain) cannot deadlock with a thread holding those locks
+        // and calling runWhenServerStarted. Polling and marking the server as started
+        // are done under the lock so that no queued task is missed.
+        while (true) {
+            synchronized (syncStarted) {
+                task = serverStartedTasks.poll();
+                if (task == null) {
+                    serverCompletelyStarted.set(true);
+                    isActive = true;
+                    syncStarted.notifyAll();
+                    return;
                 }
             }
-
             try {
-                latch.await();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-            serverCompletelyStarted.set(true);
-            isActive = true;
-            syncStarted.notifyAll();
-        }
-    }
-
-    private class StartTaskRunnable implements Runnable {
-
-        private FutureTask<ChannelFuture> task;
-        private CountDownLatch latch;
-
-        public StartTaskRunnable(FutureTask<ChannelFuture> task, CountDownLatch latch) {
-            this.task = task;
-            this.latch = latch;
-        }
-
-        @Override
-        public void run() {
-            task.run();
-            try {
-                task.get(getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS);
+                if (!task.isCancelled()) {
+                    task.run();
+                    // Task has completed, this only surfaces any failure for tracing
+                    task.get();
+                }
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "caught exception performing startup task: " + e);
+                    Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
                 }
             }
-            latch.countDown();
         }
-
     }
 
     /**
@@ -589,15 +564,16 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             future.cancel(false);
             return future;
         }
+        FutureTask<ChannelFuture> future = new FutureTask<ChannelFuture>(callable);
         synchronized (syncStarted) {
-            FutureTask<ChannelFuture> future = new FutureTask<ChannelFuture>(callable);
             if (!serverCompletelyStarted.get()) {
                 serverStartedTasks.add(future);
-            } else {
-                this.executorService.submit(future);
+                return future;
             }
-            return future;
         }
+        // Run outside syncStarted to avoid holding it while the task takes other locks
+        future.run();
+        return future;
     }
 
     /*

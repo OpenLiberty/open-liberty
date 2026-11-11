@@ -86,10 +86,10 @@ public class ConfigurableSessionTelemetryTest extends FATServletClient {
 
     @Test
     public void testCustomSessionTimeoutWithMetrics() throws Exception {
-        McpClient client = new McpClient(server, "/" + APP_NAME);
+        McpClient client = McpClient.builder(server, "/" + APP_NAME).build();
 
         TestRetryHelper.retryWithSetup(3,
-            () -> client.initializeSession(),
+            () -> client.initialize(),
             () -> {
                 FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "captureSessionDurationMetrics");
                 client.callMCP(BASIC_TOOL_REQUEST);
@@ -110,7 +110,7 @@ public class ConfigurableSessionTelemetryTest extends FATServletClient {
 
                 FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "testSessionTimeoutMetrics");
             },
-            () -> client.cleanupSession());
+            () -> client.close());
     }
 
 }

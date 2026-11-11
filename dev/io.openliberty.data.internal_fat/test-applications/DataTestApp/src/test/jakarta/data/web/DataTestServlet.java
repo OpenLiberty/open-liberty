@@ -145,6 +145,17 @@ public class DataTestServlet extends FATServlet {
     @Inject
     Vehicles vehicles;
 
+
+    public static final boolean isH2() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("h2");
+    }
+
+    public static final boolean isDerby() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("derby");
+    }
+
     /**
      * Indicates if testing with the Hibernate Persistence provider
      * rather than EclipseLink.
@@ -173,6 +184,20 @@ public class DataTestServlet extends FATServlet {
 //            assumeTrue(!isHibernate());
         }
         return isHibernate();
+    }
+
+    /**
+     * OrderByForUpdate is not supported on Derby or Eclipselink+H2
+     */
+    public static boolean supportsOrderByForUpdate() {
+        return !isDerby() && (isHibernate() || !isH2());
+    }
+
+    /**
+     * UpdateWithLimit is not supported on Eclipselink+H2
+     */
+    public static boolean supportsUpdateWithLimit() {
+        return isHibernate() || !isH2();
     }
 
     /**
@@ -1045,6 +1070,9 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testCountPagesWithDistinctValues() {
         if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33289")) {
+            return; //TODO remove skip when fixed in Hibernate or Liberty
+        }
+        if (skipForHibernateByDatabase("h2", "https://github.com/OpenLiberty/open-liberty/issues/33289")) {
             return; //TODO remove skip when fixed in Hibernate or Liberty
         }
 
@@ -2002,14 +2030,12 @@ public class DataTestServlet extends FATServlet {
         assertEquals(4.0f, p1.height, 0.01f);
         assertEquals("testFindAndDelete#40001", p1.description);
 
-        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
-        boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
-        Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.asc("id") } : null;
+        Sort<?>[] sorts = supportsOrderByForUpdate() ? new Sort[] { Sort.asc("id") } : null;
 
         Package[] p = packages.deleteByDescriptionEndsWith("#4001x", sorts);
         assertEquals(Arrays.toString(p), 2, p.length);
 
-        if (!supportsOrderByForUpdate) {
+        if (!supportsOrderByForUpdate()) {
             System.out.println("Sorting results in test code.");
             p = Stream.of(p)
                             .sorted(Comparator.comparing(pkg -> pkg.id))
@@ -2081,15 +2107,12 @@ public class DataTestServlet extends FATServlet {
         packages.save(new Package(60002, 62.0f, 42.0f, 25.0f, "testFindAndDeleteMultipleAnnotated"));
         packages.save(new Package(60003, 59.0f, 39.0f, 24.0f, "testFindAndDeleteMultipleAnnotated"));
 
-        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
-        boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
-
-        List<Package> list = supportsOrderByForUpdate //
+        List<Package> list = supportsOrderByForUpdate() //
                         ? packages.takeOrdered("testFindAndDeleteMultipleAnnotated") //
                         : packages.take("testFindAndDeleteMultipleAnnotated");
         assertEquals(list.toString(), 3, list.size());
 
-        if (!supportsOrderByForUpdate) {
+        if (!supportsOrderByForUpdate()) {
             System.out.println("Sorting results in test code.");
             list.sort(Comparator.comparing(p -> p.width));
         }
@@ -2125,8 +2148,6 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindAndDeleteReturnsEntities() throws Exception {
-        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
-        boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
         packages.deleteAll();
 
@@ -2139,20 +2160,26 @@ public class DataTestServlet extends FATServlet {
         packages.save(new Package(80008, 80.0f, 10.8f, 0.8f, //
                         "testFindAndDeleteReturnsEntities#80008"));
 
+        if (!supportsUpdateWithLimit()) {
+            // EclipseLink on H2 does not support queries that combine FOR UPDATE with LIMIT
+            assertEquals(4, packages.deleteAll());
+            return;
+        }
+
         Set<Integer> remaining = new TreeSet<>();
         remaining.addAll(Set.of(80008, 80080, 80081, 80088));
 
-        Sort<Package> sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
+        Sort<Package> sort = supportsOrderByForUpdate() ? Sort.desc("width") : null;
         Integer id = packages.deleteFirst1(Limit.of(1), sort).orElseThrow().id;
-        if (supportsOrderByForUpdate)
+        if (supportsOrderByForUpdate())
             assertEquals(Integer.valueOf(80080), id);
         assertEquals("Found " + id + "; expected one of " + remaining, true, remaining.remove(id));
 
-        Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
+        Sort<?>[] sorts = supportsOrderByForUpdate() ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
         Package[] deleted = packages.deleteFirst2(Limit.of(2), sorts);
         assertEquals(Arrays.toString(deleted), 2, deleted.length);
 
-        if (supportsOrderByForUpdate) {
+        if (supportsOrderByForUpdate()) {
             assertEquals(80081, deleted[0].id);
             assertEquals(80088, deleted[1].id);
         }
@@ -2177,8 +2204,6 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindAndDeleteReturnsObjects() {
-        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
-        boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
         packages.deleteAll();
 
@@ -2188,14 +2213,20 @@ public class DataTestServlet extends FATServlet {
         packages.save(new Package(70077, 77.0f, 17.7f, 7.7f, "testFindAndDeleteReturnsObjects#multi"));
         packages.save(new Package(70007, 70.0f, 10.7f, 0.7f, "testFindAndDeleteReturnsObjects#70007"));
 
+        if (!supportsUpdateWithLimit()) {
+            // EclipseLink on H2 does not support queries that combine FOR UPDATE with LIMIT
+            assertEquals(4, packages.deleteAll());
+            return;
+        }
+
         Set<Integer> remaining = new TreeSet<>();
         remaining.addAll(Set.of(70007, 70070, 70071, 70077));
 
-        Sort<Package> sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
+        Sort<Package> sort = supportsOrderByForUpdate() ? Sort.desc("width") : null;
         Object[] deleted = packages.destroy(Limit.of(1), sort);
         assertEquals("Deleted " + Arrays.toString(deleted), 1, deleted.length);
         Package p = (Package) deleted[0];
-        if (supportsOrderByForUpdate) {
+        if (supportsOrderByForUpdate()) {
             assertEquals(70070, p.id);
             assertEquals(70.0f, p.length, 0.001f);
             assertEquals(70.0f, p.width, 0.001f);
@@ -2211,14 +2242,14 @@ public class DataTestServlet extends FATServlet {
         // be reliably compared.
         // It is okay to order on length because the other entity with length=70.0
         // was previously removed.
-        Sort<?>[] sorts = supportsOrderByForUpdate //
+        Sort<?>[] sorts = supportsOrderByForUpdate() //
                         ? new Sort[] { Sort.desc("description"), Sort.asc("length") } //
                         : null;
         LinkedList<?> deletesList = packages.deleteFirst2ByHeightLessThan(8.0f, Limit.of(2), sorts);
         assertEquals("Deleted " + deletesList, 2, deletesList.size());
         Package p0 = (Package) deletesList.get(0);
         Package p1 = (Package) deletesList.get(1);
-        if (supportsOrderByForUpdate) {
+        if (supportsOrderByForUpdate()) {
             assertEquals(70071, p0.id);
             assertEquals(17.0f, p0.length, 0.001f);
             assertEquals(17.1f, p0.width, 0.001f);
@@ -2248,6 +2279,11 @@ public class DataTestServlet extends FATServlet {
     public void testFindAndDeleteWithOrderBy() {
         if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33287")) {
             return; //TODO remove skip when fixed in Hibernate or Liberty
+        }
+
+        if (!supportsUpdateWithLimit()) {
+            // EclipseLink on H2 does not support queries that combine FOR UPDATE with LIMIT
+            return;
         }
 
         String testName = "TestFindAndDeleteWithOrderByKeyword";
@@ -4004,7 +4040,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testMultipleAggregates() {
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
-        boolean databaseRounds = jdbcJarName.startsWith("ojdbc") || jdbcJarName.startsWith("postgre");
+        boolean databaseRounds = jdbcJarName.startsWith("ojdbc") || jdbcJarName.startsWith("postgre") || isH2();
 
         Object[] objects = primes.minMaxSumCountAverageObjectArray(50);
         assertEquals(Long.valueOf(2L), objects[0]); // minimum
@@ -4669,9 +4705,9 @@ public class DataTestServlet extends FATServlet {
                                      .stream()
                                      .map(v -> v.model)
                                      .collect(Collectors.toList()));
+                    
 
-        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33287")) {
-            //TODO remove skip when fixed in Hibernate or Liberty
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33287") || !supportsUpdateWithLimit()) {
             assertEquals(5L, vehicles.delete());
             assertEquals(0L, vehicles.countEverything());
         } else {

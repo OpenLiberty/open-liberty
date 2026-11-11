@@ -20,10 +20,10 @@ import static io.openliberty.data.internal.QueryType.FIND;
 import static io.openliberty.data.internal.QueryType.FIND_AND_DELETE;
 import static io.openliberty.data.internal.QueryType.LC_DELETE;
 import static io.openliberty.data.internal.QueryType.LC_UPDATE;
-import static io.openliberty.data.internal.QueryType.LC_UPDATE_MERGE;
 import static io.openliberty.data.internal.QueryType.NATIVE;
 import static io.openliberty.data.internal.QueryType.QM_DELETE;
 import static io.openliberty.data.internal.QueryType.QM_UPDATE;
+import static io.openliberty.data.internal.Util.ASYNC_STAGE_RETURN_TYPES;
 import static io.openliberty.data.internal.Util.SORT_PARAM_TYPES;
 import static io.openliberty.data.internal.cdi.DataExtension.exc;
 import static jakarta.data.repository.By.ID;
@@ -59,9 +59,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.function.BiFunction;
 import java.util.stream.BaseStream;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -100,6 +100,7 @@ import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Update;
 import jakarta.enterprise.event.Event;
+import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.TypedQuery;
@@ -161,6 +162,14 @@ public abstract class QueryInfo {
      * whether a query has named parameters.
      */
     private static final Set<String> UNKNOWN = Collections.emptySet();
+
+    /**
+     * Entity graph for eager fetching. This is computed from
+     * QueryOptions.entityGraph and any Fetching annotations.
+     * Null if neither of these annotations are present or the repository
+     * method type does not support them.
+     */
+    protected EntityGraph<?> eagerlyFetch;
 
     /**
      * Information about the type of entity to which the query pertains.
@@ -726,6 +735,8 @@ public abstract class QueryInfo {
                             return n.floatValue();
                     }
                 }
+                if (Number.class.equals(toType))
+                    return value;
             } catch (ArithmeticException x) {
                 cause = x;
             }
@@ -930,6 +941,7 @@ public abstract class QueryInfo {
                                                 returnArrayType, //
                                                 singleType, //
                                                 singleTypeElementType);
+        info.eagerlyFetch = eagerlyFetch;
         info.entityInfo = entityInfo;
         info.entityVar = entityVar;
         info.entityVar_ = entityVar_;
@@ -1096,9 +1108,8 @@ public abstract class QueryInfo {
         Class<?> returnType = method.getReturnType();
         if (isOptional) {
             returnValue = Optional.of(returnValue);
-        } else if (CompletableFuture.class.equals(returnType) ||
-                   CompletionStage.class.equals(returnType)) {
-            returnValue = CompletableFuture.completedFuture(returnValue);
+        } else if (ASYNC_STAGE_RETURN_TYPES.contains(returnType)) {
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (multiType != null) {
             throw Fail.countConversion(this, count);
         }
@@ -1226,11 +1237,15 @@ public abstract class QueryInfo {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "delete", loggable(results));
 
+        boolean hasEntityResults = false;
+
         for (Object result : results)
             if (result == null) {
                 throw Fail.resultConversion(this, null, null);
+            } else if (hasEntityResults) {
+                ; // use deleteMultiple for Data 1.1/EE 12+
             } else if (entityInfo.entityClass.isInstance(result)) {
-                ehDelete(entityHandler, result);
+                hasEntityResults = true; // use deleteMultiple for Data 1.1/EE 12+
             } else if (entityInfo.idClassAttributeAccessors != null) {
                 jakarta.persistence.Query delete = ehCreateStatement(entityHandler,
                                                                      jpqlDelete);
@@ -1245,7 +1260,7 @@ public abstract class QueryInfo {
                     delete.setParameter(++numParams, value);
                 }
                 delete.executeUpdate();
-            } else { // is return value the entity or id?
+            } else { // is return value a record entity or id?
                 Object value = result;
                 if (entityInfo.entityClass.isInstance(result) ||
                     (entityInfo.recordClass != null &&
@@ -1277,6 +1292,9 @@ public abstract class QueryInfo {
                 delete.executeUpdate();
             }
 
+        if (hasEntityResults)
+            ehDelete(entityHandler, results);
+
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "delete");
     }
@@ -1294,35 +1312,39 @@ public abstract class QueryInfo {
      */
     @Trivial
     Object delete(Object arg, AutoCloseable entityHandler) throws Exception {
-        Iterable<?> args;
-        int entityCount = 0;
+        List<Object> args; // always an ArrayList if entityInfo.recordClass != null
 
         if (entityParamType.isArray()) {
-            entityCount = Array.getLength(arg);
-            List<Object> list = new ArrayList<>(entityCount);
+            int entityCount = Array.getLength(arg);
+            ArrayList<Object> list = new ArrayList<>(entityCount);
             for (int i = 0; i < entityCount; i++)
                 list.add(Array.get(arg, i));
             args = list;
-        } else if (arg instanceof Collection<?> c) {
-            args = c;
-            entityCount = c.size();
-        } else if (arg instanceof Iterable<?> iterable) {
-            args = iterable;
-            for (Iterator<?> it = iterable.iterator(); it.hasNext(); it.next())
-                entityCount++;
-        } else if (arg instanceof Stream<?> s) {
-            List<?> list = s.sequential().toList();
+        } else if (entityInfo.recordClass == null && arg instanceof List<?> c) {
+            @SuppressWarnings("unchecked")
+            List<Object> list = (List<Object>) c;
             args = list;
-            entityCount = list.size();
+        } else if (arg instanceof Iterable<?> iterable) {
+            ArrayList<Object> list = new ArrayList<>();
+            for (Object e : iterable)
+                list.add(e);
+            args = list;
+        } else if (arg instanceof Stream<?> s) {
+            ArrayList<Object> list = s.sequential() //
+                            .collect(Collectors.toCollection(ArrayList::new));
+            args = list;
         } else {
-            args = Collections.singletonList(arg);
-            entityCount = 1;
+            ArrayList<Object> singleton = new ArrayList<>(1);
+            singleton.add(arg);
+            args = singleton;
         }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "delete", loggable(args));
+            Tr.entry(this, tc, "delete",
+                     loggable(arg instanceof Stream ? args : arg));
 
+        int entityCount = args.size();
         if (entityCount == 0)
             throw Fail.emptyLifeCycleParam(this);
 
@@ -1334,15 +1356,26 @@ public abstract class QueryInfo {
                 event.fire(new PreDeleteEvent<>(e));
         }
 
-        // delete the entities
-        int updateCount = 0;
-        for (Object e : args)
-            updateCount += deleteOne(e, entityHandler);
+        Object returnValue;
+        Class<?> returnType = method.getReturnType();
+        if ((returnType == void.class || returnType == Void.class) &&
+            entityInfo.recordClass == null &&
+            !(entityHandler instanceof EntityManager)) { // use deleteMultiple
 
-        if (updateCount < entityCount)
-            throw Fail.optimisticLockConflict(this, updateCount, entityCount);
+            ehDelete(entityHandler, args);
 
-        Object returnValue = toReturnValue(updateCount, method.getReturnType());
+            returnValue = null;
+        } else { // delete entities individually
+            // TODO DELETE BY ID IN ?
+            int updateCount = 0;
+            for (Object e : args)
+                updateCount += deleteOne(e, entityHandler);
+
+            if (updateCount < entityCount)
+                throw Fail.optimisticLockConflict(this, updateCount, entityCount);
+
+            returnValue = toReturnValue(updateCount, returnType);
+        }
 
         // PostDeleteEvent
         if (producer.lifeCycleEvents != null) {
@@ -1531,40 +1564,56 @@ public abstract class QueryInfo {
 
     /**
      * Delegates to the EntityAgent or EntityManager to delete or remove
-     * an entity.
+     * one or more entities.
      *
      * @param entityHandler EntityAgent or EntityManager
-     * @param entity        the entity to remove
+     * @param entities      the entities to delete
      */
-    protected abstract void ehDelete(AutoCloseable entityHandler, Object entity);
+    protected abstract void ehDelete(AutoCloseable entityHandler,
+                                     List<?> entities);
 
     /**
      * Delegates to the EntityAgent or EntityManager to insert or persist
-     * an entity.
+     * one or more entities.
      *
      * @param entityHandler EntityAgent or EntityManager
-     * @param entity        the entity to insert
+     * @param entities      the entities to insert
      */
-    protected abstract void ehInsert(AutoCloseable entityHandler, Object entity);
+    protected abstract void ehInsert(AutoCloseable entityHandler,
+                                     List<?> entities);
 
     /**
-     * Delegates to the EntityAgent or EntityManager to update or merge
-     * an entity.
+     * Delegates to the EntityAgent or EntityManager to update or merge.
+     *
+     * If the entityHandler is an EntityAgent, the given entities list
+     * must not include any Java record entities.
+     *
+     * If the entityHandler is an EntityManager, the Java record entities
+     * (if present) must be left within the given entities list.
      *
      * @param entityHandler EntityAgent or EntityManager
-     * @param entity        the entity to update
+     * @param entities      the entities to update
+     * @return updated entities (in same order). This can be the same list as
+     *         {@code entities}, but any Java record entities are switched to
+     *         Jakarta Persistence entities
+     * @throws Exception if an error occurs
      */
-    protected abstract Object ehUpdate(AutoCloseable entityHandler, Object entity);
+    protected abstract ArrayList<Object> ehUpdate(AutoCloseable entityHandler,
+                                                  List<Object> entities) //
+                    throws Exception;
 
     /**
      * Delegates to the EntityAgent or EntityManager to upsert or merge
-     * an entity.
+     * one or more entities.
      *
      * @param entityHandler EntityAgent or EntityManager
-     * @param entity        the entity to update or insert
+     * @param entities      the entities to insert
+     * @return upserted entities (in same order). This can be the same list as
+     *         {@code entities}
      */
     @Trivial
-    protected abstract Object ehUpsert(AutoCloseable entityHandler, Object entity);
+    protected abstract ArrayList<Object> ehUpsert(AutoCloseable entityHandler,
+                                                  List<?> entities);
 
     /**
      * Indicates if the characters leading up to, but not including, the endBefore position
@@ -1657,10 +1706,9 @@ public abstract class QueryInfo {
         boolean found = !results.isEmpty();
 
         Class<?> returnType = method.getReturnType();
-        Object returnVal = CompletableFuture.class.equals(returnType) ||
-                           CompletionStage.class.equals(returnType) //
-                                           ? CompletableFuture.completedFuture(found) //
-                                           : found;
+        Object returnVal = ASYNC_STAGE_RETURN_TYPES.contains(returnType) //
+                        ? entityInfo.factory.newCompletedFuture(found) //
+                        : found;
 
         // There is no need to check if the return value is compatible
         // because that was done when initializing the query info for EXISTS
@@ -1737,7 +1785,7 @@ public abstract class QueryInfo {
                                             requiredJPQLParams,
                                             orderJPQLParams);
 
-        if (isOptional) {
+        if (isOptional)
             returnValue = returnValue == null
                           || returnValue instanceof Collection &&
                              ((Collection<?>) returnValue).isEmpty()
@@ -1745,13 +1793,9 @@ public abstract class QueryInfo {
                              && !((Page<?>) returnValue).hasContent() //
                                              ? Optional.empty() //
                                              : Optional.of(returnValue);
-        }
 
-        Class<?> returnType = method.getReturnType();
-        if (CompletableFuture.class.equals(returnType) ||
-            CompletionStage.class.equals(returnType)) {
-            returnValue = CompletableFuture.completedFuture(returnValue);
-        }
+        if (ASYNC_STAGE_RETURN_TYPES.contains(method.getReturnType()))
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "find", loggable(returnValue));
@@ -1866,164 +1910,21 @@ public abstract class QueryInfo {
     }
 
     /**
-     * Finds and updates entities (or records) in the database.
-     *
-     * @param arg           the entity or record, or array/Iterable/Stream
-     *                          of entity or record
-     * @param entityHandler the EntityAgent or EntityManager
-     * @return the updated entities, using the return type that is required by the
-     *         repository Update method signature.
-     * @throws OptimisticLockingFailureException if an entity is not found in the database.
-     * @throws Exception                         if an error occurs.
-     */
-    Object findAndUpdate(Object arg, AutoCloseable entityHandler) throws Exception {
-        Iterable<?> args;
-        int entityCount = 0;
-
-        if (entityParamType.isArray()) {
-            entityCount = Array.getLength(arg);
-            List<Object> list = new ArrayList<>(entityCount);
-            for (int i = 0; i < entityCount; i++)
-                list.add(Array.get(arg, i));
-            args = list;
-        } else if (arg instanceof Collection<?> c) {
-            args = c;
-            entityCount = c.size();
-        } else if (arg instanceof Iterable<?> iterable) {
-            args = iterable;
-            for (Iterator<?> it = iterable.iterator(); it.hasNext(); it.next())
-                entityCount++;
-        } else if (arg instanceof Stream<?> s) {
-            List<?> list = s.sequential().toList();
-            args = list;
-            entityCount = list.size();
-        } else {
-            args = Collections.singletonList(arg);
-            entityCount = 1;
-        }
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "findAndUpdate", loggable(arg));
-
-        if (entityCount == 0)
-            throw Fail.emptyLifeCycleParam(this);
-
-        // PreUpdateEvent
-        if (producer.lifeCycleEvents != null) {
-            Event<PreUpdateEvent<Object>> event = producer.lifeCycleEvents //
-                            .select(entityInfo.preUpdateLiteral);
-            for (Object e : args)
-                event.fire(new PreUpdateEvent<>(e));
-        }
-
-        List<Object> results = new ArrayList<>(entityCount);
-
-        // find and update the entities
-        for (Object e : args) {
-            results.add(findAndUpdateOne(e, entityHandler));
-        }
-
-        if (!results.isEmpty() && entityHandler instanceof EntityManager em) {
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "flush");
-            em.flush();
-        }
-
-        Object returnValue;
-        Class<?> returnType = method.getReturnType();
-        if (boolean.class.equals(singleType) || Boolean.class.equals(singleType)) {
-            returnValue = !results.isEmpty();
-        } else if (Util.PRIMITIVE_NUMERIC_TYPES.contains(singleType) ||
-                   Number.class.isAssignableFrom(singleType)) {
-            returnValue = convert(results.size(), singleType, true);
-        } else if (void.class.equals(returnType) || Void.class.equals(returnType)) {
-            returnValue = null;
-        } else {
-            if (entityInfo.recordClass != null)
-                // Converting from Java record to entity and back to Java record
-                // is important so that any mutations JPA makes to the entity
-                // are included.
-                for (int i = 0; i < results.size(); i++)
-                    results.set(i, entityInfo.toRecord(results.get(i)));
-
-            if (returnArrayType != null) {
-                Object[] newArray = (Object[]) Array.newInstance(returnArrayType,
-                                                                 results.size());
-                returnValue = results.toArray(newArray);
-            } else {
-                if (multiType == null)
-                    if (results.size() == 1)
-                        returnValue = results.get(0);
-                    else if (results.isEmpty())
-                        returnValue = null;
-                    else
-                        throw Fail.nonUniqueResult(this, results.size());
-                else if (multiType.isInstance(results))
-                    returnValue = results;
-                else if (Stream.class.equals(multiType))
-                    returnValue = results.stream();
-                else if (Iterable.class.isAssignableFrom(multiType))
-                    returnValue = convertToIterable(results, multiType, null, null);
-                else if (Iterator.class.equals(multiType))
-                    returnValue = results.iterator();
-                else
-                    throw Fail.returnTypeInvalid(this, "Update",
-                                                 null, results.get(0).getClass());
-            }
-        }
-
-        if (Optional.class.equals(returnType)) {
-            returnValue = returnValue == null //
-                            ? Optional.empty() //
-                            : Optional.of(returnValue);
-        } else if (CompletableFuture.class.equals(returnType) ||
-                   CompletionStage.class.equals(returnType)) {
-            // useful for @Asynchronous
-            returnValue = CompletableFuture.completedFuture(returnValue);
-        } else if (returnValue != null &&
-                   !Util.wrapperClassIfPrimitive(returnType) //
-                                   .isAssignableFrom(returnValue.getClass())) {
-            throw Fail.returnTypeInvalid(this, "Update",
-                                         null, results.get(0).getClass());
-        }
-
-        // PostUpdateEvent
-        if (producer.lifeCycleEvents != null) {
-            if (entityInfo.recordClass != null &&
-                (returnValue == null ||
-                 returnValue instanceof Boolean ||
-                 returnValue instanceof Number))
-                for (int i = 0; i < results.size(); i++)
-                    results.set(i, entityInfo.toRecord(results.get(i)));
-
-            Event<PostUpdateEvent<Object>> event = producer.lifeCycleEvents //
-                            .select(entityInfo.postUpdateLiteral);
-            for (Object e : results)
-                event.fire(new PostUpdateEvent<>(e));
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "findAndUpdate", loggable(returnValue));
-        return returnValue;
-    }
-
-    /**
      * Finds an entity (or record) in the database, locks it for subsequent update,
      * and updates the entity found in the database to match the desired state
      * of the supplied entity.
      *
-     * @param e             the entity or record
-     * @param entityHandler the EntityAgent or Entitymanager
-     * @return the entity that is written to the database. Never null.
-     * @throws OptimisticLockingException if the entity is not found.
-     * @throws Exception                  if an error occurs.
+     * @param e  the entity or record
+     * @param em the EntityManager
+     * @return the entity that is written to the database. Never null or a record
+     * @throws OptimisticLockingException if the entity is not found
+     * @throws Exception                  if an error occurs
      */
-    private Object findAndUpdateOne(Object e, AutoCloseable entityHandler) //
+    protected Object findAndMerge(Object e, EntityManager em) //
                     throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "findAndUpdateOne", loggable(e));
+            Tr.entry(this, tc, "findAndMerge", loggable(e));
 
         String jpql = ql;
 
@@ -2054,7 +1955,7 @@ public abstract class QueryInfo {
         if (TraceComponent.isAnyTracingEnabled() && jpql != this.ql)
             Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
 
-        TypedQuery<?> query = ehCreateTypedQuery(entityHandler, jpql, Object.class);
+        TypedQuery<?> query = ehCreateTypedQuery(em, jpql, Object.class);
         query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
         if (entityInfo.idClassAttributeAccessors == null) {
@@ -2086,10 +1987,10 @@ public abstract class QueryInfo {
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, "merge", loggable(e));
 
-        Object returnValue = ehUpdate(entityHandler, e);
+        Object returnValue = em.merge(e);
 
         if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "findAndUpdateOne", loggable(returnValue));
+            Tr.exit(this, tc, "findAndMerge", loggable(returnValue));
         return returnValue;
     }
 
@@ -3091,40 +2992,18 @@ public abstract class QueryInfo {
     }
 
     /**
-     * Generates JPQL for updates of an entity by entity id and version (if versioned).
+     * Generates JPQL for updates of an entity by entity id and version (if
+     * versioned). This is only needed when using an EntityManager to simulate
+     * a stateless repository. EntityAgent has its own API for updates.
      */
     private StringBuilder generateUpdateEntity() {
         String o = entityVar;
         String o_ = entityVar_;
-        StringBuilder q;
-
-        if (type == LC_UPDATE) {
-            q = new StringBuilder(100) //
-                            .append("UPDATE ").append(entityInfo.name);
-            if (o != THIS)
-                q.append(' ').append(o);
-            q.append(" SET ");
-
-            boolean first = true;
-            for (String name : entityInfo.attributeNamesForEntityUpdate) {
-                if (first)
-                    first = false;
-                else
-                    q.append(", ");
-
-                q.append(o_).append(name).append("=?").append(++qlParamCount);
-            }
-        } else { // type == LC_UPDATE_MERGE
-            // Update that returns an entity. And also used when an entity has a
-            // version attribute or relation attribute that requires using em.merge.
-            // Perform a find operation first so that em.merge can be used.
-
-            q = new StringBuilder(100) //
-                            .append("SELECT ").append(o) //
-                            .append(" FROM ").append(entityInfo.name);
-            if (o != THIS)
-                q.append(' ').append(o);
-        }
+        StringBuilder q = new StringBuilder(100) //
+                        .append("SELECT ").append(o) //
+                        .append(" FROM ").append(entityInfo.name);
+        if (o != THIS)
+            q.append(' ').append(o);
 
         hasWhere = true;
 
@@ -3234,7 +3113,8 @@ public abstract class QueryInfo {
     }
 
     @Trivial
-    private String getAttributeName(final String name, final boolean failIfNotFound) {
+    protected String getAttributeName(final String name,
+                                      final boolean failIfNotFound) {
         String attributeName;
         int len = name.length();
         if (len > 6 && name.charAt(len - 1) == ')') {
@@ -3382,11 +3262,14 @@ public abstract class QueryInfo {
             }
         }
 
-        OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
-        if (orderBy.length > 0 &&
-            methodAnno != null &&
-            !(methodAnno instanceof Delete))
-            conflicts.add(OrderBy.class.getName());
+        if (methodAnno != null && !(methodAnno instanceof Delete)) {
+            // OrderBy
+            if (method.getAnnotationsByType(OrderBy.class).length > 0)
+                conflicts.add(OrderBy.class.getName());
+
+            // QueryOptions or Fetching
+            identifyQueryOptionsAndFetchingConflicts(method, conflicts);
+        }
 
         for (Class<? extends Annotation> annoClass : compat.queryLanguageAnnoTypes())
             methodAnno = inspect.apply(method.getAnnotation(annoClass), methodAnno);
@@ -3477,7 +3360,7 @@ public abstract class QueryInfo {
                 }
             }
 
-            if (type == FIND_AND_DELETE)
+            if (type == FIND_AND_DELETE && !results.isEmpty())
                 delete(results, entityHandler);
 
             if (results.isEmpty() && isOptional) {
@@ -3588,6 +3471,21 @@ public abstract class QueryInfo {
     }
 
     /**
+     * Identifies conflicts between other repository method annotations and the
+     * QueryOptions or Fetching annotation(s).
+     * This method is only invoked when there are known to be annotations on the
+     * repository method that would be incompatible with QueryOptions or Fetching.
+     *
+     * @param method    repository method
+     * @param conflicts list of conflicting annotation names
+     */
+    @Trivial
+    protected void identifyQueryOptionsAndFetchingConflicts(Method method,
+                                                            List<String> conflicts) {
+        // QueryOptions and Fetching annotations do not exist in Data 1.0
+    }
+
+    /**
      * Identifies the repository method type based on life cycle annotations.
      * For example (Insert, Update, Save, Delete, Detach, Merge, ...).
      */
@@ -3655,7 +3553,8 @@ public abstract class QueryInfo {
     @Trivial
     QueryInfo init(EntityInfo entityInfo, RepositoryImpl<?> repository) {
         // This code path does not require the record name in the map because it is not used for @Query
-        return init(Map.of(entityInfo.name, CompletableFuture.completedFuture(entityInfo)),
+        return init(Map.of(entityInfo.name,
+                           entityInfo.factory.newCompletedFuture(entityInfo)),
                     repository);
     }
 
@@ -3711,7 +3610,7 @@ public abstract class QueryInfo {
             } else if (type != null && type.isLifeCycleMethod) {
                 if (type == LC_DELETE)
                     q = generateDeleteEntity();
-                else if (type == LC_UPDATE || type == LC_UPDATE_MERGE)
+                else if (type == LC_UPDATE && entityInfo.simulateStateless())
                     q = generateUpdateEntity();
                 // other life cycle methods don't use JPQL
             } else {
@@ -3781,6 +3680,10 @@ public abstract class QueryInfo {
                 generateOrderBy(q);
             }
 
+            // EntityGraph for QueryOptions.entityGraph + any Fetching annos
+            if (type == FIND || type == FIND_AND_DELETE)
+                initEntityGraph();
+
             ql = q == null ? ql : q.toString();
 
             validate(validateNumberOfMethodArgs);
@@ -3823,6 +3726,16 @@ public abstract class QueryInfo {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "found sort criteria position (1-based): " + (index + 1));
+    }
+
+    /**
+     * Initialize the EntityGraph for eager fetch.
+     * Only invoke this method for types of repository methods on which
+     * QueryOptions and Fetching annotations are valid.
+     */
+    @Trivial
+    protected void initEntityGraph() {
+        // QueryOptions.entityGraph and Fetching require Data 1.1+
     }
 
     /**
@@ -4267,35 +4180,39 @@ public abstract class QueryInfo {
      */
     @Trivial
     Object insert(Object arg, AutoCloseable entityHandler) throws Exception {
-        Iterable<?> args;
-        int entityCount = 0;
+        List<Object> args; // always an ArrayList if entityInfo.recordClass != null
 
         if (entityParamType.isArray()) {
-            entityCount = Array.getLength(arg);
-            List<Object> list = new ArrayList<>(entityCount);
+            int entityCount = Array.getLength(arg);
+            ArrayList<Object> list = new ArrayList<>(entityCount);
             for (int i = 0; i < entityCount; i++)
                 list.add(Array.get(arg, i));
             args = list;
-        } else if (arg instanceof Collection<?> c) {
-            args = c;
-            entityCount = c.size();
-        } else if (arg instanceof Iterable<?> iterable) {
-            args = iterable;
-            for (Iterator<?> it = iterable.iterator(); it.hasNext(); it.next())
-                entityCount++;
-        } else if (arg instanceof Stream<?> s) {
-            List<?> list = s.sequential().toList();
+        } else if (entityInfo.recordClass == null && arg instanceof List<?> c) {
+            @SuppressWarnings("unchecked")
+            List<Object> list = (List<Object>) c;
             args = list;
-            entityCount = list.size();
+        } else if (arg instanceof Iterable<?> iterable) {
+            ArrayList<Object> list = new ArrayList<>();
+            for (Object e : iterable)
+                list.add(e);
+            args = list;
+        } else if (arg instanceof Stream<?> s) {
+            ArrayList<Object> list = s.sequential() //
+                            .collect(Collectors.toCollection(ArrayList::new));
+            args = list;
         } else {
-            args = Collections.singletonList(arg);
-            entityCount = 1;
+            ArrayList<Object> singleton = new ArrayList<>(1);
+            singleton.add(arg);
+            args = singleton;
         }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "insert", loggable(args));
+            Tr.entry(this, tc, "insert",
+                     loggable(arg instanceof Stream ? args : arg));
 
+        int entityCount = args.size();
         if (entityCount == 0)
             throw Fail.emptyLifeCycleParam(this);
 
@@ -4307,33 +4224,36 @@ public abstract class QueryInfo {
                 event.fire(new PreInsertEvent<>(e));
         }
 
+        if (entityInfo.recordClass == null)
+            for (Object e : args) {
+                if (e == null)
+                    throw Fail.entityNull(this);
+            }
+        else // convert Java record entities to Jakarta Persistence entities
+            for (int i = 0; i < entityCount; i++)
+                args.set(i, toEntity(args.get(i)));
+
+        // insert the entities
+        ehInsert(entityHandler, args);
+
         boolean resultVoid = void.class.equals(singleType) ||
                              Void.class.equals(singleType);
 
-        List<Object> results = resultVoid && producer.lifeCycleEvents == null //
-                        ? null //
-                        : new ArrayList<>(entityCount);
-
-        // insert the entities
-        for (Object e : args) {
-            Object entity = toEntity(e);
-            ehInsert(entityHandler, entity); // TODO entityAgent.insertMultiple?
-            if (results != null)
-                results.add(entity);
+        List<Object> results;
+        if (resultVoid && producer.lifeCycleEvents == null) {
+            results = null;
+        } else {
+            results = new ArrayList<>(entityCount);
+            if (entityInfo.recordClass == null)
+                for (Object entity : args)
+                    results.add(entity);
+            else
+                // Converting from Java record to entity and back to Java record
+                // is important so that any mutations JPA makes to the entity
+                // are included.
+                for (Object entity : args)
+                    results.add(entityInfo.toRecord(entity));
         }
-
-        if (entityHandler instanceof EntityManager em) {
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "flush");
-            em.flush();
-        }
-
-        if (results != null && entityInfo.recordClass != null)
-            // Converting from Java record to entity and back to Java record
-            // is important so that any mutations JPA makes to the entity
-            // are included.
-            for (int i = 0; i < results.size(); i++)
-                results.set(i, entityInfo.toRecord(results.get(i)));
 
         Class<?> returnType = method.getReturnType();
         Object returnValue;
@@ -4364,10 +4284,8 @@ public abstract class QueryInfo {
                                              null, results.get(0).getClass());
         }
 
-        if (CompletableFuture.class.equals(returnType) ||
-            CompletionStage.class.equals(returnType)) {
-            // useful for @Asynchronous
-            returnValue = CompletableFuture.completedFuture(returnValue);
+        if (ASYNC_STAGE_RETURN_TYPES.contains(returnType)) {
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
             throw Fail.returnTypeInvalid(this, "Insert",
                                          null, results.get(0).getClass());
@@ -4724,10 +4642,8 @@ public abstract class QueryInfo {
             }
         }
 
-        if (CompletableFuture.class.equals(returnType) ||
-            CompletionStage.class.equals(returnType)) {
-            // useful for @Asynchronous
-            returnValue = CompletableFuture.completedFuture(returnValue);
+        if (ASYNC_STAGE_RETURN_TYPES.contains(returnType)) {
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
             throw Fail.returnTypeInvalid(this, "Merge",
                                          null, results.get(0).getClass());
@@ -4836,11 +4752,8 @@ public abstract class QueryInfo {
                                              : Optional.of(returnValue);
         }
 
-        Class<?> returnType = method.getReturnType();
-        if (CompletableFuture.class.equals(returnType) ||
-            CompletionStage.class.equals(returnType)) {
-            returnValue = CompletableFuture.completedFuture(returnValue);
-        }
+        if (ASYNC_STAGE_RETURN_TYPES.contains(method.getReturnType()))
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "nativeQuery", loggable(returnValue));
@@ -5723,35 +5636,39 @@ public abstract class QueryInfo {
      */
     @Trivial // avoid logging customer data
     Object save(Object arg, AutoCloseable entityHandler) throws Exception {
-        Iterable<?> args;
-        int entityCount = 0;
+        List<Object> args; // always an ArrayList if entityInfo.recordClass != null
 
         if (entityParamType.isArray()) {
-            entityCount = Array.getLength(arg);
-            List<Object> list = new ArrayList<>(entityCount);
+            int entityCount = Array.getLength(arg);
+            ArrayList<Object> list = new ArrayList<>(entityCount);
             for (int i = 0; i < entityCount; i++)
                 list.add(Array.get(arg, i));
             args = list;
-        } else if (arg instanceof Collection<?> c) {
-            args = c;
-            entityCount = c.size();
-        } else if (arg instanceof Iterable<?> iterable) {
-            args = iterable;
-            for (Iterator<?> it = iterable.iterator(); it.hasNext(); it.next())
-                entityCount++;
-        } else if (arg instanceof Stream<?> s) {
-            List<?> list = s.sequential().toList();
+        } else if (entityInfo.recordClass == null && arg instanceof List<?> c) {
+            @SuppressWarnings("unchecked")
+            List<Object> list = (List<Object>) c;
             args = list;
-            entityCount = list.size();
+        } else if (arg instanceof Iterable<?> iterable) {
+            ArrayList<Object> list = new ArrayList<>();
+            for (Object e : iterable)
+                list.add(e);
+            args = list;
+        } else if (arg instanceof Stream<?> s) {
+            ArrayList<Object> list = s.sequential() //
+                            .collect(Collectors.toCollection(ArrayList::new));
+            args = list;
         } else {
-            args = Collections.singletonList(arg);
-            entityCount = 1;
+            ArrayList<Object> singleton = new ArrayList<>(1);
+            singleton.add(arg);
+            args = singleton;
         }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "save", loggable(args));
+            Tr.entry(this, tc, "save",
+                     loggable(arg instanceof Stream ? args : arg));
 
+        int entityCount = args.size();
         if (entityCount == 0)
             throw Fail.emptyLifeCycleParam(this);
 
@@ -5763,31 +5680,27 @@ public abstract class QueryInfo {
                 event.fire(new PreUpsertEvent<>(e));
         }
 
-        boolean resultVoid = void.class.equals(singleType) ||
-                             Void.class.equals(singleType);
-        List<Object> results = resultVoid && producer.lifeCycleEvents == null //
-                        ? null //
-                        : new ArrayList<>(entityCount);
+        if (entityInfo.recordClass == null)
+            for (Object e : args) {
+                if (e == null)
+                    throw Fail.entityNull(this);
+            }
+        else // convert Java record entities to Jakarta Persistence entities
+            for (int i = 0; i < entityCount; i++)
+                args.set(i, toEntity(args.get(i)));
 
         // update or insert the entities
-        for (Object e : args) {
-            Object entity = toEntity(e);
-            entity = ehUpsert(entityHandler, entity); // TODO entityAgent.upsertMultiple?
-            if (results != null)
-                results.add(entity);
-        }
+        List<Object> results = ehUpsert(entityHandler, args);
 
-        if (entityHandler instanceof EntityManager em) {
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "flush");
-            em.flush();
-        }
+        boolean resultVoid = void.class.equals(singleType) ||
+                             Void.class.equals(singleType);
 
-        if (results != null && entityInfo.recordClass != null)
-            // Converting from Java record to entity and back to Java record
-            // is important so that any mutations JPA makes to the entity
-            // are included.
-            for (int i = 0; i < results.size(); i++)
+        // Converting from Java record to entity and back to Java record
+        // is important so that any mutations JPA makes to the entity
+        // are included.
+        if (entityInfo.recordClass != null &&
+            (!resultVoid || producer.lifeCycleEvents != null))
+            for (int i = 0; i < entityCount; i++)
                 results.set(i, entityInfo.toRecord(results.get(i)));
 
         Class<?> returnType = method.getReturnType();
@@ -5819,10 +5732,8 @@ public abstract class QueryInfo {
                                              null, results.get(0).getClass());
         }
 
-        if (CompletableFuture.class.equals(returnType) ||
-            CompletionStage.class.equals(returnType)) {
-            // useful for @Asynchronous
-            returnValue = CompletableFuture.completedFuture(returnValue);
+        if (ASYNC_STAGE_RETURN_TYPES.contains(returnType)) {
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
             throw Fail.returnTypeInvalid(this, "Save",
                                          null, results.get(0).getClass());
@@ -6231,7 +6142,7 @@ public abstract class QueryInfo {
      *                                  that is appropriate for life cycle operations
      */
     @Trivial
-    private final Object toEntity(Object o) {
+    final Object toEntity(Object o) {
         if (o == null)
             throw Fail.entityNull(this);
 
@@ -6329,9 +6240,9 @@ public abstract class QueryInfo {
             result = i != 0;
         else if (void.class.equals(returnType) || Void.class.equals(returnType))
             result = null;
-        else if (CompletableFuture.class.equals(returnType) ||
-                 CompletionStage.class.equals(returnType))
-            result = CompletableFuture.completedFuture(toReturnValue(i, singleType));
+        else if (ASYNC_STAGE_RETURN_TYPES.contains(returnType))
+            result = entityInfo.factory //
+                            .newCompletedFuture(toReturnValue(i, singleType));
         else
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1007.updel.rtrn.err",
@@ -6365,48 +6276,50 @@ public abstract class QueryInfo {
     }
 
     /**
-     * Updates entities (or records) in the database.
-     * An error is raised if any of the entities (or records) are not found
-     * in the database.
+     * Finds and updates entities (or records) in the database.
      *
      * @param arg           the entity or record, or array/Iterable/Stream
      *                          of entity or record
      * @param entityHandler the EntityAgent or EntityManager
-     * @return count of matching entities, boolean indicator of whether any matched,
-     *         or void return type that is required by the Update method signature.
-     * @throws Exception if an error occurs.
+     * @return the updated entities, using the return type that is required by the
+     *         repository Update method signature.
+     * @throws OptimisticLockingFailureException if an entity is not found in the database.
+     * @throws Exception                         if an error occurs.
      */
-    @Trivial
     Object update(Object arg, AutoCloseable entityHandler) throws Exception {
-        Iterable<?> args;
-        int entityCount = 0;
+        List<Object> args; // always an ArrayList if entityInfo.recordClass != null
 
         if (entityParamType.isArray()) {
-            entityCount = Array.getLength(arg);
-            List<Object> list = new ArrayList<>(entityCount);
+            int entityCount = Array.getLength(arg);
+            ArrayList<Object> list = new ArrayList<>(entityCount);
             for (int i = 0; i < entityCount; i++)
                 list.add(Array.get(arg, i));
             args = list;
-        } else if (arg instanceof Collection<?> c) {
-            args = c;
-            entityCount = c.size();
-        } else if (arg instanceof Iterable<?> iterable) {
-            args = iterable;
-            for (Iterator<?> it = iterable.iterator(); it.hasNext(); it.next())
-                entityCount++;
-        } else if (arg instanceof Stream<?> s) {
-            List<?> list = s.sequential().toList();
+        } else if (entityInfo.recordClass == null && arg instanceof List<?> c) {
+            @SuppressWarnings("unchecked")
+            List<Object> list = (List<Object>) c;
             args = list;
-            entityCount = list.size();
+        } else if (arg instanceof Iterable<?> iterable) {
+            ArrayList<Object> list = new ArrayList<>();
+            for (Object e : iterable)
+                list.add(e);
+            args = list;
+        } else if (arg instanceof Stream<?> s) {
+            ArrayList<Object> list = s.sequential() //
+                            .collect(Collectors.toCollection(ArrayList::new));
+            args = list;
         } else {
-            args = Collections.singletonList(arg);
-            entityCount = 1;
+            ArrayList<Object> singleton = new ArrayList<>(1);
+            singleton.add(arg);
+            args = singleton;
         }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "update", loggable(args));
+            Tr.entry(this, tc, "update",
+                     loggable(arg instanceof Stream ? args : arg));
 
+        int entityCount = args.size();
         if (entityCount == 0)
             throw Fail.emptyLifeCycleParam(this);
 
@@ -6418,100 +6331,92 @@ public abstract class QueryInfo {
                 event.fire(new PreUpdateEvent<>(e));
         }
 
-        // update the entities
-        int updateCount = 0;
-        for (Object e : args)
-            updateCount += updateOne(e, entityHandler);
+        if (entityInfo.recordClass == null ||
+            entityHandler instanceof EntityManager)
+            for (Object e : args) {
+                if (e == null)
+                    throw Fail.entityNull(this);
+            }
+        else // convert Java record entities to Jakarta Persistence entities
+            for (int i = 0; i < entityCount; i++)
+                args.set(i, toEntity(args.get(i)));
 
-        if (entityHandler instanceof EntityManager em) {
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "flush");
-            em.flush();
+        // update the entities
+        List<Object> results = ehUpdate(entityHandler, args);
+
+        Object returnValue;
+        Class<?> returnType = method.getReturnType();
+        if (void.class.equals(returnType) || Void.class.equals(returnType)) {
+            returnValue = null;
+        } else if (boolean.class.equals(singleType) || Boolean.class.equals(singleType)) {
+            returnValue = !results.isEmpty();
+        } else if (Util.PRIMITIVE_NUMERIC_TYPES.contains(singleType) ||
+                   Number.class.isAssignableFrom(singleType)) {
+            returnValue = convert(results.size(), singleType, true);
+        } else {
+            // Converting back to Java record instead of reusing the original
+            // ensures any mutations JPA makes to the entity are included
+            if (entityInfo.recordClass != null)
+                for (int i = 0; i < entityCount; i++)
+                    results.set(i, entityInfo.toRecord(results.get(i)));
+
+            if (returnArrayType != null) {
+                Object[] newArray = (Object[]) Array.newInstance(returnArrayType,
+                                                                 results.size());
+                returnValue = results.toArray(newArray);
+            } else {
+                if (multiType == null)
+                    if (results.size() == 1)
+                        returnValue = results.get(0);
+                    else if (results.isEmpty())
+                        returnValue = null;
+                    else
+                        throw Fail.nonUniqueResult(this, results.size());
+                else if (multiType.isInstance(results))
+                    returnValue = results;
+                else if (Stream.class.equals(multiType))
+                    returnValue = results.stream();
+                else if (Iterable.class.isAssignableFrom(multiType))
+                    returnValue = convertToIterable(results, multiType, null, null);
+                else if (Iterator.class.equals(multiType))
+                    returnValue = results.iterator();
+                else
+                    throw Fail.returnTypeInvalid(this, "Update",
+                                                 null, results.get(0).getClass());
+            }
         }
 
-        if (updateCount < entityCount)
-            throw Fail.optimisticLockConflict(this, updateCount, entityCount);
-
-        Object returnValue = toReturnValue(updateCount, method.getReturnType());
+        if (Optional.class.equals(returnType)) {
+            returnValue = returnValue == null //
+                            ? Optional.empty() //
+                            : Optional.of(returnValue);
+        } else if (ASYNC_STAGE_RETURN_TYPES.contains(returnType)) {
+            returnValue = entityInfo.factory.newCompletedFuture(returnValue);
+        } else if (returnValue != null &&
+                   !Util.wrapperClassIfPrimitive(returnType) //
+                                   .isAssignableFrom(returnValue.getClass())) {
+            throw Fail.returnTypeInvalid(this, "Update",
+                                         null, results.get(0).getClass());
+        }
 
         // PostUpdateEvent
         if (producer.lifeCycleEvents != null) {
+            if (entityInfo.recordClass != null &&
+                (returnValue == null ||
+                 returnValue instanceof Boolean ||
+                 returnValue instanceof Number))
+                for (int i = 0; i < results.size(); i++)
+                    results.set(i, entityInfo.toRecord(results.get(i)));
+
             Event<PostUpdateEvent<Object>> event = producer.lifeCycleEvents //
                             .select(entityInfo.postUpdateLiteral);
-            for (Object e : args)
+            for (Object e : results)
                 event.fire(new PostUpdateEvent<>(e));
         }
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "update", loggable(returnValue));
         return returnValue;
-    }
-
-    /**
-     * Updates the entity (or record) from the database if its attributes match
-     * the database.
-     *
-     * @param e             the entity or record
-     * @param entityHandler the EntityAgent or EntityManager
-     * @return the number of entities updated (1 or 0).
-     * @throws Exception if an error occurs.
-     */
-    @Trivial
-    private int updateOne(Object e, AutoCloseable entityHandler) throws Exception {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "updateOne", loggable(e));
-
-        if (!entityInfo.getType().isInstance(e))
-            throw Fail.entityMismatch(this, e);
-
-        String jpql = this.ql;
-        Set<String> attrsToUpdate = entityInfo.attributeNamesForEntityUpdate;
-
-        Object id = null;
-        String idAttributeName = null;
-        if (entityInfo.idClassAttributeAccessors == null) {
-            idAttributeName = entityInfo.attributeNames.get(ID);
-            id = getAttribute(e, idAttributeName);
-            if (id == null) {
-                int idParamIndex = entityInfo.idClassAttributeAccessors == null //
-                                ? (attrsToUpdate.size() + 1) //
-                                : (attrsToUpdate.size() +
-                                   entityInfo.idClassAttributeAccessors.size());
-
-                jpql = jpql.replace("=?" + (idParamIndex - 1), " IS NULL");
-            }
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && jpql != this.ql)
-            Tr.debug(this, tc, "JPQL adjusted for NULL id", jpql);
-
-        jakarta.persistence.Query update = ehCreateStatement(entityHandler, jpql);
-
-        // parameters for entity attributes to update:
-        int p = 1;
-        for (String attrName : attrsToUpdate)
-            setParameter(p++, update, e, attrName);
-
-        // id and version parameters
-        if (entityInfo.idClassAttributeAccessors == null) {
-            if (id != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "set ?" + p + ' ' + loggable(id));
-                update.setParameter(p++, id);
-            }
-        } else { // has IdClass
-            setParametersFromIdClassAndVersion(p, update, e, null);
-        }
-
-        int numUpdated = update.executeUpdate();
-
-        if (numUpdated > 1) // ought to be unreachable
-            throw new DataException("Found " + numUpdated + " matching entities.");
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "updateOne", numUpdated);
-        return numUpdated;
     }
 
     /**
@@ -6530,8 +6435,7 @@ public abstract class QueryInfo {
             ql != null &&
             method.getParameterCount() < qlParamCount &&
             type != LC_DELETE &&
-            type != LC_UPDATE &&
-            type != LC_UPDATE_MERGE)
+            type != LC_UPDATE)
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1021.insufficient.params",
                       method.getName(),
@@ -6571,8 +6475,7 @@ public abstract class QueryInfo {
              !Boolean.class.equals(singleType))
             ||
             (multiType != null &&
-             !CompletableFuture.class.equals(multiType) &&
-             !CompletionStage.class.equals(multiType)))
+             !ASYNC_STAGE_RETURN_TYPES.contains((multiType))))
 
             throw Fail.returnTypeInvalid(this, "exists", "boolean, Boolean", null);
     }

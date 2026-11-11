@@ -257,6 +257,16 @@ public class DataSourceTestServlet extends FATServlet {
             //Ignore, server could have been restarted. Assume table is available.
         }
 
+        //Create table in the H2 database used by the mapping config alias data source.
+        //With database rotation, ds1 may not be H2, so this table must be created separately.
+        try (Connection con = dsmca.getConnection()) {
+            try (Statement st = con.createStatement()) {
+                st.executeUpdate("create table cities (name varchar(50) not null primary key, population int, county varchar(30))");
+            }
+        } catch (SQLException e) {
+            //Ignore, server could have been restarted or the table may already exist (H2 rotation).
+        }
+
     }
 
     /**
@@ -332,12 +342,12 @@ public class DataSourceTestServlet extends FATServlet {
     }
 
     /**
-     * Attempts to load the two datasources (jdbc/derbyWithNestedList and jdbc/db2WithNestedList) that contain nested libraries that don't have an id.
+     * Attempts to load the two datasources (jdbc/h2WithNestedList and jdbc/db2WithNestedList) that contain nested libraries that don't have an id.
      * This is a test for APAR PI23168.
      */
     public void testTwoNestedLibrariesWithNoIds() throws Exception {
-        DataSource derbyDs = (DataSource) (new InitialContext()).lookup("jdbc/derbyWithNestedList");
-        System.out.println("Success loading derby DS: " + derbyDs.toString());
+        DataSource h2Ds = (DataSource) (new InitialContext()).lookup("jdbc/h2WithNestedList");
+        System.out.println("Success loading H2 DS: " + h2Ds.toString());
         DataSource db2Ds = (DataSource) (new InitialContext()).lookup("jdbc/db2WithNestedList");
         System.out.println("Success loading DB2 DS: " + db2Ds.toString());
     }
@@ -2233,7 +2243,7 @@ public class DataSourceTestServlet extends FATServlet {
                     throw new Exception("Incorrection isolation level: " + isolationLevel);
 
                 Statement stmt = con.createStatement();
-                ResultSet result = stmt.executeQuery("values current_time");
+                ResultSet result = stmt.executeQuery("SELECT CURRENT_TIME");
                 if (!result.next())
                     throw new Exception("Empty result.");
 
