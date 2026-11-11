@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,4 +18,5 @@ public class JwtBuilderMessageConstants extends JwtMessageConstants {
 
     public static final String CWWKS6059W_KEY_MANAGEMENT_KEY_ALIAS_MISSING = "CWWKS6059W";
     public static final String CWWKS6060E_CAN_NOT_CREATE_JWE = "CWWKS6060E";
+    public static final String CWWKS6074W_JWK_KEY_COVERAGE_WINDOW_TOO_SHORT = "CWWKS6074W";
 }
