@@ -92,6 +92,16 @@ public class ProtocolVersionHeaderValidationBetaTest {
                       }
                     }""";
 
+    private static final String NOTIFICATION_WITH_META = """
+                    {
+                      "jsonrpc": "2.0",
+                      "method": "notifications/initialized",
+                      "params": {
+                        "_meta": %s
+                      }
+                    }
+                    """;
+
     @Rule
     public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
@@ -147,6 +157,37 @@ public class ProtocolVersionHeaderValidationBetaTest {
                                                  .run();
 
         assertHeaderMismatch(response.body());
+    }
+
+    /**
+     * A notification must not receive a JSON-RPC response, but a header mismatch is still a validation failure
+     * which the spec requires to be rejected with HTTP 400. So the response is a 400 with no body.
+     */
+    @Test
+    public void testHeaderMismatchOnNotificationIsRejectedWithEmptyBody() throws Exception {
+        String notification = NOTIFICATION_WITH_META.formatted("{\"io.modelcontextprotocol/protocolVersion\": \"2025-11-25\"}");
+
+        McpDetailedAuthResponse response = client.callMCPRaw(notification)
+                                                 .protocolVersion("2026-07-28")
+                                                 .expectedStatus(400)
+                                                 .run();
+
+        assertTrue("Expected no response body for a notification but was: " + response.body(),
+                   response.body() == null || response.body().isEmpty());
+    }
+
+    /**
+     * A notification whose header and body match must still be accepted with 202 and no body.
+     */
+    @Test
+    public void testMatchingHeaderOnNotificationIsAccepted() throws Exception {
+        McpDetailedAuthResponse response = client.callMCPRaw(NOTIFICATION_WITH_META.formatted(META_2026_07_28))
+                                                 .protocolVersion("2026-07-28")
+                                                 .expectedStatus(202)
+                                                 .run();
+
+        assertTrue("Expected no response body for a notification but was: " + response.body(),
+                   response.body() == null || response.body().isEmpty());
     }
 
     /**
