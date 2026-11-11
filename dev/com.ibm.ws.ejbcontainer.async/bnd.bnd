@@ -38,8 +38,7 @@ Include-Resource: \
   com.ibm.ws.ejbcontainer.async.osgi.internal.EJBAsyncRuntimeImpl
   
 -buildpath: \
-	io.openliberty.yoko.spec.corba;version=latest,\
-	io.openliberty.yoko.rmi.spec;version=latest,\
+	io.openliberty.yoko.core;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.context;version=latest,\
 	com.ibm.ws.ejbcontainer;version=latest,\

@@ -52,7 +52,7 @@ src:\
   com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
   com.ibm.ws.kernel.service;version=latest,\
   com.ibm.ws.logging;version=latest,\
-  io.openliberty.yoko.rmi.spec;version=latest,\
+  io.openliberty.yoko.core;version=latest,\
   com.ibm.ws.security.credentials;version=latest,\
   com.ibm.ws.security.jaas.common;version=latest,\
   com.ibm.ws.security.fat.common;version=latest,\
