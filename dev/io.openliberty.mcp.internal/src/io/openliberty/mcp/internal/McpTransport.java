@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletionStage;
@@ -29,6 +28,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.mcp.internal.config.McpConfig;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
@@ -80,23 +80,32 @@ public class McpTransport {
      * Checks if the request is valid so we know if further processing can be done
      *
      * @param sessionStore the session store
+     * @param mcpConfig the configuration, which determines the protocol versions that are accepted
      * @throws IOException if an I/O exception occurs.
      */
     @FFDCIgnore(NoSuchElementException.class)
-    public void init(McpSessionStore sessionStore) throws IOException {
+    public void init(McpSessionStore sessionStore, McpConfig mcpConfig) throws IOException {
         if (!validReqAcceptHeader()) {
             throw new HttpResponseException(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }
+
+        boolean headerPresent = req.getHeader(MCP_HEADER) != null;
         try {
             version = readProtocolVersionHeader();
         } catch (NoSuchElementException e) {
-            String supportedValues = Arrays.stream(McpProtocolVersion.availableValues())
-                                           .map(McpProtocolVersion::getVersion)
-                                           .collect(Collectors.joining(", "));
-            String excpetionMesaage = Tr.formatMessage(tc, "unsupported.mcp.http.version", supportedValues);
-            throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, excpetionMesaage);
+            throw unsupportedProtocolVersion(mcpConfig);
+        }
+        // A header which names a version outside the configured range is always rejected
+        if (headerPresent && !mcpConfig.isAccepted(version)) {
+            throw unsupportedProtocolVersion(mcpConfig);
         }
         this.mcpRequest = toRequest();
+        // A missing header is interpreted as 2025-03-26, which may be outside the configured range.
+        // The initialize request is exempt because it negotiates the version and does not need the header.
+        if (!headerPresent && mcpRequest.getRequestMethod() != RequestMethod.INITIALIZE && !mcpConfig.isAccepted(version)) {
+            throw unsupportedProtocolVersion(mcpConfig);
+        }
+
         this.appName = extractAppName();
         final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
 
@@ -110,6 +119,38 @@ public class McpTransport {
             throw new HttpResponseException(HttpServletResponse.SC_NOT_FOUND, "Invalid or Expired Session Id");
         }
         this.sessionInfo = session;
+    }
+
+    /**
+     * Checks the protocol version header of a request which is not processed by {@link #init}, such as a session DELETE.
+     * A missing header is allowed. A header which is unknown, or outside the configured range, is rejected.
+     *
+     * @param req the request
+     * @param mcpConfig the configuration, which determines the protocol versions that are accepted
+     * @throws HttpResponseException with status 400 if the header names a version which is not accepted
+     */
+    @FFDCIgnore(NoSuchElementException.class)
+    public static void validateProtocolVersionHeader(HttpServletRequest req, McpConfig mcpConfig) {
+        String header = req.getHeader(MCP_HEADER);
+        if (header == null) {
+            return;
+        }
+
+        try {
+            if (!mcpConfig.isAccepted(McpProtocolVersion.parse(header))) {
+                throw unsupportedProtocolVersion(mcpConfig);
+            }
+        } catch (NoSuchElementException e) {
+            throw unsupportedProtocolVersion(mcpConfig);
+        }
+    }
+
+    private static HttpResponseException unsupportedProtocolVersion(McpConfig mcpConfig) {
+        String supportedValues = mcpConfig.acceptedProtocolVersions().stream()
+                                          .map(McpProtocolVersion::getVersion)
+                                          .collect(Collectors.joining(", "));
+        String exceptionMessage = Tr.formatMessage(tc, "unsupported.mcp.http.version", supportedValues);
+        return new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, exceptionMessage);
     }
 
     /**

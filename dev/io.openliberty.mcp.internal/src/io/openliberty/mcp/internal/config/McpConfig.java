@@ -10,7 +10,10 @@
 package io.openliberty.mcp.internal.config;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 
+import io.openliberty.mcp.internal.McpProtocolVersion;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
 
 public interface McpConfig {
@@ -37,4 +40,40 @@ public interface McpConfig {
      * @return the async timeout in milliseconds
      */
     long asyncTimeoutMs();
+
+    /**
+     * Returns the oldest MCP protocol version which requests may use (inclusive)
+     *
+     * @return the minimum protocol version
+     */
+    McpProtocolVersion minimumProtocolVersion();
+
+    /**
+     * Returns the newest MCP protocol version which requests may use (inclusive)
+     *
+     * @return the maximum protocol version
+     */
+    McpProtocolVersion maximumProtocolVersion();
+
+    /**
+     * Returns whether requests may use the given protocol version. A version is accepted if it is available
+     * on this runtime and is between the minimum and maximum protocol versions, inclusive.
+     *
+     * @param version the protocol version to check
+     * @return true if requests may use the version
+     */
+    default boolean isAccepted(McpProtocolVersion version) {
+        return version.isAvailable() && version.isBetween(minimumProtocolVersion(), maximumProtocolVersion());
+    }
+
+    /**
+     * Returns the protocol versions which requests may use, newest first
+     *
+     * @return the protocol versions for which {@link #isAccepted(McpProtocolVersion)} is true
+     */
+    default List<McpProtocolVersion> acceptedProtocolVersions() {
+        return Arrays.stream(McpProtocolVersion.values())
+                     .filter(this::isAccepted)
+                     .toList();
+    }
 }
