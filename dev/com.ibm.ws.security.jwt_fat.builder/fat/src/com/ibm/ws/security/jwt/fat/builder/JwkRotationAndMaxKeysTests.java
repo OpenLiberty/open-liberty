@@ -14,13 +14,17 @@ package com.ibm.ws.security.jwt.fat.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -81,17 +85,22 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
     private static final String BUILDER_ID = "jwkMaxKeys_3_rotationTime_1m";
     private static final String JWK_URL_PART = "jwt/ibm/api/";
     private static final String JWK_ENDPOINT_SUFFIX = "/jwk";
+    /** Trace line written by Liberty when JWKProvider.rotateKeys() returns, i.e. the rotation has completed */
+    private static final String ROTATION_COMPLETE_TRACE_REGEX = "JWKProvider\\s+<\\s+rotateKeys Exit";
+    /** Timestamp at the start of a trace.log line, e.g. "[11/10/26, 21:51:08:551 PST]" (the time zone is not captured) */
+    private static final Pattern TRACE_TIMESTAMP_PATTERN = Pattern.compile("\\[(\\d{1,2}/\\d{1,2}/\\d{2}, \\d{2}:\\d{2}:\\d{2}:\\d{3})");
+    private static final String TRACE_TIMESTAMP_FORMAT = "M/d/yy, HH:mm:ss:SSS";
     /**
-     * Offset from the previously observed rotation at which we check that no premature rotation
-     * has happened yet (58s — just before the next 1m boundary)
+     * Max time to wait for the next rotation to complete. The rotation period is 1m; the first wait can also
+     * include the unknown offset of the rotation timer, which is still under 1m, so this leaves plenty of margin.
      */
-    private static final long PRE_ROTATION_CHECK_MS = 58_000L;
-    /** Full rotation period (1m = 60s) */
-    private static final long ROTATION_PERIOD_MS = 60_000L;
-    /** Max time to wait for the next rotation, measured from the previous anchor (1m period + 2s margin) */
-    private static final long ROTATION_TIMEOUT_MS = 62_000L;
-    /** Interval between polls of the JWK endpoint while waiting for a rotation */
-    private static final long POLL_INTERVAL_MS = 1_000L;
+    private static final long ROTATION_TIMEOUT_MS = 90_000L;
+    /**
+     * Minimum time between two consecutive rotations. The timer fires every 60s, but a rotation is only
+     * complete once its RSA key has been generated, which can take several seconds on a slow machine,
+     * so the completion times can be noticeably closer together than 60s.
+     */
+    private static final long MIN_ROTATION_INTERVAL_MS = 50_000L;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -198,31 +207,37 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
     }
 
     /**
-     * Poll the JWK endpoint until its set of kids differs from previousKids.
-     * Fails the test if no change is observed before the deadline.
+     * Wait for the next JWK rotation to complete on the server, using the trace log rather than a fixed sleep.
+     * <p>
+     * JWKProvider.rotateKeys() has no message of its own, so this relies on the method exit trace that Liberty
+     * generates automatically (enabled by "com.ibm.ws.security.common*=all" in bootstrap.properties). That exit
+     * trace is written after the new key has been added to the JWKS and the oldest key evicted, so once it appears
+     * the /jwk endpoint already reflects the rotation. If JWKProvider.rotateKeys() (or its class) is ever marked
+     * with @Trivial, this wait will time out.
+     * <p>
+     * The log mark is advanced past the matched line, so each call returns the next rotation.
      *
-     * @return the keys array returned by the first poll that observed the change
+     * @return the server-side timestamp (epoch millis) of the rotation completing, taken from the trace line
      */
-    private JsonArray waitForKidsChange(String jwkUrl, Set<String> previousKids, long deadlineMs, String phase) throws Exception {
-        while (System.currentTimeMillis() < deadlineMs) {
-            JsonArray keys = getJwkKeys(jwkUrl);
-            if (!extractKids(keys).equals(previousKids)) {
-                return keys;
-            }
-            Thread.sleep(POLL_INTERVAL_MS);
-        }
-        fail(phase + ": JWK keys did not rotate before the deadline");
-        return null; // unreachable
+    private long waitForNextRotation(String phase) throws Exception {
+        String traceLine = builderServer.waitForStringInTraceUsingMark(ROTATION_COMPLETE_TRACE_REGEX, ROTATION_TIMEOUT_MS);
+        assertNotNull(phase + ": the server did not log a completed JWK rotation within " + (ROTATION_TIMEOUT_MS / 1000) + "s", traceLine);
+
+        Matcher matcher = TRACE_TIMESTAMP_PATTERN.matcher(traceLine);
+        assertTrue(phase + ": could not find a timestamp in trace line: " + traceLine, matcher.find());
+        long rotationTime = new SimpleDateFormat(TRACE_TIMESTAMP_FORMAT, Locale.ENGLISH).parse(matcher.group(1)).getTime();
+        Log.info(thisClass, _testName, phase + ": rotation completed at " + matcher.group(1));
+        return rotationTime;
     }
 
     /**
-     * Sleep until the given absolute time (System.currentTimeMillis() based). Returns immediately if already passed.
+     * Verify the time between two rotations, using the server-side trace timestamps, is not shorter than expected.
+     * This is how we check that no premature rotation happened, without depending on the speed of the test machine.
      */
-    private void sleepUntil(long timeMs) throws InterruptedException {
-        long remaining = timeMs - System.currentTimeMillis();
-        if (remaining > 0) {
-            Thread.sleep(remaining);
-        }
+    private void assertNoPrematureRotation(String phase, long previousRotationTime, long rotationTime) {
+        long interval = rotationTime - previousRotationTime;
+        assertTrue(phase + ": rotation happened " + interval + "ms after the previous one, expected at least " + MIN_ROTATION_INTERVAL_MS + "ms",
+                interval >= MIN_ROTATION_INTERVAL_MS);
     }
 
     /**
@@ -238,10 +253,11 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
      *                  Reuse JWT. Signature is now invalid against current JWKS.
      *
      * The rotation timer starts when the JWKProvider is created (server startup), not at the
-     * first /jwk request, so the offset between test T=0 and the timer is unknown. Therefore:
-     * - The 1st rotation is detected by polling, and the observed time becomes the anchor (rotation1Time).
-     * - Subsequent rotation checks (Pre-Phase 2, Phase 2, Pre-Phase 3, Phase 3) are all scheduled relative
-     *   to rotation1Time using fixed period offsets, avoiding time-drift accumulation.
+     * first /jwk request, so the offset between test T=0 and the timer is unknown. Therefore each
+     * rotation is detected by waiting for the server to log that the rotation completed (see
+     * {@link #waitForNextRotation(String)}) instead of sleeping for a fixed time, so the test adapts
+     * to slow or fast machines. The time between consecutive rotations is checked using the timestamps
+     * of those trace lines.
      *
      * Signature verification uses bare jose4j against a live GET of the /jwk endpoint,
      * bypassing Liberty's JWKSet cache (10-minute TTL) entirely.
@@ -252,9 +268,11 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
 
         String jwkUrl = buildJwkUrl(BUILDER_ID);
 
+        // Only look at rotations that happen from here on
+        builderServer.setTraceMarkToEndOfDefaultTrace();
+
         // ── Phase 0: initial state ─────────────────────────────────────────
         Log.info(thisClass, _testName, "Phase 0: checking initial JWK state");
-        long phase0Time = System.currentTimeMillis();
         JsonArray phase0Keys = getJwkKeys(jwkUrl);
         assertEquals("Phase 0: expected exactly 1 key before any rotation", 1, phase0Keys.size());
         Set<String> phase0Kids = extractKids(phase0Keys);
@@ -265,10 +283,10 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
                 verifyJwtSignatureAgainstLiveJwks(jwtToken, jwkUrl));
 
         // ── Phase 1: after 1st rotation ────────────────────────────────────
-        // The timer offset relative to T=0 is unknown, so poll for the 1st rotation and use it as the anchor
-        Log.info(thisClass, _testName, "Phase 1: polling for 1st rotation...");
-        JsonArray phase1Keys = waitForKidsChange(jwkUrl, phase0Kids, phase0Time + ROTATION_TIMEOUT_MS, "Phase 1");
-        long rotation1Time = System.currentTimeMillis();
+        // The timer offset relative to T=0 is unknown, so just wait for the server to report the 1st rotation
+        Log.info(thisClass, _testName, "Phase 1: waiting for 1st rotation...");
+        long rotation1Time = waitForNextRotation("Phase 1");
+        JsonArray phase1Keys = getJwkKeys(jwkUrl);
         assertEquals("Phase 1: expected 2 keys after 1st rotation", 2, phase1Keys.size());
         Set<String> phase1Kids = extractKids(phase1Keys);
 
@@ -284,13 +302,9 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
                 verifyJwtSignatureAgainstLiveJwks(jwtToken, jwkUrl));
 
         // ── Phase 2: after 2nd rotation ────────────────────────────────────
-        Log.info(thisClass, _testName, "Pre-Phase 2: waiting until " + (PRE_ROTATION_CHECK_MS / 1000) + "s after 1st rotation to check for premature rotation...");
-        sleepUntil(rotation1Time + PRE_ROTATION_CHECK_MS);
-        JsonArray prePhase2Keys = getJwkKeys(jwkUrl);
-        assertEquals("Pre-Phase 2: kids must not change before 2nd rotation", phase1Kids, extractKids(prePhase2Keys));
-
-        Log.info(thisClass, _testName, "Phase 2: sleeping until 2nd rotation is expected...");
-        sleepUntil(rotation1Time + ROTATION_TIMEOUT_MS);
+        Log.info(thisClass, _testName, "Phase 2: waiting for 2nd rotation...");
+        long rotation2Time = waitForNextRotation("Phase 2");
+        assertNoPrematureRotation("Phase 2", rotation1Time, rotation2Time);
         JsonArray phase2Keys = getJwkKeys(jwkUrl);
         assertEquals("Phase 2: expected 3 keys after 2nd rotation (maxKeys=3 reached)", 3, phase2Keys.size());
         Set<String> phase2Kids = extractKids(phase2Keys);
@@ -307,13 +321,9 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
                 verifyJwtSignatureAgainstLiveJwks(jwtToken, jwkUrl));
 
         // ── Phase 3: after 3rd rotation ────────────────────────────────────
-        Log.info(thisClass, _testName, "Pre-Phase 3: waiting until " + (PRE_ROTATION_CHECK_MS / 1000) + "s after 2nd rotation to check for premature rotation...");
-        sleepUntil(rotation1Time + ROTATION_PERIOD_MS + PRE_ROTATION_CHECK_MS);
-        JsonArray prePhase3Keys = getJwkKeys(jwkUrl);
-        assertEquals("Pre-Phase 3: kids must not change before 3rd rotation", phase2Kids, extractKids(prePhase3Keys));
-
-        Log.info(thisClass, _testName, "Phase 3: sleeping until 3rd rotation is expected...");
-        sleepUntil(rotation1Time + ROTATION_PERIOD_MS + ROTATION_TIMEOUT_MS);
+        Log.info(thisClass, _testName, "Phase 3: waiting for 3rd rotation...");
+        long rotation3Time = waitForNextRotation("Phase 3");
+        assertNoPrematureRotation("Phase 3", rotation2Time, rotation3Time);
         JsonArray phase3Keys = getJwkKeys(jwkUrl);
         // Count must stay at maxKeys=3 (sliding window eviction)
         assertEquals("Phase 3: key count must stay at maxKeys=3 after 3rd rotation", 3, phase3Keys.size());
@@ -338,3 +348,4 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
                 verifyJwtSignatureAgainstLiveJwks(jwtToken, jwkUrl));
     }
 }
+
