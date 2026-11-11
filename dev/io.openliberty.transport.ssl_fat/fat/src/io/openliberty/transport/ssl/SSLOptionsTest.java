@@ -122,7 +122,6 @@ public class SSLOptionsTest{
         server.setMarkToEndOfLog();
         server.restoreServerConfiguration();
         server.waitForConfigUpdateInLogUsingMark(null);
-        server.waitForSSLRestart();
     }
 
     /**
@@ -152,9 +151,6 @@ public class SSLOptionsTest{
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(SUPPRESS_HANDSHAKE_FAILURE_TRUE_CONFIG);
         server.waitForConfigUpdateInLogUsingMark(null);
-
-        // Requires info trace
-        server.waitForSSLRestart();
 
         // Hit the servlet on the SSL port
         hitServerWithBadHandshake();
@@ -186,7 +182,6 @@ public class SSLOptionsTest{
         server.setServerConfigurationFile(SUPPRESS_HANDSHAKE_FAILURE_TRUE_CONFIG);
         server.waitForConfigUpdateInLogUsingMark(null);
 
-        server.waitForSSLRestart();
         saveCnt = server.findStringsInLogs("CWWKO0801E").size();
 
         // Hit the servlet on the SSL port
@@ -199,9 +194,6 @@ public class SSLOptionsTest{
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(SUPPRESS_HANDSHAKE_FAILURE_FALSE_CONFIG);
         server.waitForConfigUpdateInLogUsingMark(null);
-
-        // Requires info trace
-        server.waitForSSLRestart();
 
         // Hit the servlet on the SSL port
         server.setMarkToEndOfLog();
@@ -223,9 +215,6 @@ public class SSLOptionsTest{
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(SUPPRESS_HANDSHAKE_FAILURE_LOW_COUNT_CONFIG);
         server.waitForConfigUpdateInLogUsingMark(null);
-
-        // Requires info trace
-        server.waitForSSLRestart();
         server.setMarkToEndOfLog();
 
         // Hit the servlet on the SSL port
@@ -268,19 +257,21 @@ public class SSLOptionsTest{
         server.setServerConfigurationFile(DEFAULT_SSLOPTIONS_CONFIG);
         server.waitForConfigUpdateInLogUsingMark(null);
 
-        // Requires info trace
-        server.waitForSSLRestart();
+        // Wait for both SSL channel restart waves to complete before connecting
+        assertNotNull("We need to wait for the SSL port to open (first time)",
+                      server.waitForMultipleStringsInLogUsingMark(2, "CWWKO0219I:.*-ssl"));
 
         // Hit the servlet on the SSL port
         hitServer(KEYSTORE, PASSWORD, TRUSTSTORE, PASSWORD);
 
-        // Swith to SSLConfig specified on the SSLOptions
+        // Switch to SSLConfig specified on the SSLOptions
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile(SSLOPTIONS_CONFIG);
         server.waitForConfigUpdateInLogUsingMark(null);
 
-        // Requires info trace
-        server.waitForSSLRestart();
+        // Wait for both SSL channel restart waves to complete before connecting
+        assertNotNull("We need to wait for the SSL port to start (again)",
+                      server.waitForMultipleStringsInLogUsingMark(2, "CWWKO0219I:.*-ssl"));
 
         // Hit the servlet on the SSL port
         hitServer(KEYSTORE, PASSWORD, ALTERNATE_TRUSTSTORE, PASSWORD);
