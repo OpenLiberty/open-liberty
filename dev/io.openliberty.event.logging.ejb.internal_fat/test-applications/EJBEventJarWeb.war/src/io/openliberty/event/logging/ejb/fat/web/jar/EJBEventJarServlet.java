@@ -12,11 +12,14 @@ package io.openliberty.event.logging.ejb.fat.web.jar;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
+import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
+import javax.jms.QueueReceiver;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
+import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
@@ -73,8 +76,8 @@ public class EJBEventJarServlet extends FATServlet {
     }
 
     /**
-     * Sends a JMS message to trigger the MDB, then returns immediately.
-     * The test class waits for the event log entry.
+     * Sends a JMS message to trigger the MDB and waits up to 10s on a temporary reply queue
+     * for the MDB's response before returning.
      */
     public void testStandaloneJarMdbEventLogged() throws Exception {
         log.info("testStandaloneJarMdbEventLogged: sending message to EJBEventJarQueue");
@@ -82,12 +85,26 @@ public class EJBEventJarServlet extends FATServlet {
         try {
             conn.start();
             QueueSession session = conn.createQueueSession(false, QueueSession.AUTO_ACKNOWLEDGE);
-            TextMessage msg = session.createTextMessage("testStandaloneJarMdbEventLogged");
-            QueueSender sender = session.createSender(jarQueue);
-            sender.send(msg);
+            TemporaryQueue replyQueue = session.createTemporaryQueue();
+            QueueReceiver receiver = session.createReceiver(replyQueue);
+            try {
+                TextMessage msg = session.createTextMessage("testStandaloneJarMdbEventLogged");
+                msg.setJMSReplyTo(replyQueue);
+                QueueSender sender = session.createSender(jarQueue);
+                sender.send(msg);
+
+                log.info("testStandaloneJarMdbEventLogged: message sent, waiting for reply from MDBBeanInJar");
+                Message reply = receiver.receive(10_000);
+                if (reply == null) {
+                    throw new RuntimeException("Timed out waiting for reply from MDBBeanInJar");
+                }
+                log.info("testStandaloneJarMdbEventLogged: reply received from MDBBeanInJar");
+            } finally {
+                receiver.close();
+                replyQueue.delete();
+            }
         } finally {
             conn.close();
         }
-        log.info("testStandaloneJarMdbEventLogged: message sent, returning — test class will wait for event log entry");
     }
 }

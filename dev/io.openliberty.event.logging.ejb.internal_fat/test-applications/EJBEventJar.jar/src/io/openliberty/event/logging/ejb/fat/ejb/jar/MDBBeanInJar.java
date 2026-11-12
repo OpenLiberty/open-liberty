@@ -9,16 +9,19 @@
  *******************************************************************************/
 package io.openliberty.event.logging.ejb.fat.ejb.jar;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.ejb.MessageDrivenContext;
+import javax.jms.Destination;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.MessageProducer;
+import javax.jms.QueueConnection;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.QueueSession;
 import javax.jms.TextMessage;
 
 /**
@@ -36,26 +39,33 @@ public class MDBBeanInJar implements MessageListener {
 
     private static final Logger log = Logger.getLogger(MDBBeanInJar.class.getName());
 
-    public static volatile CountDownLatch latch = new CountDownLatch(1);
-
     @Resource
     private MessageDrivenContext ctx;
+
+    @Resource(name = "jms/EJBEventQCF")
+    private QueueConnectionFactory qcf;
 
     @Override
     public void onMessage(Message msg) {
         try {
             String text = (msg instanceof TextMessage) ? ((TextMessage) msg).getText() : "?";
             log.info("MDBBeanInJar.onMessage() received: " + text);
+
+            Destination replyTo = msg.getJMSReplyTo();
+            if (replyTo != null) {
+                QueueConnection conn = qcf.createQueueConnection();
+                try {
+                    QueueSession session = conn.createQueueSession(false, QueueSession.AUTO_ACKNOWLEDGE);
+                    MessageProducer sender = session.createProducer(replyTo);
+                    TextMessage replyMsg = session.createTextMessage("ACK:" + text);
+                    sender.send(replyMsg);
+                    log.info("MDBBeanInJar.onMessage() sent reply to " + replyTo);
+                } finally {
+                    conn.close();
+                }
+            }
         } catch (Exception e) {
             log.warning("MDBBeanInJar.onMessage() error: " + e);
-        } finally {
-            latch.countDown();
-        }
-    }
-
-    public static void awaitMessage(long timeoutMs) throws InterruptedException {
-        if (!latch.await(timeoutMs, TimeUnit.MILLISECONDS)) {
-            throw new RuntimeException("Timed out waiting for MDBBeanInJar.onMessage()");
         }
     }
 }
