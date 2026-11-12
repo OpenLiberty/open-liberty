@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2026 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PortType;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -44,13 +43,10 @@ public class OpenAPITckTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        // CWWKO1688W/CWWKO1689W: Jandex 2.4.3 cannot write an index for some Arquillian 1.10.2 classes
-        // (unnamed MethodParameters), so the OpenAPI cache write fails and a later read hits a truncated index.
-        server.stopServer("CWWKO1650E", "CWWKO1651W", "CWWKO1688W", "CWWKO1689W");
+        server.stopServer("CWWKO1650E", "CWWKO1651W");
     }
 
     @Test
-    @AllowedFFDC({ "java.lang.NullPointerException", "java.io.EOFException" })
     public void testOpenAPI20Tck() throws Exception {
         String protocol = "http";
         String host = server.getHostname();
