@@ -27,6 +27,9 @@ import com.ibm.wsspi.security.ltpa.Token;
  */
 @SuppressWarnings("serial")
 public class TestToken implements Token, Serializable {
+    // Fixed to match SingleSignonTokenImpl_1.ser so that adding methods to Token does not break deserialization
+    private static final long serialVersionUID = 1224338109289314866L;
+
     private final double random;
 
     public TestToken() {
@@ -46,6 +49,11 @@ public class TestToken implements Token, Serializable {
     @Override
     public long getExpiration() {
         return 123456789L;
+    }
+
+    @Override
+    public boolean shouldRefreshToken() {
+        return false;
     }
 
     @Override

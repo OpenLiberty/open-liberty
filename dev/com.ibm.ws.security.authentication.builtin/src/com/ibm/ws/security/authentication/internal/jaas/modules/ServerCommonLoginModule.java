@@ -259,7 +259,7 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
                 public Object run() throws Exception {
                     updateSubjectWithSharedStateContents();
                     updateSubjectWithTemporarySubjectContents();
-                    optionallySetWSCredentialExpiration();
+                    optionallySetWSCredentialExpirationAndCreationTime();
                     return null;
                 }
             });
@@ -310,11 +310,25 @@ public abstract class ServerCommonLoginModule extends CommonLoginModule implemen
         subject.getPrivateCredentials().addAll(privateCredentials);
     }
 
-    private void optionallySetWSCredentialExpiration() {
+    private void optionallySetWSCredentialExpirationAndCreationTime() {
         WSCredential wsCredential = subjectHelper.getWSCredential(subject);
         SingleSignonToken ssoToken = getSSOToken(subject);
         if (ssoToken != null && wsCredential instanceof ExpirableCredential) {
             ((ExpirableCredential) wsCredential).setExpiration(ssoToken.getExpiration());
+            
+            // Store creation time in WSCredential for inactivity timeout checking
+            try {
+                String[] creationTimeValues = ssoToken.getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+                if (creationTimeValues != null && creationTimeValues.length > 0) {
+                    long creationTime = Long.parseLong(creationTimeValues[creationTimeValues.length - 1]);
+                    wsCredential.set(AttributeNameConstants.WSTOKEN_CREATION_TIME, creationTime);
+                }
+            } catch (Exception e) {
+                // Log but don't fail - creation time is optional for inactivity timeout feature
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Could not extract creation time from SSO token", e);
+                }
+            }
         }
     }
 
