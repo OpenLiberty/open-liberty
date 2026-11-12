@@ -240,6 +240,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                     // The legacy parser rejects this protocol condition without FFDC.
                     if (!(failure instanceof ContentLengthNotAllowedException)
                                     && !isExpectedRequestValidationFailure(failure)
+                                    && !isMalformedChunkSize(msg, failure)
                                     && !failure.getMessage().contains("possibly HTTP/0.9")) {
                         FFDCFilter.processException(failure, HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
                     }
@@ -395,18 +396,16 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private static boolean isExpectedRequestValidationFailure(Throwable failure) {
-        return failure instanceof HttpRequestValidationException
-                        || isChunkSizeOverflow(failure)                        
+        return failure instanceof HttpRequestValidationException       
                         || (failure instanceof IllegalArgumentException
                                         && failure.getCause() instanceof HttpRequestValidationException);
     }
 
-    // Netty's HttpObjectDecoder reports an out-of-range chunk-size field as 
-    // NumberFormatException("Chunk size overflow: <n>"); the legacy parser rejects it without FFDC.
-    private static boolean isChunkSizeOverflow(Throwable failure) {
-        return failure instanceof NumberFormatException
-                        && failure.getMessage() != null
-                        && failure.getMessage().startsWith("Chunk size overflow");
+    // Netty's HttpObjectDecoder reports every malformed chunk-size line (empty, non-hex, or
+    // > Integer.MAX_VALUE) as a NumberFormatException on an invalid LastHttpContent.
+    // The legacy parser rejects these client errors without FFDC.
+    private static boolean isMalformedChunkSize(HttpObject msg, Throwable failure) {
+        return msg instanceof HttpContent && failure instanceof NumberFormatException;
     }
 
     private static boolean isUpgrade(HttpRequest req) {
