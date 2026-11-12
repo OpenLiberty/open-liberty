@@ -74,6 +74,9 @@ import componenttest.topology.impl.LibertyServer;
  * {@link #callTool(McpRequest)} — build a request separately from sending it, e.g. to
  * know its id before the response arrives. {@code request} is the one place that fills
  * in the JSON-RPC envelope and allocates request ids, for every method.</li>
+ * <li>{@link #initializeParams()} / {@link #initializeParams(String)} /
+ * {@link #initializeParams(String, JSONObject)} — build the {@code params} of an
+ * {@code initialize} request, for {@code client.request("initialize", initializeParams())}.</li>
  * <li>{@link #call(McpRequest)} / {@link #call(String)} — send any request and return a
  * {@link JsonRpcResponse} to assert on with {@link JsonRpcResponseMatcher}.
  * {@code call(String)} accepts a malformed body.</li>
@@ -291,23 +294,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         // Clear any stale session ID so it is not sent on the initialize request.
         sessionId = null;
 
-        McpRequest request = request("initialize", new JSONObject("""
-                        {
-                          "protocolVersion": "2025-11-25",
-                          "capabilities": {
-                            "roots": {
-                              "listChanged": true
-                            },
-                            "sampling": {},
-                            "elicitation": {}
-                          },
-                          "clientInfo": {
-                            "name": "fat-test-client",
-                            "title": "FAT Test Client",
-                            "version": "1.0.0"
-                          }
-                        }
-                        """));
+        McpRequest request = request("initialize", initializeParams());
 
         HttpResponse<String> response = post(getMcpUrl(), request.toString());
 
@@ -570,6 +557,60 @@ public class McpClient extends ExternalResource implements AutoCloseable {
             return request("tools/call", params);
         } catch (JSONException e) {
             throw new IllegalArgumentException("Could not build a tools/call request for " + toolName, e);
+        }
+    }
+
+    /**
+     * Builds the {@code params} of an {@code initialize} request for the latest protocol version,
+     * with the default client capabilities and client info. See {@link #initializeParams(String, JSONObject)}.
+     */
+    public static JSONObject initializeParams() {
+        return initializeParams(VALUE_MCP_PROTOCOL_VERSION);
+    }
+
+    /**
+     * Builds the {@code params} of an {@code initialize} request that asks for the given protocol
+     * version, with the default client capabilities and client info. See
+     * {@link #initializeParams(String, JSONObject)}.
+     *
+     * @param protocolVersion the protocol version the client requests
+     */
+    public static JSONObject initializeParams(String protocolVersion) {
+        try {
+            return initializeParams(protocolVersion, new JSONObject("""
+                            {
+                              "roots": {
+                                "listChanged": true
+                              },
+                              "sampling": {},
+                              "elicitation": {}
+                            }
+                            """));
+        } catch (JSONException e) {
+            throw new IllegalArgumentException("Could not build the default client capabilities", e);
+        }
+    }
+
+    /**
+     * Builds the {@code params} of an {@code initialize} request: the one place where the
+     * {@code protocolVersion}, {@code capabilities} and {@code clientInfo} that a test client
+     * sends are filled in. Pass the result to {@link #request(String, JSONObject)} to build the
+     * request. {@code clientInfo} is always the FAT test client.
+     *
+     * @param protocolVersion the protocol version the client requests
+     * @param capabilities the client capabilities, e.g. {@code new JSONObject()} for none
+     */
+    public static JSONObject initializeParams(String protocolVersion, JSONObject capabilities) {
+        try {
+            return new JSONObject()
+                                   .put("protocolVersion", protocolVersion)
+                                   .put("capabilities", capabilities)
+                                   .put("clientInfo", new JSONObject()
+                                                                      .put("name", "fat-test-client")
+                                                                      .put("title", "FAT Test Client")
+                                                                      .put("version", "1.0.0"));
+        } catch (JSONException e) {
+            throw new IllegalArgumentException("Could not build the params of an initialize request for protocol version " + protocolVersion, e);
         }
     }
 

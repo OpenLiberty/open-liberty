@@ -149,13 +149,17 @@ public class MultiAppIsolationTest extends FATServletClient {
     @Test
     public void testCallingBetaToolFromAlphaAppFails() throws Exception {
         assertThat(alphaClient.callTool("betaOnlyTool", Map.of("input", "Hello")),
-                   jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorDataItems("Method betaOnlyTool not found"));
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS)
+                                    .withErrorMessage("Invalid params")
+                                    .withErrorDataItems("Method betaOnlyTool not found"));
     }
 
     @Test
     public void testCallingAlphaToolFromBetaAppFails() throws Exception {
         assertThat(betaClient.callTool("alphaOnlyTool", Map.of("input", "Hello")),
-                   jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorDataItems("Method alphaOnlyTool not found"));
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS)
+                                    .withErrorMessage("Invalid params")
+                                    .withErrorDataItems("Method alphaOnlyTool not found"));
     }
 
     //Calling a tool with the same name deployed in different apps will return different results
