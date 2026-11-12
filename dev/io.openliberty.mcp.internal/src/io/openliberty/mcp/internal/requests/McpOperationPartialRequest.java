@@ -23,6 +23,7 @@ import io.openliberty.mcp.internal.sessions.McpSessionId;
  *
  * @param acceptHeader the value of the Accept header
  * @param protocolVersion the protocol version from the MCP-Protocol-Version header, or {@code null} if it is not supported
+ * @param protocolVersionHeaderPresent {@code true} if MCP-Protocol-Version header was present in the request
  * @param sessionId the value of the Mcp-Session-Id header
  * @param requestTo the parsed JSON-RPC request, or {@code null} if the body could not be parsed
  * @param parseException the exception to throw when the request is fully parsed if the body could not be parsed, otherwise {@code null}
@@ -32,6 +33,7 @@ import io.openliberty.mcp.internal.sessions.McpSessionId;
 @Trivial
 public record McpOperationPartialRequest(String acceptHeader,
                                          McpProtocolVersion protocolVersion,
+                                         boolean protocolVersionHeaderPresent,
                                          McpSessionId sessionId,
                                          JsonRpcRequestTO requestTo,
                                          RuntimeException parseException,

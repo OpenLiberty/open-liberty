@@ -22,7 +22,7 @@ import jakarta.json.JsonObject;
  * A request to run an MCP Operation,
  *
  * @param method the method being called, or the notification being delivered
- * @param protocolVersion the protocol version used for the request
+ * @param protocolVersion the protocol version used for the request, may be {@code null} for a {@link RequestMethod#isPreInit() pre-init} request
  * @param id the request id, {@code null} for a notification
  * @param session the session, {@code null} if there's no associated session
  * @param args the unparsed method arguments object. May be empty if no args provided, but not {@code null}
@@ -36,7 +36,9 @@ public record McpOperationRequest(RequestMethod method,
 
     public McpOperationRequest {
         requireNonNull(method, "method is required");
-        requireNonNull(protocolVersion, "protocolVersion is required");
+        if (!method.isPreInit()) {
+            requireNonNull(protocolVersion, "protocolVersion is required");
+        }
         requireNonNull(args, "args is required");
     }
 }

@@ -25,7 +25,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.skyscreamer.jsonassert.JSONCompareMode.STRICT;
 
 import java.io.IOException;
@@ -76,18 +78,17 @@ public class McpOperationRequestParserTest {
     }
 
     private void setupStateless() {
-        McpConfig config = MockMcpConfig.createStateless();
-        McpRequestTracker requestTracker = new McpRequestTracker(config);
-        sessionStore = new McpSessionStore(requestTracker, config);
-        parser = new McpOperationRequestParser(sessionStore, config, jsonb);
+        setupWithConfig(MockMcpConfig.createStateless());
     }
 
     private void setupStateful() {
-        McpConfig config = MockMcpConfig.createStateful();
+        setupWithConfig(MockMcpConfig.createStateful());
+    }
+
+    private void setupWithConfig(McpConfig config) {
         McpRequestTracker requestTracker = new McpRequestTracker(config);
         sessionStore = new McpSessionStore(requestTracker, config);
         parser = new McpOperationRequestParser(sessionStore, config, jsonb);
-
     }
 
     private static MockHttpServletRequest validRequestFor(String json) {
@@ -116,6 +117,7 @@ public class McpOperationRequestParserTest {
         var partialRequest = parser.preParse(req);
         assertEquals("acceptHeader", ACCEPT_VALUE, partialRequest.acceptHeader());
         assertEquals("protocolVersion", V_2025_11_25, partialRequest.protocolVersion());
+        assertTrue("protocolVersionHeaderPresent", partialRequest.protocolVersionHeaderPresent());
         assertNull("sessionId", partialRequest.sessionId());
         JSONAssert.assertEquals("requestTo", json, jsonb.toJson(partialRequest.requestTo()), STRICT);
         assertNull("parseException", partialRequest.parseException());
@@ -214,7 +216,31 @@ public class McpOperationRequestParserTest {
         var partialRequest = parser.preParse(req);
         assertEquals("acceptHeader", "badValue1", partialRequest.acceptHeader());
         assertEquals("protocolVersion", null, partialRequest.protocolVersion());
+        assertTrue("protocolVersionHeaderPresent", partialRequest.protocolVersionHeaderPresent());
         assertEquals("sessionId", new McpSessionId("badValue3"), partialRequest.sessionId());
+        JSONAssert.assertEquals("TO", json, jsonb.toJson(partialRequest.requestTo()), STRICT);
+        assertNull("parseException", partialRequest.parseException());
+        assertEquals("requestId", new RequestId("1"), partialRequest.id());
+        assertEquals("method", PING, partialRequest.method());
+    }
+
+    @Test
+    public void testPreParseMissingProtocolHeader() throws IOException {
+        String json = """
+                        {
+                            "jsonrpc": "2.0",
+                            "id": "1",
+                            "method": "ping"
+                        }
+                        """;
+        var req = new MockHttpServletRequest(json);
+        req.addHeader(ACCEPT, ACCEPT_VALUE);
+
+        var partialRequest = parser.preParse(req);
+        assertEquals("acceptHeader", ACCEPT_VALUE, partialRequest.acceptHeader());
+        assertEquals("protocolVersion", V_2025_03_26, partialRequest.protocolVersion());
+        assertFalse("protocolVersionHeaderPresent", partialRequest.protocolVersionHeaderPresent());
+        assertNull("sessionId", partialRequest.sessionId());
         JSONAssert.assertEquals("TO", json, jsonb.toJson(partialRequest.requestTo()), STRICT);
         assertNull("parseException", partialRequest.parseException());
         assertEquals("requestId", new RequestId("1"), partialRequest.id());
@@ -234,6 +260,7 @@ public class McpOperationRequestParserTest {
         var partialRequest = parser.preParse(req);
         assertEquals("acceptHeader", ACCEPT_VALUE, partialRequest.acceptHeader());
         assertEquals("protocolVersion", V_2025_11_25, partialRequest.protocolVersion());
+        assertTrue("protocolVersionHeaderPresent", partialRequest.protocolVersionHeaderPresent());
         assertNull("sessionId", partialRequest.sessionId());
         assertNull("TO", partialRequest.requestTo());
         assertThat("parseException", partialRequest.parseException(), exception().ofType(JSONRPCException.class));
@@ -254,6 +281,7 @@ public class McpOperationRequestParserTest {
         var partialRequest = parser.preParse(req);
         assertEquals("acceptHeader", ACCEPT_VALUE, partialRequest.acceptHeader());
         assertEquals("protocolVersion", V_2025_11_25, partialRequest.protocolVersion());
+        assertTrue("protocolVersionHeaderPresent", partialRequest.protocolVersionHeaderPresent());
         assertNull("sessionId", partialRequest.sessionId());
         assertNull("TO", partialRequest.requestTo());
         assertThat("parseException", partialRequest.parseException(), exception().ofType(JSONRPCException.class));
@@ -273,6 +301,7 @@ public class McpOperationRequestParserTest {
         var partialRequest = parser.preParse(req);
         assertEquals("acceptHeader", ACCEPT_VALUE, partialRequest.acceptHeader());
         assertEquals("protocolVersion", V_2025_11_25, partialRequest.protocolVersion());
+        assertTrue("protocolVersionHeaderPresent", partialRequest.protocolVersionHeaderPresent());
         assertNull("sessionId", partialRequest.sessionId());
         JSONAssert.assertEquals("TO", json, jsonb.toJson(partialRequest.requestTo()), STRICT);
         assertNull("parseException", partialRequest.parseException());
@@ -292,6 +321,7 @@ public class McpOperationRequestParserTest {
         var partialRequest = parser.preParse(validRequestFor(json));
         assertEquals("acceptHeader", ACCEPT_VALUE, partialRequest.acceptHeader());
         assertEquals("protocolVersion", V_2025_11_25, partialRequest.protocolVersion());
+        assertTrue("protocolVersionHeaderPresent", partialRequest.protocolVersionHeaderPresent());
         assertNull("sessionId", partialRequest.sessionId());
         assertNull("TO", partialRequest.requestTo());
         assertThat("parseException", partialRequest.parseException(), exception().ofType(JSONRPCException.class));
@@ -310,6 +340,7 @@ public class McpOperationRequestParserTest {
         var partialRequest = parser.preParse(validRequestFor(json));
         assertEquals("acceptHeader", ACCEPT_VALUE, partialRequest.acceptHeader());
         assertEquals("protocolVersion", V_2025_11_25, partialRequest.protocolVersion());
+        assertTrue("protocolVersionHeaderPresent", partialRequest.protocolVersionHeaderPresent());
         assertNull("sessionId", partialRequest.sessionId());
         assertNull("TO", partialRequest.requestTo());
         assertThat("parseException", partialRequest.parseException(), exception().ofType(JSONRPCException.class));
@@ -329,6 +360,7 @@ public class McpOperationRequestParserTest {
         var partialRequest = parser.preParse(validRequestFor(json));
         assertEquals("acceptHeader", ACCEPT_VALUE, partialRequest.acceptHeader());
         assertEquals("protocolVersion", V_2025_11_25, partialRequest.protocolVersion());
+        assertTrue("protocolVersionHeaderPresent", partialRequest.protocolVersionHeaderPresent());
         assertNull("sessionId", partialRequest.sessionId());
         assertNull("TO", partialRequest.requestTo());
         assertThat("parseException", partialRequest.parseException(), exception().ofType(JSONRPCException.class));
@@ -348,6 +380,7 @@ public class McpOperationRequestParserTest {
         var partialRequest = parser.preParse(validRequestFor(json));
         assertEquals("acceptHeader", ACCEPT_VALUE, partialRequest.acceptHeader());
         assertEquals("protocolVersion", V_2025_11_25, partialRequest.protocolVersion());
+        assertTrue("protocolVersionHeaderPresent", partialRequest.protocolVersionHeaderPresent());
         assertNull("sessionId", partialRequest.sessionId());
         JSONAssert.assertEquals("TO", json, jsonb.toJson(partialRequest.requestTo()), STRICT);
         assertNull("parseException", partialRequest.parseException());
@@ -745,6 +778,57 @@ public class McpOperationRequestParserTest {
         var request = parser.parse(partialRequest);
         assertEquals("method", RequestMethod.INITIALIZE, request.method());
         assertNull("session", request.session());
+    }
+
+    @Test
+    public void testParseStatefulInitializeWith20250326Disallowed() throws IOException {
+        setupWithConfig(MockMcpConfig.createStateful().setMinimumProtocolVersion(V_2025_11_25));
+        String json = """
+                        {
+                            "jsonrpc": "2.0",
+                            "id": "5",
+                            "method": "initialize",
+                            "params": {
+                                "protocolVersion": "2025-11-25",
+                                "capabilities": {},
+                                "clientInfo": {
+                                    "name": "testClient",
+                                    "version": "0.1"
+                                }
+                            }
+                        }
+                        """;
+        var req = new MockHttpServletRequest(json);
+        req.addHeader(ACCEPT, ACCEPT_VALUE);
+        var partialRequest = parser.preParse(req);
+        var request = parser.parse(partialRequest);
+        assertEquals("method", RequestMethod.INITIALIZE, request.method());
+        assertNull("session", request.session());
+    }
+
+    @Test
+    public void testParseToolCallWithoutProtocolHeaderWith20250326Disallowed() throws IOException {
+        setupWithConfig(MockMcpConfig.createStateless().setMinimumProtocolVersion(V_2025_11_25));
+
+        String json = """
+                        {
+                            "jsonrpc": "2.0",
+                            "id": "5",
+                            "method": "tools/call",
+                            "params": {
+                                "name": "echo",
+                                "arguments": {
+                                    "value": "hello"
+                                }
+                            }
+                        }
+                        """;
+        // No MCP-Protocol-Version header, so the request is interpreted as 2025-03-26, which is below the configured minimum
+        var req = new MockHttpServletRequest(json);
+        req.addHeader(ACCEPT, ACCEPT_VALUE);
+        var partialRequest = parser.preParse(req);
+        assertThrows(() -> parser.parse(partialRequest), exception().ofType(HttpResponseException.class)
+                                                                    .and(hasProperty("statusCode", equalTo(SC_BAD_REQUEST))));
     }
 
     @Test

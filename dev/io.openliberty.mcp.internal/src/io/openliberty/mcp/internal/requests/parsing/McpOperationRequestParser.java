@@ -12,7 +12,6 @@ package io.openliberty.mcp.internal.requests.parsing;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -88,9 +87,10 @@ public class McpOperationRequestParser {
      */
     @FFDCIgnore({ NoSuchElementException.class, RuntimeException.class })
     public McpOperationPartialRequest preParse(HttpServletRequest req) throws IOException {
+        String protocolVersionHeader = req.getHeader(MCP_PROTOCOL_VERSION_HEADER);
         McpProtocolVersion protocolVersion;
         try {
-            protocolVersion = readProtocolVersionHeader(req);
+            protocolVersion = readProtocolVersionHeader(protocolVersionHeader);
         } catch (NoSuchElementException e) {
             protocolVersion = null;
         }
@@ -121,7 +121,7 @@ public class McpOperationRequestParser {
             method = null;
         }
 
-        return new McpOperationPartialRequest(acceptHeader, protocolVersion, sessionId, jsonRpcRequest, parseException, requestId, method);
+        return new McpOperationPartialRequest(acceptHeader, protocolVersion, protocolVersionHeader != null, sessionId, jsonRpcRequest, parseException, requestId, method);
     }
 
     /**
@@ -130,12 +130,18 @@ public class McpOperationRequestParser {
      * @return the protocol version interpreted from the header
      * @throws NoSuchElementException if the protocol is not one we support
      */
-    private McpProtocolVersion readProtocolVersionHeader(HttpServletRequest req) {
-        String protocolVersion = req.getHeader(MCP_PROTOCOL_VERSION_HEADER);
+    private McpProtocolVersion readProtocolVersionHeader(String protocolVersion) {
+        McpProtocolVersion result;
         if (protocolVersion == null) {
-            return McpProtocolVersion.V_2025_03_26;
+            result = McpProtocolVersion.V_2025_03_26;
         } else {
-            return McpProtocolVersion.parse(protocolVersion);
+            result = McpProtocolVersion.parse(protocolVersion);
+        }
+
+        if (config.isAccepted(result)) {
+            return result;
+        } else {
+            throw new NoSuchElementException();
         }
     }
 
@@ -285,13 +291,23 @@ public class McpOperationRequestParser {
      * @param partialReq
      */
     private void validateProtocolVersion(McpOperationPartialRequest partialReq) {
-        if (partialReq.protocolVersion() == null) {
-            String supportedValues = Arrays.stream(McpProtocolVersion.availableValues())
-                                           .map(McpProtocolVersion::getVersion)
-                                           .collect(Collectors.joining(", "));
-            String exceptionMessage = Tr.formatMessage(tc, "unsupported.mcp.http.version", supportedValues);
-            throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, exceptionMessage);
+        if (!partialReq.protocolVersionHeaderPresent()
+            && partialReq.method() != null
+            && partialReq.method().isPreInit()) {
+            // Pre-init method, protocol version header not required
+            return;
         }
+        if (partialReq.protocolVersion() == null) {
+            throw unsupportedProtocolVersion();
+        }
+    }
+
+    private HttpResponseException unsupportedProtocolVersion() {
+        String supportedValues = config.acceptedProtocolVersions().stream()
+                                       .map(McpProtocolVersion::getVersion)
+                                       .collect(Collectors.joining(", "));
+        String exceptionMessage = Tr.formatMessage(tc, "unsupported.mcp.http.version", supportedValues);
+        return new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, exceptionMessage);
     }
 
     /**
@@ -328,11 +344,34 @@ public class McpOperationRequestParser {
     }
 
     private void validateSessionPresentIfRequired(McpSession session, RequestMethod method) {
-        if (!config.stateless() && method != RequestMethod.INITIALIZE && method != RequestMethod.PING) {
+        if (!config.stateless() && !method.isPreInit()) {
             if (session == null) {
                 throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST,
                                                 "Missing Mcp-Session-Id header");
             }
+        }
+    }
+
+    /**
+     * Checks the protocol version header of a request which is not processed by {@link #init}, such as a session DELETE.
+     * A missing header is allowed. A header which is unknown, or outside the configured range, is rejected.
+     *
+     * @param req the request
+     * @throws HttpResponseException with status 400 if the header names a version which is not accepted
+     */
+    @FFDCIgnore(NoSuchElementException.class)
+    public void validateProtocolVersionHeaderForDelete(HttpServletRequest req) {
+        String header = req.getHeader(MCP_PROTOCOL_VERSION_HEADER);
+        if (header == null) {
+            return;
+        }
+
+        try {
+            if (!config.isAccepted(McpProtocolVersion.parse(header))) {
+                throw unsupportedProtocolVersion();
+            }
+        } catch (NoSuchElementException e) {
+            throw unsupportedProtocolVersion();
         }
     }
 
