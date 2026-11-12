@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2025 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,10 @@ package com.ibm.ws.ssl.core;
 
 import java.net.Socket;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.Principal;
 import java.security.PrivateKey;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -295,20 +297,33 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
             }
 
             if (isPKIX) {
-                String[] unfilteredList = km.getClientAliases(keyType, null);
-                if (unfilteredList != null) {
-                    for (String candidate : unfilteredList) {
-                        if (resolvePKIXAlias(clientAlias, candidate)) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                                Tr.exit(tc, "chooseClientAlias (issuers ignored)", new Object[] { candidate });
-                            return candidate.toLowerCase();
+                String aliasKeyType = null;
+                try {
+                    Certificate cert = ks.getCertificate(clientAlias);
+                    if (cert != null) {
+                        aliasKeyType = cert.getPublicKey().getAlgorithm();
+                    }
+                } catch (KeyStoreException e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(tc, "Unable to determine key type for alias " + clientAlias, e);
+                }
+
+                String pkixAlias = null;
+                if (aliasKeyType != null) {
+                    String[] unfilteredList = km.getClientAliases(aliasKeyType, null);
+                    if (unfilteredList != null) {
+                        for (String candidate : unfilteredList) {
+                            if (resolvePKIXAlias(clientAlias, candidate)) {
+                                pkixAlias = candidate;
+                                break;
+                            }
                         }
                     }
                 }
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                    Tr.exit(tc, "chooseClientAlias (no alias for key type)", null);
-                return null;
+                    Tr.exit(tc, "chooseClientAlias (default)", new Object[] { pkixAlias });
+                return pkixAlias;
 
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
