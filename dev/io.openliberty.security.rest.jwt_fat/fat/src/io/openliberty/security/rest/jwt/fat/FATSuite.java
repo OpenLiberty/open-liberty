@@ -47,8 +47,10 @@ import componenttest.topology.impl.LibertyServer;
                 AlwaysPassesTest.class,
                 RestJwtFATTest.class,
                 RestJwtNoConnectorFATTest.class,
+                RestJwtNoJwtFATTest.class,
                 RestJwtKeyFileFATTest.class,
-                RestJwtKeyFileInvalidFATTest.class
+                RestJwtKeyFileInvalidFATTest.class,
+                RestJwtKeyRotationFATTest.class
 })
 public class FATSuite {
 

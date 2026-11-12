@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="REST Admin JWT TAI FAT Server - public key file is rotated while the server runs">
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>restConnector-2.0</feature>
+        <feature>jwt-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="Liberty" />
+    <ltpa keysPassword="password" />
+
+    <!-- Route the admin REST connector (IBMJMXConnectorREST) through a dedicated admin endpoint/virtual host -->
+    <variable name="admin.virtual.host" value="admin_host"/>
+    <virtualHost id="admin_host" allowFromEndpointRef="adminEndpoint">
+        <hostAlias>*:${bvt.prop.HTTP_secondary.secure}</hostAlias>
+    </virtualHost>
+    <httpEndpoint id="adminEndpoint" host="*" httpPort="-1" httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
+    <!-- The jwtConsumer keeps the public key it read from the jwkEndpointUrl file until its configuration is
+         reloaded. After the test replaces resources/security/jwtPublic.pem it changes this variable, which
+         reloads the jwtConsumer (the 1 second difference in the clock skew is irrelevant to the tokens). -->
+    <variable name="rotation.clockSkew" value="60s"/>
+    <jwtConsumer id="JMXConnectorRESTConsumer"
+                 issuer="IBMJMXConnectorRESTIssuer"
+                 audiences="IBMJMXConnectorREST"
+                 jwkEndpointUrl="file:${server.config.dir}resources/security/jwtPublic.pem"
+                 signatureAlgorithm="RS256"
+                 clockSkew="${rotation.clockSkew}" />
+
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="adminUser" password="password"/>
+        <group name="liberty-admin">
+            <member name="adminUser"/>
+        </group>
+    </basicRegistry>
+
+    <administrator-role group="liberty-admin" />
+</server>
