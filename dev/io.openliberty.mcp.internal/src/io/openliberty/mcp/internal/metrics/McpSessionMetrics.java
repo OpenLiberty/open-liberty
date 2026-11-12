@@ -91,8 +91,8 @@ public final class McpSessionMetrics {
             // Extract all required info eagerly since there is no need to hold onto the
             // transport for the session lifetime
             this.protocol = transport.getReq().getProtocol();
-            if (transport.getMcpRequest() != null) {
-                this.jsonrpcProtocolVersion = transport.getMcpRequest().jsonrpc();
+            if (transport.getMcpOperationRequest() != null) {
+                this.jsonrpcProtocolVersion = "2.0";
             }
             if (transport.getProtocolVersion() != null) {
                 this.mcpProtocolVersion = transport.getProtocolVersion().getVersion();
