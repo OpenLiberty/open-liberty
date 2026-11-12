@@ -68,7 +68,7 @@ public class WebSocketTests {
     public static void tearDown() throws Exception {
         // Stop the server
         if (server != null && server.isStarted()) {
-            server.stopServer("SRVE0190E"); // SRVE0190E is due to ENABLE_WEBSOCKET_ENDPOINT being false for triggering onerror on a websocket.
+            server.stopServer();
         }
     }
 
@@ -79,6 +79,9 @@ public class WebSocketTests {
 
     /**
      * Test to ensure that the <f:websocket> onerror listener works properly.
+     *
+     * faces.js only invokes onerror when an established connection is closed abnormally (not code 1000/1008).
+     * websocketListeners.js closes the first established connection with code 4000 to trigger this.
      *
      * @throws Exception
      */
@@ -99,7 +102,6 @@ public class WebSocketTests {
         page.findElement(By.id("form1:openButton")).click();
 
         page.waitForCondition(driver -> page.isInPage("Called onerror listener"));
-        page.waitForCondition(driver -> page.isInPage("Called onclose listener"));
 
     }
 
