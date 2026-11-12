@@ -64,10 +64,26 @@ public class URIDomainExpression implements DomainExpression {
         if (ei == null) {
             return false;
         }
-        if ((ei.getService() != null) && (ei.getService().getName() != null) && (ei.getName() != null)
-            && wsdl11XPointer.matchesPort(ei.getService().getTargetNamespace(),
-                                          ei.getService().getName().getLocalPart(),
-                                          ei.getName().getLocalPart())) {
+        String tns = (ei.getService() != null) ? ei.getService().getTargetNamespace() : "";
+        String serviceName = (ei.getService() != null && ei.getService().getName() != null)
+                             ? ei.getService().getName().getLocalPart() : null;
+        String portName = (ei.getName() != null) ? ei.getName().getLocalPart() : null;
+
+        // 1. #wsdl11.port(Service/Port)
+        if (serviceName != null && portName != null && wsdl11XPointer.matchesPort(tns, serviceName, portName)) {
+            return true;
+        }
+        // 2. #wsdl11.service(Service)
+        if (serviceName != null && wsdl11XPointer.matchesService(tns, serviceName)) {
+            return true;
+        }
+        // 3. #wsdl11.definitions()
+        if (wsdl11XPointer.matchesWsdl(tns)) {
+            return true;
+        }
+        // 4. #wsdl11.portType(PortType)
+        if (ei.getInterface() != null && ei.getInterface().getName() != null
+            && wsdl11XPointer.matchesPortType(tns, ei.getInterface().getName().getLocalPart())) {
             return true;
         }
         return false;
@@ -359,7 +375,15 @@ public class URIDomainExpression implements DomainExpression {
         }
 
         private boolean matches(String wsdlTargetNamespace, Matcher matcher, String... args) {
-            if (!targetNamespace.equals(wsdlTargetNamespace) || !matcher.matches()) {
+            if (!targetNamespace.isEmpty()) {
+                String normTns = targetNamespace.endsWith("/") ? targetNamespace.substring(0, targetNamespace.length() - 1) : targetNamespace;
+                String normWsdlTns = (wsdlTargetNamespace != null && wsdlTargetNamespace.endsWith("/")) 
+                                     ? wsdlTargetNamespace.substring(0, wsdlTargetNamespace.length() - 1) : wsdlTargetNamespace;
+                if (!normTns.equals(normWsdlTns)) {
+                    return false;
+                }
+            }
+            if (!matcher.matches()) {
                 return false;
             }
             for (int i = 0; i < args.length; i++) {
