@@ -18,7 +18,7 @@
 		<!-- State Should be Preservered via rowStatePreserved="true"  -->
 		<ui:repeat id="val" rowStatePreserved="true" value="#{itemsBean.items}" var="val">
 			<h:form id="mainForm">
-				<h:inputText id="text" value="#{val}"/>
+				<h:inputText id="text" value="#{val.value}"/>
 				<h:commandButton id="submit" value="submit" action="#{itemsBean.submit}" />
 			</h:form>
 		</ui:repeat>

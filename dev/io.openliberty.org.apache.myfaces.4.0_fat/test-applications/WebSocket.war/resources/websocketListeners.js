@@ -10,6 +10,30 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+/*
+ * Force the faces.js push client to invoke the onerror listener.
+ *
+ * faces.js only calls onerror when a socket that has successfully connected is closed with a
+ * code other than 1000 / 1008. Once the first real connection is established, close it with
+ * the custom code 4000. faces.js then calls onerror and reconnects (which is not closed again).
+ */
+(function() {
+	var NativeWebSocket = window.WebSocket;
+	var closedOnce = false;
+
+	window.WebSocket = class extends NativeWebSocket {
+		constructor(url, protocols) {
+			super(url, protocols);
+			this.addEventListener("open", function() {
+				if (!closedOnce) {
+					closedOnce = true;
+					this.close(4000, "Forced close to trigger onerror");
+				}
+			});
+		}
+	};
+})();
+
 function websocketMessageListener(message, channel, event) {
    	document.getElementById("messageId").innerHTML += "Called onmessage listener with message: " + message + "<br/>";
 }

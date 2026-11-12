@@ -31,7 +31,7 @@
 
     <context-param>
         <param-name>jakarta.faces.ENABLE_WEBSOCKET_ENDPOINT</param-name>
-        <param-value>false</param-value>
-</context-param>
+        <param-value>true</param-value>
+    </context-param>
 
 </web-app>
