@@ -359,6 +359,29 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             return;
         }
 
+        // A body fragment the decoder could not parse (e.g. chunk-size overflow) means the
+        // request framing is corrupt, so the connection can never be reused. Still forward it
+        // so the application's body stream observes the error.
+        if (message instanceof HttpContent && ((HttpContent) message).decoderResult().isFailure()) {
+            // The fragment belongs to a queued request, not the active exchange: park it like any
+            // other content so the active exchange is not closed or poisoned. The dispatcher
+            // handles the failure when it is replayed after admission.
+            if (shouldParkBodyContent(state)) {
+                state.enqueuePending((HttpObject) message);
+                return;
+            }
+            state.setKeepAliveAllowed(false);
+            state.setStopReading(true);
+            super.channelRead(context, message);
+            // If the response is still pending, onResponseComplete closes once it is written.
+            // If it already completed there is no later hook, so close here.
+            if (!state.isResponseInFlight() && context.channel().isActive()) {
+                state.releaseQueue();
+                context.close();
+            }
+            return;
+        }
+
         // --------------------------------------------------------------------
         // HttpContent (body chunk or LastHttpContent)
         // --------------------------------------------------------------------
@@ -767,6 +790,12 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
             HttpObject next;
             while ((next = state.peekPending()) != null && !(next instanceof HttpRequest)) {
                 state.pollPending();
+                // A parked fragment the decoder could not parse means the framing is corrupt:
+                // the connection cannot be reused once this exchange's response completes.
+                if (next instanceof HttpContent && ((HttpContent) next).decoderResult().isFailure()) {
+                    state.setKeepAliveAllowed(false);
+                    state.setStopReading(true);
+                }
                 try {
                     state.readFlowHandlerContext.fireChannelRead(next);
                     // Downstream now owns the ref; do NOT release.
