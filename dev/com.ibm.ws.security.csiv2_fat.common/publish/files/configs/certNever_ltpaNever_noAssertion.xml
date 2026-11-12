@@ -1,0 +1,14 @@
+<server>
+<!-- certNever_ltpaNever_noAssertion -->
+    <include location="imports/downstream_defaultNoETICIiopEndpoint.xml"/>
+
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+                <authenticationLayer mechanisms="LTPA" establishTrustInClient="Never"/>
+                <transportLayer sslRef="noClientAuthenticationSSLConfig"/>
+            </layers>
+        </serverPolicy.csiv2>
+    </orb>
+
+</server>

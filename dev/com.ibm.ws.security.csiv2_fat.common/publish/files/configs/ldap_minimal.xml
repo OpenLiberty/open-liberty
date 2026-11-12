@@ -1,0 +1,49 @@
+<server>
+<!-- minimal, explicit -->
+
+    <featureManager>
+        <feature>javaee-7.0</feature>
+        <feature>ldapRegistry-3.0</feature>
+    </featureManager>
+<!--
+    <include location="imports/ldapRegistry.xml"/>
+-->
+
+    <ldapRegistry id="LDAP" realm="SampleLdapIDSRealm" host="${ldap.server.8.name}" port="${ldap.server.8.port}" ignoreCase="true"  
+		baseDN="o=ibm,c=us"
+		userFilter="(&amp;(uid=%v)(objectclass=ePerson))"
+		groupFilter="(&amp;(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)))"
+		userIdMap="*:uid"
+		groupIdMap="*:cn"
+		groupMemberIdMap="ibm-allGroups:member;ibm-allGroups:uniqueMember"
+		ldapType="IBM Tivoli Directory Server"
+		searchTimeout="8m">
+		<failoverServers name="failoverLdapServers">
+		   <server host="${ldap.server.4.name}" port="${ldap.server.4.port}"/>
+       	</failoverServers>
+	</ldapRegistry>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <!-- Override iiopEndpoint ports only for FAT tests, the rest of the configuration is defaulted from defaultInstances.xml -->
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" >
+        <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}"  sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+    
+    <application type="ear" id="DownstreamApp" name="DownstreamApp" location="${server.config.dir}/apps/DownstreamApp.ear">
+        <application-bnd>
+            <security-role name="Tester">
+                <user name="user1" />
+            </security-role>
+            <security-role name="Admin">
+                <user name="user1" />
+                <user name="user2" />
+            </security-role>
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </application>
+    
+    <include location="imports/downstream_fatTestPorts.xml"/>
+</server>

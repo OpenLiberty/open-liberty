@@ -1,0 +1,29 @@
+<server>
+<!--  remote server -->
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <feature>localConnector-1.0</feature>
+ 		<feature>ejbRemote-3.2</feature>
+		<feature>appSecurity-2.0</feature>
+        <feature>csiv2-1.0</feature> <!-- For testing only.  This will be changed to a dynamic feature. -->
+    </featureManager>
+    
+    
+	<basicRegistry id="basic" realm="customRealm">
+     <user name="balaji" password="p@ssw0rd"/>
+     <user name="rkumar" password="pa$$w0rd"/>
+     <user name="gjones" password="{xor}Lz4sLCgwLTs="/>
+     <group name="students">
+         <member name="mlee"/> 
+         <member name="rkumar"/>
+     </group> 
+	</basicRegistry>	
+
+    <include location="../fatTestPorts.xml"/>
+    <application location="${server.config.dir}/apps/WSSubjectBeanApp.ear" id="WSSubjectApp" name="WSSubjectApp" type="ear"></application>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" iiopsPort="${bvt.prop.IIOP.secure}" >
+        <sslOptions sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+
+</server>

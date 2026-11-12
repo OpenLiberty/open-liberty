@@ -1,0 +1,20 @@
+<server>
+
+    <include location="upstream_serverFeatures_transportSecurity.xml"/>
+    
+    <include location="keystores_outboundDefaultSSL.xml"/>
+
+    <include location="sslConfigs_outboundSSLFilter.xml"/>
+    
+    <include location="upstream_basicRegistry.xml"/>
+    
+    <include location="upstream_clientWar.xml"/>
+
+    <include location="upstream_fatTestPorts.xml" />
+
+    <include location="upstream_defaultIiopEndpoint_noSSLRef.xml" />
+
+    <!-- TODO: Remove the following jaas configuration when defect 161706 is fixed -->
+    <jaasLoginContextEntry id="WSLogin" name="WSLogin" loginModuleRef="proxy" />
+
+</server>

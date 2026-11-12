@@ -1,0 +1,7 @@
+<server>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP.secondary}" >
+        <iiopsOptions iiopsPort="${bvt.prop.IIOP.secondary.secure}" />
+    </iiopEndpoint>
+
+</server>

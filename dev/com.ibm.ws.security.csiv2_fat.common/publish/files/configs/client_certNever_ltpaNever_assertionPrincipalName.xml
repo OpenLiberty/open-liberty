@@ -1,0 +1,15 @@
+<server>
+<!-- client_certSupported_ltpaSupported_assertionPrincipalName -->
+    <include location="imports/upstreamIncludes.xml"/>
+
+    <orb id="defaultOrb">
+        <clientPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="true" trustedIdentity="trustedId1"/>
+                <authenticationLayer mechanisms="LTPA" establishTrustInClient="Never"/>
+                <transportLayer sslRef="noClientAuthenticationSSLConfig"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+</server>

@@ -1,0 +1,17 @@
+<server>
+
+    <include location="downstream_serverFeatures.xml"/>
+    
+    <include location="keystores.xml"/>
+    
+    <include location="sslConfigs.xml"/>
+    
+    <include location="downstream_basicRegistry.xml"/>
+    
+    <include location="downstream_downstreamApp.xml"/>
+
+    <include location="downstream_fatTestPorts.xml"/>
+
+    <!-- TODO: Remove the following jaas configuration when defect 161706 is fixed -->
+    <jaasLoginContextEntry id="WSLogin" name="WSLogin" loginModuleRef="proxy" />
+</server>

@@ -1,0 +1,41 @@
+<server>
+<!--  config.validator server -->
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>csiv2-1.0</feature> <!-- For testing only.  This will be changed to a dynamic feature. -->
+    </featureManager>
+    <include location="imports/sslConfigs.xml"/>
+    <include location="../fatTestPorts.xml"/>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="user1" password="user1pwd" />
+        <user name="user2" password="user2pwd" />
+    </basicRegistry>
+
+    <application type="ear" id="csiv2Client" name="csiv2Client" location="${server.config.dir}/apps/csiv2ClientApp.ear">
+        <application-bnd>
+            <security-role name="Tester">
+                <user name="user1" />
+            </security-role>
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </application>
+    
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="2809" iiopsPort="2810" >
+        <sslOptions sslRef="supportedClientAuthenticationSSLConfig"/>
+        <clientPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="false"/>
+                <authenticationLayer establishTrustInClient="Never"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </iiopEndpoint>
+
+</server>

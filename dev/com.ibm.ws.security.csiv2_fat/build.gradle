@@ -1,0 +1,105 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
+// Define G:A:V coordinates of each dependency
+dependencies {
+  requiredLibs project(':com.ibm.ws.com.unboundid'),
+               project(':com.ibm.ws.org.apache.directory.server'),
+               project(':com.ibm.ws.security.fat.common'),
+               project(':com.ibm.ws.security.csiv2_fat.common'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets'),
+               'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2'
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.csiv2_fat.common:assemble'
+
+/*
+ * Stage the common csiv2 FAT resources (published server/config files and the
+ * test applications built by com.ibm.ws.security.csiv2_fat.common) into this bucket.
+ */
+task copyCommonFiles {
+  def commonProject = project(':com.ibm.ws.security.csiv2_fat.common')
+  def markerProject = project(':com.ibm.ws.security.fat.common')
+  dependsOn ':com.ibm.ws.security.fat.common:assemble'
+  dependsOn ':com.ibm.ws.security.csiv2_fat.common:assemble'
+  doLast {
+    def appDir = new File(commonProject.buildDir, 'test-application')
+    def serverApps = [
+      'com.ibm.ws.security.csiv2.fat.config.validator'              : ['DownstreamApp.ear', 'csiv2ClientApp.ear'],
+      'com.ibm.ws.security.csiv2.fat.downstream.server'             : ['DownstreamApp.ear', 'DownstreamEJB.jar', 'client.war'],
+      'com.ibm.ws.security.csiv2.fat.downstream.server.java2'       : ['DownstreamApp.ear', 'DownstreamEJB.jar'],
+      'com.ibm.ws.security.csiv2.fat.intermediate.server'           : ['IntermediateApp.ear', 'IntermediateEJB.jar'],
+      'com.ibm.ws.security.csiv2.fat.remote.server'                 : ['WSSubjectBeanApp.ear'],
+      'com.ibm.ws.security.csiv2.fat.servlet.client'                : ['client.war', 'csiv2ClientApp.ear'],
+      'com.ibm.ws.security.csiv2.fat.servlet.client.java2'          : ['client.war']
+    ]
+
+    /* Copy the local ApacheDS LDAP instances. */
+    copy {
+      from project(':com.ibm.ws.org.apache.directory.server').projectDir
+      into autoFvtDir
+      include 'apacheds-2.0.0-M15/**'
+    }
+
+    /* Copy common publish files (servers, configs and server settings). */
+    copy {
+      from commonProject.file('publish')
+      into new File(autoFvtDir, 'publish')
+      exclude 'files'
+    }
+    copy {
+      from commonProject.file('publish/files')
+      into new File(autoFvtDir, 'publish/files')
+    }
+    copy {
+      from commonProject.file('publish/files')
+      into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+    }
+
+    serverApps.each { server, apps ->
+      def serverDir = new File(autoFvtDir, 'publish/servers/' + server)
+
+      /* Copy the test applications into the server's apps directory. */
+      copy {
+        from appDir
+        into new File(serverDir, 'apps')
+        include apps
+      }
+
+      /* Copy the common server settings into the server's imports directory. */
+      copy {
+        from commonProject.file('publish/files/serversettings')
+        into new File(serverDir, 'imports')
+        include '*.xml'
+      }
+
+      /* Copy the test marker application (marks the start/end of each test in the server logs). */
+      copy {
+        from new File(markerProject.buildDir, 'test-application/testmarker.war')
+        into new File(serverDir, 'dropins')
+      }
+    }
+  }
+}
+
+autoFVT.dependsOn copyCommonFiles

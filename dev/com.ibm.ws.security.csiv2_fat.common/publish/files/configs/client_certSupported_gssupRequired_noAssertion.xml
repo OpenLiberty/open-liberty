@@ -1,0 +1,14 @@
+<server>
+<!-- client_certSupported_gssupSupported_noAssertion -->
+    <include location="imports/upstreamIncludes.xml"/>
+
+    <orb id="defaultOrb">
+        <clientPolicy.csiv2>
+            <layers>
+                <authenticationLayer mechanisms="GSSUP" establishTrustInClient="Required"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+</server>

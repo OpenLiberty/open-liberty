@@ -1,0 +1,14 @@
+<server>
+<!-- client_certSupported_noAuth_assertion -->
+    <include location="imports/upstreamIncludes.xml"/>
+
+    <orb id="defaultOrb">
+        <clientPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="true" trustedIdentity="user1"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+</server>

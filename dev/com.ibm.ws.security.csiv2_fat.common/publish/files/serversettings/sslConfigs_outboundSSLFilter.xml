@@ -1,0 +1,27 @@
+<server>
+
+    <ssl id="outboundSSLFilter" clientAuthentication="true" keyStoreRef="testKeyStore" trustStoreRef="testTrustStore" >
+    	<outboundConnection host="127.0.0.1" port="${bvt.prop.IIOP.secure}" />
+        <outboundConnection host="loopback" port="${bvt.prop.IIOP.secure}" />
+    	<outboundConnection host="localhost.localdomain" port="${bvt.prop.IIOP.secure}" />
+    	<outboundConnection host="localhost" port="${bvt.prop.IIOP.secure}" />
+    	<outboundConnection host="${downStream.host}" port="${bvt.prop.IIOP.secure}" />
+    </ssl>
+
+    <ssl id="outboundDefaultSSL" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" >
+    	<outboundConnection host="127.0.0.1" port="${bvt.prop.IIOP.tertiary.secure}" />  
+        <outboundConnection host="loopback" port="${bvt.prop.IIOP.tertiary.secure}" />
+    	<outboundConnection host="localhost.localdomain" port="${bvt.prop.IIOP.tertiary.secure}" />  
+    	<outboundConnection host="localhost" port="${bvt.prop.IIOP.tertiary.secure}" />  
+    	<outboundConnection host="${downStream.host}" port="${bvt.prop.IIOP.tertiary.secure}" />
+    </ssl>
+
+    <ssl id="noClientAuthenticationSSLConfig" keyStoreRef="defaultKeyStore" />
+
+    <ssl id="supportedClientAuthenticationSSLConfig" clientAuthenticationSupported="true" keyStoreRef="defaultKeyStore" />
+
+    <ssl id="requiredClientAuthenticationSSLConfig" clientAuthentication="true" keyStoreRef="defaultKeyStore" />
+
+    <ssl id="supportedClientAuthenticationTLSConfig" sslProtocol="TLSv1.2" clientAuthenticationSupported="true" keyStoreRef="defaultKeyStore" />
+
+</server>

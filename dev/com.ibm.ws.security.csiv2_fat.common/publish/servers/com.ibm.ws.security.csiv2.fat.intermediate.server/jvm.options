@@ -1,0 +1,5 @@
+# Debug SSL (IBM JSSE)
+#-Djavax.net.debug=true
+
+# Debug SSL (SUN/Oracle JSSE)
+#-Djavax.net.debug=all

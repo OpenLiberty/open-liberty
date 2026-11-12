@@ -1,0 +1,17 @@
+<server>
+<!-- certRequired_ltpaNever_noAssertion -->
+    <include location="imports/downstream_sslDefault_IiopEndpoint.xml"/>
+
+    <sslDefault  sslRef="requiredClientAuthenticationSSLConfig"/>
+
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="false"/>
+                <authenticationLayer mechanisms="LTPA" establishTrustInClient="Never"/>
+                <transportLayer/>
+            </layers>
+        </serverPolicy.csiv2>
+    </orb>
+
+</server>

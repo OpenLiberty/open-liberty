@@ -1,0 +1,37 @@
+<server>
+<!-- client_minimal, explicit -->
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>ejbRemote-3.2</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="user1" password="user1pwd" />
+        <user name="user2" password="user2pwd" />
+        <user name="user42" password="user42pwd" />
+        <user name="trustedId1" password="trustedId1pwd" />
+    </basicRegistry>
+    
+    <!-- Override iiopEndpoint ports only for FAT tests, the rest of the configuration is defaulted from defaultInstances.xml -->
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP.secondary}" >
+        <iiopsOptions iiopsPort="${bvt.prop.IIOP.secondary.secure}"  sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+
+    <application type="war" id="csiv2Client" name="csiv2Client" location="${server.config.dir}/apps/client.war">
+        <application-bnd>
+            <security-role name="Tester">
+                <user name="user1" />
+                <user name="user42" />
+            </security-role>
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <include location="imports/upstream_fatTestPorts.xml" />
+</server>

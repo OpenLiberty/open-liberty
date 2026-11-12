@@ -1,0 +1,15 @@
+<server>
+<!-- client_certSupported_bothSupported_noAssertion -->
+    <include location="imports/upstreamIncludes.xml"/>
+
+    <orb id="defaultOrb">
+        <clientPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="false"/>
+                <authenticationLayer mechanisms="LTPA,GSSUP" establishTrustInClient="Supported"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+</server>

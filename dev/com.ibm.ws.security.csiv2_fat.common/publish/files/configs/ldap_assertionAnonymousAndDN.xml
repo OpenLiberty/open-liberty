@@ -1,0 +1,47 @@
+<server>
+<!-- ldap_assertionAnonymousAndDN.xml -->
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>ldapRegistry-3.0</feature>
+    </featureManager>
+
+    <include location="imports/ldapRegistry.xml"/>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <!-- Override iiopEndpoint ports only for FAT tests, the rest of the configuration is defaulted from defaultInstances.xml -->
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" >
+        <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}"  sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="true" identityAssertionTypes="ITTAnonymous, ITTDistinguishedName" trustedIdentities="cn=user3,o=ibm,c=us"/>
+                <authenticationLayer mechanisms="LTPA,GSSUP" establishTrustInClient="Required"/>
+                <transportLayer/>
+            </layers>
+        </serverPolicy.csiv2>
+    </orb>
+
+    <application type="ear" id="DownstreamApp" name="DownstreamApp" location="${server.config.dir}/apps/DownstreamApp.ear">
+        <application-bnd>
+            <security-role name="Tester">
+                <user name="user1" />
+            </security-role>
+            <security-role name="Admin">
+                <user name="user1" />
+                <user name="CN=user1,O=ibm,C=us" /> <!-- There seems to be a defect in the authorization code in that the access id is not recognized even when ignore case is on -->
+                <user name="user2" />
+            </security-role>
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </application>
+    
+    <include location="imports/downstream_fatTestPorts.xml"/>
+</server>

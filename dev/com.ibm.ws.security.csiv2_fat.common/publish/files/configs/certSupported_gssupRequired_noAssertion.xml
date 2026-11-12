@@ -1,0 +1,14 @@
+<server>
+<!-- certSupported_gssupRequired_noAssertion -->
+    <include location="imports/downstream_defaultIiopEndpoint.xml"/>
+
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+                <authenticationLayer mechanisms="GSSUP" establishTrustInClient="Required"/>
+                <transportLayer sslRef="supportedClientAuthenticationSSLConfig"/>
+            </layers>
+        </serverPolicy.csiv2>
+    </orb>
+
+</server>

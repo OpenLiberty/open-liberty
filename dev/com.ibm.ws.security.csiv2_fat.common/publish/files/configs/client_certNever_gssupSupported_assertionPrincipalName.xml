@@ -1,0 +1,17 @@
+<server>
+<!-- client_certSupported_ltpaNever_noAssertion -->
+    <include location="imports/upstreamIncludes.xml"/>
+
+    <sslDefault  sslRef="supportedClientAuthenticationSSLConfig"/>
+
+    <orb id="defaultOrb">
+        <clientPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="true" identityAssertionTypes="ITTPrincipalName" trustedIdentity="trustedId1" trustedPassword="trustedId1pwd"/>
+                <authenticationLayer mechanisms="GSSUP" establishTrustInClient="Never"/>
+                <transportLayer sslRef="noClientAuthenticationSSLConfig" />
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+</server>	

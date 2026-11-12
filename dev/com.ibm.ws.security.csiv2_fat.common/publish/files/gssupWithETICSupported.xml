@@ -1,0 +1,14 @@
+<server>
+<!--  gssupWithETICSupported -->
+    <include location="imports/downstream_defaultIiopEndpoint.xml"/>
+
+    <orb id="defaultOrb">
+        <clientPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="false"/>
+                <authenticationLayer mechanisms="GSSUP" establishTrustInClient="Supported" establishTrustInTarget="Supported"/>
+            </layers>
+        </clientPolicy.csiv2>
+    </orb>
+
+</server>

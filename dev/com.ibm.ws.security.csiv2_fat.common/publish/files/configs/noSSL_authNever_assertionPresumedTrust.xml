@@ -1,0 +1,17 @@
+<server>
+<!-- noSSL_authNever_assertionPresumedTrust -->
+    <include location="imports/downstreamIncludes.xml"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" />
+
+    <orb id="defaultOrb">
+        <serverPolicy.csiv2>
+            <layers>
+                <attributeLayer identityAssertionEnabled="true" trustedIdentities="*"/>
+                <authenticationLayer establishTrustInClient="Never"/>
+                <transportLayer sslEnabled="false"/>
+            </layers>
+        </serverPolicy.csiv2>
+    </orb>
+
+</server>
