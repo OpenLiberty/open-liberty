@@ -32,4 +32,19 @@
 
   </OCD>
 
+  <Designate factoryPid="io.openliberty.persistence.service.hibernate.datapath">
+    <Object ocdref="io.openliberty.persistence.service.hibernate.datapath"/>
+  </Designate>
+
+  <OCD id="io.openliberty.persistence.service.hibernate.datapath"
+       ibm:alias="hibernateDataPath"
+       name="Hibernate Data Path (FAT)"
+       description="Creates a persistence service unit from a databaseStore, as Jakarta Data does">
+    <AD id="databaseStoreRef"
+        type="String"
+        required="false"
+        name="internal"
+        description="internal use only"/>
+  </OCD>
+
 </metatype:MetaData>

@@ -1,0 +1,35 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package io.openliberty.persistence.service.hibernate.fat.consumer.internal.model;
+
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * An entity class with no Jakarta Persistence annotations. Jakarta Data supplies
+ * the mapping for such classes as ORM XML (the
+ * io.openliberty.persistence.internal.entityClassInfo property) and does not
+ * list the class in the entity class names.
+ */
+public class UnannotatedItem {
+
+    public long id;
+
+    public String name;
+
+    public boolean active;
+
+    public Set<String> tags = new HashSet<>();
+
+    public UnannotatedItem() {}
+}

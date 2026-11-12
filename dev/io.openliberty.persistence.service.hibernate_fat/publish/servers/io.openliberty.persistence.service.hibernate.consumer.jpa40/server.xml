@@ -33,4 +33,9 @@
     <!-- Activates ConsumerService OSGi DS component via persistenceService-3.0 -->
     <hibernateConsumer id="consumerConfig" createTables="true"/>
 
+    <!-- Jakarta Data path: a databaseStore plus a consumer that passes the internal
+         entityClassInfo/tableNames/generatedEntities properties to it, as Data does -->
+    <databaseStore id="dataPathStore" dataSourceRef="consumerJtaDs" createTables="true" tablePrefix="DP_"/>
+    <hibernateDataPath id="dataPathConfig"/>
+
 </server>

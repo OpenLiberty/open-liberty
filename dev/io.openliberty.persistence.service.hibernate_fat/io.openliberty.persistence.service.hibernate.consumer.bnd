@@ -35,4 +35,5 @@ Include-Resource: \
   OSGI-INF=test-bundles/io.openliberty.persistence.service.hibernate.consumer/resources/OSGI-INF
 
 -dsannotations: \
-  io.openliberty.persistence.service.hibernate.fat.consumer.ConsumerService
+  io.openliberty.persistence.service.hibernate.fat.consumer.ConsumerService,\
+  io.openliberty.persistence.service.hibernate.fat.consumer.DataPathService
