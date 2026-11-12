@@ -39,6 +39,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
@@ -53,6 +54,7 @@ import org.osgi.framework.BundleListener;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -93,17 +95,23 @@ import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.classloading.ClassTransformer;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
 import com.ibm.wsspi.classloading.ResourceProvider;
+import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.library.ApplicationExtensionLibrary;
 import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.logging.Introspector;
 
-@Component(service = { ClassLoadingService.class, LibertyClassLoadingService.class, ClassLoaderIdentifierService.class, Introspector.class },
+@Component(service = { ClassLoadingService.class, LibertyClassLoadingService.class, ClassLoaderIdentifierService.class, Introspector.class, ClassLoadingServiceImpl.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
-           property = "service.vendor=IBM")
+           property = "service.vendor=IBM",
+           reference = @Reference(name = "recycleCoordinator",
+                                  service = ApplicationRecycleCoordinator.class,
+                                  cardinality = ReferenceCardinality.OPTIONAL,
+                                  policy = ReferencePolicy.DYNAMIC))
 public class ClassLoadingServiceImpl implements LibertyClassLoadingService<LibertyLoader>, ClassLoaderIdentifierService, Introspector {
     static final TraceComponent tc = Tr.register(ClassLoadingServiceImpl.class);
 
@@ -121,10 +129,12 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
     });
     
     private final BundleContext bundleContext;
+    private volatile ComponentContext componentContext = null;
     private final CanonicalStore<ClassLoaderIdentity, AppClassLoader> aclStore = new CanonicalStore<ClassLoaderIdentity, AppClassLoader>();
     private final CanonicalStore<String, ThreadContextClassLoader> tcclStore = new CanonicalStore<String, ThreadContextClassLoader>();
     private final RegionDigraph digraph;
     private final ClassRedefiner redefiner;
+
     private final BundleListener listener = new BundleListener() {
         @Override
         public void bundleChanged(BundleEvent event) {
@@ -204,6 +214,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         // Declared a dependency on the URLStreamHandlerService so the wsjar protocol
         // doesn't go away while we still may still need it; no need to store the instance of wsjar here.
         this.bundleContext = cCtx.getBundleContext();
+        this.componentContext = cCtx;
         this.globalConfig = globalConfig;
         this.digraph = digraph;
         this.metadataIdentifierService = mdiService;
@@ -235,6 +246,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         systemContext.removeBundleListener(listener);
         this.cleanupRememberedBundles();
         this.resourceProviders.clear();
+        this.componentContext = null;
     }
 
     @Reference(name = REFERENCE_GENERATORS, service = ClassGenerator.class, cardinality = MULTIPLE, policy = DYNAMIC)
@@ -564,10 +576,22 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         };
     }
 
-    /** create a listener to remove a loader from the canonical store on library update */
+    /**
+     * Create a listener to remove a loader from the canonical store on library update.
+     * Also registers the shared-library loader in {@code appClassLoaders} so the
+     * UNRESOLVED capture callback can find it.
+     */
     private void listenForLibraryChanges(String libid, AppClassLoader acl) {
+        // Register in appClassLoaders so the introspector can list it and so the
+        // aclStore eviction in gatewayUnresolvedListener can capture the ACL instance.
+        synchronized (appClassLoaders) {
+            appClassLoaders.add(acl);
+        }
+        // Capture the identity at listener-creation time. The ACL may be GC'd by the time
+        // update() fires, but the identity is needed to determine whether to recycle an app.
+        final ClassLoaderIdentity identity = acl.getKey();
         // ensure this loader is removed from the canonical store when the library is updated
-        new WeakLibraryListener(libid, acl.getKey().getId(), acl, bundleContext) {
+        new WeakLibraryListener(libid, identity.getId(), acl, bundleContext) {
             @Override
             protected void update() {
                 AppClassLoader cl = get();
@@ -575,6 +599,16 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
                     aclStore.remove(cl);
                 }
                 deregister();
+
+                // E3b: a fileset on-disk change fires notifyListeners(false) via FilesetListener
+                // and reaches this update() callback. The gateway-UNRESOLVED capture
+                // (gatewayUnresolvedListener) is not involved, so we must push the recycle here.
+                // Only top-level module loaders represent a running application to recycle;
+                // shared-library loaders (domain "Shared Library" / SPI) are eviction-only.
+                if (isTopLevelAppDomain(identity.getDomain())) {
+                    String appName = extractAppName(identity.getId());
+                    recycleApplications(Collections.singleton(appName));
+                }
             }
         };
     }
@@ -897,6 +931,72 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
                 out.println("    " + ste.toString());
             }
         }
+    }
+
+    BundleContext getBundleContext() {
+        return bundleContext;
+    }
+
+    Map<Bundle, Set<GatewayClassLoader>> getClassloaders() {
+        return classloaders;
+    }
+
+    Set<AppClassLoader> getAppClassLoaders() {
+        return appClassLoaders;
+    }
+
+    boolean evictFromAclStore(AppClassLoader acl) {
+        return aclStore.remove(acl);
+    }
+
+    /**
+     * Recycles the named applications if an {@link ApplicationRecycleCoordinator} is available.
+     *
+     * <p>Do NOT declare a field, parameter or return type of type {@code ApplicationRecycleCoordinator}
+     * in this class. The package is an optional import, and Declarative Services reflects over
+     * declared members at activation; an unresolvable type there fails with
+     * {@code NoClassDefFoundError} in servers without {@code appLifecycle}. The coordinator is
+     * obtained through {@code ComponentContext.locateService} and kept in a local variable only.</p>
+     */
+    void recycleApplications(Set<String> appNames) {
+        if (appNames == null || appNames.isEmpty() || FrameworkState.isStopping()) {
+            return;
+        }
+        ApplicationRecycleCoordinator coord = null;
+        ComponentContext cc = componentContext;
+        if (cc != null) {
+            try {
+                coord = (ApplicationRecycleCoordinator) cc.locateService("recycleCoordinator");
+            } catch (Throwable t) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Could not locate recycleCoordinator: " + t);
+                }
+            }
+        }
+        if (coord != null) {
+            coord.recycleApplications(appNames);
+        } else if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "recycleCoordinator is absent; cannot recycle apps: " + appNames);
+        }
+    }
+
+    static boolean isTopLevelAppDomain(String domain) {
+        return "WebModule".equals(domain)
+            || "EJBModule".equals(domain)
+            || "ClientModule".equals(domain)
+            || "ConnectorModule".equals(domain)
+            || "SpringModule".equals(domain);
+    }
+
+    /**
+     * Extracts the application name from a {@link ClassLoaderIdentity#getId()} string.
+     *
+     * <p>For WAR, EJB, RAR, EAR sub-modules, and Spring applications the id is
+     * {@code "appName#moduleName"}. Split on {@code #} and take the first segment.</p>
+     */
+    static String extractAppName(String id) {
+        int hash = id.indexOf('#');
+        return hash >= 0 ? id.substring(0, hash) : id;
     }
 
     private void addAppExtensionLibs(ClassLoaderConfiguration config) {

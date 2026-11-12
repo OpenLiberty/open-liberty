@@ -1,0 +1,24 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>testFeatureApi-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!--
+        Scenario S7: EAR application containing a WAR module.
+        When testFeatureApi-1.0 is removed, the EAR application must be recycled
+        via the registerOwnerAppNames EARApplication branch.
+    -->
+    <enterpriseApplication id="testDynamicFeatureEar" location="testDynamicFeatureEar.ear"/>
+
+    <!-- Unrelated app: must not restart -->
+    <webApplication location="testUnrelatedFeatureApp.war"/>
+
+    <javaPermission
+        codeBase="${server.config.dir}/apps/testDynamicFeatureEar.ear"
+        className="java.lang.RuntimePermission"
+        name="getClassLoader"/>
+</server>
