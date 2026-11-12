@@ -272,6 +272,13 @@ public class McpOperationRequestParser {
 
         JsonRpcRequestTO requestTO = partialReq.requestTo();
 
+        // The body is the canonical source of the protocol version, so always check it against the header version
+        // (a missing header is interpreted as 2025-03-26). The version is null only for a pre-init request
+        // when 2025-03-26 is not accepted.
+        if (partialReq.protocolVersion() != null) {
+            HeaderValidation.validateProtocolVersionMatchesBody(partialReq.protocolVersion(), partialReq);
+        }
+
         McpSession session = parseSession(partialReq);
 
         RequestMethod method = parseRequestMethod(requestTO);
