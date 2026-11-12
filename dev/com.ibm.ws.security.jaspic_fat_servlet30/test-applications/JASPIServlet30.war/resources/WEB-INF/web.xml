@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="JASPIServlet30" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+	<display-name>JASPIServlet30</display-name>
+	<servlet>
+		<description></description>
+		<display-name>JASPIServlet30</display-name>
+		<servlet-name>JASPIServlet30</servlet-name>
+		<servlet-class>web.JASPIServlet30</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>JASPIServlet30</servlet-name>
+		<url-pattern>/JASPIServlet30</url-pattern>
+		<url-pattern>/ProtectedJASPIServlet30</url-pattern>
+	</servlet-mapping>
+	
+	<!-- SECURITY CONSTRAINTS -->
+	<security-constraint>
+		<display-name>JASPIServlet30 protected resources</display-name>
+		<web-resource-collection>
+			<web-resource-name>Protected resources</web-resource-name>
+			<url-pattern>/ProtectedJASPIServlet30</url-pattern>
+			<http-method>GET</http-method>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>Servlet30</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+ 
+    <!-- ROLES DEFINITION -->
+	<security-role>
+		<role-name>Servlet30</role-name>
+	</security-role>
+</web-app>
