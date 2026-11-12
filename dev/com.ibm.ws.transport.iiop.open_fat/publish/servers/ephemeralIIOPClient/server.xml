@@ -1,0 +1,21 @@
+<server>
+    <include location="../fatTestCommon.xml"/>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>concurrent-1.0</feature>
+        <feature>test.iiop.client-1.0</feature>
+        <feature>test.user.feature-1.0</feature>
+        <feature>componentTest-1.0</feature>
+    </featureManager>
+    <!-- HTTP_default (8010) so the FAT framework's getHttpDefaultPort() routes @TestServlet requests here -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}"/>
+    <!--
+        The client ORB is pointed at the EJB server's CosNaming service.
+        ${iiop.ephemeral.port} is injected by the FAT test class after it
+        reads the actual ephemeral port from the EJB server's trace log.
+    -->
+    <orb id="defaultOrb" nameService="corbaname::localhost:${iiop.ephemeral.port}"/>
+</server>

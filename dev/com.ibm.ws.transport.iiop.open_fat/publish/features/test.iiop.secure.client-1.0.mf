@@ -1,0 +1,10 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: test.iiop.secure.client-1.0;visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content:
+ test.iiop.client-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.appSecurity-2.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.ssl-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.csiv2Client-1.0; type="osgi.subsystem.feature"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

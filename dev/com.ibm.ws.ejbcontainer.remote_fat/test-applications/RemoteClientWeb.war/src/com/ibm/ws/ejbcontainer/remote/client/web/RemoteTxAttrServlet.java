@@ -72,7 +72,7 @@ public class RemoteTxAttrServlet extends FATServlet {
     // Name of module... for lookup.
     private static final String CorbaName = "corbaname::localhost:" + IIOPPort;
     private static final String CorbaNameNS = CorbaName + "/NameService";
-    private static final String CorbaNameSecure = "corbaname::localhost:" + IIOPSecurePort;
+    private static final String CorbaNameSecure = "corbaname:iiops:localhost:" + IIOPSecurePort;
     private static final String App = "RemoteServerApp";
     private static final String Module = "RemoteServerEJB";
     private static final String TxAttrBean = "TxAttrBean";
