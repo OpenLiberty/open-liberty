@@ -119,7 +119,8 @@ public class ToolManagerTest extends FATServletClient {
 
             // Calling the tool after removal must return an error — removal is immediate
             assertThat(client.callTool("dynamicRepeater", Map.of("inputString", "hello")),
-                       jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorMessage("Invalid params")
+                       jsonRpcResponse().withErrorCode(INVALID_PARAMS)
+                                        .withErrorMessage("Invalid params")
                                         .withErrorDataItems("Method dynamicRepeater not found"));
         } finally {
             // Ensure we remove the tool if the test fails to not interfere with other tests
@@ -387,7 +388,8 @@ public class ToolManagerTest extends FATServletClient {
     @Test
     public void testCallNonExistentToolReturnsError() throws Exception {
         assertThat(client.callTool("toolThatWasNeverRegistered", Map.of()),
-                   jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorMessage("Invalid params")
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS)
+                                    .withErrorMessage("Invalid params")
                                     .withErrorDataItems("Method toolThatWasNeverRegistered not found"));
     }
 
@@ -400,7 +402,8 @@ public class ToolManagerTest extends FATServletClient {
     @Test
     public void testCallRemovedToolReturnsError() throws Exception {
         assertThat(client.callTool("methodToolToBeRemoved", Map.of()),
-                   jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorMessage("Invalid params")
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS)
+                                    .withErrorMessage("Invalid params")
                                     .withErrorDataItems("Method methodToolToBeRemoved not found"));
     }
 }
