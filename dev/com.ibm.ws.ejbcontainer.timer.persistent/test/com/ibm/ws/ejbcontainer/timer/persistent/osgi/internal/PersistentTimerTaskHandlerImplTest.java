@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,10 @@
 package com.ibm.ws.ejbcontainer.timer.persistent.osgi.internal;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+
+import javax.ejb.ScheduleExpression;
 
 import junit.framework.Assert;
 
@@ -20,8 +24,77 @@ import org.junit.Test;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.container.service.metadata.internal.J2EENameImpl;
+import com.ibm.ws.ejbcontainer.util.ParsedScheduleExpression;
+import com.ibm.ws.ejbcontainer.util.ScheduleExpressionParser;
 
 public class PersistentTimerTaskHandlerImplTest {
+
+    private static Date utcDate(int year, int month, int day, int hour, int minute, int second, int millis) {
+        GregorianCalendar cal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+        cal.clear();
+        cal.set(year, month - 1, day, hour, minute, second);
+        cal.set(GregorianCalendar.MILLISECOND, millis);
+        return cal.getTime();
+    }
+
+    /**
+     * Creates a handler for a calendar timer that has a single expiration at
+     * 2020-01-01 00:00:05 UTC, with the specified schedule end date. Since the
+     * schedule is in the past, getFirstTimeout() always returns -1.
+     */
+    private static PersistentTimerTaskHandlerImpl createPastCalendarHandler(Date end) {
+        ScheduleExpression expr = new ScheduleExpression().timezone("UTC").year("2020").month("1").dayOfMonth("1").hour("0").minute("0").second("5");
+        if (end != null) {
+            expr.end(end);
+        }
+        ParsedScheduleExpression parsedExpr = ScheduleExpressionParser.parse(expr);
+        J2EEName j2eeName = new J2EENameImpl("PersistentTimerApp", "PTimerEJB", "Bean");
+        return new PersistentTimerTaskHandlerImpl(j2eeName, null, parsedExpr);
+    }
+
+    /**
+     * The timer creation time passed to getNextTimeout is when the task was added to the
+     * persistent store, which may be after the end of the schedule. The catch up run must
+     * not be later than the end, and the timer must have no more timeouts after that run.
+     */
+    @Test
+    public void testGetNextTimeoutCatchUpCreationAfterEnd() {
+        // end is rounded up to the nearest second: 2020-01-01 00:00:06
+        PersistentTimerTaskHandlerImpl handler = createPastCalendarHandler(utcDate(2020, 1, 1, 0, 0, 5, 500));
+        Date expectedEnd = utcDate(2020, 1, 1, 0, 0, 6, 0);
+
+        // Task added to the persistent store long after the schedule end
+        Date creationTime = new Date();
+        Date catchUp = handler.getNextTimeout(null, creationTime);
+        Assert.assertEquals(expectedEnd, catchUp);
+
+        // No more timeouts after the catch up run; must not throw IllegalArgumentException
+        Assert.assertNull(handler.getNextTimeout(catchUp, null));
+    }
+
+    /**
+     * When the timer creation time is before the end of the schedule, the catch up run
+     * is the next second after the creation time (milliseconds removed).
+     */
+    @Test
+    public void testGetNextTimeoutCatchUpCreationBeforeEnd() {
+        PersistentTimerTaskHandlerImpl handler = createPastCalendarHandler(utcDate(2020, 1, 1, 0, 0, 10, 0));
+
+        Date catchUp = handler.getNextTimeout(null, utcDate(2020, 1, 1, 0, 0, 1, 250));
+        Assert.assertEquals(utcDate(2020, 1, 1, 0, 0, 2, 0), catchUp);
+    }
+
+    /**
+     * When the schedule has no end, the catch up run is the next second after
+     * the creation time (milliseconds removed).
+     */
+    @Test
+    public void testGetNextTimeoutCatchUpNoEnd() {
+        PersistentTimerTaskHandlerImpl handler = createPastCalendarHandler(null);
+
+        Date catchUp = handler.getNextTimeout(null, utcDate(2026, 6, 1, 12, 30, 15, 750));
+        Assert.assertEquals(utcDate(2026, 6, 1, 12, 30, 16, 0), catchUp);
+    }
 
     @Test
     public void testGetTaskName() {
