@@ -103,7 +103,8 @@ public enum McpProtocolVersion {
      * @return true if request-level client info is supported
      */
     public boolean supportsRequestLevelClientInfo() {
-        return this == V_2026_07_28;
+        // Versions are declared newest first, so this and all later versions have an ordinal <= V_2026_07_28
+        return ordinal() <= V_2026_07_28.ordinal();
     }
 
     public static class McpProtocolVersionAdapter implements JsonbAdapter<McpProtocolVersion, String> {

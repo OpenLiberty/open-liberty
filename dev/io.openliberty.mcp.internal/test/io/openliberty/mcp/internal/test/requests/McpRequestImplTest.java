@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -102,27 +103,39 @@ public class McpRequestImplTest {
     }
 
     @Test
-    public void test2026_07_28_WithShortMetaKeys() throws Exception {
+    public void test2026_07_28_UnprefixedKeysAreCustomMetadata() throws Exception {
         McpTransport transport = createTransport(McpProtocolVersion.V_2026_07_28);
         McpRequest request = new McpRequest("2.0", new RequestId(42), "tools/call", null);
 
-        Map<String, Object> clientInfoMap = Map.of(
-                                                   "name", "short-key-client",
-                                                   "version", "1.5");
-
-        Map<String, Object> capsMap = Map.of("sampling", Collections.emptyMap());
-
         Map<String, Object> meta = Map.of(
-                                          "clientInfo", clientInfoMap,
-                                          "capabilities", capsMap);
+                                          "clientInfo", Map.of("name", "app-defined", "version", "1.5"),
+                                          "clientCapabilities", Map.of("appCap", true),
+                                          "capabilities", Map.of("appCap2", true),
+                                          "com.example/trace", "abc");
 
         McpRequestImpl reqImpl = new McpRequestImpl(request, transport, null, meta, jsonb);
 
         assertEquals(42, reqImpl.id());
-        ImplementationInfo info = reqImpl.clientInfo();
-        assertEquals("short-key-client", info.name());
-        assertEquals("1.5", info.version());
-        assertEquals(capsMap, reqImpl.rawClientCapabilities());
+        assertEquals(ImplementationInfoImpl.UNKNOWN, reqImpl.clientInfo());
+        assertEquals(Collections.emptyMap(), reqImpl.rawClientCapabilities());
+        // All custom keys are still visible to the tool
+        assertEquals(meta, reqImpl.metadata());
+    }
+
+    /**
+     * clientCapabilities is required but may be an empty object, clientInfo is optional
+     */
+    @Test
+    public void test2026_07_28_EmptyClientCapabilities() throws Exception {
+        McpTransport transport = createTransport(McpProtocolVersion.V_2026_07_28);
+        McpRequest request = new McpRequest("2.0", new RequestId(1), "tools/call", null);
+
+        Map<String, Object> meta = Map.of("io.modelcontextprotocol/clientCapabilities", Map.of());
+
+        McpRequestImpl reqImpl = new McpRequestImpl(request, transport, null, meta, jsonb);
+
+        assertEquals(ImplementationInfoImpl.UNKNOWN, reqImpl.clientInfo());
+        assertEquals(Collections.emptyMap(), reqImpl.rawClientCapabilities());
     }
 
     @Test
@@ -132,6 +145,7 @@ public class McpRequestImplTest {
 
         McpRequestImpl reqImpl = new McpRequestImpl(request, transport, null, null, jsonb);
 
+        // Fallback values, a conforming client always sends clientCapabilities
         assertEquals(ImplementationInfoImpl.UNKNOWN, reqImpl.clientInfo());
         assertEquals(Collections.emptyMap(), reqImpl.rawClientCapabilities());
     }
@@ -141,11 +155,65 @@ public class McpRequestImplTest {
         McpTransport transport = createTransport(McpProtocolVersion.V_2026_07_28);
         McpRequest request = new McpRequest("2.0", new RequestId(1), "tools/call", null);
 
-        Map<String, Object> meta = Map.of("clientInfo", "not-a-map");
+        Map<String, Object> meta = Map.of("io.modelcontextprotocol/clientInfo", "not-a-map",
+                                          "io.modelcontextprotocol/clientCapabilities", 12345);
 
         McpRequestImpl reqImpl = new McpRequestImpl(request, transport, null, meta, jsonb);
 
         assertEquals(ImplementationInfoImpl.UNKNOWN, reqImpl.clientInfo());
+        assertEquals(Collections.emptyMap(), reqImpl.rawClientCapabilities());
+    }
+
+    @Test
+    public void test2026_07_28_ClientInfoWithIcons() throws Exception {
+        McpTransport transport = createTransport(McpProtocolVersion.V_2026_07_28);
+        McpRequest request = new McpRequest("2.0", new RequestId(1), "tools/call", null);
+
+        Map<String, Object> icon = Map.of("src", "https://example.org/icon.png",
+                                          "mimeType", "image/png",
+                                          "sizes", List.of("48x48"),
+                                          "theme", "light");
+        Map<String, Object> meta = Map.of("io.modelcontextprotocol/clientInfo",
+                                          Map.of("name", "icon-client", "version", "1.0", "icons", List.of(icon)),
+                                          "io.modelcontextprotocol/clientCapabilities", Map.of());
+
+        McpRequestImpl reqImpl = new McpRequestImpl(request, transport, null, meta, jsonb);
+
+        ImplementationInfo info = reqImpl.clientInfo();
+        assertEquals("icon-client", info.name());
+        assertEquals(1, info.icons().size());
+        assertEquals("https://example.org/icon.png", info.icons().get(0).src());
+        assertEquals(Optional.of("image/png"), info.icons().get(0).mimeType());
+        assertEquals(List.of("48x48"), info.icons().get(0).sizes());
+    }
+
+    @Test
+    public void test2026_07_28_CapabilitiesAreUnmodifiable() throws Exception {
+        McpTransport transport = createTransport(McpProtocolVersion.V_2026_07_28);
+        McpRequest request = new McpRequest("2.0", new RequestId(1), "tools/call", null);
+
+        Map<String, Object> caps = new HashMap<>();
+        caps.put("sampling", Map.of());
+        Map<String, Object> meta = Map.of("io.modelcontextprotocol/clientCapabilities", caps);
+
+        McpRequestImpl reqImpl = new McpRequestImpl(request, transport, null, meta, jsonb);
+
+        Map<String, Object> result = reqImpl.rawClientCapabilities();
+        assertEquals(caps, result);
+        try {
+            result.put("extra", true);
+            fail("Expected rawClientCapabilities() to be unmodifiable");
+        } catch (UnsupportedOperationException expected) {
+            // expected
+        }
+    }
+
+    @Test
+    public void testSupportsRequestLevelClientInfo() {
+        assertTrue(McpProtocolVersion.V_2026_07_28.supportsRequestLevelClientInfo());
+        assertFalse(McpProtocolVersion.V_2025_11_25.supportsRequestLevelClientInfo());
+        assertFalse(McpProtocolVersion.V_2025_06_18.supportsRequestLevelClientInfo());
+        assertFalse(McpProtocolVersion.V_2025_03_26.supportsRequestLevelClientInfo());
     }
 
     @Test
@@ -159,8 +227,8 @@ public class McpRequestImplTest {
 
         // Even if request carries _meta, older protocol must read from session
         Map<String, Object> requestMeta = Map.of(
-                                                 "clientInfo", Map.of("name", "ignored-request-client", "version", "9.9"),
-                                                 "capabilities", Map.of("ignoredCaps", false));
+                                                 "io.modelcontextprotocol/clientInfo", Map.of("name", "ignored-request-client", "version", "9.9"),
+                                                 "io.modelcontextprotocol/clientCapabilities", Map.of("ignoredCaps", false));
 
         McpRequestImpl reqImpl = new McpRequestImpl(request, transport, session, requestMeta, jsonb);
 

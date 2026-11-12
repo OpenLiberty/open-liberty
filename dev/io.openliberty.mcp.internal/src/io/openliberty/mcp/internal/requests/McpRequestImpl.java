@@ -16,13 +16,14 @@ import java.util.Optional;
 import org.mcpjava.server.ImplementationInfo;
 import org.mcpjava.server.McpRequest;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.mcp.internal.McpTransport;
 import io.openliberty.mcp.internal.sessions.McpSession;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
-import jakarta.json.bind.JsonbConfig;
 
 /**
  * Gives users access to additional information about the request.
@@ -31,24 +32,17 @@ import jakarta.json.bind.JsonbConfig;
  */
 public class McpRequestImpl implements McpRequest {
 
-    private static final String META_CLIENT_INFO_QUALIFIED = "io.modelcontextprotocol/clientInfo";
-    private static final String META_CLIENT_INFO_SHORT = "clientInfo";
-    private static final String META_CLIENT_CAPABILITIES_QUALIFIED = "io.modelcontextprotocol/clientCapabilities";
-    private static final String META_CLIENT_CAPABILITIES_SHORT = "clientCapabilities";
-    private static final String META_CAPABILITIES_SHORT = "capabilities";
+    private static final TraceComponent tc = Tr.register(McpRequestImpl.class);
+
+    // Only the reserved, prefixed keys are read. Unprefixed keys are application-defined metadata
+    private static final String META_CLIENT_INFO = "io.modelcontextprotocol/clientInfo";
+    private static final String META_CLIENT_CAPABILITIES = "io.modelcontextprotocol/clientCapabilities";
 
     private final io.openliberty.mcp.internal.requests.McpRequest requestMessage;
     private final McpTransport transport;
     private final McpSession session;
     private final Map<String, Object> meta;
     private final Jsonb jsonb;
-
-    public McpRequestImpl(io.openliberty.mcp.internal.requests.McpRequest requestMessage,
-                          McpTransport transport,
-                          McpSession session,
-                          Map<String, Object> meta) {
-        this(requestMessage, transport, session, meta, null);
-    }
 
     public McpRequestImpl(io.openliberty.mcp.internal.requests.McpRequest requestMessage,
                           McpTransport transport,
@@ -69,7 +63,7 @@ public class McpRequestImpl implements McpRequest {
 
     @Override
     public ImplementationInfo clientInfo() {
-        if (transport != null && transport.getProtocolVersion() != null && transport.getProtocolVersion().supportsRequestLevelClientInfo()) {
+        if (transport.getProtocolVersion().supportsRequestLevelClientInfo()) {
             return extractClientInfoFromMeta();
         }
         if (session == null) {
@@ -81,17 +75,17 @@ public class McpRequestImpl implements McpRequest {
 
     @Override
     public Object id() {
-        return requestMessage != null && requestMessage.id() != null ? requestMessage.id().value() : null;
+        return requestMessage.id().value();
     }
 
     @Override
     public String protocolVersion() {
-        return transport != null && transport.getProtocolVersion() != null ? transport.getProtocolVersion().getVersion() : null;
+        return transport.getProtocolVersion().getVersion();
     }
 
     @Override
     public Map<String, Object> rawClientCapabilities() {
-        if (transport != null && transport.getProtocolVersion() != null && transport.getProtocolVersion().supportsRequestLevelClientInfo()) {
+        if (transport.getProtocolVersion().supportsRequestLevelClientInfo()) {
             return extractCapabilitiesFromMeta();
         }
         if (session == null) {
@@ -111,14 +105,10 @@ public class McpRequestImpl implements McpRequest {
         }
     }
 
+    @FFDCIgnore(Exception.class)
     private ImplementationInfo extractClientInfoFromMeta() {
-        if (meta == null) {
-            return ImplementationInfoImpl.UNKNOWN;
-        }
-        Object clientInfoObj = meta.get(META_CLIENT_INFO_QUALIFIED);
-        if (clientInfoObj == null) {
-            clientInfoObj = meta.get(META_CLIENT_INFO_SHORT);
-        }
+        // clientInfo is optional, so a missing value is not an error
+        Object clientInfoObj = meta == null ? null : meta.get(META_CLIENT_INFO);
         if (clientInfoObj == null) {
             return ImplementationInfoImpl.UNKNOWN;
         }
@@ -126,44 +116,26 @@ public class McpRequestImpl implements McpRequest {
             return info;
         }
         try {
-            Jsonb serializer = getJsonb();
-            String json = serializer.toJson(clientInfoObj);
-            ImplementationInfo info = serializer.fromJson(json, ImplementationInfoImpl.class);
+            String json = jsonb.toJson(clientInfoObj);
+            ImplementationInfo info = jsonb.fromJson(json, ImplementationInfoImpl.class);
             return info != null ? info : ImplementationInfoImpl.UNKNOWN;
         } catch (Exception e) {
+            // clientInfo is self-reported and unverified, so an unusable value is treated as unknown
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Unable to read client info from request _meta, using unknown client info: " + e);
+            }
             return ImplementationInfoImpl.UNKNOWN;
         }
     }
 
     private Map<String, Object> extractCapabilitiesFromMeta() {
-        if (meta == null) {
-            return Collections.emptyMap();
-        }
-        Object capsObj = meta.get(META_CLIENT_CAPABILITIES_QUALIFIED);
-        if (capsObj == null) {
-            capsObj = meta.get(META_CLIENT_CAPABILITIES_SHORT);
-        }
-        if (capsObj == null) {
-            capsObj = meta.get(META_CAPABILITIES_SHORT);
-        }
+        Object capsObj = meta == null ? null : meta.get(META_CLIENT_CAPABILITIES);
         if (capsObj instanceof Map<?, ?> capsMap) {
             @SuppressWarnings("unchecked")
             Map<String, Object> result = (Map<String, Object>) capsMap;
-            return result;
+            return Collections.unmodifiableMap(result);
         }
         return Collections.emptyMap();
-    }
-
-    private Jsonb getJsonb() {
-        if (jsonb != null) {
-            return jsonb;
-        }
-        return DefaultJsonbHolder.INSTANCE;
-    }
-
-    private static class DefaultJsonbHolder {
-        static final Jsonb INSTANCE = JsonbBuilder.create(new JsonbConfig().withAdapters(new ImplementationInfoImpl.Adapter(),
-                                                                                          new IconImpl.Adapter()));
     }
 
 }
