@@ -8,4 +8,5 @@
     <include location="../fatTestPorts.xml"/>
 
     <jwtBuilder id="workloadIdentityBuilder" issuer="testIssuer" workloadIdentityClaim="workload-identity" />
+    <keyStore id="defaultKeyStore" password="liberty"/>
 </server>
