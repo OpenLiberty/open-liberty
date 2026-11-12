@@ -22,13 +22,16 @@ import org.json.JSONObject;
  * <pre>{@code
  * ToolResponse response = client.callTool("myTool");
  * assertThat(response, ToolResponseMatcher.withTextContent("expected text"));
+ * assertThat(response, ToolResponseMatcher.withErrorText("expected error text"));
  * }</pre>
  */
 public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse> {
 
+    private final boolean expectedIsError;
     private final String expectedText;
 
-    private ToolResponseMatcher(String expectedText) {
+    private ToolResponseMatcher(boolean expectedIsError, String expectedText) {
+        this.expectedIsError = expectedIsError;
         this.expectedText = expectedText;
     }
 
@@ -37,12 +40,21 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
      * exactly one {@code text} item with exactly the given text.
      */
     public static ToolResponseMatcher withTextContent(String expectedText) {
-        return new ToolResponseMatcher(expectedText);
+        return new ToolResponseMatcher(false, expectedText);
+    }
+
+    /**
+     * Matches a tool error response ({@code isError} is {@code true}) whose content is exactly
+     * one {@code text} item with exactly the given text.
+     */
+    public static ToolResponseMatcher withErrorText(String expectedText) {
+        return new ToolResponseMatcher(true, expectedText);
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("a successful tool response with a single text content of ").appendValue(expectedText);
+        description.appendText(expectedIsError ? "a tool error response with a single text content of " : "a successful tool response with a single text content of ")
+                   .appendValue(expectedText);
     }
 
     @Override
@@ -51,8 +63,8 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
             mismatch.appendText("had no result: ").appendText(response.toString());
             return false;
         }
-        if (response.isError()) {
-            mismatch.appendText("was a tool error: ").appendText(response.toString());
+        if (response.isError() != expectedIsError) {
+            mismatch.appendText("isError was ").appendValue(response.isError()).appendText(": ").appendText(response.toString());
             return false;
         }
         List<JSONObject> content = response.getContent();
@@ -72,4 +84,5 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
         }
         return true;
     }
+
 }
