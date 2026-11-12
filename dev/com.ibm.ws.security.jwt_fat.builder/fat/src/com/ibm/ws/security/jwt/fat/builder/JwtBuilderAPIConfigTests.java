@@ -88,7 +88,11 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
         // the server's default config contains an invalid value (on purpose),
         // tell the fat framework to ignore it!
-        builderServer.addIgnoredErrors(Arrays.asList(JwtBuilderMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE, JwtBuilderMessageConstants.CWPKI0812E_CANT_FIND_KEY, JwtBuilderMessageConstants.CWWKS6059W_KEY_MANAGEMENT_KEY_ALIAS_MISSING));
+        builderServer.addIgnoredErrors(Arrays.asList(
+                JwtBuilderMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE,
+                JwtBuilderMessageConstants.CWPKI0812E_CANT_FIND_KEY,
+                JwtBuilderMessageConstants.CWWKS6059W_KEY_MANAGEMENT_KEY_ALIAS_MISSING,
+                JwtBuilderMessageConstants.CWWKS6074W_JWK_KEY_COVERAGE_WINDOW_TOO_SHORT));
 
     }
 

@@ -108,7 +108,8 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
         builderServer.addIgnoredErrors(Arrays.asList(
                 JwtBuilderMessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE,
                 JwtBuilderMessageConstants.CWWKS6055W_BETA_SIGNATURE_ALGORITHM_USED,
-                "CWWKS6059W"));
+                JwtBuilderMessageConstants.CWWKS6059W_KEY_MANAGEMENT_KEY_ALIAS_MISSING,
+                JwtBuilderMessageConstants.CWWKS6074W_JWK_KEY_COVERAGE_WINDOW_TOO_SHORT));
     }
 
     /**

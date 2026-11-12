@@ -93,7 +93,8 @@ import componenttest.topology.impl.LibertyServer;
                 XMLbindingsTest.class,
                 LocalConnectorTest.class,
                 WebProfileJSPtest.class,
-                LogsChangeTraceSpecTest.class
+                LogsChangeTraceSpecTest.class,
+                JwtBuilderCheckpointTest.class
 })
 
 public class FATSuite {
