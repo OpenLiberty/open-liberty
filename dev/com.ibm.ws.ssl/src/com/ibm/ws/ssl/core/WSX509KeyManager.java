@@ -268,29 +268,31 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
             String[] list = km.getClientAliases(keyType, issuers);
             if (list != null) {
                 boolean found = false;
+                // Use a local so the configured alias is never overwritten with the PKIX-prefixed value
+                String resolvedAlias = clientAlias;
                 for (int i = 0; i < list.length && !found; i++) {
-                    if (isPKIX && resolvePKIXAlias(clientAlias, list[i])) {
-                        clientAlias = list[i];
+                    if (isPKIX && resolvePKIXAlias(resolvedAlias, list[i])) {
+                        resolvedAlias = list[i];
                         found = true;
 
                     } else {
-                        if (clientAlias.equalsIgnoreCase(list[i]))
+                        if (resolvedAlias.equalsIgnoreCase(list[i]))
                             found = true;
                     }
                 }
 
                 if (found) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                        Tr.exit(tc, "chooseClientAlias", new Object[] { clientAlias });
+                        Tr.exit(tc, "chooseClientAlias", new Object[] { resolvedAlias });
 
                     // JCERACFKS and JCECCARACFKS support mixed case, if we see that type,
                     // do not lowercase the alias
                     if (ks.getType() != null
                         && (ks.getType().equals(Constants.KEYSTORE_TYPE_JCERACFKS) || ks.getType().equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
                             || ks.getType().equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
-                        return clientAlias;
+                        return resolvedAlias;
                     }
-                    return clientAlias.toLowerCase();
+                    return resolvedAlias.toLowerCase();
                 }
             }
 
@@ -433,28 +435,30 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
 
                 if (list != null) {
                     boolean found = false;
+                    // Use a local so the configured alias is never overwritten with the PKIX-prefixed value
+                    String resolvedAlias = serverAlias;
                     for (int i = 0; i < list.length && !found; i++) {
-                        if (isPKIX && resolvePKIXAlias(serverAlias, list[i])) {
-                            serverAlias = list[i];
+                        if (isPKIX && resolvePKIXAlias(resolvedAlias, list[i])) {
+                            resolvedAlias = list[i];
                             found = true;
                         } else {
-                            if (serverAlias.equalsIgnoreCase(list[i]))
+                            if (resolvedAlias.equalsIgnoreCase(list[i]))
                                 found = true;
                         }
                     }
 
                     if (found) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                            Tr.exit(tc, "chooseServerAlias", new Object[] { serverAlias });
+                            Tr.exit(tc, "chooseServerAlias", new Object[] { resolvedAlias });
 
                         // JCERACFKS and JCECCARACFKS support mixed case, if we see that
                         // type, do not lowercase the alias
                         if (ks.getType() != null
                             && (ks.getType().equals(Constants.KEYSTORE_TYPE_JCERACFKS) || ks.getType().equals(Constants.KEYSTORE_TYPE_JCECCARACFKS)
                                 || ks.getType().equals(Constants.KEYSTORE_TYPE_JCEHYBRIDRACFKS))) {
-                            return serverAlias;
+                            return resolvedAlias;
                         }
-                        return serverAlias.toLowerCase();
+                        return resolvedAlias.toLowerCase();
                     }
 
                 }
