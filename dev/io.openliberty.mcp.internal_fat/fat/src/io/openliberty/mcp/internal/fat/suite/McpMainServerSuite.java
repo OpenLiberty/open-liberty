@@ -23,6 +23,7 @@ import io.openliberty.mcp.internal.fat.lifecycle.tests.LifecycleTest;
 import io.openliberty.mcp.internal.fat.protocol.HttpTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionBetaTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionConfigNonBetaTest;
+import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionHeaderValidationBetaTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionSchemaTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatefulModeTest;
@@ -92,6 +93,7 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 NonRequiredArgsToolsTest.class,
                 ProtocolVersionBetaTest.class,
                 ProtocolVersionConfigNonBetaTest.class,
+                ProtocolVersionHeaderValidationBetaTest.class,
                 ProtocolVersionTest.class,
                 ProtocolVersionSchemaTest.class,
                 StatefulModeTest.class,

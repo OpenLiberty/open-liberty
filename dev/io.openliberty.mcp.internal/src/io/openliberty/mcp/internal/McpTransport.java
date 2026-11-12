@@ -100,12 +100,7 @@ public class McpTransport {
             throw unsupportedProtocolVersion(mcpConfig);
         }
         this.mcpRequest = toRequest();
-        // A missing header is interpreted as 2025-03-26, which may be outside the configured range.
-        // The initialize request is exempt because it negotiates the version and does not need the header.
-        if (!headerPresent && mcpRequest.getRequestMethod() != RequestMethod.INITIALIZE && !mcpConfig.isAccepted(version)) {
-            throw unsupportedProtocolVersion(mcpConfig);
-        }
-
+        HeaderValidation.validateProtocolVersionMatchesBody(version, mcpRequest);
         this.appName = extractAppName();
         final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
 
@@ -329,6 +324,10 @@ public class McpTransport {
         RequestId id = (mcpRequest != null) ? mcpRequest.id() : null;
         McpResponse mcpResponse = new McpErrorResponse(id, e);
 
+        // The spec requires a header mismatch to be rejected with HTTP 400 as well as a JSON-RPC error
+        if (e.getErrorCode() == JSONRPCErrorCode.HEADER_MISMATCH) {
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
         res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }
