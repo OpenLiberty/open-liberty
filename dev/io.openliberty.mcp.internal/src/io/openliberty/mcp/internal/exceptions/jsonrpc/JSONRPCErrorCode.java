@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,9 @@ public enum JSONRPCErrorCode {
     INVALID_REQUEST(-32600, "Invalid request"),
     METHOD_NOT_FOUND(-32601, "Method not found"),
     INVALID_PARAMS(-32602, "Invalid params"),
-    INTERNAL_ERROR(-32603, "Internal error");
+    INTERNAL_ERROR(-32603, "Internal error"),
+    // error code from the MCP specification (2026-07-28), Streamable HTTP transport, Server Validation
+    HEADER_MISMATCH(-32020, "Header mismatch");
 
     private int code;
     private String message;

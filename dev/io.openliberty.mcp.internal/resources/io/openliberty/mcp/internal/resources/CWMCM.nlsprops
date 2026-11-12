@@ -97,6 +97,19 @@ CWMCM0012E.bean.release.fail.useraction=Review the server message.log and FFDC l
 unsupported.mcp.http.version=An unsupported MCP-Protocol-Version header was provided. Supported values: {0}
 
 # Used as part of a response to a client
+# do not translate MCP-Protocol-Version, _meta
+# {0} = value of the MCP-Protocol-Version header
+# {1} = name of the protocol version field in the request _meta
+# {2} = value of the protocol version field in the request _meta
+header.mismatch.protocol.version=The MCP-Protocol-Version header value {0} does not match the {1} value {2} in the request _meta.
+
+# Used as part of a response to a client
+# do not translate MCP-Protocol-Version, _meta
+# {0} = value of the MCP-Protocol-Version header
+# {1} = name of the protocol version field in the request _meta
+header.mismatch.protocol.version.missing=The MCP-Protocol-Version header value {0} requires a {1} value in the request _meta, but none was provided.
+
+# Used as part of a response to a client
 # {0} = Method
 # {1} = RequestURI
 # {2} = RequestQuery

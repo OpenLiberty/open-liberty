@@ -185,6 +185,10 @@ public class McpTransport {
         }
         McpResponse mcpResponse = new McpErrorResponse(requestId, e);
 
+        // The spec requires a header mismatch to be rejected with HTTP 400 as well as a JSON-RPC error
+        if (e.getErrorCode() == JSONRPCErrorCode.HEADER_MISMATCH) {
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
         res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }
