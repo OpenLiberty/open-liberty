@@ -709,6 +709,20 @@ initializeClientJVMOptions()
   detectJavaHome
   detectJavaVersionMajor
   addPlatformSpecificJvmFlags
+  # TEMPORARY-DIAGNOSTIC-BEGIN (defect 312096) -- remove before merge. z/OS only, written to stderr.
+  if [ "${uname}" = OS/390 ]; then
+    echo "DIAG312096 uname=[${uname}] JAVA_HOME=[${JAVA_HOME}] JAVA_VERSION_MAJOR=[${JAVA_VERSION_MAJOR}]" >&2
+    echo "DIAG312096 release file exists=[$([ -f "${JAVA_HOME}/release" ] && echo yes || echo no)]" >&2
+    echo "DIAG312096 release JAVA_VERSION lines (via readNativeFile): [$(readNativeFile "${JAVA_HOME}/release" '[A-Za-z0-9]' 2>&1 | LC_ALL=C tr -d '\r' | grep JAVA_VERSION 2>&1 | head -3 | tr '\n' '|')]" >&2
+    echo "DIAG312096 pattern '[ ]' -> [$(readNativeFile "${JAVA_HOME}/release" '[A-Za-z0-9]' 2>/dev/null | LC_ALL=C tr -d '\r' | grep '^JAVA_VERSION[ ]*=' 2>&1 | head -1)]" >&2
+    echo "DIAG312096 pattern ' *' -> [$(readNativeFile "${JAVA_HOME}/release" '[A-Za-z0-9]' 2>/dev/null | LC_ALL=C tr -d '\r' | grep '^JAVA_VERSION *=' 2>&1 | head -1)]" >&2
+    echo "DIAG312096 pattern '[[:space:]]' -> [$(readNativeFile "${JAVA_HOME}/release" '[A-Za-z0-9]' 2>/dev/null | LC_ALL=C tr -d '\r' | grep '^JAVA_VERSION[[:space:]]*=' 2>&1 | head -1)]" >&2
+    case "${JVM_OPTIONS_QUOTED}" in
+      *--enable-native-access=ALL-UNNAMED*) echo "DIAG312096 JVM_OPTIONS_QUOTED has --enable-native-access: yes" >&2 ;;
+      *) echo "DIAG312096 JVM_OPTIONS_QUOTED has --enable-native-access: NO [${JVM_OPTIONS_QUOTED}]" >&2 ;;
+    esac
+  fi
+  # TEMPORARY-DIAGNOSTIC-END
   # Load jvm.options files only to extract preferIPv4Stack into SERVER_PREFER_IPV4.
   # Customer jvm.options content (heap, GC, etc.) is intentionally not passed
   # to the short-lived client JVM.
