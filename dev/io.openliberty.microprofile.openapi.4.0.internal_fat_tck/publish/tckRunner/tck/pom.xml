@@ -14,8 +14,8 @@
 
         <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS-->
 
-        <arquillian.version>1.8.0.Final</arquillian.version>
-        <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
+        <arquillian.version>1.10.2.Final</arquillian.version>
+        <arquillian.liberty.managed.jakarta.version>2.1.3</arquillian.liberty.managed.jakarta.version>
 
         <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>

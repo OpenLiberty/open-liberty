@@ -20,8 +20,10 @@
 
     <properties>
         <microprofile.reactive.streams.version>1.0</microprofile.reactive.streams.version>
-        <arquillian.version>1.7.0.Alpha13</arquillian.version>
-		<arquillian.liberty.managed.version>1.0.8</arquillian.liberty.managed.version>
+        <arquillian.version>1.10.2.Final</arquillian.version>
+        <!-- arquillian-bom 1.10.x no longer imports shrinkwrap-resolver-bom, so the version must be managed here -->
+        <shrinkwrap.resolver.version>3.3.7</shrinkwrap.resolver.version>
+		<arquillian.liberty.managed.version>1.0.9</arquillian.liberty.managed.version>
 		<testng.version>7.5.1</testng.version>
         <slf4j.version>2.0.6</slf4j.version>
 		
@@ -43,6 +45,13 @@
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
                 <version>${arquillian.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-bom</artifactId>
+                <version>${shrinkwrap.resolver.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
