@@ -325,7 +325,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
         }
 
         // Traversal guard: relative paths must stay within base (absolute paths already scoped by container)
-        if (!absoluteContextPath && source != null && !isWithinBase(resolved))
+        if (!absoluteContextPath && !isWithinBase(resolved)
+                && (source == null || !isWithinResourceRoot(source, resolved)))
         {
             throw new InvalidFileException(InvalidFileException.Reason.PATH_TRAVERSAL,
                     "Path escapes application base: " + path);
@@ -379,6 +380,24 @@ public final class DefaultFaceletFactory extends FaceletFactory
         return resolvedPath.startsWith(basePath);
     }
     
+    /**
+     * Verifies that resolved URL stays within the same "META-INF/resources" root as the source URL.
+     * Facelets packaged in a jar (e.g. WEB-INF/lib/x.jar!/META-INF/resources/a.xhtml) are not located under
+     * the application base, but may legitimately reference siblings via relative paths.
+     */
+    private boolean isWithinResourceRoot(URL source, URL resolved)
+    {
+        String marker = "/META-INF/resources/";
+        String sourceStr = source.toExternalForm();
+        int idx = sourceStr.indexOf(marker);
+        if (idx < 0)
+        {
+            return false;
+        }
+        String root = sourceStr.substring(0, idx + marker.length());
+        return resolved.toExternalForm().startsWith(root);
+    }
+    
     /** Extract the in-archive path from jar/wsjar/file URLs (path after "!" for jar URLs). */
     private String extractResourcePath(String urlStr)
     {
@@ -417,6 +436,9 @@ public final class DefaultFaceletFactory extends FaceletFactory
         }
         return true;
     }
+
+    /** Suffixes always accepted in addition to the configured Facelet suffixes and view mappings. */
+    private static final Set<String> DEFAULT_ALLOWED_SUFFIXES = Set.of(".html", ".jsf", ".faces", ".xhtml", ".jsp", ".jspx");
 
     /** Returns cached set of allowed Facelet suffixes built from init parameters. */
     private Set<String> getAllowedSuffixes(FacesContext context)
@@ -458,6 +480,8 @@ public final class DefaultFaceletFactory extends FaceletFactory
                     allowed.add(ext);
                 }
             }
+
+            allowed.addAll(DEFAULT_ALLOWED_SUFFIXES);
 
             if (log.isLoggable(Level.FINE))
             {
