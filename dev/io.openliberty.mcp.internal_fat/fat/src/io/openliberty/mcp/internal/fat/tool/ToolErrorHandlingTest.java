@@ -13,9 +13,11 @@ import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLif
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -34,6 +36,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.businessExceptionApp.ToolErrorHandlingTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
+import io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher;
 
 /**
  *
@@ -63,410 +67,72 @@ public class ToolErrorHandlingTest extends FATServletClient {
 
     @Test
     public void testToolThrowsToolCallException() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "businessErrorTool",
-                            "arguments": {
-                              "input": "bad-value"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {
-                          "id": 1,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "isError": true,
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "Invalid business input: bad-value"
-                              }
-                            ]
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        ToolResponse response = client.callTool("businessErrorTool", Map.of("input", "bad-value"));
+        assertThat(response, ToolResponseMatcher.withErrorText("Invalid business input: bad-value"));
     }
 
     @Test
     public void testToolThrowsExceptionWithoutWrapBusiness() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "unwrappedExceptionTool",
-                            "arguments": {
-                              "input": "trigger"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponse = """
-                        {
-                          "id": 1,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "isError": true,
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "An internal server error occurred while running the tool."
-                              }
-                            ]
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponse, response, true);
+        ToolResponse response = client.callTool("unwrappedExceptionTool", Map.of("input", "trigger"));
+        assertThat(response, ToolResponseMatcher.withErrorText("An internal server error occurred while running the tool."));
     }
 
     @Test
     public void testToolThrowsExceptionWithWrapNoArgs() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "wrappedNoArgsTool",
-                            "arguments": {
-                              "input": "trigger"
-                            }
-                          }
-                        }
-                        """;
-        String response = client.callMCP(request);
-
-        String expectedResponse = """
-                        {
-                          "id": 1,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "isError": true,
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "Wrapped error for input: trigger"
-                              }
-                            ]
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponse, response, true);
+        ToolResponse response = client.callTool("wrappedNoArgsTool", Map.of("input", "trigger"));
+        assertThat(response, ToolResponseMatcher.withErrorText("Wrapped error for input: trigger"));
     }
 
     @Test
     public void testToolThrowsListedWrappedException() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "listedWrappedExceptionTool",
-                            "arguments": {
-                              "input": "bad-value"
-                            }
-                          }
-                        }
-                        """;
-        String response = client.callMCP(request);
-
-        String expectedResponse = """
-                        {
-                          "id": 1,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "isError": true,
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "Invalid business input: bad-value"
-                              }
-                            ]
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponse, response, true);
+        ToolResponse response = client.callTool("listedWrappedExceptionTool", Map.of("input", "bad-value"));
+        assertThat(response, ToolResponseMatcher.withErrorText("Invalid business input: bad-value"));
     }
 
     @Test
     public void testToolThrowsExceptionWrappedBySuperclass() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "superclassWrappedExceptionTool",
-                            "arguments": {
-                              "input": "test arg"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponse = """
-                        {
-                          "id": 1,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "isError": true,
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "Invalid input for superclass: test arg"
-                              }
-                            ]
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponse, response, true);
+        ToolResponse response = client.callTool("superclassWrappedExceptionTool", Map.of("input", "test arg"));
+        assertThat(response, ToolResponseMatcher.withErrorText("Invalid input for superclass: test arg"));
     }
 
     @Test
     public void testToolThrowsUnwrappedException() throws Exception {
-        String request = """
-                            {
-                              "jsonrpc": "2.0",
-                              "id": 1,
-                              "method": "tools/call",
-                              "params": {
-                                "name": "excludeExceptionTool",
-                                "arguments": {
-                                  "input": "fail-now"
-                                }
-                              }
-                            }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponse = """
-                            {
-                              "id": 1,
-                              "jsonrpc": "2.0",
-                              "result": {
-                                "isError": true,
-                                "content": [
-                                  {
-                                    "type": "text",
-                                    "text": "An internal server error occurred while running the tool."
-                                  }
-                                ]
-                              }
-                            }
-                        """;
-        JSONAssert.assertEquals(expectedResponse, response, true);
+        ToolResponse response = client.callTool("excludeExceptionTool", Map.of("input", "fail-now"));
+        assertThat(response, ToolResponseMatcher.withErrorText("An internal server error occurred while running the tool."));
     }
 
     @Test
     public void testCheckedExceptionTool() throws Exception {
-        String request = """
-                            {
-                              "jsonrpc": "2.0",
-                              "id": 1,
-                              "method": "tools/call",
-                              "params": {
-                                "name": "checkedExceptionTool",
-                                "arguments": {
-                                  "input": "abc"
-                                }
-                              }
-                            }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponse = """
-                            {
-                              "id": 1,
-                              "jsonrpc": "2.0",
-                              "result": {
-                                "content": [
-                                  { "type": "text", "text": "Checked error for: abc" }
-                                ],
-                                "isError": true
-                              }
-                            }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponse, response, true);
+        ToolResponse response = client.callTool("checkedExceptionTool", Map.of("input", "abc"));
+        assertThat(response, ToolResponseMatcher.withErrorText("Checked error for: abc"));
     }
 
     @Test
     public void testCheckedExceptionTool_Unwrapped() throws Exception {
-
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "unwrappedCheckedExceptionTool",
-                            "arguments": {
-                              "input": "abc"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
+        ToolResponse response = client.callTool("unwrappedCheckedExceptionTool", Map.of("input", "abc"));
         Log.info(getClass(), "unwrappedCheckedExceptionTool", "Raw MCP response: " + response);
 
-        String expectedResponse = """
-                        {
-                          "id": 2,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "isError": true,
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "An internal server error occurred while running the tool."
-                              }
-                            ]
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponse, response, true);
+        assertThat(response, ToolResponseMatcher.withErrorText("An internal server error occurred while running the tool."));
 
         assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("Unwrapped checked error for: abc", serverLifecycle.getServer().getDefaultLogFile()));
     }
 
     @Test
     public void testUnexpectedArgumentSupplied() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "inputValidationTool",
-                            "arguments": {
-                              "input": "Hi",
-                              "count": 2,
-                              "extra": "unexpected"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "result": {
-                            "isError": true,
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "The following arguments were passed but were not found in the method: [extra]."
-                              }
-                            ]
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponse, response, true);
+        ToolResponse response = client.callTool("inputValidationTool", Map.of("input", "Hi", "count", 2, "extra", "unexpected"));
+        assertThat(response, ToolResponseMatcher.withErrorText("The following arguments were passed but were not found in the method: [extra]."));
     }
 
     @Test
     public void testMissingRequiredArgument() throws Exception {
-
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 103,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "inputValidationTool",
-                            "arguments": {
-                              "count": 2
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 103,
-                          "result": {
-                            "isError": true,
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "The method expected the following arguments but did not receive them: [input]."
-                              }
-                            ]
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponse, response, true);
+        ToolResponse response = client.callTool("inputValidationTool", Map.of("count", 2));
+        assertThat(response, ToolResponseMatcher.withErrorText("The method expected the following arguments but did not receive them: [input]."));
     }
 
     @Test
     public void testArgumentTypeMismatch() throws Exception {
-
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 104,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "inputValidationTool",
-                            "arguments": {
-                              "input": "hello",
-                              "count": "oops"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 104,
-                          "result": {
-                            "isError": true,
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "The count argument cannot be converted to the java.lang.Integer type."
-                              }
-                            ]
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponse, response, true);
+        ToolResponse response = client.callTool("inputValidationTool", Map.of("input", "hello", "count", "oops"));
+        assertThat(response, ToolResponseMatcher.withErrorText("The count argument cannot be converted to the java.lang.Integer type."));
     }
 
     @Test
@@ -683,8 +349,8 @@ public class ToolErrorHandlingTest extends FATServletClient {
                         }
                         """;
 
-       McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).anyStatus().run();
-       Log.info(ToolErrorHandlingTest.class, "testToolThrowsToolCallUnauthorizedException", response.toString());
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).anyStatus().run();
+        Log.info(ToolErrorHandlingTest.class, "testToolThrowsToolCallUnauthorizedException", response.toString());
 
         assertEquals(403, response.statusCode());
         assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));

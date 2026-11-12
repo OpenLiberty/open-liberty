@@ -11,9 +11,11 @@ package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -22,12 +24,12 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.encoderToolApp.EncoderTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher;
 
 @RunWith(FATRunner.class)
 public class EncoderTest extends FATServletClient {
@@ -37,7 +39,7 @@ public class EncoderTest extends FATServletClient {
 
     @Rule
     public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
-    
+
     @BeforeClass
     public static void setup() throws Exception {
         serverLifecycle.getServer().setMarkToEndOfLog();
@@ -55,398 +57,76 @@ public class EncoderTest extends FATServletClient {
 
     @Test
     public void testFallbackBuiltInJsonTextContentEncoder() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testDefaultEncoderResponse",
-                            "arguments": {
-                              "name": "Manchester"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":8000}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testDefaultEncoderResponse", Map.of("name", "Manchester")),
+                   ToolResponseMatcher.withTextContent("{\"country\":\"England\",\"isCapital\":false,\"name\":\"Manchester\",\"population\":8000}"));
     }
 
     @Test
     public void testContentEncoder() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testContentEncoder",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"age\\\":32,\\\"fistName\\\":\\\"Jon\\\",\\\"lastName\\\":\\\"Encoded by PersonContentEncoder\\\"}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testContentEncoder"),
+                   ToolResponseMatcher.withTextContent("{\"age\":32,\"fistName\":\"Jon\",\"lastName\":\"Encoded by PersonContentEncoder\"}"));
     }
 
     @Test
     public void testContentEncoderListEncoding() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testContentEncoderEncodingAList",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"age\\\":32,\\\"fistName\\\":\\\"Jon\\\",\\\"lastName\\\":\\\"Encoded by PersonContentEncoder\\\"}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testContentEncoderEncodingAList"),
+                   ToolResponseMatcher.withTextContent("{\"age\":32,\"fistName\":\"Jon\",\"lastName\":\"Encoded by PersonContentEncoder\"}"));
     }
 
     @Test
     public void testEncoderPriority() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testEncoderPriority",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"hello\\\":\\\"Hello from HigerPriorityEncoder\\\"}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testEncoderPriority"),
+                   ToolResponseMatcher.withTextContent("{\"hello\":\"Hello from HigerPriorityEncoder\"}"));
     }
 
     @Test
     public void testToolResponseEncoderSuccess() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testToolResponseEncoder",
-                            "arguments": {
-                                   "isSuccessful": true
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"[{\\"country\\":\\"England\\",\\"isCapital\\":true,\\"name\\":\\"London\\",\\"population\\":18000},{\\"country\\":\\"England\\",\\"isCapital\\":false,\\"name\\":\\"Machester\\",\\"population\\":8000}]"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testToolResponseEncoder", Map.of("isSuccessful", true)),
+                   ToolResponseMatcher.withTextContent("[{\"country\":\"England\",\"isCapital\":true,\"name\":\"London\",\"population\":18000},"
+                                                       + "{\"country\":\"England\",\"isCapital\":false,\"name\":\"Machester\",\"population\":8000}]"));
     }
 
     @Test
     public void testToolResponseEncoderErrorResponse() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testToolResponseEncoder",
-                            "arguments": {
-                                   "isSuccessful": false
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"Database Query failed with error: Some SQL execution error"
-                              }
-                            ],
-                            "isError": true
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testToolResponseEncoder", Map.of("isSuccessful", false)),
+                   ToolResponseMatcher.withErrorText("Database Query failed with error: Some SQL execution error"));
     }
 
     @Test
     public void testDependentBeanEncoder() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testDependantBeanEncoder",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"hello\\\":\\\"Hello from DependantBeanEncoder\\\"}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testDependantBeanEncoder"),
+                   ToolResponseMatcher.withTextContent("{\"hello\":\"Hello from DependantBeanEncoder\"}"));
     }
 
     @Test
     public void testRequestScopedBeanEncoder() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testRequestScopedBeanEncoder",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"hello\\\":\\\"Hello from RequestScopedBeanEncoder\\\"}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testRequestScopedBeanEncoder"),
+                   ToolResponseMatcher.withTextContent("{\"hello\":\"Hello from RequestScopedBeanEncoder\"}"));
     }
 
     @Test
     public void testSessionScopedBeanEncoder() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testSessionScopedBeanEncoder",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"hello\\\":\\\"Hello from SessionScopedBeanEncoder\\\"}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testSessionScopedBeanEncoder"),
+                   ToolResponseMatcher.withTextContent("{\"hello\":\"Hello from SessionScopedBeanEncoder\"}"));
     }
 
     @Test
     public void testSingletonBeanEncoderWillNOTBeDiscovered() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testSingletonBeanEncoder",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"hello\\\":\\\"Hello\\\"}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testSingletonBeanEncoder"),
+                   ToolResponseMatcher.withTextContent("{\"hello\":\"Hello\"}"));
     }
 
     @Test
     public void testToolResponseEncoderOverContentEncoderSuccess() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testToolResponseEncoderPriorityOverContentEncoder",
-                            "arguments": {
-                                   "isSuccessful": true
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\"content\\":\\"Encoded by RestResponseToolResponseEncoder\\",\\"isSuccessfull\\":true,\\"statusCode\\":200}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testToolResponseEncoderPriorityOverContentEncoder", Map.of("isSuccessful", true)),
+                   ToolResponseMatcher.withTextContent("{\"content\":\"Encoded by RestResponseToolResponseEncoder\",\"isSuccessfull\":true,\"statusCode\":200}"));
     }
 
     /**
@@ -459,73 +139,18 @@ public class EncoderTest extends FATServletClient {
      */
     @Test
     public void testPriorityNotInheritedFromSuperclass() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testPriorityNotInherited",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
         // Should use BaseEncoderWithPriority (priority 200), not SubclassEncoderNoPriority
         // which would incorrectly inherit priority 200 with the old buggy implementation
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"message\\\":\\\"Encoded by BaseEncoderWithPriority (priority 50)\\\"}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testPriorityNotInherited"),
+                   ToolResponseMatcher.withTextContent("{\"message\":\"Encoded by BaseEncoderWithPriority (priority 50)\"}"));
     }
 
     @Test
     public void testCdiBasePriorityHighest() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testCdiBasePriorityHighest",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
         // The CDI base encoder has @Priority(400), while the subclass has @Priority(50),
         // so the base encoder should be selected.
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"message\\\":\\\"Encoded by CdiBaseEncoderWithHighestPriority (priority 400)\\\"}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testCdiBasePriorityHighest"),
+                   ToolResponseMatcher.withTextContent("{\"message\":\"Encoded by CdiBaseEncoderWithHighestPriority (priority 400)\"}"));
     }
 
     /**
@@ -535,35 +160,8 @@ public class EncoderTest extends FATServletClient {
      */
     @Test
     public void testGetTypeExactMatch() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testGetTypeExactMatch",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"encoded by ShapeEncoder: Shape"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testGetTypeExactMatch"),
+                   ToolResponseMatcher.withTextContent("encoded by ShapeEncoder: Shape"));
     }
 
     /**
@@ -574,35 +172,8 @@ public class EncoderTest extends FATServletClient {
      */
     @Test
     public void testGetTypeSubtypeMatch() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testGetTypeSubtypeMatch",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"encoded by ShapeEncoder: Circle"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testGetTypeSubtypeMatch"),
+                   ToolResponseMatcher.withTextContent("encoded by ShapeEncoder: Circle"));
     }
 
     /**
@@ -611,27 +182,16 @@ public class EncoderTest extends FATServletClient {
      */
     @Test
     public void testThrowingContentEncoderLogsCorrectError() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testThrowingContentEncoder",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
         serverLifecycle.getServer().setMarkToEndOfLog();
-        client.callMCP(request);
+        client.callTool("testThrowingContentEncoder");
 
         assertNotNull("Expected CWMCM0019E to be logged when ContentEncoder throws",
                       serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0019E.*ThrowingContentEncoder.*testThrowingContentEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an encoder exception",
                    serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0010E.*testThrowingContentEncoder",
-                                                                          serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
+                                                                          serverLifecycle.getServer().getDefaultLogFile())
+                                  .isEmpty());
     }
 
     /**
@@ -640,27 +200,16 @@ public class EncoderTest extends FATServletClient {
      */
     @Test
     public void testThrowingToolResponseEncoderLogsCorrectError() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testThrowingToolResponseEncoder",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
         serverLifecycle.getServer().setMarkToEndOfLog();
-        client.callMCP(request);
+        client.callTool("testThrowingToolResponseEncoder");
 
         assertNotNull("Expected CWMCM0019E to be logged when ToolResponseEncoder throws",
                       serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0019E.*ThrowingToolResponseEncoder.*testThrowingToolResponseEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an encoder exception",
                    serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0010E.*testThrowingToolResponseEncoder",
-                                                                          serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
+                                                                          serverLifecycle.getServer().getDefaultLogFile())
+                                  .isEmpty());
     }
 
     /**
@@ -668,27 +217,16 @@ public class EncoderTest extends FATServletClient {
      */
     @Test
     public void testAsyncThrowingContentEncoderLogsCorrectError() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testAsyncThrowingContentEncoder",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
         serverLifecycle.getServer().setMarkToEndOfLog();
-        client.callMCP(request);
+        client.callTool("testAsyncThrowingContentEncoder");
 
         assertNotNull("Expected CWMCM0019E to be logged when async ContentEncoder throws",
                       serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0019E.*ThrowingContentEncoder.*testAsyncThrowingContentEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an async encoder exception",
                    serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0010E.*testAsyncThrowingContentEncoder",
-                                                                          serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
+                                                                          serverLifecycle.getServer().getDefaultLogFile())
+                                  .isEmpty());
     }
 
     /**
@@ -696,26 +234,15 @@ public class EncoderTest extends FATServletClient {
      */
     @Test
     public void testAsyncThrowingToolResponseEncoderLogsCorrectError() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testAsyncThrowingToolResponseEncoder",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
         serverLifecycle.getServer().setMarkToEndOfLog();
-        client.callMCP(request);
+        client.callTool("testAsyncThrowingToolResponseEncoder");
 
         assertNotNull("Expected CWMCM0019E to be logged when async ToolResponseEncoder throws",
                       serverLifecycle.getServer().waitForStringInLogUsingMark("CWMCM0019E.*ThrowingToolResponseEncoder.*testAsyncThrowingToolResponseEncoder"));
 
         assertTrue("Expected CWMCM0010E NOT to be logged for an async encoder exception",
                    serverLifecycle.getServer().findStringsInLogsUsingMark("CWMCM0010E.*testAsyncThrowingToolResponseEncoder",
-                                                                          serverLifecycle.getServer().getDefaultLogFile()).isEmpty());
+                                                                          serverLifecycle.getServer().getDefaultLogFile())
+                                  .isEmpty());
     }
 }
