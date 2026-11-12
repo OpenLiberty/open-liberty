@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Properties;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,14 +36,13 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 		/* Enable tests only if running on a zOS machine, otherwise skip class */
 		Assume.assumeTrue(!isZos);
 		deleteFeaturesAndLafilesFolders("beforeClassSetup");
-		replaceWlpProperties(libertyVersion);
 		Log.exiting(c, methodName);
 	}
 
 	@Before
 	public void beforeSetUp() throws Exception {
 		copyFileToMinifiedRoot("etc", "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
-		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo1);
+		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo);
 	}
 
 	@After
@@ -52,13 +50,6 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 		deleteFeaturesAndLafilesFolders("afterCleanUp");
 		deleteUsrExtFolder("afterCleanUp");
 		deleteEtcFolder("afterCleanUp");
-	}
-
-	@AfterClass
-	public static void cleanUp() throws Exception {
-		if (!isZos) {
-			resetOriginalWlpProps();
-		}
 	}
 
 	/**
@@ -286,7 +277,6 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	@Test
 	public void testIsfFeatureTolerates() throws Exception {
 		final String METHOD_NAME = "testIsfFeatureTolerates";
-		replaceWlpProperties("24.0.0.8");
 		Log.entering(c, METHOD_NAME);
 		String[] filesList = { "lib/features/io.openliberty.wimcore.internal.ee-9.0.mf",
 				"lib/features/com.ibm.websphere.appserver.federatedRegistry-1.0.mf" };
@@ -356,7 +346,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 		copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/usrFeaturesServerXml/server.xml");
 
 		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl",
-				mavenLocalRepo1 + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
+				mavenLocalRepo + "/com/ibm/ws/userFeature/testesa1/valid/validKey.asc");
 		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "71f8e6239b6834aa");
 
 		String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
@@ -378,7 +368,6 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	@Test
 	public void testResolveAsSetThenResolve() throws Exception {
 		final String METHOD_NAME = "testResolveAsSetThenResolve";
-		replaceWlpProperties("24.0.0.8");
 		Log.entering(c, METHOD_NAME);
 
 		copyFileToMinifiedRoot("usr/servers/serverX", "publish/tmp/adminCenterServerXml/server.xml");

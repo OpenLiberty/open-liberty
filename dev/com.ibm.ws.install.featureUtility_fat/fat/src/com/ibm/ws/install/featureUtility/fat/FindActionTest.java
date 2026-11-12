@@ -14,7 +14,6 @@ package com.ibm.ws.install.featureUtility.fat;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -29,25 +28,15 @@ public class FindActionTest extends  FeatureUtilityToolTest {
     public static void beforeClassSetup() throws Exception {
         final String methodName = "beforeClassSetup";
         Log.entering(c, methodName);
-        setupEnv();
 
-        // rollback wlp version 2 times (e.g 20.0.0.5 -> 20.0.0.3)
-
-        replaceWlpProperties(libertyVersion);
         //don't connect to Maven Central to reduce network issue
         copyFileToMinifiedRoot("etc",
     		    "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
-        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo1);
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo);
 
         Log.exiting(c, methodName);
     }
 
-    @AfterClass
-    public static void cleanUp() throws Exception {
-        // TODO
-        resetOriginalWlpProps();
-        cleanUpTempFiles();
-    }
 
     /**
      * Tests the find action when supplied no arguments.

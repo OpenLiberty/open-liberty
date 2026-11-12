@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,8 @@ import java.util.logging.Logger;
 import java.util.zip.ZipFile;
 import java.util.stream.*;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.GenericContainer;
 
@@ -48,10 +50,9 @@ public abstract class FeatureUtilityToolTest {
 
     private static final Class<?> c = FeatureUtilityToolTest.class;
 
-    protected static String libertyVersion = "23.0.0.2";
+    protected static String libertyVersion = "26.0.0.11";
     // ${buildDir}/publish/repo
-    protected static String mavenLocalRepo1 = Paths.get("publish/repo/").toAbsolutePath().toString();
-    protected static String mavenLocalRepo2 = Paths.get("publish/repo2/").toAbsolutePath().toString();
+    protected static String mavenLocalRepo = Paths.get("publish/repo/").toAbsolutePath().toString();
     public static LibertyServer server;
     private static String installRoot;
     static String minifiedRoot;
@@ -74,7 +75,24 @@ public abstract class FeatureUtilityToolTest {
     static boolean isClosedLiberty = false;
     private static String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
     public static boolean isZos = System.getProperty("os.name").toLowerCase().contains("z/os") || System.getProperty("os.name").toLowerCase().contains("os/390");
-    
+
+    @BeforeClass
+    public static void beforeClassBase() throws Exception {
+        if (!isZos) {
+            if (server == null || minifiedRoot == null) {
+                setupEnv();
+            }
+            replaceWlpProperties(libertyVersion);
+        }
+    }
+
+    @AfterClass
+    public static void afterClassBase() throws Exception {
+        if (!isZos && server != null && minifiedRoot != null) {
+            resetOriginalWlpProps();
+        }
+    }
+
     protected static void setupEnv() throws Exception {
 
         final String methodName = "setup";
@@ -96,8 +114,7 @@ public abstract class FeatureUtilityToolTest {
         minifiedRoot = exportWlp(installRoot, installRoot + "/../temp/wlp.zip", installRoot + relativeMinifiedRoot);
         Log.info(c, methodName, "minified root: " + minifiedRoot);
 
-        Log.info(c, methodName, "mavenLocalRepo1 : " + mavenLocalRepo1.toString());
-        Log.info(c, methodName, "mavenLocalRepo2 : " + mavenLocalRepo2.toString());
+        Log.info(c, methodName, "mavenLocalRepo : " + mavenLocalRepo.toString());
 
         if(!new File(minifiedRoot).exists()){
             throw new Exception("The minified root does not exist!");
@@ -451,10 +468,8 @@ public abstract class FeatureUtilityToolTest {
     }
     
     protected static boolean deleteRepo(String methodName) throws IOException {
-	boolean repo = TestUtils.deleteFolder(new File(mavenLocalRepo1));
-	Log.info(c, methodName, "DELETED REPO : " + mavenLocalRepo1 + "?" + repo);
-	repo  = TestUtils.deleteFolder(new File(mavenLocalRepo2));
-	Log.info(c, methodName, "DELETED REPO : " + mavenLocalRepo2 + "?" + repo);
+	boolean repo = TestUtils.deleteFolder(new File(mavenLocalRepo));
+	Log.info(c, methodName, "DELETED REPO : " + mavenLocalRepo + "?" + repo);
     	return repo;
     }
 
