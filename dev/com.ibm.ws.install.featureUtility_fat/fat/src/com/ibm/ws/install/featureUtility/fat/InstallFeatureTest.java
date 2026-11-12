@@ -22,7 +22,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Properties;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -89,7 +88,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Assume.assumeTrue(!isZos);
         Log.entering(c, methodName);
         deleteFeaturesAndLafilesFolders("beforeClassSetup");
-        replaceWlpProperties(libertyVersion);
         Log.exiting(c, methodName);
     }
 
@@ -105,13 +103,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         deleteFeaturesAndLafilesFolders("afterCleanUp");
         deleteUsrExtFolder("afterCleanUp");
         deleteEtcFolder("afterCleanUp");
-    }
-
-    @AfterClass
-    public static void cleanUp() throws Exception {
-        if (!isZos) {
-            resetOriginalWlpProps();
-        }
     }
 
     /**

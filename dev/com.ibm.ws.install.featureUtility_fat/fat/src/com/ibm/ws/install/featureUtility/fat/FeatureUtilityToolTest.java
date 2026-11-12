@@ -32,6 +32,8 @@ import java.util.logging.Logger;
 import java.util.zip.ZipFile;
 import java.util.stream.*;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.GenericContainer;
 
@@ -73,7 +75,24 @@ public abstract class FeatureUtilityToolTest {
     static boolean isClosedLiberty = false;
     private static String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
     public static boolean isZos = System.getProperty("os.name").toLowerCase().contains("z/os") || System.getProperty("os.name").toLowerCase().contains("os/390");
-    
+
+    @BeforeClass
+    public static void beforeClassBase() throws Exception {
+        if (!isZos) {
+            if (server == null || minifiedRoot == null) {
+                setupEnv();
+            }
+            replaceWlpProperties(libertyVersion);
+        }
+    }
+
+    @AfterClass
+    public static void afterClassBase() throws Exception {
+        if (!isZos && server != null && minifiedRoot != null) {
+            resetOriginalWlpProps();
+        }
+    }
+
     protected static void setupEnv() throws Exception {
 
         final String methodName = "setup";

@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Properties;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,29 +36,21 @@ public class InstallVersionlessServerTest extends FeatureUtilityToolTest {
         /* Enable tests only if running on a zOS machine, otherwise skip class */
         Assume.assumeTrue(!isZos);
         deleteFeaturesAndLafilesFolders("beforeClassSetup");
-        replaceWlpProperties(libertyVersion);
         Log.exiting(c, methodName);
     }
 
     @Before
     public void beforeSetUp() throws Exception {
-	copyFileToMinifiedRoot("etc", "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
-	writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo);
+        copyFileToMinifiedRoot("etc", "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo);
     }
 
     @After
     public void afterCleanUp() throws Exception {
-	deleteFeaturesAndLafilesFolders("afterCleanUp");
-	deleteUsrExtFolder("afterCleanUp");
-	deleteEtcFolder("afterCleanUp");
+        deleteFeaturesAndLafilesFolders("afterCleanUp");
+        deleteUsrExtFolder("afterCleanUp");
+        deleteEtcFolder("afterCleanUp");
     }
-
-	@AfterClass
-	public static void cleanUp() throws Exception {
-		if (!isZos) {
-			resetOriginalWlpProps();
-		}
-	}
 
     
     /**
