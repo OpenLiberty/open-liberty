@@ -173,38 +173,44 @@ public class McpServlet extends HttpServlet {
 
             callRequest(transport, metrics);
         } catch (JSONRPCException e) {
-            String jsonRpcErrorMsg = "JSONRPCException ";
-            if (e.getErrorCode() != null) {
-                jsonRpcErrorMsg += "{code=" + e.getErrorCode().getCode()
-                                   + ", message='" + e.getErrorCode().getMessage()
-                                   + "', data=" + String.valueOf(e.getData()) + "}";
-            } else {
-                jsonRpcErrorMsg += "{data=" + String.valueOf(e.getData()) + "}";
-            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                String jsonRpcErrorMsg = "JSONRPCException ";
+                if (e.getErrorCode() != null) {
+                    jsonRpcErrorMsg += "{code=" + e.getErrorCode().getCode()
+                                       + ", message='" + e.getErrorCode().getMessage()
+                                       + "', data=" + String.valueOf(e.getData()) + "}";
+                } else {
+                    jsonRpcErrorMsg += "{data=" + String.valueOf(e.getData()) + "}";
+                }
 
-            traceEvent("The following error was returned to the user: '" + jsonRpcErrorMsg + "'");
+                Tr.event(this, tc, "The following error was returned to the user: '" + jsonRpcErrorMsg + "'");
+            }
 
             metrics.setOutcome("error", e.getErrorCode().name());
             McpOperationMetrics.operationEnded(metrics);
 
             transport.sendJsonRpcException(e);
         } catch (HttpResponseException e) {
-            String errorMsg = "HTTP " + e.getStatusCode();
-            if (e.getMessage() != null) {
-                errorMsg += " - " + e.getMessage();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                String errorMsg = "HTTP " + e.getStatusCode();
+                if (e.getMessage() != null) {
+                    errorMsg += " - " + e.getMessage();
+                }
+                Tr.event(this, tc, "The following error was returned to the user: '" + errorMsg + "'");
             }
-            traceEvent("The following error was returned to the user: '" + errorMsg + "'");
 
             metrics.setOutcome("error", "http_error");
             McpOperationMetrics.operationEnded(metrics);
 
             transport.sendHttpException(e);
         } catch (Exception e) {
-            String errorMsg = e.getClass().getSimpleName();
-            if (e.getMessage() != null) {
-                errorMsg += ": " + e.getMessage();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                String errorMsg = e.getClass().getSimpleName();
+                if (e.getMessage() != null) {
+                    errorMsg += ": " + e.getMessage();
+                }
+                Tr.event(this, tc, "The following error was returned to the user: '" + errorMsg + "'");
             }
-            traceEvent("The following error was returned to the user: '" + errorMsg + "'");
 
             metrics.setOutcome("error", "internal_error");
             McpOperationMetrics.operationEnded(metrics);
@@ -272,14 +278,18 @@ public class McpServlet extends HttpServlet {
         if (sessionStores.getCurrent().deleteSession(sessionId)) {
             resp.setStatus(HttpServletResponse.SC_OK);
         } else {
-            traceEvent("DELETE request received for unknown or already-expired session: " + sessionIdStr);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "DELETE request received for unknown or already-expired session: " + sessionIdStr);
+            }
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");
         }
     }
 
     @FFDCIgnore({ ToolCallUnauthorizedException.class, ToolCallException.class })
     private void callTool(McpTransport transport, McpOperationMetrics metrics) {
-        traceEvent("A tool call request has arrived");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "A tool call request has arrived");
+        }
 
         ExecutionRequestId requestId = createOngoingRequestId(transport);
         McpOperationRequest opRequest = transport.getMcpOperationRequest();
@@ -308,8 +318,8 @@ public class McpServlet extends HttpServlet {
         } catch (ToolCallException e) {
             // Catch validation errors that occur before calling the tool and should result in a tool call error response
             ToolResponse response = ToolResponses.createBusinessErrorResponse(e);
-            if (response.isError()) {
-                traceEvent("The tool method '" + toolName + "' returned the following error to the user: '" + extractToolResponseValue(response) + "'");
+            if (response.isError() && TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "The tool method '" + toolName + "' returned the following error to the user: '" + extractToolResponseValue(response) + "'");
             }
             sendToolResponseAndEndMetrics(transport, response, metrics);
         }
@@ -329,7 +339,9 @@ public class McpServlet extends HttpServlet {
         ToolResponse response;
         try {
             var handler = toolCallRequest.tool().handler();
-            traceEvent("The tool method '" + toolCallRequest.tool().name() + "' is about to be called");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "The tool method '" + toolCallRequest.tool().name() + "' is about to be called");
+            }
             response = handler.apply(toolArgs);
         } catch (McpResponseException e) {
             // These exceptions indicate a specific response should be used
@@ -346,10 +358,12 @@ public class McpServlet extends HttpServlet {
             cleanup(requestId);
         }
         response = removeStructuredContentIfNotSupported(response, transport);
-        if (response.isError()) {
-            traceEvent("The tool method '" + toolCallRequest.tool().name() + "' returned the following error to the user: '" + extractToolResponseValue(response) + "'");
-        } else {
-            traceEvent("The tool method '" + toolCallRequest.tool().name() + "' returned: '" + extractToolResponseValue(response) + "'");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            if (response.isError()) {
+                Tr.event(this, tc, "The tool method '" + toolCallRequest.tool().name() + "' returned the following error to the user: '" + extractToolResponseValue(response) + "'");
+            } else {
+                Tr.event(this, tc, "The tool method '" + toolCallRequest.tool().name() + "' returned: '" + extractToolResponseValue(response) + "'");
+            }
         }
         sendToolResponseAndEndMetrics(transport, response, metrics);
     }
@@ -366,7 +380,9 @@ public class McpServlet extends HttpServlet {
 
         var handler = toolCallRequest.tool().asyncHandler();
 
-        traceEvent("The tool method '" + toolCallRequest.tool().name() + "' is about to be called");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "The tool method '" + toolCallRequest.tool().name() + "' is about to be called");
+        }
         CompletionStage<ToolResponse> response = callHandlerAndCatchException(handler, toolArgs);
         response = response.thenApply(r -> removeStructuredContentIfNotSupported(r, transport))
                            .exceptionally(throwable -> {
@@ -431,11 +447,11 @@ public class McpServlet extends HttpServlet {
      * Exceptions are logged separately in McpTransport.sendResultAsync().
      */
     private void traceAsyncResult(ToolResponse result, String toolName) {
-        if (result != null) {
+        if (result != null && TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             if (result.isError()) {
-                traceEvent("The tool method '" + toolName + "' returned the following error to the user: '" + extractToolResponseValue(result) + "'");
+                Tr.event(this, tc, "The tool method '" + toolName + "' returned the following error to the user: '" + extractToolResponseValue(result) + "'");
             } else {
-                traceEvent("The tool method '" + toolName + "' returned: '" + extractToolResponseValue(result) + "'");
+                Tr.event(this, tc, "The tool method '" + toolName + "' returned: '" + extractToolResponseValue(result) + "'");
             }
         }
     }
@@ -610,7 +626,9 @@ public class McpServlet extends HttpServlet {
             version = mcpConfig.maximumProtocolVersion();
         }
 
-        traceEvent("Client initializing: " + request.clientInfo(), request.clientCapabilities());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "Client initializing: " + request.clientInfo(), request.clientCapabilities());
+        }
         Principal userId = transport.getUser();
 
         McpSession session = sessionStores.getCurrent().createSession(userId, sessionMetrics, request.clientInfo(), request.clientCapabilities());
@@ -627,7 +645,9 @@ public class McpServlet extends HttpServlet {
     }
 
     private void initialized(McpTransport transport, McpOperationMetrics metrics) {
-        traceEvent("Client initialized");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "Client initialized");
+        }
         sendEmptyResponseAndEndMetrics(transport, metrics);
     }
 
@@ -658,11 +678,15 @@ public class McpServlet extends HttpServlet {
         ExecutionRequestId requestId = new ExecutionRequestId(mcpReqId, sessionId, userId);
         String reason = cancellationRequest.reason();
 
-        traceEvent("Cancellation requested for " + requestId);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "Cancellation requested for " + requestId);
+        }
 
         Cancellation cancellation = requestTrackers.getCurrent().getOngoingRequestCancellation(requestId);
         if (cancellation != null) {
-            traceEvent("Cancelling task");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "Cancelling task");
+            }
             ((CancellationImpl) cancellation).cancel(reason);
         }
 
@@ -689,18 +713,6 @@ public class McpServlet extends HttpServlet {
      */
     private boolean isServerStateless() {
         return Boolean.parseBoolean(getServletConfig().getInitParameter(STATELESS_INIT_PARAM));
-    }
-
-    /**
-     * Logs an event trace message if event tracing is enabled.
-     *
-     * @param message the message to log
-     * @param inserts optional additional objects to include in the trace
-     */
-    private void traceEvent(String message, Object... inserts) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, message, inserts);
-        }
     }
 
     /**
