@@ -254,11 +254,12 @@ final class AsyncServletOutputStreamWriter {
     // TODO: Liberty currently needs to check isReady() BEFORE doing the write, as it puts context on the
     // thread during that call.  We should get rid of that requirement.
     if (curState.readyAndDrained && outputStream.isReady()) { // write to the outputStream directly
+      writeState.set(curState.withReadyAndDrained(false));
       actionItem.run();
-      if (!outputStream.isReady()) {
+      if (outputStream.isReady() && writeChain.isEmpty()) {
+        writeState.set(curState.withReadyAndDrained(true));
+      } else {
         logger.log(FINEST, "[{0}] the servlet output stream becomes not ready", logId);
-        boolean successful = writeState.compareAndSet(curState, curState.withReadyAndDrained(false));
-        assert successful;
         LockSupport.unpark(parkingThread);
       }
     } else { // buffer to the writeChain
