@@ -215,13 +215,17 @@ public class JwkRotationAndMaxKeysTests extends CommonSecurityFat {
      * the /jwk endpoint already reflects the rotation. If JWKProvider.rotateKeys() (or its class) is ever marked
      * with @Trivial, this wait will time out.
      * <p>
-     * The log mark is advanced past the matched line, so each call returns the next rotation.
+     * waitForStringInTraceUsingMark does not move the mark when it finds a match (only the separate "last offset"
+     * used by the ...UsingLastOffset methods is updated), so the mark is moved to the end of the trace here.
+     * Without that, the next call would match this same line again. The next rotation is a full period away, so
+     * it cannot be missed by moving the mark now.
      *
      * @return the server-side timestamp (epoch millis) of the rotation completing, taken from the trace line
      */
     private long waitForNextRotation(String phase) throws Exception {
         String traceLine = builderServer.waitForStringInTraceUsingMark(ROTATION_COMPLETE_TRACE_REGEX, ROTATION_TIMEOUT_MS);
         assertNotNull(phase + ": the server did not log a completed JWK rotation within " + (ROTATION_TIMEOUT_MS / 1000) + "s", traceLine);
+        builderServer.setTraceMarkToEndOfDefaultTrace();
 
         Matcher matcher = TRACE_TIMESTAMP_PATTERN.matcher(traceLine);
         assertTrue(phase + ": could not find a timestamp in trace line: " + traceLine, matcher.find());
