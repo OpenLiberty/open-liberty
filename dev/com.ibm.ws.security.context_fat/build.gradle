@@ -1,0 +1,123 @@
+/*******************************************************************************
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply plugin: 'war'
+
+// We aren't making a war for the entire project
+war { enabled = false }
+
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.3.1',
+               'org.apache.httpcomponents:httpcore:4.3',
+               project(':io.openliberty.org.apache.commons.codec')
+}
+
+def appBuildDir = "${buildDir}/test-application"
+def server = 'com.ibm.ws.security.context_fat'
+
+/******************************************************************
+ ** sessionBeans.jar
+ ******************************************************************/
+task sessionBeans_JAR(type: Jar, dependsOn: classes) {
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "sessionBeans.jar"
+
+  from ('build/classes/java/main') {
+    include 'com/ibm/ws/ejb/session/**'
+  }
+}
+
+/******************************************************************
+ ** webApps.war
+ ******************************************************************/
+task webApps_WAR(type: War, dependsOn: classes) {
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "webApps.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/webApps.war/resources') {
+    include 'WEB-INF/**', 'META-INF/**'
+  }
+  from ('build/classes/java/main') {
+    include 'com/ibm/test/servlet/**'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ** securityContext.ear
+ ******************************************************************/
+task securityContext_EAR(type: Ear, dependsOn: [sessionBeans_JAR, webApps_WAR]) {
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "securityContext.ear"
+
+  from ('test-applications/securityContext.ear/resources') {
+    include '**'
+  }
+  from (appBuildDir) {
+    include 'sessionBeans.jar', 'webApps.war'
+  }
+}
+
+/******************************************************************
+ ** CustomLoginAndTAI.jar
+ ** Library with the custom TAI and JAAS login module used by the server
+ ******************************************************************/
+task CustomLoginAndTAI_JAR(type: Jar, dependsOn: classes) {
+  destinationDirectory = file("${appBuildDir}")
+  archiveFileName = "CustomLoginAndTAI.jar"
+
+  from ('build/classes/java/main') {
+    include 'com/ibm/ws/security/context_fat/**'
+  }
+}
+
+assemble.dependsOn sessionBeans_JAR
+assemble.dependsOn webApps_WAR
+assemble.dependsOn securityContext_EAR
+assemble.dependsOn CustomLoginAndTAI_JAR
+
+autoFVT.dependsOn securityContext_EAR
+autoFVT.dependsOn CustomLoginAndTAI_JAR
+
+autoFVT.doLast {
+  def serverDir = new File(autoFvtDir, 'publish/servers/' + server)
+
+  // Install the application
+  copy {
+    from file("${appBuildDir}/securityContext.ear")
+    into new File(serverDir, 'apps')
+  }
+
+  // Custom TAI / login module library and the commons-codec jar it uses
+  copy {
+    from file("${appBuildDir}/CustomLoginAndTAI.jar")
+    into serverDir
+  }
+  copy {
+    from configurations.requiredLibs.filter { it.name.startsWith('io.openliberty.org.apache.commons.codec') }
+    into serverDir
+  }
+
+  // Include files referenced as includes/<name>.xml from the server configs
+  copy {
+    from new File(projectDir, 'publish/files/includes')
+    include '*.xml'
+    into new File(serverDir, 'includes')
+  }
+}

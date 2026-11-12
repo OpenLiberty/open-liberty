@@ -1,0 +1,60 @@
+<!--
+    Copyright (c) 2016, 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<server>
+    <featureManager>
+        <feature>timedexit-1.0</feature>
+        <feature>concurrent-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+              
+    <trustAssociation id="myTAIConfig" invokeForUnprotectedURI="true" invokeForFormLogin="true" failOverToAppAuthType="false" >
+        <interceptors id="myTAI" className="com.ibm.ws.security.context_fat.CustomTAI" enabled="true" invokeBeforeSSO="true" invokeAfterSSO="true" libraryRef="customTAILib">
+        </interceptors>
+    </trustAssociation>    
+    
+    <library id="customTAILib">
+        <fileset dir="${server.config.dir}" includes="CustomLoginAndTAI.jar,io.openliberty.org.apache.commons.codec.jar"/>      
+    </library>                   
+    <include location="../fatTestPorts.xml"/>
+        <javaPermission codebase="${server.config.dir}/CustomLoginAndTAI.jar" className="java.security.AllPermission" name="*" actions="*"/>
+    
+
+    <variable name="onError" value="FAIL"/>
+
+    <!--  Security context service definition -->
+    <contextService jndiName="concurrent/securityContextSvc">
+        <securityContext/>
+    </contextService>
+
+	<!-- Basic authentication registry definition -->
+    <basicRegistry id="basic" realm="TestRealm">
+        <user name="user1" password="user1pwd" />
+        <user name="user2" password="user2pwd" />     
+        <user name="user3" password="user3pwd" />        
+    </basicRegistry>
+
+    <application id="securityContextId" name="securityContext" type="ear" location="securityContext.ear">
+        <application-bnd>
+            <security-role name="role1">
+                <user name="user1"/>
+                <user name="user1Custom"/>
+            </security-role>
+            <security-role name="role2">
+                <user name="user2"/>
+            </security-role>
+        </application-bnd>
+    </application>
+
+</server>
