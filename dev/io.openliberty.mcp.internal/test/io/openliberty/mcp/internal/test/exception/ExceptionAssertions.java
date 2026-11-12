@@ -12,6 +12,8 @@ package io.openliberty.mcp.internal.test.exception;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +43,15 @@ public class ExceptionAssertions {
      * @param matcher the matcher to use to evaluate the exception thrown
      */
     public static void assertThrows(ThrowingRunnable code, Matcher<? super Throwable> matcher) {
+        boolean exceptionThrown = true;
         try {
             code.run();
-            fail("No exception thrown");
+            exceptionThrown = false;
         } catch (Throwable t) {
             assertThat(t, matcher);
+        }
+        if (!exceptionThrown) {
+            fail("No exception thrown");
         }
     }
 
@@ -173,6 +179,15 @@ public class ExceptionAssertions {
                     m.describeMismatch(t, desc);
                     desc.appendText("\n");
                 }
+            }
+
+            if (result == false) {
+                StringWriter stack = new StringWriter();
+                try (PrintWriter pw = new PrintWriter(stack)) {
+                    t.printStackTrace(pw);
+                }
+                desc.appendText("Full exception: ");
+                desc.appendText(stack.toString());
             }
 
             return result;
