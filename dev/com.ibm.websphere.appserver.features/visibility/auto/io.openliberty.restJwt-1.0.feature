@@ -6,8 +6,8 @@ IBM-Provision-Capability:\
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.restConnector-2.0))",\
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.servlet-6.0)(osgi.identity=com.ibm.websphere.appserver.servlet-6.1)))"
 IBM-Install-Policy: when-satisfied
--features=\
-  io.openliberty.restJwt1.0.internal.ee-10.0; ibm.tolerates:="11.0"
+-bundles=\
+  io.openliberty.security.rest.jwt.internal
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

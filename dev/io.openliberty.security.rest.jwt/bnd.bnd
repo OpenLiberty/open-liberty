@@ -6,13 +6,12 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
--sub: *.bnd
+Bundle-Name: Liberty Security REST JWT TAI
+Bundle-SymbolicName: io.openliberty.security.rest.jwt.internal
+Bundle-Description: Liberty Security REST JWT TAI; Jakarta Enabled
 
 bVersion=1.0
 
@@ -23,12 +22,6 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Export-Package: \
    io.openliberty.security.rest.jwt.tai
-
-Import-Package: \
-   com.ibm.websphere.security.jwt;version="[1.0,11)", \
-   com.ibm.wsspi.security.tai;version="[1.1,11)", \
-   com.ibm.ws.security.authentication.filter;version="[1.0,11)", \
-   *
 
 Private-Package: \
    io.openliberty.security.rest.jwt.tai.*
@@ -51,15 +44,15 @@ Include-Resource: \
 	com.ibm.websphere.security;version=latest, \
 	com.ibm.ws.security;version=latest, \
 	com.ibm.ws.security.registry;version=latest, \
-	com.ibm.ws.security.authentication.tai;version=latest, \
+	io.openliberty.security.authentication.internal.tai;version=latest, \
 	com.ibm.ws.security.authentication;version=latest, \
-	com.ibm.ws.security.authentication.filter;version=latest, \
-	com.ibm.ws.security.jwt;version=latest, \
-	com.ibm.ws.security.common;version=latest, \
+	io.openliberty.security.authentication.internal.filter;version=latest, \
+	io.openliberty.security.jwt.internal;version=latest, \
+	io.openliberty.security.common.internal;version=latest, \
 	com.ibm.ws.org.jose4j;version=latest, \
 	com.ibm.ws.security.common.jsonwebkey;version=latest, \
-	com.ibm.ws.webcontainer.security;version=latest, \
-	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
+	io.openliberty.webcontainer.security.internal;version=latest, \
+	io.openliberty.jakarta.servlet.6.0;version=latest, \
 	com.ibm.ws.security.credentials;version=latest, \
 	com.ibm.ws.security.token;version=latest
 
