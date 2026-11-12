@@ -1,0 +1,57 @@
+<!--
+    Copyright (c) 2016, 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<server>
+    <featureManager>
+        <feature>timedexit-1.0</feature>
+        <feature>concurrent-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+              
+    <include location="../fatTestPorts.xml"/>
+
+    <variable name="onError" value="FAIL"/>
+
+    <!--  Security context service definition -->
+    <contextService jndiName="concurrent/securityContextSvc">
+        <securityContext/>
+    </contextService>
+
+    <!-- Disable authentication cache -->
+    <authentication id="Basic" cacheEnabled="false" />
+
+	<!-- Basic authentication registry definition -->
+    <basicRegistry id="basic" realm="TestRealm">   
+        <user name="user1" password="user1pwd" />
+		<group name="group1">
+			<member name="user1" />
+		</group>
+		<user name="user2" password="user2pwd" />
+		<group name="group2">
+			<member name="user2" />
+		</group>   
+    </basicRegistry>
+
+    <application id="securityContextId" name="securityContext" type="ear" location="securityContext.ear">
+        <application-bnd>
+            <security-role name="role1">
+                <group name="group1" />
+            </security-role>
+            <security-role name="role2">
+                <group name="group2" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+</server>
