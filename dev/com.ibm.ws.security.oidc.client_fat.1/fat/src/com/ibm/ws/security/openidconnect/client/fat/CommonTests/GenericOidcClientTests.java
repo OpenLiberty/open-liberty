@@ -1201,9 +1201,6 @@ public class GenericOidcClientTests extends CommonTest {
     public void OidcClientSSLTest_BadOPTrustStore() throws Exception {
 
         String algorithm = KeyManagerFactory.getDefaultAlgorithm();
-        boolean isPKIX = algorithm.equalsIgnoreCase("PKIX") ? true : false;
-
-        if(!isPKIX){
 
             // Reconfigure OP server with SSL settings
             // Reconfigure RP server with SSL settings
@@ -1252,10 +1249,6 @@ public class GenericOidcClientTests extends CommonTest {
             testOPServer.addIgnoredServerException("CWWKO0801E");
 
             validationTools.validateResult(response, failingAction, expectations, updatedTestSettings);
-        }
-        else{
-            Log.info(thisClass, _testName, "Skipping test for PKIX provider");
-        }
 
     }
 
