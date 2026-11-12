@@ -85,7 +85,6 @@ org.apache.myfaces.buildtools:myfaces-builder-annotations:1.0.9
 org.apache.neethi:neethi:3.0.2
 org.jboss.classfilewriter:jboss-classfilewriter:1.2.5.Final
 org.jboss.jdeparser:jdeparser:1.0.0.Final
-org.jboss:jandex:2.4.3.Final
 org.jvnet.mimepull:mimepull:1.9.7
 org.osgi:org.osgi.core:4.2.0
 org.shredzone.acme4j:acme4j-client:2.7
