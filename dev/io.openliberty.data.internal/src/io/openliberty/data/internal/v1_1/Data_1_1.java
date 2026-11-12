@@ -152,7 +152,7 @@ public class Data_1_1 implements DataVersionCompatibility {
     private static final Set<Class<? extends Annotation>> QUERY_LANGUAGE_ANNOS;
 
     /**
-     * jakarta.persistence.query.Query.class
+     * jakarta.persistence.query.QueryOptions.class
      */
     static final Class<? extends Annotation> QUERY_OPTIONS_CLASS;
 
@@ -189,7 +189,6 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     static {
         // TODO remove this temporary toleration for the persistence-3.2 feature
-        ClassLoader cl = EntityManager.class.getClassLoader();
         boolean jpa32 = EntityManager.class.getClasses().length == 0;
         if (jpa32) {
             EA_CREATION_OPTION_ARRAY_CLASS = null;
@@ -206,6 +205,7 @@ public class Data_1_1 implements DataVersionCompatibility {
             RESOURCE_ACCESSOR_CLASSES_STATELESS = RESOURCE_ACCESSOR_CLASSES_STATEFUL;
         } else { // Persistence 4.0
             try {
+                ClassLoader cl = EntityManager.class.getClassLoader();
                 Class<?> CreationOption_EA = cl //
                                 .loadClass("jakarta.persistence.EntityAgent$CreationOption");
                 EA_CREATION_OPTION_ARRAY_CLASS = CreationOption_EA.arrayType();
@@ -367,6 +367,12 @@ public class Data_1_1 implements DataVersionCompatibility {
         for (int i = 0; i < selects.length; i++)
             values[i] = selects[i].value();
         return values;
+    }
+
+    @Override
+    @Trivial
+    public boolean isJPA32() {
+        return JAKARTA_QUERY_CLASS == null; // Persistence 3.2
     }
 
     @Override

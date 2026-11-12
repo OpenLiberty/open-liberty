@@ -379,47 +379,20 @@ public class QueryInfo_1_1 extends QueryInfo {
     }
 
     @Override
-    protected jakarta.persistence.Query //
-                    ehCreateNativeQuery(AutoCloseable entityHandler) {
-        // If the repository method return type is the entity class or multiple
-        // entities, consider the entity class to be the result type. Otherwise
-        // the result could be a count or single entity attribute.
-        Class<?> resultClass = singleType != null &&
-                               entityInfo.entityClass.isAssignableFrom(singleType) //
-                                               ? entityInfo.entityClass //
-                                               : entityInfo.isHibernate //
-                                                               ? Object.class //
-                                                               : null;
-
+    protected <T> TypedQuery<T> ehCreateNativeQuery(AutoCloseable entityHandler,
+                                                    Class<?> resultClass) {
         // TODO use Persistence 4.0 API directly once the requirement for
         // data-1.1 to be able to run with persistence-3.2 during betas is removed
 
-        jakarta.persistence.Query query;
+        Object query;
         try {
-            if (entityHandler instanceof EntityManager em) {
-                if (resultClass == null) // em.createNativeQuery(ql);
-                    query = (jakarta.persistence.Query) em.getClass() //
-                                    .getMethod("createNativeQuery",
-                                               String.class) //
-                                    .invoke(em,
-                                            ql);
-                else // em.createNativeQuery(ql, resultClass);
-                    query = (jakarta.persistence.Query) entityHandler.getClass() //
-                                    .getMethod("createNativeQuery",
-                                               String.class,
-                                               Class.class) //
-                                    .invoke(entityHandler,
-                                            ql,
-                                            resultClass);
-            } else {
-                query = (jakarta.persistence.Query) entityHandler.getClass() //
-                                .getMethod("createNativeQuery",
-                                           String.class,
-                                           Class.class) //
-                                .invoke(entityHandler,
-                                        ql,
-                                        resultClass);
-            }
+            query = entityHandler.getClass() //
+                            .getMethod("createNativeQuery",
+                                       String.class,
+                                       Class.class) //
+                            .invoke(entityHandler,
+                                    ql,
+                                    resultClass);
         } catch (IllegalAccessException | NoSuchMethodException x) {
             throw new RuntimeException(x); // should be impossible
         } catch (InvocationTargetException x) {
@@ -428,12 +401,15 @@ public class QueryInfo_1_1 extends QueryInfo {
             throw new DataException(x.getCause());
         }
 
+        @SuppressWarnings("unchecked")
+        TypedQuery<T> typedQuery = (TypedQuery<T>) query;
+
         Annotation options = QUERY_OPTIONS_CLASS == null //
                         ? null //
                         : method.getAnnotation(QUERY_OPTIONS_CLASS);
         if (options != null)
             try {
-                setReadOptions(options, query, true, entityHandler);
+                setReadOptions(options, typedQuery, true, entityHandler);
             } catch (IllegalAccessException | NoSuchMethodException x) {
                 throw new RuntimeException(x); // should be impossible
             } catch (InvocationTargetException x) {
@@ -443,9 +419,9 @@ public class QueryInfo_1_1 extends QueryInfo {
             }
 
         if (eagerlyFetch != null)
-            query.setHint(LOADGRAPH, eagerlyFetch);
+            typedQuery.setHint(LOADGRAPH, eagerlyFetch);
 
-        return query;
+        return typedQuery;
     }
 
     @Override
@@ -1081,6 +1057,25 @@ public class QueryInfo_1_1 extends QueryInfo {
             }
         }
         return null;
+    }
+
+    @Override
+    @Trivial
+    protected long getResultCount(TypedQuery<?> query) {
+        if (entityInfo.isHibernate) // TODO invoke JPA 4.0 API directly
+            try {
+                Method getResultCount = //
+                                TypedQuery.class.getMethod("getResultCount");
+                return (long) getResultCount.invoke(query);
+            } catch (IllegalAccessException | //
+                            IllegalArgumentException | //
+                            NoSuchMethodException x) {
+                throw new DataException(x);
+            } catch (InvocationTargetException x) {
+                throw new DataException(x.getCause());
+            }
+        else
+            return (long) query.getSingleResult();
     }
 
     /**
