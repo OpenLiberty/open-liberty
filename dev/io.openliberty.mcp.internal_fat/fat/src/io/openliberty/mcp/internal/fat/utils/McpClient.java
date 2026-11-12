@@ -16,7 +16,6 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_D
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_APPLICATION_JSON;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -29,6 +28,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 
@@ -61,14 +61,16 @@ import componenttest.topology.impl.LibertyServer;
  *
  * <h2>Making requests</h2>
  * <ul>
- *   <li>{@link #callMCP(String)} — standard call; applies all client-level auth and session
- *       headers, expects HTTP 200 with a response body.</li>
- *   <li>{@link #callMCPRaw(String)} — full control over expected status code,
- *       per-call auth override, and custom endpoint path. Use for negative/exceptional test
- *       cases.</li>
- *   <li>{@link #callMCPNotification(String)} — sends a notification, expects HTTP 202 with
- *       no response body.</li>
- *   <li>{@link #listAllTools()} — convenience method that follows pagination to return all tools.</li>
+ * <li>{@link #callMCP(String)} — standard call; applies all client-level auth and session
+ * headers, expects HTTP 200 with a response body.</li>
+ * <li>{@link #callMCPRaw(String)} — full control over expected status code,
+ * per-call auth override, and custom endpoint path. Use for negative/exceptional test
+ * cases.</li>
+ * <li>{@link #callTool(String)} / {@link #callTool(String, Map)} — calls a tool and returns a
+ * {@link ToolResponse} to assert on with {@link ToolResponseMatcher}.</li>
+ * <li>{@link #callMCPNotification(String)} — sends a notification, expects HTTP 202 with
+ * no response body.</li>
+ * <li>{@link #listAllTools()} — convenience method that follows pagination to return all tools.</li>
  * </ul>
  *
  * <h2>HTTPS</h2>
@@ -103,6 +105,8 @@ public class McpClient extends ExternalResource implements AutoCloseable {
     private final String path;
     private boolean sessionDeleted = false;
     private String sessionId;
+    /** Id for the next request created by {@link #callTool}; 1 is used by {@code initialize}. */
+    private int nextRequestId = 2;
 
     public static enum StateMode {
         /** Uses sessions and session IDs to maintain state across requests. */
@@ -118,7 +122,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
     /**
      * Returns a new {@link Builder} for the given server and context root.
      *
-     * @param server      the Liberty server to target
+     * @param server the Liberty server to target
      * @param contextRoot the context root of the MCP application (leading {@code /} optional)
      */
     public static Builder builder(LibertyServer server, String contextRoot) {
@@ -199,9 +203,8 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         this.password = b.password;
         this.bearerToken = b.bearerToken;
         this.sslContext = b.sslContext;
-        this.httpClient = sslContext == null
-                          ? HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build()
-                          : HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).sslContext(sslContext).build();
+        this.httpClient = sslContext == null ? HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).build() : HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1)
+                                                                                                                                .sslContext(sslContext).build();
     }
 
     // -------------------------------------------------------------------------
@@ -387,10 +390,10 @@ public class McpClient extends ExternalResource implements AutoCloseable {
     public void deleteSession() throws Exception {
         if (mode.equals(StateMode.STATEFUL)) {
             HttpRequest deleteRequest = HttpRequest.newBuilder()
-                            .uri(URI.create(getMcpUrl()))
-                            .header(MCP_SESSION_ID, sessionId)
-                            .DELETE()
-                            .build();
+                                                   .uri(URI.create(getMcpUrl()))
+                                                   .header(MCP_SESSION_ID, sessionId)
+                                                   .DELETE()
+                                                   .build();
             HttpResponse<String> response = httpClient.send(deleteRequest, BodyHandlers.ofString());
             if (response.statusCode() != 200) {
                 throw new Exception("deleteSession failed with HTTP " + response.statusCode() + ": " + response.body());
@@ -407,10 +410,10 @@ public class McpClient extends ExternalResource implements AutoCloseable {
     public void deleteSession(String mcpSessionId) throws Exception {
         if (mode.equals(StateMode.STATEFUL)) {
             HttpRequest deleteRequest = HttpRequest.newBuilder()
-                            .uri(URI.create(getMcpUrl()))
-                            .header(MCP_SESSION_ID, mcpSessionId)
-                            .DELETE()
-                            .build();
+                                                   .uri(URI.create(getMcpUrl()))
+                                                   .header(MCP_SESSION_ID, mcpSessionId)
+                                                   .DELETE()
+                                                   .build();
             HttpResponse<String> response = httpClient.send(deleteRequest, BodyHandlers.ofString());
             if (response.statusCode() != 200) {
                 throw new Exception("deleteSession(" + mcpSessionId + ") failed with HTTP " + response.statusCode() + ": " + response.body());
@@ -428,11 +431,11 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      */
     private HttpResponse<String> post(String url, String jsonBody) throws Exception {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
-                        .uri(URI.create(url))
-                        .header(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                        .header(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
-                        .header("Content-Type", VALUE_APPLICATION_JSON)
-                        .POST(HttpRequest.BodyPublishers.ofString(jsonBody));
+                                                 .uri(URI.create(url))
+                                                 .header(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                 .header(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
+                                                 .header("Content-Type", VALUE_APPLICATION_JSON)
+                                                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody));
 
         if (mode == StateMode.STATEFUL && sessionId != null) {
             builder.header(MCP_SESSION_ID, sessionId);
@@ -469,6 +472,39 @@ public class McpClient extends ExternalResource implements AutoCloseable {
             throw new Exception("Unexpected HTTP status expected:<200> but was:<" + response.statusCode() + ">\nBody: " + response.body());
         }
         return response.body();
+    }
+
+    /**
+     * Calls a tool that takes no arguments. See {@link #callTool(String, Map)}.
+     *
+     * @param toolName the name of the tool to call
+     * @return the parsed response
+     * @throws Exception if the request fails or the response status is not 200
+     */
+    public ToolResponse callTool(String toolName) throws Exception {
+        return callTool(toolName, null);
+    }
+
+    /**
+     * Sends a {@code tools/call} request, filling in the JSON-RPC envelope, and parses the
+     * response. Use {@link ToolResponseMatcher} to assert on the result.
+     *
+     * @param toolName the name of the tool to call
+     * @param arguments the tool arguments, or {@code null} to send no {@code arguments} field
+     * @return the parsed response
+     * @throws Exception if the request fails or the response status is not 200
+     */
+    public ToolResponse callTool(String toolName, Map<String, Object> arguments) throws Exception {
+        JSONObject params = new JSONObject().put("name", toolName);
+        if (arguments != null) {
+            params.put("arguments", new JSONObject(arguments));
+        }
+        JSONObject request = new JSONObject()
+                                             .put("jsonrpc", "2.0")
+                                             .put("id", String.valueOf(nextRequestId++))
+                                             .put("method", "tools/call")
+                                             .put("params", params);
+        return new ToolResponse(new JSONObject(callMCP(request.toString())));
     }
 
     /**
@@ -559,11 +595,13 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * <p>Use this for negative tests and other cases that do not fit the standard happy path.
      *
      * <p>Example — expect a 401 with no credentials:
+     *
      * <pre>{@code
      * McpDetailedAuthResponse r = client.callMCPRaw(body).expectedStatus(401).run();
      * }</pre>
      *
      * <p>Example — per-call credentials on an existing session:
+     *
      * <pre>{@code
      * client.callMCPRaw(body).basicAuth("testuser", "password").expectedStatus(403).run();
      * }</pre>
@@ -651,19 +689,16 @@ public class McpClient extends ExternalResource implements AutoCloseable {
          * @throws Exception if the HTTP call fails or the status does not match the expectation
          */
         public McpDetailedAuthResponse run() throws Exception {
-            String url = mcpPath != null
-                         ? (sslContext != null
-                            ? "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort()
-                            : "http://" + server.getHostname() + ":" + server.getHttpDefaultPort())
-                           + contextRoot + mcpPath
-                         : getMcpUrl();
+            String url = mcpPath != null ? (sslContext != null ? "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() : "http://" + server.getHostname()
+                                                                                                                                               + ":" + server.getHttpDefaultPort())
+                                           + contextRoot + mcpPath : getMcpUrl();
 
             HttpRequest.Builder builder = HttpRequest.newBuilder()
-                            .uri(URI.create(url))
-                            .header(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                            .header(MCP_PROTOCOL_VERSION, protocolVersionOverride != null ? protocolVersionOverride : VALUE_MCP_PROTOCOL_VERSION)
-                            .header("Content-Type", VALUE_APPLICATION_JSON)
-                            .POST(HttpRequest.BodyPublishers.ofString(jsonRequestBody));
+                                                     .uri(URI.create(url))
+                                                     .header(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                     .header(MCP_PROTOCOL_VERSION, protocolVersionOverride != null ? protocolVersionOverride : VALUE_MCP_PROTOCOL_VERSION)
+                                                     .header("Content-Type", VALUE_APPLICATION_JSON)
+                                                     .POST(HttpRequest.BodyPublishers.ofString(jsonRequestBody));
 
             // sessionIdOverride takes precedence over the client's session ID
             if (sessionIdOverride != null) {
@@ -675,13 +710,13 @@ public class McpClient extends ExternalResource implements AutoCloseable {
             // Per-call basicAuth override takes precedence over client-level credentials.
             if (basicAuthUsername != null && basicAuthPassword != null) {
                 String encoded = Base64.getEncoder()
-                                .encodeToString((basicAuthUsername + ":" + basicAuthPassword).getBytes(StandardCharsets.UTF_8));
+                                       .encodeToString((basicAuthUsername + ":" + basicAuthPassword).getBytes(StandardCharsets.UTF_8));
                 builder.header("Authorization", "Basic " + encoded);
             } else if (bearerToken != null) {
                 builder.header("Authorization", "Bearer " + bearerToken);
             } else if (username != null && password != null) {
                 String encoded = Base64.getEncoder()
-                                .encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
+                                       .encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
                 builder.header("Authorization", "Basic " + encoded);
             }
 
@@ -693,10 +728,10 @@ public class McpClient extends ExternalResource implements AutoCloseable {
             }
 
             return new McpDetailedAuthResponse(
-                            response.statusCode(),
-                            response.headers().firstValue("WWW-Authenticate").orElse(null),
-                            response.headers().firstValue("Content-Type").orElse(null),
-                            response.body());
+                                               response.statusCode(),
+                                               response.headers().firstValue("WWW-Authenticate").orElse(null),
+                                               response.headers().firstValue("Content-Type").orElse(null),
+                                               response.body());
         }
     }
 
