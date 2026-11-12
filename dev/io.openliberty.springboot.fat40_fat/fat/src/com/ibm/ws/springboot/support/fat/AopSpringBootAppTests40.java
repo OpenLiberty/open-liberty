@@ -12,6 +12,7 @@ package com.ibm.ws.springboot.support.fat;
 
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,8 +30,19 @@ public class AopSpringBootAppTests40 extends AopAbstractTests {
         return AppConfigType.SPRING_BOOT_APP_TAG;
     }
 
+    // Stop the server after each test method so that each test starts with a fresh server.
+    @After
+    public void stopServerAfterTest() throws Exception {
+        stopServer(DO_CLEANUP_APPS);
+    }
+
     @Test
-    public void testAopSpringBootApplication() throws Exception {
-        testAop();
+    public void testAopSpringBootApplicationServlet61Sync() throws Exception {
+        testAopSync();
+    }
+
+    @Test
+    public void testAopSpringBootApplicationServlet61Aysnc() throws Exception {
+        testAopAsync();
     }
 }

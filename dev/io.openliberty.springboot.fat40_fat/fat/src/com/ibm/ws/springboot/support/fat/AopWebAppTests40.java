@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,8 +37,19 @@ public class AopWebAppTests40 extends AopAbstractTests {
         return "/testName/";
     }
 
+    // Stop the server after each test method so that each test starts with a fresh server.
+    @After
+    public void stopServerAfterTest() throws Exception {
+        stopServer(DO_CLEANUP_APPS);
+    }
+
     @Test
-    public void testAopWebApplication() throws Exception {
-        testAop();
+    public void testAopWebApplicationSync() throws Exception {
+        testAopSync();
+    }
+
+    @Test
+    public void testAopWebApplicationAsync() throws Exception {
+        testAopAsync();
     }
 }

@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -23,7 +24,7 @@ import componenttest.custom.junit.runner.FATRunner;
 public class AopWebAppTests30 extends AopAbstractTests {
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("servlet-6.0"));
+        return new HashSet<>(Arrays.asList(testName.getMethodName().contains("Servlet61") ? "servlet-6.1" : "servlet-6.0"));
     }
 
     @Override
@@ -36,8 +37,24 @@ public class AopWebAppTests30 extends AopAbstractTests {
         return "/testName/";
     }
 
+    // Stop the server after each test method so that each test uses its own servlet feature.
+    @After
+    public void stopServerAfterTest() throws Exception {
+        stopServer(DO_CLEANUP_APPS);
+    }
+
     @Test
-    public void testAopWebApplication() throws Exception {
-        testAop();
+    public void testAopWebApplicationServlet60Sync() throws Exception {
+        testAopSync();
+    }
+
+    @Test
+    public void testAopWebApplicationServlet60Async() throws Exception {
+        testAopAsync();
+    }
+
+    @Test
+    public void testAopWebApplicationServlet61Async() throws Exception {
+        testAopAsync();
     }
 }
