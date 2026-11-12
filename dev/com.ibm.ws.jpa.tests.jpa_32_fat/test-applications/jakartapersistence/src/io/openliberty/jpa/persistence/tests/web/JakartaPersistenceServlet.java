@@ -2131,8 +2131,6 @@ public class JakartaPersistenceServlet extends FATServlet {
 
     /**
      * Utility method to drop all entities from table.
-     * Uses SELECT + remove() so the same code works under both JPA 3.2 and JPA 4.0:
-     * createQuery(String, Class) and em.remove() exist in both versions.
      */
     private <T> void deleteAllEntities(Class<T> clazz) throws Exception {
         tx.begin();

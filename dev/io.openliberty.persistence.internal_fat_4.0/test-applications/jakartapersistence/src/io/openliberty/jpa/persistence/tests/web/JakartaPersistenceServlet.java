@@ -512,6 +512,70 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     // -----------------------------------------------------------------------
+    // JPA 4.0 backward-compat: createQuery(String) must still accept DML
+    // -----------------------------------------------------------------------
+
+    /**
+     * JPA 4.0 spec (EntityHandler): createQuery(String) must still accept a
+     * JPQL UPDATE statement for backward compatibility, even though the
+     * recommended API is now createStatement(String).
+     */
+    @Test
+    public void testCreateQueryStringUpdate() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        em.persist(new SimpleEmployee("Alice", 40_000L));
+        em.persist(new SimpleEmployee("Bob",   80_000L));
+        tx.commit();
+
+        tx.begin();
+        int updated = em.createQuery(
+            "UPDATE SimpleEmployee SET salary = salary * 2 WHERE salary < 50000")
+            .executeUpdate();
+        tx.commit();
+
+        assertEquals("Expected 1 row updated (only Alice earns < 50000)", 1, updated);
+
+        SimpleEmployee alice = em.createQuery(
+            "SELECT e FROM SimpleEmployee e WHERE e.name = :n", SimpleEmployee.class)
+            .setParameter("n", "Alice")
+            .getSingleResult();
+        assertEquals("Alice salary should have doubled to 80000", 80_000L, alice.getSalary());
+
+        SimpleEmployee bob = em.createQuery(
+            "SELECT e FROM SimpleEmployee e WHERE e.name = :n", SimpleEmployee.class)
+            .setParameter("n", "Bob")
+            .getSingleResult();
+        assertEquals("Bob salary should be unchanged at 80000", 80_000L, bob.getSalary());
+    }
+
+    /**
+     * JPA 4.0 spec (EntityHandler): createQuery(String) must still accept a
+     * JPQL DELETE statement for backward compatibility.
+     */
+    @Test
+    public void testCreateQueryStringDelete() throws Exception {
+        cleanup(SimpleEmployee.class);
+        tx.begin();
+        em.persist(new SimpleEmployee("Charlie", 30_000L));
+        em.persist(new SimpleEmployee("Diana",   90_000L));
+        tx.commit();
+
+        tx.begin();
+        int deleted = em.createQuery(
+            "DELETE FROM SimpleEmployee WHERE salary < 50000")
+            .executeUpdate();
+        tx.commit();
+
+        assertEquals("Expected 1 row deleted (only Charlie earns < 50000)", 1, deleted);
+
+        List<SimpleEmployee> remaining = em.createQuery(
+            "SELECT e FROM SimpleEmployee e", SimpleEmployee.class).getResultList();
+        assertEquals("Only Diana should remain", 1, remaining.size());
+        assertEquals("Diana", remaining.get(0).getName());
+    }
+
+    // -----------------------------------------------------------------------
     // Helpers
     // -----------------------------------------------------------------------
 
