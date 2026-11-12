@@ -229,7 +229,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                     // The legacy parser rejects this protocol condition without FFDC.
                     if (!(failure instanceof ContentLengthNotAllowedException)
                                     && !isExpectedRequestValidationFailure(failure)
-                                    && !isNonNumericContentLength(failure)
+                                    && !hasNonDecimalContentLength(msg)
                                     && !failure.getMessage().contains("possibly HTTP/0.9")) {
                         FFDCFilter.processException(failure, HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
                     }
@@ -366,13 +366,26 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                                         && failure.getCause() instanceof HttpRequestValidationException);
     }
 
-    // Netty reports a non-numeric Content-Length (for example a value left with a leading SP after an
-    // obs-fold is normalized) as a plain IllegalArgumentException. The legacy parser rejects this
-    // without FFDC, so it is a client error, not a server fault.
-    private static boolean isNonNumericContentLength(Throwable failure) {
-        return failure instanceof IllegalArgumentException
-                        && failure.getMessage() != null
-                        && failure.getMessage().startsWith("Content-Length value is not a number");
+    // Netty reports a non-numeric Content-Length (for example " 123" left by an obs-fold on an empty
+    // value) as a plain IllegalArgumentException decode failure. Legacy answers with a 400 and no FFDC,
+    // so it is a client error, not a server fault. Check the header values themselves instead of
+    // matching Netty's message text.
+    private static boolean hasNonDecimalContentLength(HttpObject msg) {
+        if (!(msg instanceof HttpRequest) || !(msg.decoderResult().cause() instanceof IllegalArgumentException)) {
+            return false;
+        }
+        for (String value : ((HttpRequest) msg).headers().getAll(HttpHeaderNames.CONTENT_LENGTH)) {
+            if (value.isEmpty()) {
+                return true;
+            }
+            for (int i = 0; i < value.length(); i++) {
+                char c = value.charAt(i);
+                if (c < '0' || c > '9') {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static boolean isUpgrade(HttpRequest req) {
