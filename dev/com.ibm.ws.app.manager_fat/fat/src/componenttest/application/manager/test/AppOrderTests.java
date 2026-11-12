@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package componenttest.application.manager.test;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -291,6 +292,122 @@ public class AppOrderTests extends AbstractAppManagerTest {
         // Snoop should start because it was blocked on slow
         server.waitForStringInLog("CWWKZ0001I.* snoop");
 
+    }
+
+    /**
+     * Regression test for TS022427317.
+     *
+     * <p>Scenario: an application configured with {@code autoStart="false"} receives an explicit
+     * {@code ApplicationMBean.start()} call.  Before startup completes, Liberty's OSGi Configuration
+     * Admin delivers a {@code deleted(old_pid)} / {@code updated(new_pid)} pair for the same logical
+     * application name — reproducing the PID churn that occurs when a CICS BUNDLE installation
+     * rewrites {@code installedApps.xml} during a z/OS system IPL.
+     *
+     * <p>Without the fix the replacement state machine is born with a fresh, unsatisfied
+     * explicit-start barrier and the application stalls in STOPPED state forever.  With the fix,
+     * the start intent recorded before the deletion is propagated to the replacement state machine
+     * and the application completes startup without requiring a second {@code start()} call.
+     *
+     * <p>The "slow" application sleeps for ~40 seconds during {@code contextInitialized()}, which
+     * gives this test a reliable window to perform the server.xml replacement while the application
+     * is in-flight between the explicit {@code start()} invocation and {@code STARTED} state.
+     */
+    @Test
+    public void testAutoStartFalseMBeanStartSurvivesConfigReplacement() throws Exception {
+        final String method = testName.getMethodName();
+
+        server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SLOW_APP);
+
+        // Start with id="slowV1" — autoStart=false, so the app remains STOPPED after boot.
+        server.setServerConfigurationFile("/appOrder/mbean-pid-replace.xml");
+        server.startServer(method + ".log");
+
+        ApplicationMBean slow = getApplicationMBean("slow");
+        assertTrue("The application 'slow' should be in STOPPED state after server start",
+                   slow.getState() == ApplicationState.STOPPED);
+
+        // Invoke start() exactly once. The slow app will now begin contextInitialized(),
+        // sleeping ~40 s before completing — keeping the application in STARTING state.
+        slow.start();
+
+        // While the application is in-flight (STARTING), replace the server config so that
+        // the application element's id changes from "slowV1" to "slowV2".  Liberty's Config
+        // Admin will issue a deleted(slowV1-pid) + updated(slowV2-pid) pair, destroying the
+        // in-flight state machine and creating a fresh one for the same application name.
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("/appOrder/mbean-pid-replace-updated.xml");
+        // Wait for Liberty to acknowledge the config change before polling for app start.
+        assertNotNull("Server config update was not acknowledged",
+                      server.waitForStringInLogUsingMark("CWWKG0017I"));
+
+        // The application must reach STARTED without any second start() call.
+        // We allow the full LONG_TIMEOUT (120 s) because the slow app sleeps ~40 s.
+        assertNotNull("Application 'slow' did not start after config PID replacement — "
+                      + "explicit start intent was lost (regression of TS022427317)",
+                      server.waitForStringInLogUsingMark("CWWKZ0001I.* slow", LONG_TIMEOUT));
+    }
+
+    /**
+     * Regression test: an explicit {@code ApplicationMBean.stop()} on an application with the default
+     * {@code autoStart=true} must leave it STOPPED until it is explicitly started again.  It must not
+     * restart itself once the stop completes.
+     */
+    @Test
+    public void testStopAutoStartTrueAppStaysStopped() throws Exception {
+        final String method = testName.getMethodName();
+
+        server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SNOOP_WAR);
+        server.setServerConfigurationFile("/appOrder/mbean-stop-autostart.xml");
+        server.startServer(method + ".log");
+
+        assertNotNull("The snoop application never started", server.waitForStringInLog("CWWKZ0001I.* snoop"));
+
+        ApplicationMBean snoop = getApplicationMBean("snoop");
+
+        server.setMarkToEndOfLog();
+        snoop.stop();
+        assertNotNull("The snoop application did not stop", server.waitForStringInLogUsingMark("CWWKZ0009I.* snoop"));
+
+        // The application must not bounce back to STARTING by itself.
+        assertNull("The snoop application restarted itself after an explicit stop",
+                   server.verifyStringNotInLogUsingMark("CWWKZ0018I.* snoop", SHORT_TIMEOUT));
+        assertTrue("The application 'snoop' should remain STOPPED", snoop.getState() == ApplicationState.STOPPED);
+
+        // An explicit start must still work.  A restart after a stop is reported as
+        // CWWKZ0003I (application updated) rather than CWWKZ0001I (application started).
+        server.setMarkToEndOfLog();
+        snoop.start();
+        assertNotNull("The snoop application did not start after an explicit start",
+                      server.waitForStringInLogUsingMark("CWWKZ000[13]I.* snoop", LONG_TIMEOUT));
+    }
+
+    /**
+     * Regression test: an application with the default {@code autoStart=true} that has been explicitly
+     * stopped must remain STOPPED when an unrelated server.xml change is applied afterwards.
+     */
+    @Test
+    public void testStoppedAutoStartTrueAppStaysStoppedAcrossConfigUpdate() throws Exception {
+        final String method = testName.getMethodName();
+
+        server.copyFileToLibertyServerRoot(PUBLISH_FILES, APPS_DIR, SNOOP_WAR);
+        server.setServerConfigurationFile("/appOrder/mbean-stop-autostart.xml");
+        server.startServer(method + ".log");
+
+        assertNotNull("The snoop application never started", server.waitForStringInLog("CWWKZ0001I.* snoop"));
+
+        ApplicationMBean snoop = getApplicationMBean("snoop");
+
+        server.setMarkToEndOfLog();
+        snoop.stop();
+        assertNotNull("The snoop application did not stop", server.waitForStringInLogUsingMark("CWWKZ0009I.* snoop"));
+
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("/appOrder/mbean-stop-autostart-updated.xml");
+        assertNotNull("Server config update was not acknowledged", server.waitForStringInLogUsingMark("CWWKG0017I"));
+
+        assertNull("The stopped snoop application was restarted by an unrelated config update",
+                   server.verifyStringNotInLogUsingMark("CWWKZ0018I.* snoop", SHORT_TIMEOUT));
+        assertTrue("The application 'snoop' should remain STOPPED", snoop.getState() == ApplicationState.STOPPED);
     }
 
     /**
