@@ -426,7 +426,7 @@ public class QueryInfo_1_1 extends QueryInfo {
 
     @Override
     protected jakarta.persistence.Query //
-                    ehCreateNativeStatement(AutoCloseable entityHandler) {
+                    ehCreateNativeStatementOrQuery(AutoCloseable entityHandler) {
         jakarta.persistence.Query query;
 
         Annotation options = QUERY_OPTIONS_CLASS == null //
@@ -436,21 +436,23 @@ public class QueryInfo_1_1 extends QueryInfo {
         // TODO use Persistence 4.0 API directly once the requirement for
         // data-1.1 to be able to run with persistence-3.2 during betas is removed
         //if (entityHandler instanceof EntityHandler handler) ...
-        //    handler.createNativeStatement(ql)
+        //    handler.createNativeQuery(ql)
 
         try {
-            if (entityHandler instanceof EntityManager em) {
-                query = (jakarta.persistence.Query) em.getClass() //
-                                .getMethod("createNativeQuery", String.class) //
-                                .invoke(em, ql);
-            } else {
-                query = (jakarta.persistence.Query) entityHandler.getClass() //
-                                .getMethod("createNativeStatement", String.class) //
-                                .invoke(entityHandler, ql);
-            }
+            query = (jakarta.persistence.Query) entityHandler.getClass() //
+                            .getMethod("createNativeQuery", String.class) //
+                            .invoke(entityHandler, ql);
 
-            if (options != null)
-                setWriteOptions(options, query);
+            if (query instanceof TypedQuery<?> typedQuery) {
+                if (options != null)
+                    setReadOptions(options, typedQuery, true, entityHandler);
+
+                if (eagerlyFetch != null)
+                    typedQuery.setHint(LOADGRAPH, eagerlyFetch);
+            } else {
+                if (options != null)
+                    setWriteOptions(options, query);
+            }
         } catch (IllegalAccessException | NoSuchMethodException x) {
             throw new RuntimeException(x); // should be impossible
         } catch (InvocationTargetException x) {

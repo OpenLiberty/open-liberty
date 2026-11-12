@@ -142,7 +142,7 @@ public class QueryInfo_1_0 extends QueryInfo {
 
     @Override
     protected jakarta.persistence.Query //
-                    ehCreateNativeStatement(AutoCloseable entityHandler) {
+                    ehCreateNativeStatementOrQuery(AutoCloseable entityHandler) {
         throw new UnsupportedOperationException("jakarta.persistence.query.NativeQuery");
     }
 

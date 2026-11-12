@@ -1536,14 +1536,14 @@ public abstract class QueryInfo {
 
     /**
      * Delegates to the EntityAgent or EntityManager to create a Jakarta
-     * Persistence Native Query that peforms a SQL DELETE, INSERT, UPDATE,
-     * or other native SQL statement that is not return query results.
+     * Persistence Native Query that peforms a SQL statement.
      *
      * @param entityHandler EntityAgent or EntityManager
-     * @return the statement/query
+     * @return jakarta.persistence.Statement or jakarta.persistence.TypedQuery,
+     *         as determined by the Jakarta Persistence provider from the SQL
      */
     protected abstract jakarta.persistence.Query //
-                    ehCreateNativeStatement(AutoCloseable entityHandler);
+                    ehCreateNativeStatementOrQuery(AutoCloseable entityHandler);
 
     /**
      * Delegates to the EntityAgent or EntityManager to create a
@@ -4741,56 +4741,34 @@ public abstract class QueryInfo {
                          ql,
                          entityInfo.entityClass.getName());
 
-            // TODO how do you know if it is a query or update?
-            // The following generalization is not precise enough:
-            int max = qc.maxResults();
-            boolean mightHaveUpdateCount = max == 0 && // not specified
-                                           multiType == null &&
-                                           Util.RETURN_TYPES_FOR_UPDATE_COUNT //
-                                                           .contains(singleType)
-                                           &&
-                                           !ql.trim().regionMatches(true, 0, "SELECT", 0, 6);
+            jakarta.persistence.Query query = //
+                            ehCreateNativeStatementOrQuery(entityHandler);
 
-            jakarta.persistence.Query query;
-            if (mightHaveUpdateCount) {
-                query = ehCreateNativeStatement(entityHandler);
+            setParameters(query, args, Collections.emptyMap(), null, null);
 
-                setParameters(query, args, Collections.emptyMap(), null, null);
-
-                returnValue = toReturnValue(query.executeUpdate(),
-                                            singleType);
-            } else {
-                // If the repository method return type is the entity class or
-                // multiple entities, consider the entity class to be the result
-                // type. Otherwise the result could be a count or single entity
-                // attribute.
-                Class<?> resultClass = singleType != null && entityInfo //
-                                .entityClass.isAssignableFrom(singleType) //
-                                                ? entityInfo.entityClass //
-                                                : Object.class;
-
-                query = ehCreateNativeQuery(entityHandler, resultClass);
-
+            if (query instanceof TypedQuery typedQuery) {
                 int startAt = limit != null //
                                 ? computeOffset(limit) //
                                 : pageReq != null //
                                                 ? computeOffset(pageReq) //
                                                 : 0;
-
-                if (max > 0) {
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(tc, "limit max results to " + max);
-                    query.setMaxResults(max);
-                }
                 if (startAt > 0) {
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(tc, "start at (0-based) position " + startAt);
-                    query.setFirstResult(startAt);
+                    typedQuery.setFirstResult(startAt);
                 }
 
-                setParameters(query, args, Collections.emptyMap(), null, null);
+                int max = qc.maxResults();
+                if (max > 0) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(tc, "limit max results to " + max);
+                    typedQuery.setMaxResults(max);
+                }
 
                 returnValue = getQueryResults(entityHandler, qc, query, txStatus);
+            } else {
+                returnValue = toReturnValue(query.executeUpdate(),
+                                            singleType);
             }
         }
 
