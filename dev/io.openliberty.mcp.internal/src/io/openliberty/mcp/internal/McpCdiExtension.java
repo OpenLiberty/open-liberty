@@ -412,7 +412,9 @@ public class McpCdiExtension implements Extension {
                                                        .computeIfAbsent(toolmd.name(), key -> new ArrayList<>());
         duplicatesList.add(toolmd.getToolQualifiedName());
         if (duplicatesList.size() <= 1) {
-            toolRegistries.getForModule(module).addTool(toolmd);
+            ToolRegistry registry = toolRegistries.getForModule(module);
+            registry.addTool(toolmd);
+            registry.markHasAnnotatedTools();
             if (TraceComponent.isAnyTracingEnabled()) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Registered tool: " + toolmd.name(), toolmd);

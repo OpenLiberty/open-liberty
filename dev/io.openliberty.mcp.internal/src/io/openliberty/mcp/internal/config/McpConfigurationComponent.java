@@ -70,6 +70,7 @@ public class McpConfigurationComponent {
         boolean stateless = (boolean) properties.get("stateless");
         long asyncTimeout = (long) properties.get("asyncTimeout");
         Duration sessionTimeout = Duration.ofSeconds((Long) properties.get("sessionTimeout"));
+        McpConfig.EnableEndpoint enableEndpoint = McpConfig.EnableEndpoint.fromString((String) properties.get("enableEndpoint"));
 
         // Parse flattened serverInfo properties (ibm:flat="true" in metatype.xml)
         ServerInfo serverInfo = parseServerInfo(properties);
@@ -93,7 +94,7 @@ public class McpConfigurationComponent {
         }
 
         this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid, sessionTimeout, serverInfo, asyncTimeout,
-                                               minimumProtocolVersion, maximumProtocolVersion);
+                                               minimumProtocolVersion, maximumProtocolVersion, enableEndpoint);
     }
 
     /**

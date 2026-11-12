@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.openliberty.mcp.internal.McpProtocolVersion;
+import io.openliberty.mcp.internal.config.McpConfig;
 import io.openliberty.mcp.internal.config.McpServerConfigProps;
 
 /**
@@ -112,7 +113,7 @@ public class McpServerConfigPropsTest {
      */
     private static McpServerConfigProps configWithRange(McpProtocolVersion min, McpProtocolVersion max) {
         return new McpServerConfigProps(false, null, McpServerConfigProps.FALLBACK_PATH, null, Duration.ofMinutes(10), null,
-                                        McpServerConfigProps.DEFAULT_ASYNC_TIMEOUT_MS, min, max);
+                                        McpServerConfigProps.DEFAULT_ASYNC_TIMEOUT_MS, min, max, McpConfig.EnableEndpoint.AUTO);
     }
 
     /**
@@ -122,7 +123,7 @@ public class McpServerConfigPropsTest {
      * beta setting at the time of the call.
      */
     private static McpServerConfigProps configWithOtherSettingsOnly() {
-        return new McpServerConfigProps(true, "app", "/custom", null, Duration.ofMinutes(5), null, 1_000, null, null);
+        return new McpServerConfigProps(true, "app", "/custom", null, Duration.ofMinutes(5), null, 1_000, null, null, McpConfig.EnableEndpoint.AUTO);
     }
 
     /**
