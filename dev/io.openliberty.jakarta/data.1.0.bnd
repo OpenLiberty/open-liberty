@@ -24,17 +24,17 @@ javac.target: 17
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Export-Package: \
-  jakarta.data;version="1.0.0",\
-  jakarta.data.exceptions;version="1.0.0",\
-  jakarta.data.metamodel;version="1.0.0",\
-  jakarta.data.metamodel.impl;version="1.0.0",\
-  jakarta.data.page;version="1.0.0",\
-  jakarta.data.page.impl;version="1.0.0",\
-  jakarta.data.repository;version="1.0.0",\
-  jakarta.data.spi;version="1.0.0"
+  jakarta.data;version="1.0.2",\
+  jakarta.data.exceptions;version="1.0.2",\
+  jakarta.data.metamodel;version="1.0.2",\
+  jakarta.data.metamodel.impl;version="1.0.2",\
+  jakarta.data.page;version="1.0.2",\
+  jakarta.data.page.impl;version="1.0.2",\
+  jakarta.data.repository;version="1.0.2",\
+  jakarta.data.spi;version="1.0.2"
 
 -includeresource: \
-  @${repo;jakarta.data:jakarta.data-api;1.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.data:jakarta.data-api;1.0.2;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
-   dep1;groupId=jakarta.data;artifactId=jakarta.data-api;version=1.0.0;scope=runtime
+   dep1;groupId=jakarta.data;artifactId=jakarta.data-api;version=1.0.2;scope=runtime

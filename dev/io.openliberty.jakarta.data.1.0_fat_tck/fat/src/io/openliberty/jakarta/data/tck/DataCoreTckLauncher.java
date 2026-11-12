@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -64,8 +65,10 @@ public class DataCoreTckLauncher {
     public void launchDataTckCorePersistence() throws Exception {
 
         // Setup persistence server
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(persistenceServer, FATSuite.relationalDatabase);
-        persistenceServer.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(FATSuite.relationalDatabase).getDriverName());
+        DatabaseContainerUtil.build(persistenceServer, FATSuite.relationalDatabase)
+                        .withDatabaseProperties()
+                        .withDriverVariable()
+                        .modify();
         persistenceServer.startServer();
 
         // Test groups to run
@@ -86,7 +89,7 @@ public class DataCoreTckLauncher {
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.1");
+        additionalProps.put("jakarta.data.tck.version", "1.0.2");
 
         TCKRunner.build(persistenceServer, Type.JAKARTA, "Data")
                         .withPlatformVersion("11")
@@ -101,6 +104,8 @@ public class DataCoreTckLauncher {
      * Run the TCK (controlled by autoFVT/publish/tckRunner/tck/*)
      */
     @Test
+    // TODO remove once fixed: https://github.com/eclipse-jnosql/jnosql-databases/pull/469
+    @Ignore("Regression: Mongo implementation no longer supports delete methods with count.")
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchDataTckCoreNoSQL() throws Exception {
 
@@ -138,7 +143,7 @@ public class DataCoreTckLauncher {
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.1");
+        additionalProps.put("jakarta.data.tck.version", "1.0.2");
 
         TCKRunner.build(noSQLServer, Type.JAKARTA, "Data")
                         .withPlatformVersion("11")

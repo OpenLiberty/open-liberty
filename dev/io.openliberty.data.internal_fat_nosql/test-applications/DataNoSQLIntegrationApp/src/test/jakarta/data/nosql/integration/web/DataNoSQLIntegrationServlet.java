@@ -21,12 +21,12 @@ import java.util.Optional;
 
 import jakarta.annotation.Resource;
 import jakarta.inject.Inject;
+import jakarta.nosql.Template;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceUnit;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
-import org.eclipse.jnosql.mapping.document.DocumentTemplate;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -39,12 +39,15 @@ public class DataNoSQLIntegrationServlet extends FATServlet {
     private EntityManagerFactory libertyEMF;
 
     @Inject
-    DocumentTemplate jNoSQLtemplate;
+    Template jNoSQLtemplate;
 
     @Inject
     Counties counties; //JNoSQL
 
-    //TODO Re-enable after future JNoSQL Release
+    //TODO Re-enable after JNoSQL fixes RepositoryFilter provider check
+    //     https://github.com/eclipse-jnosql/jnosql/pull/823
+    //     Segment is annotated with jakarta.nosql.Entity, so JNoSQL registers
+    //     its own bean for Segments, which is ambiguous with Liberty's bean.
     //@Inject
     //Segments segments; //Liberty
 
@@ -82,13 +85,13 @@ public class DataNoSQLIntegrationServlet extends FATServlet {
         counties.remove(expected);
     }
 
-    //TODO Re-enable after future JNoSQL Release
+    //TODO Re-enable after JNoSQL fixes RepositoryFilter provider check
     //@Test
     public void testLibertyProvider() throws Exception {
 
         Segment expected = Segment.of(5, 10, 2, 4);
 
-        //TODO Re-enable after future JNoSQL Release
+        //TODO Re-enable after JNoSQL fixes RepositoryFilter provider check
         //expected = segments.save(expected);
         int expectedId = expected.id;
 
@@ -106,9 +109,7 @@ public class DataNoSQLIntegrationServlet extends FATServlet {
 
         assertTrue(unexpected.isEmpty());
 
-        //TODO Re-enable after future JNoSQL Release
+        //TODO Re-enable after JNoSQL fixes RepositoryFilter provider check
         //segments.remove(expected);
-
     }
-
 }
