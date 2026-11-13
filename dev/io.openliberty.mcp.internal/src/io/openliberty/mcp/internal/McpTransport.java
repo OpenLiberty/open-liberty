@@ -105,7 +105,7 @@ public class McpTransport {
         if (!headerPresent && mcpRequest.getRequestMethod() != RequestMethod.INITIALIZE && !mcpConfig.isAccepted(version)) {
             throw unsupportedProtocolVersion(mcpConfig);
         }
-
+        HeaderValidation.validateProtocolVersionMatchesBody(version, mcpRequest);
         this.appName = extractAppName();
         final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
 
@@ -313,20 +313,34 @@ public class McpTransport {
      * <p>
      * Per the JSON-RPC 2.0 specification, notifications (requests with no id) must not be
      * responded to, including with error responses. If the current request is a notification,
-     * this method returns without sending anything.
+     * no JSON-RPC error body is sent and the response is an empty 202 Accepted.
+     * <p>
+     * The exception is a {@link JSONRPCErrorCode#HEADER_MISMATCH}. This is a validation failure which means the
+     * server cannot accept the message, so the MCP Streamable HTTP specification requires it to be rejected with
+     * HTTP 400. For a notification that is a 400 with no body.
      *
      * @param e The JSONRPCException to be included in the error response.
      */
     public void sendJsonRpcException(JSONRPCException e) {
-        // JSON-RPC notifications must not receive a response.
-        if (mcpRequest != null && mcpRequest.id() == null) {
+        // A header mismatch is rejected at the HTTP level, before the message is accepted.
+        // This must not be turned into the 202 which is sent for accepted notifications.
+        RequestId id = mcpRequest != null ? mcpRequest.id() : null;
+        boolean notification = mcpRequest != null && id == null;
+        boolean rejectedWithHttpError = e.getErrorCode() == JSONRPCErrorCode.HEADER_MISMATCH;
+        if (rejectedWithHttpError) {
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+
+        // JSON-RPC notifications must not receive a response body.
+        if (notification) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Ignoring JSONRPCException for notification (no id): " + e.getMessage(), e);
             }
-            sendEmptyResponse();
+            if (!rejectedWithHttpError) {
+                sendEmptyResponse();
+            }
             return;
         }
-        RequestId id = (mcpRequest != null) ? mcpRequest.id() : null;
         McpResponse mcpResponse = new McpErrorResponse(id, e);
 
         res.setContentType("application/json");
