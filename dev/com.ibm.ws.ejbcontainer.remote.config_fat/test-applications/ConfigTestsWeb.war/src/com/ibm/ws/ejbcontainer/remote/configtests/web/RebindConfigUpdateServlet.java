@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBs;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.rmi.PortableRemoteObject;
 import javax.servlet.annotation.WebServlet;
 
 import com.ibm.ws.ejbcontainer.remote.configtests.ejb.ConfigTestsLocalBusiness;
@@ -59,6 +60,13 @@ import componenttest.app.FATServlet;
 @WebServlet("/RebindConfigUpdateServlet")
 public class RebindConfigUpdateServlet extends FATServlet {
 
+    private static final Integer IIOP_PORT = Integer.getInteger("bvt.prop.IIOP");
+    private static final String APP = "ConfigTestsTestApp";
+    private static final String EJB_MODULE = "ConfigTestsEJB";
+    private static final String EJB_BEAN = "ConfigTestsTestBean";
+    private static final String WAR_MODULE = "ConfigTestsWeb";
+    private static final String WAR_BEAN = "ConfigTestsWarTestBean";
+
     private InitialContext ctx = null;
 
     @PostConstruct
@@ -75,11 +83,11 @@ public class RebindConfigUpdateServlet extends FATServlet {
     // ------------------------------------------------------------------------
 
     public void testBindWhenEjbRemoteAdded_Initial() throws Exception {
-        testHelper(false);
+        testHelper(false, true);
     }
 
     public void testBindWhenEjbRemoteAdded_Added() throws Exception {
-        testHelper(true);
+        testHelper(true, true);
     }
 
     // ------------------------------------------------------------------------
@@ -123,15 +131,27 @@ public class RebindConfigUpdateServlet extends FATServlet {
     }
 
     // ------------------------------------------------------------------------
+    // testRebindAfterOrbUpdatedCorbaname
+    // ------------------------------------------------------------------------
+
+    public void testRebindAfterOrbUpdatedCorbaname_Initial() throws Exception {
+        testHelper(true, true);
+    }
+
+    public void testRebindAfterOrbUpdatedCorbaname_Updated() throws Exception {
+        testHelper(true, true);
+    }
+
+    // ------------------------------------------------------------------------
     // testRebindAfterOrbLateStart
     // ------------------------------------------------------------------------
 
     public void testRebindAfterOrbLateStart_Initial() throws Exception {
-        testHelper(false);
+        testHelper(false, true);
     }
 
     public void testRebindAfterOrbLateStart_Started() throws Exception {
-        testHelper(true);
+        testHelper(true, true);
     }
 
     // ------------------------------------------------------------------------
@@ -151,10 +171,30 @@ public class RebindConfigUpdateServlet extends FATServlet {
     }
 
     // ------------------------------------------------------------------------
+    // testRebindAfterOrbStoppedStartedCorbaname
+    // ------------------------------------------------------------------------
+
+    public void testRebindAfterOrbStoppedStartedCorbaname_Initial() throws Exception {
+        testHelper(true, true);
+    }
+
+    public void testRebindAfterOrbStoppedStartedCorbaname_Stopped() throws Exception {
+        testHelper(false, true);
+    }
+
+    public void testRebindAfterOrbStoppedStartedCorbaname_Started() throws Exception {
+        testHelper(true, true);
+    }
+
+    // ------------------------------------------------------------------------
     // common implementation follows...
     // ------------------------------------------------------------------------
 
     private void testHelper(boolean bindToRemote) throws Exception {
+        testHelper(bindToRemote, false);
+    }
+
+    private void testHelper(boolean bindToRemote, boolean corbaname) throws Exception {
         // Local short
         ConfigTestsLocalEJB bean = lookupShort();
         assertNotNull("1 ---> ConfigTestsLocalEJB short default lookup did not succeed.", bean);
@@ -338,6 +378,71 @@ public class RebindConfigUpdateServlet extends FATServlet {
         } else {
             assertNull("61/62 ---> ConfigTestsWarRemoteBusiness java:comp lookup should have failed.", rcbwBean);
         }
+
+        // optionally test corbaname lookups
+        if (!corbaname) {
+            return;
+        }
+
+        // Remote home - corbaname
+        ConfigTestsRemoteHome chome = lookupRemoteCorbaname(bindToRemote, EJB_MODULE, EJB_BEAN, ConfigTestsRemoteHome.class);
+        if (bindToRemote) {
+            assertNotNull("63 ---> ConfigTestsRemoteHome corbaname lookup did not succeed.", chome);
+            assertEquals("64 ---> getString() returned unexpected value", "Success", chome.create().getString());
+        } else {
+            assertNull("63/64 ---> ConfigTestsRemoteHome corbaname lookup should have failed.", chome);
+        }
+
+        // Remote business - corbaname
+        ConfigTestsRemoteBusiness cbus = lookupRemoteCorbaname(bindToRemote, EJB_MODULE, EJB_BEAN, ConfigTestsRemoteBusiness.class);
+        if (bindToRemote) {
+            assertNotNull("65 ---> ConfigTestsRemoteBusiness corbaname lookup did not succeed.", cbus);
+            assertEquals("66 ---> getString() returned unexpected value", "Success", cbus.getString());
+        } else {
+            assertNull("65/66 ---> ConfigTestsRemoteBusiness corbaname lookup should have failed.", cbus);
+        }
+
+        // war Remote home - corbaname
+        ConfigTestsWarRemoteHome cwhome = lookupRemoteCorbaname(bindToRemote, WAR_MODULE, WAR_BEAN, ConfigTestsWarRemoteHome.class);
+        if (bindToRemote) {
+            assertNotNull("67 ---> ConfigTestsWarRemoteHome corbaname lookup did not succeed.", cwhome);
+            assertEquals("68 ---> getString() returned unexpected value", "Success", cwhome.create().getString());
+        } else {
+            assertNull("67/68 ---> ConfigTestsWarRemoteHome corbaname lookup should have failed.", cwhome);
+        }
+
+        // war Remote business - corbaname
+        ConfigTestsWarRemoteBusiness cwbus = lookupRemoteCorbaname(bindToRemote, WAR_MODULE, WAR_BEAN, ConfigTestsWarRemoteBusiness.class);
+        if (bindToRemote) {
+            assertNotNull("69 ---> ConfigTestsWarRemoteBusiness corbaname lookup did not succeed.", cwbus);
+            assertEquals("70 ---> getString() returned unexpected value", "Success", cwbus.getString());
+        } else {
+            assertNull("69/70 ---> ConfigTestsWarRemoteBusiness corbaname lookup should have failed.", cwbus);
+        }
+    }
+
+    /**
+     * Looks up a remote home or business interface of a bean using the corbaname URL form
+     * corbaname::localhost:&lt;IIOPPort&gt;#ejb/global/&lt;App&gt;/&lt;Module&gt;/&lt;Bean&gt;!&lt;interface&gt;
+     * and narrows the result to the requested interface.
+     *
+     * @return the narrowed object, or null if the lookup failed and shouldWork is false
+     */
+    private <T> T lookupRemoteCorbaname(boolean shouldWork, String module, String bean, Class<T> intf) throws Exception {
+        // dots in the interface name must be escaped with a backslash in a corbaname
+        String lookupString = "corbaname::localhost:" + IIOP_PORT + "#ejb/global/" + APP + "/" + module + "/" + bean + "!" + intf.getName().replace(".", "\\.");
+        try {
+            Object obj = ctx.lookup(lookupString);
+            return intf.cast(PortableRemoteObject.narrow(obj, intf));
+        } catch (NamingException | RuntimeException e) {
+            if (shouldWork) {
+                e.printStackTrace(System.out);
+                fail("RebindConfigUpdateServlet corbaname lookup didn't work: " + lookupString);
+            } else {
+                System.out.println("Caught expected exception : " + e);
+            }
+        }
+        return null;
     }
 
     private ConfigTestsLocalEJB lookupShort() throws Exception {

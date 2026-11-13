@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2021 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -81,6 +81,13 @@ public class SystemNameSpaceBinderImpl implements NameSpaceBinder<String> {
             throw new NamingException("Unable to bind system module. Ensure the " + remoteFeatureName + " feature is installed.");
         }
 
+        // The ORB may be stopped or not yet started (e.g. dynamic ORB configuration update).
+        // Defer the bind; it will be performed when the remote bindings are restored.
+        if (!remoteRuntime.isRemoteEjbAdapterAvailable()) {
+            hr.remoteBindingDeferred = true;
+            return;
+        }
+
         HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
         if (hrImpl.remoteBindingData == null) {
             hrImpl.remoteBindingData = remoteRuntime.bindSystem(hr.getBeanMetaData(), homeBindingName);
@@ -105,12 +112,21 @@ public class SystemNameSpaceBinderImpl implements NameSpaceBinder<String> {
 
     @Override
     public void unbindBindings(HomeRecord hr) throws NamingException {
+        unbindBindingsRemote(hr);
+    }
+
+    @Override
+    public void unbindBindingsRemote(HomeRecord hr) {
+        HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
         if (remoteRuntime != null) {
-            HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
             if (hrImpl.remoteBindingData != null) {
                 remoteRuntime.unbindAll(hrImpl.remoteBindingData);
                 hrImpl.remoteBindingData = null;
             }
+        } else {
+            // No need to unbind from COS Naming service; the ORB bundles have deactivated;
+            // just clear the binding data so may be bound again in the future
+            hrImpl.remoteBindingData = null;
         }
     }
 

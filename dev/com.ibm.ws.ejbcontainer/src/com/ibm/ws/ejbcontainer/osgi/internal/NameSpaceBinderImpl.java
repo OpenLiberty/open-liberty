@@ -46,6 +46,7 @@ import com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBBinding;
 import com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBJavaColonNamingHelper;
 import com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBRemoteReferenceBinding;
 import com.ibm.ws.ejbcontainer.runtime.NameSpaceBinder;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 
@@ -668,33 +669,59 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
         ejbJavaColonHelper.removeAppBindings(moduleMetaData, fullNames);
     }
 
+    /**
+     * Undoes the bindings from {@link #bindBindings}.
+     *
+     * @param hr the bean home record
+     */
     @Override
     public void unbindBindings(HomeRecord hr) throws NamingException {
-        EJBRemoteRuntime remoteRuntime = ejbRemoteRuntimeServiceRef.getService();
-        if (remoteRuntime != null) {
-            BindingsHelper remoteBH = BindingsHelper.getRemoteHelper(hr);
-            HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
-            if (hrImpl.remoteBindingData != null) {
-                remoteRuntime.unbindAll(hrImpl.remoteBindingData);
-            }
-
-            unbindRemote(remoteBH.ivRemoteBindings);
-
-            Lock writeLock = remoteLock.writeLock();
-            writeLock.lock();
-            try {
-                for (String bindingName : remoteBH.ivRemoteBindings) {
-                    svRemoteBindings.remove(bindingName);
-                }
-            } finally {
-                writeLock.unlock();
-                hr.remoteBindingDeferred = true;
-            }
-        }
+        unbindBindingsRemote(hr);
 
         BindingsHelper localBH = BindingsHelper.getLocalHelper(hr);
         unbindEJBLocal(localBH.ivEJBLocalBindings);
         unbindLocalColonEJB(localBH.ivLocalColonBindings);
+    }
+
+    /**
+     * Undoes only the remote bindings from {@link #bindBindings}.
+     *
+     * @param hr the bean home record
+     */
+    @Override
+    public void unbindBindingsRemote(HomeRecord hr) {
+        EJBRemoteRuntime remoteRuntime = ejbRemoteRuntimeServiceRef.getService();
+        BindingsHelper remoteBH = BindingsHelper.getRemoteHelper(hr);
+        HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
+
+        if (remoteRuntime != null) {
+            if (hrImpl.remoteBindingData != null) {
+                remoteRuntime.unbindAll(hrImpl.remoteBindingData);
+                hrImpl.remoteBindingData = null;
+            }
+        } else {
+            // No need to unbind from COS Naming service; the ORB bundles have deactivated;
+            // just clear the binding data so may be bound again in the future
+            hrImpl.remoteBindingData = null;
+        }
+
+        // Cleanup the static binding maps, even if the remote runtime is not available
+        // as it may have been available earlier when the bindings were added.
+
+        unbindRemote(remoteBH.ivRemoteBindings);
+
+        Lock writeLock = remoteLock.writeLock();
+        writeLock.lock();
+        try {
+            for (String bindingName : remoteBH.ivRemoteBindings) {
+                svRemoteBindings.remove(bindingName);
+            }
+            // All of the names have been unbound; clear the list so the same names are not
+            // accumulated again each time the remote bindings are restored (e.g. ORB restart).
+            remoteBH.ivRemoteBindings.clear();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
@@ -768,42 +795,53 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      */
     @Override
     public void unbindRemote(List<String> names) {
-        ServiceRegistration<?> removedRegistration = null;
-
         synchronized (registrations) {
             for (String name : names) {
-                for (Iterator<ServiceRegistration<?>> it = registrations.iterator(); it.hasNext();) {
-                    ServiceRegistration<?> registration = it.next();
-                    if (name.equals(registration.getReference().getProperty(JNDI_SERVICENAME))) {
-                        removedRegistration = registration;
-                        registration.unregister();
-                        break;
-                    }
-                }
-
-                if (removedRegistration != null) {
-                    registrations.remove(removedRegistration);
-                    removedRegistration = null;
-                }
+                removePreviousRemoteBinding(name);
             }
         }
     }
 
+    /**
+     * Unregisters the remote binding registered for the specified name, if any.
+     *
+     * Registrations that are found to be no longer valid are also discarded. They are
+     * made using the BundleContext of the remote runtime bundle, so the framework
+     * unregisters them if that bundle stops (e.g. the ejbRemote feature is removed), after
+     * which using them throws an exception. That must neither prevent the remaining
+     * registrations from being processed, nor leave the stale registration in the list.
+     * This is an expected condition, so FFDC is not generated for the exceptions caught here.
+     */
+    @FFDCIgnore(RuntimeException.class)
     private void removePreviousRemoteBinding(String bindingName) {
-        ServiceRegistration<?> removedRegistration = null;
-
         synchronized (registrations) {
             for (Iterator<ServiceRegistration<?>> it = registrations.iterator(); it.hasNext();) {
                 ServiceRegistration<?> registration = it.next();
-                if (bindingName.equals(registration.getReference().getProperty(JNDI_SERVICENAME))) {
-                    removedRegistration = registration;
-                    registration.unregister();
+
+                boolean matches;
+                try {
+                    matches = bindingName.equals(registration.getReference().getProperty(JNDI_SERVICENAME));
+                } catch (RuntimeException ex) {
+                    // No longer valid; remove it, and continue looking for the match
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "removing remote binding registration that is no longer valid: " + ex);
+                    }
+                    it.remove();
+                    continue;
+                }
+
+                if (matches) {
+                    // Removed even if unregister fails, as it is not usable in that case either
+                    it.remove();
+                    try {
+                        registration.unregister();
+                    } catch (RuntimeException ex) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "unregister of remote binding failed: " + ex);
+                        }
+                    }
                     break;
                 }
-            }
-
-            if (removedRegistration != null) {
-                registrations.remove(removedRegistration);
             }
         }
     }
