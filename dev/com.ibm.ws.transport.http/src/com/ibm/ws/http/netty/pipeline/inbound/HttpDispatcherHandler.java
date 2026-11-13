@@ -390,7 +390,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             return;
         }
 
-        BodyQueue bodyQueue = new BodyQueue(ctx.alloc());
+        BodyQueue bodyQueue = BodyQueue.forHttp2(ctx.alloc(), config.getH2MaxFrameSize());
         HttpDispatcherLink requestLink = new HttpDispatcherLink();
         requestLink.initStreaming(ctx, request, config, false, metadata);
         HttpRequestImpl appRequest = (HttpRequestImpl) requestLink.getRequest();
@@ -411,13 +411,19 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     private void acceptH2Content(ChannelHandlerContext ctx, H2InboundContent content) throws Http2Exception {
         H2InboundStream stream = h2Streams.get(content.streamId());
+        Runnable completion = content.takeCompletion();
         try {
             if (stream == null) {
                 throw Http2Exception.streamError(content.streamId(), Http2Error.PROTOCOL_ERROR,
                                 "DATA received without an HTTP/2 request owner");
             }
             if (content.content().isReadable()) {
-                stream.queue.enqueueRetained(content.content());
+                if (!stream.queue.enqueueRetained(content.content(), completion)) {
+                    completion = null; // the queue settled the rejected fragment
+                    throw Http2Exception.streamError(content.streamId(), Http2Error.ENHANCE_YOUR_CALM,
+                                    "HTTP/2 request body queue capacity exceeded");
+                }
+                completion = null; // the queue now owns settlement after copy or discard
             }
             if (content.trailers() != null && !content.trailers().isEmpty()) {
                 stream.request.setTrailers(content.trailers());
@@ -428,7 +434,13 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 h2Streams.remove(content.streamId());
             }
         } finally {
-            content.release();
+            try {
+                content.release();
+            } finally {
+                if (completion != null) {
+                    completion.run();
+                }
+            }
         }
         stream.asyncReadState.signal();
     }

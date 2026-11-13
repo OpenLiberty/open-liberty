@@ -18,12 +18,18 @@ public final class H2InboundContent extends DefaultHttpContent {
     private final int streamId;
     private final boolean endStream;
     private final HttpHeaders trailers;
+    private Runnable completion;
 
     public H2InboundContent(int streamId, ByteBuf content, boolean endStream, HttpHeaders trailers) {
+        this(streamId, content, endStream, trailers, null);
+    }
+
+    public H2InboundContent(int streamId, ByteBuf content, boolean endStream, HttpHeaders trailers, Runnable completion) {
         super(content);
         this.streamId = streamId;
         this.endStream = endStream;
         this.trailers = trailers;
+        this.completion = completion;
     }
 
     public int streamId() {
@@ -36,5 +42,12 @@ public final class H2InboundContent extends DefaultHttpContent {
 
     public HttpHeaders trailers() {
         return trailers;
+    }
+
+    /** Transfers the one-shot raw DATA credit completion to the body owner. */
+    public Runnable takeCompletion() {
+        Runnable taken = completion;
+        completion = null;
+        return taken;
     }
 }

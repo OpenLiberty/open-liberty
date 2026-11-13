@@ -776,8 +776,8 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
         while(true){
             streamingTransferInProgress = true; 
-            ByteBuf fragment = queue.poll();
-            if (fragment == null){
+            BodyQueue.Fragment queuedFragment = queue.pollFragment();
+            if (queuedFragment == null){
                 streamingTransferInProgress = false;
                 if (queue.isEos()){
                     this.readChannelComplete = true;
@@ -854,6 +854,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             }
 
             try{
+                ByteBuf fragment = queuedFragment.buffer();
                 int len = fragment.readableBytes();
                 boolean fixedLengthComplete = false;
 
@@ -915,7 +916,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
             } finally {
                 streamingTransferInProgress = false;
-                fragment.release();
+                queuedFragment.release();
             }
         }
     }

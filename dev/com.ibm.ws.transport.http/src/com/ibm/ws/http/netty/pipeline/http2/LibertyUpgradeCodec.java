@@ -163,12 +163,21 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
 
     HttpToHttp2ConnectionHandler buildHttp2ConnectionHandler(HttpChannelConfig httpConfig, Channel channel) {
         DefaultHttp2Connection connection = new DefaultHttp2Connection(true);
-        // Netty accepts integer for max length so we would need to adapt for this
-        int maxContentlength = (httpConfig.getMessageSizeLimit() >= Integer.MAX_VALUE || httpConfig.getMessageSizeLimit() < 0) ? Integer.MAX_VALUE : (int) httpConfig.getMessageSizeLimit();
+        // Netty's ordinary FullHttpMessage path remains int-bounded; registered
+        // streams receive the configured long limit through the Liberty listener.
+        long configuredMaxContentLength = httpConfig.getMessageSizeLimit();
+        int maxContentlength = configuredMaxContentLength >= Integer.MAX_VALUE || configuredMaxContentLength < 0
+                        ? Integer.MAX_VALUE : (int) configuredMaxContentLength;
         Http2Settings initialSettings = new Http2Settings().maxConcurrentStreams(httpConfig.getH2MaxConcurrentStreams()).maxFrameSize(httpConfig.getH2MaxFrameSize());
         if (httpConfig.getH2SettingsInitialWindowSize() != Constants.SPEC_INITIAL_WINDOW_SIZE)
             initialSettings.initialWindowSize(httpConfig.getH2SettingsInitialWindowSize());
-        LibertyInboundHttp2ToHttpAdapter listener = new LibertyInboundHttp2ToHttpAdapter(connection, maxContentlength, false, false, channel, httpConfig);
+        LibertyInboundHttp2ToHttpAdapter listener = new LibertyInboundHttp2ToHttpAdapter(connection, configuredMaxContentLength, false, false, channel, httpConfig);
+
+        // A stalled request must not use up the shared connection window. Netty
+        // refills connection credit on receipt while each stream retains its own
+        // consumption accounting until its body owner settles the DATA bytes.
+        connection.local().flowController(new DefaultHttp2LocalFlowController(connection,
+                        DefaultHttp2LocalFlowController.DEFAULT_WINDOW_UPDATE_RATIO, true));
 
         // Create encoder with same configuration as builder would
         DefaultHttp2FrameWriter frameWriter = new DefaultHttp2FrameWriter(Http2HeadersEncoder.NEVER_SENSITIVE, true);
