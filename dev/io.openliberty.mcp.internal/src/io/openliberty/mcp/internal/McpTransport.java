@@ -9,40 +9,32 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
 
 import org.mcpjava.server.tools.ToolResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
-import io.openliberty.mcp.internal.config.McpConfig;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
-import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
-import io.openliberty.mcp.internal.requests.McpRequest;
+import io.openliberty.mcp.internal.requests.McpOperationRequest;
 import io.openliberty.mcp.internal.requests.RequestId;
 import io.openliberty.mcp.internal.responses.McpErrorResponse;
 import io.openliberty.mcp.internal.responses.McpResponse;
 import io.openliberty.mcp.internal.responses.McpResultResponse;
 import io.openliberty.mcp.internal.sessions.McpSession;
 import io.openliberty.mcp.internal.sessions.McpSessionId;
-import io.openliberty.mcp.internal.sessions.McpSessionStore;
-import jakarta.json.JsonException;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbException;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -53,17 +45,15 @@ import jakarta.servlet.http.HttpServletResponse;
 public class McpTransport {
     public static final String MCP_SESSION_ID_HEADER = "Mcp-Session-Id";
     private static final TraceComponent tc = Tr.register(McpTransport.class);
-    private static final String MCP_HEADER = "MCP-Protocol-Version";
-    private static final List<String> REQUIRED_MCP_MIME_TYPES = List.of("text/event-stream", "application/json");
     private HttpServletRequest req;
     private HttpServletResponse res;
     private Jsonb jsonb;
-    private McpRequest mcpRequest;
+    private McpOperationRequest mcpRequest;
     private Writer writer;
-    private McpProtocolVersion version;
-    private McpSession sessionInfo;
     private final long asyncTimeoutMs;
     private String appName;
+    private RequestId requestId;
+    private McpProtocolVersion protocolVersion;
 
     public McpTransport(HttpServletRequest req, HttpServletResponse res, Jsonb jsonb, long asyncTimeoutMs) throws IOException {
         this.req = req;
@@ -73,146 +63,15 @@ public class McpTransport {
         req.setCharacterEncoding(StandardCharsets.UTF_8.name());
         res.setCharacterEncoding(StandardCharsets.UTF_8.name());
         writer = res.getWriter(); // Writer must be acquired after setting response character encoding
+        appName = extractAppName();
     }
 
-    /**
-     * Initialises McpTransport
-     * Checks if the request is valid so we know if further processing can be done
-     *
-     * @param sessionStore the session store
-     * @param mcpConfig the configuration, which determines the protocol versions that are accepted
-     * @throws IOException if an I/O exception occurs.
-     */
-    @FFDCIgnore(NoSuchElementException.class)
-    public void init(McpSessionStore sessionStore, McpConfig mcpConfig) throws IOException {
-        if (!validReqAcceptHeader()) {
-            throw new HttpResponseException(HttpServletResponse.SC_NOT_ACCEPTABLE);
-        }
-
-        boolean headerPresent = req.getHeader(MCP_HEADER) != null;
-        try {
-            version = readProtocolVersionHeader();
-        } catch (NoSuchElementException e) {
-            throw unsupportedProtocolVersion(mcpConfig);
-        }
-        // A header which names a version outside the configured range is always rejected
-        if (headerPresent && !mcpConfig.isAccepted(version)) {
-            throw unsupportedProtocolVersion(mcpConfig);
-        }
-        this.mcpRequest = toRequest();
-        // A missing header is interpreted as 2025-03-26, which may be outside the configured range.
-        // The initialize request is exempt because it negotiates the version and does not need the header.
-        if (!headerPresent && mcpRequest.getRequestMethod() != RequestMethod.INITIALIZE && !mcpConfig.isAccepted(version)) {
-            throw unsupportedProtocolVersion(mcpConfig);
-        }
-
-        this.appName = extractAppName();
-        final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
-
-        if (sessionIdHeader == null) {
-            this.sessionInfo = null;
-            return;
-        }
-
-        McpSession session = sessionStore.getSession(new McpSessionId(sessionIdHeader));
-        if (session == null) {
-            throw new HttpResponseException(HttpServletResponse.SC_NOT_FOUND, "Invalid or Expired Session Id");
-        }
-        this.sessionInfo = session;
-    }
-
-    /**
-     * Checks the protocol version header of a request which is not processed by {@link #init}, such as a session DELETE.
-     * A missing header is allowed. A header which is unknown, or outside the configured range, is rejected.
-     *
-     * @param req the request
-     * @param mcpConfig the configuration, which determines the protocol versions that are accepted
-     * @throws HttpResponseException with status 400 if the header names a version which is not accepted
-     */
-    @FFDCIgnore(NoSuchElementException.class)
-    public static void validateProtocolVersionHeader(HttpServletRequest req, McpConfig mcpConfig) {
-        String header = req.getHeader(MCP_HEADER);
-        if (header == null) {
-            return;
-        }
-
-        try {
-            if (!mcpConfig.isAccepted(McpProtocolVersion.parse(header))) {
-                throw unsupportedProtocolVersion(mcpConfig);
-            }
-        } catch (NoSuchElementException e) {
-            throw unsupportedProtocolVersion(mcpConfig);
-        }
-    }
-
-    private static HttpResponseException unsupportedProtocolVersion(McpConfig mcpConfig) {
-        String supportedValues = mcpConfig.acceptedProtocolVersions().stream()
-                                          .map(McpProtocolVersion::getVersion)
-                                          .collect(Collectors.joining(", "));
-        String exceptionMessage = Tr.formatMessage(tc, "unsupported.mcp.http.version", supportedValues);
-        return new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, exceptionMessage);
-    }
-
-    /**
-     * Converts a HTTP request to an MCP request.
-     *
-     * @param req The incoming HTTP request.
-     * @return An McpRequest object if the conversion is successful.
-     * @throws IOException If an I/O error occurs while reading the request.
-     * @throws JSONRPCException If the request body is not a valid MCP request.
-     */
-    @FFDCIgnore(JsonException.class)
-    private McpRequest toRequest() throws IOException, JSONRPCException {
-        McpRequest mcpRequest = null;
-        // TODO: validate headers/contentType etc.
-        try {
-            BufferedReader re = req.getReader();
-            mcpRequest = McpRequest.createValidMCPRequest(re);
-        } catch (JsonbException | JsonException e) {
-            throw new JSONRPCException(JSONRPCErrorCode.PARSE_ERROR, List.of(e.getMessage()));
-        }
-        return mcpRequest;
-    }
-
-    /**
-     * Calculates whether the client accepts MCP's required content types.
-     *
-     * @throws IOException
-     */
-    private boolean validReqAcceptHeader() throws IOException {
-        try {
-            String reqHeaderAcceptedTypes = req.getHeader("Accept");
-            if (reqHeaderAcceptedTypes == null)
-                return false;
-            for (String mcpMime : REQUIRED_MCP_MIME_TYPES) {
-                if (!HeaderValidation.acceptContains(reqHeaderAcceptedTypes, mcpMime))
-                    return false;
-            }
-
-            return true;
-        } catch (Exception e) {
-            sendError(e);
-            return false;
-        }
-    }
-
-    /**
-     * Reads and parses the protocol version header. A missing header is interpreted as 2025-03-26
-     *
-     * @return the protocol version interpreted from the header
-     * @throws NoSuchElementException if the protocol is not one we support
-     */
-    private McpProtocolVersion readProtocolVersionHeader() {
-        String protocolVersion = req.getHeader(MCP_HEADER);
-        if (protocolVersion == null) {
-            return McpProtocolVersion.V_2025_03_26;
-        } else {
-            return McpProtocolVersion.parse(protocolVersion);
-        }
-    }
-
-    public McpRequest getMcpRequest() {
+    public McpOperationRequest getMcpOperationRequest() {
         return this.mcpRequest;
+    }
+
+    public void setMcpOperationRequest(McpOperationRequest request) {
+        this.mcpRequest = request;
     }
 
     /*
@@ -230,7 +89,11 @@ public class McpTransport {
      * @return the {@link McpSession} for this transport, or null if not available
      */
     public McpSession getSession() {
-        return sessionInfo;
+        if (mcpRequest != null) {
+            return mcpRequest.session();
+        } else {
+            return null;
+        }
     }
 
     /*
@@ -247,19 +110,13 @@ public class McpTransport {
      *
      * @return the session ID string, or {@code null} if none is available
      */
+    @Trivial
     public McpSessionId getSessionId() {
-        return sessionInfo == null ? null : sessionInfo.getSessionId();
-    }
-
-    /**
-     * Deserialises the MCP request params value from JSON into an object of the specified type
-     *
-     * @param <T> the target type to map the JSON into
-     * @param type the class we want to deserialise the JSON into
-     * @return the MCP request params as an object of the specified type
-     */
-    public <T> T getParams(Class<T> type) {
-        return mcpRequest.getParams(type, jsonb);
+        if (mcpRequest != null && mcpRequest.session() != null) {
+            return mcpRequest.session().getSessionId();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -319,15 +176,14 @@ public class McpTransport {
      */
     public void sendJsonRpcException(JSONRPCException e) {
         // JSON-RPC notifications must not receive a response.
-        if (mcpRequest != null && mcpRequest.id() == null) {
+        if (requestId == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Ignoring JSONRPCException for notification (no id): " + e.getMessage(), e);
             }
             sendEmptyResponse();
             return;
         }
-        RequestId id = (mcpRequest != null) ? mcpRequest.id() : null;
-        McpResponse mcpResponse = new McpErrorResponse(id, e);
+        McpResponse mcpResponse = new McpErrorResponse(requestId, e);
 
         res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
@@ -360,7 +216,15 @@ public class McpTransport {
     }
 
     public McpProtocolVersion getProtocolVersion() {
-        return version;
+        return protocolVersion;
+    }
+
+    public void setProtocolVersion(McpProtocolVersion protocolVersion) {
+        this.protocolVersion = protocolVersion;
+    }
+
+    public void setRequestId(RequestId requestId) {
+        this.requestId = requestId;
     }
 
     public <T> CompletionStage<T> sendResultAsync(CompletionStage<T> stage) {
@@ -455,7 +319,8 @@ public class McpTransport {
     @Override
     public String toString() {
         return "McpTransport@" + Integer.toHexString(System.identityHashCode(this))
-               + "[sessionId=" + getSessionId()
+               + "[requestId=" + requestId
+               + ", sessionId=" + getSessionId()
                + ", appName=" + appName + "]";
     }
 

@@ -10,33 +10,37 @@
 package io.openliberty.mcp.internal;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
-import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 
 /**
  *
  */
 public enum RequestMethod {
 
-    TOOLS_CALL("tools/call"),
-    TOOLS_LIST("tools/list"),
-    INITIALIZE("initialize"),
-    INITIALIZED("notifications/initialized"),
-    CANCELLED("notifications/cancelled"),
-    PING("ping");
+    TOOLS_CALL("tools/call", MethodType.REQUEST),
+    TOOLS_LIST("tools/list", MethodType.REQUEST),
+    INITIALIZE("initialize", MethodType.PRE_INIT_REQUEST),
+    INITIALIZED("notifications/initialized", MethodType.NOTIFICATION),
+    CANCELLED("notifications/cancelled", MethodType.NOTIFICATION),
+    PING("ping", MethodType.PRE_INIT_REQUEST);
 
     private static final Map<String, RequestMethod> METHODS_BY_NAME;
     private final String methodName;
+    private final MethodType methodType;
+
+    public enum MethodType {
+        PRE_INIT_REQUEST,
+        REQUEST,
+        NOTIFICATION
+    }
 
     /**
      * @param string
      */
-    RequestMethod(String methodName) {
+    RequestMethod(String methodName, MethodType methodType) {
         this.methodName = methodName;
+        this.methodType = methodType;
     }
 
     static {
@@ -50,10 +54,18 @@ public enum RequestMethod {
         return methodName;
     }
 
+    public MethodType getMethodType() {
+        return methodType;
+    }
+
+    public boolean isPreInit() {
+        return methodType == MethodType.PRE_INIT_REQUEST;
+    }
+
     public static RequestMethod getForMethodName(String methodName) throws NoSuchElementException {
         RequestMethod result = METHODS_BY_NAME.get(methodName);
         if (result == null) {
-            throw new JSONRPCException(JSONRPCErrorCode.METHOD_NOT_FOUND, List.of(methodName + " not found"));
+            throw new NoSuchElementException(methodName);
         }
         return result;
     }

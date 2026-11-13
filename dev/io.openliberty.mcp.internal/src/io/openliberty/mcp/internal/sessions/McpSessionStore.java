@@ -32,11 +32,17 @@ import io.openliberty.mcp.internal.metrics.McpSessionMetrics;
  */
 public class McpSessionStore {
 
-    private McpRequestTracker requestTracker;
+    private final McpRequestTracker requestTracker;
 
-    private McpConfig mcpConfig;
+    private final McpConfig mcpConfig;
 
     private final ConcurrentMap<McpSessionId, McpSession> sessions = new ConcurrentHashMap<>();
+
+    // CDI no-args constructor
+    McpSessionStore() {
+        requestTracker = null;
+        mcpConfig = null;
+    }
 
     public McpSessionStore(McpRequestTracker requestTracker, McpConfig mcpConfig) {
         this.requestTracker = requestTracker;

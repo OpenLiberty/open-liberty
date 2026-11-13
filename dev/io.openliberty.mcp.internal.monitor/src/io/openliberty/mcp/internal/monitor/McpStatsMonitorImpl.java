@@ -335,15 +335,12 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
             builder.withGenAiToolName(metrics.getToolName());
         }
 
+        if (metrics.getJsonrpcProtocolVersion() != null) {
+            builder.withJsonrpcProtocolVersion(metrics.getJsonrpcProtocolVersion());
+        }
+
         if (metrics.getTransport() != null) {
             try {
-                if (metrics.getTransport().getMcpRequest() != null) {
-                    String jsonrpcVersion = metrics.getTransport().getMcpRequest().jsonrpc();
-                    if (jsonrpcVersion != null) {
-                        builder.withJsonrpcProtocolVersion(jsonrpcVersion);
-                    }
-                }
-
                 if (metrics.getTransport().getProtocolVersion() != null) {
                     builder.withMcpProtocolVersion(metrics.getTransport().getProtocolVersion().getVersion());
                 }

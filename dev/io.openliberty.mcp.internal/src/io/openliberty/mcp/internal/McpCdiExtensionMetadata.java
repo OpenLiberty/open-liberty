@@ -18,7 +18,12 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import io.openliberty.mcp.internal.config.McpConfigProducer;
 import io.openliberty.mcp.internal.encoders.EncoderRegistries;
 import io.openliberty.mcp.internal.encoders.JsonTextContentEncoder;
+import io.openliberty.mcp.internal.requests.parsing.CancellationNotificationParser;
+import io.openliberty.mcp.internal.requests.parsing.InitializeRequestParser;
+import io.openliberty.mcp.internal.requests.parsing.McpOperationRequestParser;
 import io.openliberty.mcp.internal.sessions.McpSessionStores;
+import io.openliberty.mcp.internal.tools.parsing.ToolCallRequestParser;
+import io.openliberty.mcp.internal.tools.parsing.ToolListRequestParser;
 import jakarta.enterprise.inject.spi.Extension;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE)
@@ -52,6 +57,11 @@ public class McpCdiExtensionMetadata implements CDIExtensionMetadata {
                       JsonTextContentEncoder.class,
                       ConverterRegistries.class,
                       McpCdiProducers.class,
-                      McpConfigProducer.class);
+                      McpConfigProducer.class,
+                      McpOperationRequestParser.class,
+                      ToolCallRequestParser.class,
+                      ToolListRequestParser.class,
+                      CancellationNotificationParser.class,
+                      InitializeRequestParser.class);
     }
 }

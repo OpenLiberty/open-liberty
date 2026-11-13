@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025, 2026 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -7,9 +7,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.requests;
+package io.openliberty.mcp.internal.tools.parsing;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,97 +23,114 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.mcp.internal.ConverterRegistry;
+import io.openliberty.mcp.internal.McpInternal;
+import io.openliberty.mcp.internal.McpTransport;
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.ToolRegistry;
+import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
+import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
+import io.openliberty.mcp.internal.requests.DefaultValueResolver;
+import io.openliberty.mcp.internal.requests.McpOperationRequest;
+import io.openliberty.mcp.internal.requests.parsing.CommonParser;
+import io.openliberty.mcp.internal.security.Authorizer;
+import io.openliberty.mcp.internal.tools.ToolCallPartialRequest;
+import io.openliberty.mcp.internal.tools.ToolCallRequest;
 import io.openliberty.mcp.tools.ToolCallException;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbException;
-import jakarta.json.bind.annotation.JsonbProperty;
 
-/**
- *
- */
-public class McpToolCallParams {
+@ApplicationScoped
+public class ToolCallRequestParser {
 
-    private String name;
-    private ToolMetadata metadata;
-    private static final TraceComponent tc = Tr.register(McpToolCallParams.class);
+    private static final TraceComponent tc = Tr.register(ToolCallRequestParser.class);
+
+    private final ToolRegistry toolRegistry;
+    private final ConverterRegistry converterRegistry;
+    private final Jsonb jsonb;
+
+    // No-args constructor for CDI
+    ToolCallRequestParser() {
+        this.toolRegistry = null;
+        this.converterRegistry = null;
+        this.jsonb = null;
+    }
+
+    @Inject
+    public ToolCallRequestParser(ToolRegistry toolRegistry, ConverterRegistry converterRegistry, @McpInternal Jsonb jsonb) {
+        this.toolRegistry = toolRegistry;
+        this.converterRegistry = converterRegistry;
+        this.jsonb = jsonb;
+    }
 
     /**
-     * @return the metadata
+     * Reads the information needed for metrics and error reporting without parsing the whole message.
      */
-    public ToolMetadata getMetadata() {
-        return metadata;
-    }
-
-    private JsonObject arguments;
-
-    @JsonbProperty("_meta")
-    private Map<String, Object> meta;
-
-    private Map<String, Object> parsedArguments;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        ToolRegistry tools = ToolRegistry.get();
-        metadata = tools.getTool(name);
-    }
-
-    public void setArguments(JsonObject arguments) {
-        this.arguments = arguments;
-    }
-
-    public Map<String, Object> getArguments(Jsonb jsonb, ConverterRegistry converterRegistry) {
-        if (parsedArguments != null) {
-            return parsedArguments;
+    public ToolCallPartialRequest preParse(McpOperationRequest opRequest) {
+        String toolName = opRequest.args().getString("name", null);
+        ToolMetadata toolMetadata;
+        if (toolName != null) {
+            toolMetadata = toolRegistry.getTool(toolName);
+        } else {
+            toolMetadata = null;
         }
 
-        JsonObject safeArguments = (this.arguments != null) ? this.arguments : JsonValue.EMPTY_JSON_OBJECT;
-        parsedArguments = parseArguments(safeArguments, jsonb, converterRegistry);
-        return parsedArguments;
+        return new ToolCallPartialRequest(toolName, toolMetadata);
     }
 
-    public Map<String, Object> getMeta() {
-        return meta;
-    }
+    public ToolCallRequest parse(McpOperationRequest opRequest, ToolCallPartialRequest partialToolCallRequest, McpTransport transport) {
+        ToolCallRequestTO requestTO = CommonParser.parseParamsTransferObject(jsonb, opRequest.args(), ToolCallRequestTO.class);
 
-    public void setMeta(Map<String, Object> meta) {
-        this.meta = meta;
+        // Check tool exists
+        ToolMetadata tool = partialToolCallRequest.tool();
+        if (tool == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "Attempt to call non-existant tool: " + partialToolCallRequest.toolName());
+            }
+            throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of("Method " + requestTO.name() + " not found"));
+        }
+
+        // Check user authorized for tool
+        Authorizer.requireAuthorized(transport, tool);
+
+        // Parse tool arguments
+        JsonObject safeArguments = (requestTO.arguments() != null) ? requestTO.arguments() : JsonValue.EMPTY_JSON_OBJECT;
+        Map<String, Object> parsedArguments = parseArguments(tool, safeArguments);
+
+        Map<String, Object> safeMetadata = requestTO.metadata() != null ? requestTO.metadata() : Collections.emptyMap();
+
+        return new ToolCallRequest(opRequest, tool, parsedArguments, safeMetadata);
     }
 
     @FFDCIgnore(NumberFormatException.class)
-    private Map<String, Object> parseArguments(JsonObject requestArguments, Jsonb jsonb, ConverterRegistry converterRegistry) {
+    private Map<String, Object> parseArguments(ToolMetadata tool, JsonObject requestArguments) {
 
-        List<ToolArgument> metadatas = metadata.arguments();
+        List<ToolArgument> arguments = tool.arguments();
         Map<String, Object> result = new HashMap<>();
 
         boolean hasMissingArgs = false;
         int requestArgumentsProcessed = 0;
 
-        for (ToolArgument argMetadata : metadatas) {
-            String argName = argMetadata.name();
+        for (ToolArgument argument : arguments) {
+            String argName = argument.name();
             JsonValue argValue = requestArguments.get(argName);
             if (argValue != null) {
-                String argValueJson = jsonb.toJson(argValue);
                 try {
-                    result.put(argName, jsonb.fromJson(argValueJson, argMetadata.type()));
+                    result.put(argName, jsonb.fromJson(argValue.toString(), argument.type()));
                     requestArgumentsProcessed++;
                 } catch (JsonbException | NumberFormatException e) {
                     throw new ToolCallException(
                                                 Tr.formatMessage(tc, "argument.conversion.failed",
-                                                                 argName, argMetadata.type().getTypeName(), argValueJson),
+                                                                 argName, argument.type().getTypeName(), argValue.toString()),
                                                 e);
                 }
-            } else if (!argMetadata.required()) {
+            } else if (!argument.required()) {
                 //Argument is optional and not provided, resolve the default value
-                result.put(argName, DefaultValueResolver.resolveDefaultValue(name, argMetadata, converterRegistry));
+                result.put(argName, DefaultValueResolver.resolveDefaultValue(tool.name(), argument, converterRegistry));
             } else {
                 // Required argument was not provided in the request
                 hasMissingArgs = true;
@@ -121,11 +139,11 @@ public class McpToolCallParams {
         }
 
         if (hasMissingArgs || requestArgumentsProcessed != requestArguments.size()) {
-            Set<String> requiredArgs = metadatas.stream()
+            Set<String> requiredArgs = arguments.stream()
                                                 .filter(arg -> arg.required())
                                                 .map(arg -> arg.name())
                                                 .collect(Collectors.toSet());
-            Set<String> allowedArgs = metadatas.stream()
+            Set<String> allowedArgs = arguments.stream()
                                                .map(arg -> arg.name())
                                                .collect(Collectors.toSet());
             String data = generateArgumentMismatchMessage(requestArguments.keySet(), allowedArgs, requiredArgs);
@@ -166,14 +184,6 @@ public class McpToolCallParams {
             messages.add(Tr.formatMessage(tc, "missing.arguments", missingArguments));
         }
         return String.join(" ", messages);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        return "McpToolCallParams@" + Integer.toHexString(System.identityHashCode(this))
-               + "[name=" + name
-               + ", arguments=" + arguments + "]";
     }
 
 }

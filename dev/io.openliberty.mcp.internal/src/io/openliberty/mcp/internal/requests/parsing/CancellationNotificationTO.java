@@ -7,18 +7,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.requests;
+package io.openliberty.mcp.internal.requests.parsing;
 
-public class McpToolListParams {
+import com.ibm.websphere.ras.annotation.Trivial;
 
-    String cursor;
+import io.openliberty.mcp.internal.requests.RequestId;
 
-    public String getCursor() {
-        return cursor;
-    }
-
-    public void setCursor(String cursor) {
-        this.cursor = cursor;
-    }
-
-}
+/**
+ * Transfer object for a {@code notifications/cancelled} message.
+ */
+@Trivial
+public record CancellationNotificationTO(RequestId requestId, String reason) {}

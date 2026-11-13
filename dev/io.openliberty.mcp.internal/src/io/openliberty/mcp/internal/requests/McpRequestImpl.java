@@ -28,12 +28,12 @@ import io.openliberty.mcp.internal.sessions.McpSession;
  */
 public class McpRequestImpl implements McpRequest {
 
-    private io.openliberty.mcp.internal.requests.McpRequest requestMessage;
+    private McpOperationRequest requestMessage;
     private McpTransport transport;
     private McpSession session;
     private Map<String, Object> meta;
 
-    public McpRequestImpl(io.openliberty.mcp.internal.requests.McpRequest requestMessage,
+    public McpRequestImpl(McpOperationRequest requestMessage,
                           McpTransport transport,
                           McpSession session,
                           Map<String, Object> meta) {
