@@ -16,41 +16,26 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import io.openliberty.mcp.internal.McpProtocolVersion;
+import io.openliberty.mcp.internal.testutils.BetaPropertyRule;
 
 public class McpProtocolVersionTest {
 
-    private static final String BETA_PROPERTY = "com.ibm.ws.beta.edition";
-
-    private String originalBetaValue;
-
-    @Before
-    public void saveBetaProperty() {
-        originalBetaValue = System.getProperty(BETA_PROPERTY);
-    }
-
-    @After
-    public void restoreBetaProperty() {
-        if (originalBetaValue == null) {
-            System.clearProperty(BETA_PROPERTY);
-        } else {
-            System.setProperty(BETA_PROPERTY, originalBetaValue);
-        }
-    }
+    @Rule
+    public BetaPropertyRule betaProperty = new BetaPropertyRule();
 
     @Test(expected = NoSuchElementException.class)
     public void testParseBetaVersionRejectedOnNonBeta() {
-        System.setProperty(BETA_PROPERTY, "false");
+        betaProperty.set(false);
         McpProtocolVersion.parse("2026-07-28");
     }
 
     @Test
     public void testParseBetaVersionAcceptedOnBeta() {
-        System.setProperty(BETA_PROPERTY, "true");
+        betaProperty.set(true);
         assertEquals(McpProtocolVersion.V_2026_07_28, McpProtocolVersion.parse("2026-07-28"));
     }
 
@@ -60,7 +45,7 @@ public class McpProtocolVersionTest {
      */
     @Test
     public void testParseRoundTripsEveryVersionOnBeta() {
-        System.setProperty(BETA_PROPERTY, "true");
+        betaProperty.set(true);
         for (McpProtocolVersion version : McpProtocolVersion.values()) {
             assertEquals(version, McpProtocolVersion.parse(version.getVersion()));
         }
@@ -71,13 +56,13 @@ public class McpProtocolVersionTest {
      */
     @Test(expected = NoSuchElementException.class)
     public void testParseUnknownVersionRejected() {
-        System.setProperty(BETA_PROPERTY, "true");
+        betaProperty.set(true);
         McpProtocolVersion.parse("1999-01-01");
     }
 
     @Test
     public void testParseGaVersionsOnNonBeta() {
-        System.setProperty(BETA_PROPERTY, "false");
+        betaProperty.set(false);
         assertEquals(McpProtocolVersion.V_2025_11_25, McpProtocolVersion.parse("2025-11-25"));
         assertEquals(McpProtocolVersion.V_2025_06_18, McpProtocolVersion.parse("2025-06-18"));
         assertEquals(McpProtocolVersion.V_2025_03_26, McpProtocolVersion.parse("2025-03-26"));
@@ -85,38 +70,38 @@ public class McpProtocolVersionTest {
 
     @Test
     public void testAvailableValuesExcludesBetaOnNonBeta() {
-        System.setProperty(BETA_PROPERTY, "false");
+        betaProperty.set(false);
         assertFalse(Arrays.asList(McpProtocolVersion.availableValues()).contains(McpProtocolVersion.V_2026_07_28));
         assertEquals(3, McpProtocolVersion.availableValues().length);
     }
 
     @Test
     public void testAvailableValuesIncludesBetaOnBeta() {
-        System.setProperty(BETA_PROPERTY, "true");
+        betaProperty.set(true);
         assertTrue(Arrays.asList(McpProtocolVersion.availableValues()).contains(McpProtocolVersion.V_2026_07_28));
         assertEquals(McpProtocolVersion.values().length, McpProtocolVersion.availableValues().length);
     }
 
     @Test
     public void testIsAvailable() {
-        System.setProperty(BETA_PROPERTY, "false");
+        betaProperty.set(false);
         assertFalse(McpProtocolVersion.V_2026_07_28.isAvailable());
         assertTrue(McpProtocolVersion.V_2025_11_25.isAvailable());
 
-        System.setProperty(BETA_PROPERTY, "true");
+        betaProperty.set(true);
         assertTrue(McpProtocolVersion.V_2026_07_28.isAvailable());
         assertTrue(McpProtocolVersion.V_2025_11_25.isAvailable());
     }
 
     @Test(expected = NoSuchElementException.class)
     public void testAdapterRejectsBetaVersionOnNonBeta() throws Exception {
-        System.setProperty(BETA_PROPERTY, "false");
+        betaProperty.set(false);
         new McpProtocolVersion.McpProtocolVersionAdapter().adaptFromJson("2026-07-28");
     }
 
     @Test
     public void testAdapterRoundTripsBetaVersionOnBeta() throws Exception {
-        System.setProperty(BETA_PROPERTY, "true");
+        betaProperty.set(true);
         McpProtocolVersion.McpProtocolVersionAdapter adapter = new McpProtocolVersion.McpProtocolVersionAdapter();
         assertEquals(McpProtocolVersion.V_2026_07_28, adapter.adaptFromJson("2026-07-28"));
         assertEquals("2026-07-28", adapter.adaptToJson(McpProtocolVersion.V_2026_07_28));
@@ -143,7 +128,7 @@ public class McpProtocolVersionTest {
      */
     @Test
     public void testLatestOnBeta() {
-        System.setProperty(BETA_PROPERTY, "true");
+        betaProperty.set(true);
         assertEquals(McpProtocolVersion.values()[0], McpProtocolVersion.latest());
     }
 
@@ -153,7 +138,7 @@ public class McpProtocolVersionTest {
      */
     @Test
     public void testLatestOnNonBeta() {
-        System.setProperty(BETA_PROPERTY, "false");
+        betaProperty.set(false);
         assertEquals(McpProtocolVersion.V_2025_11_25, McpProtocolVersion.latest());
         assertTrue(McpProtocolVersion.latest().isAvailable());
     }
