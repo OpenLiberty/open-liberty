@@ -1,0 +1,28 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<server description="Test that a specific-host endpoint cannot bind a port already bound by a wildcard endpoint.">
+
+    <include location="../fatTestCommon.xml"/>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <!--
+        Binds the wildcard address on the port first. The test then adds HttpEndpoint2 (same ports,
+        specific host) with a configuration update so HttpEndpoint1 is guaranteed to bind first.
+    -->
+    <httpEndpoint id="HttpEndpoint1"
+                  host="*"
+                  enabled="true"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}" />
+
+</server>
