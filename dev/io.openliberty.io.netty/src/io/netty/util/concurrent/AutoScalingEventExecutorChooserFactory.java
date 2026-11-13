@@ -22,6 +22,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+// Liberty specific: imports for injecting Liberty's managed daemon scheduler
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -92,6 +95,8 @@ public final class AutoScalingEventExecutorChooserFactory implements EventExecut
     private final int maxRampUpStep;
     private final int maxRampDownStep;
     private final int scalingPatienceCycles;
+    // Liberty specific: optional scheduler for running periodic utilization checks (uses Liberty's managed daemon thread pool)
+    private final ScheduledExecutorService scheduler;
 
     /**
      * Creates a new factory for a scaling-enabled {@link EventExecutorChooser}.
@@ -110,6 +115,31 @@ public final class AutoScalingEventExecutorChooserFactory implements EventExecut
                                                   TimeUnit windowUnit, double scaleDownThreshold,
                                                   double scaleUpThreshold, int maxRampUpStep, int maxRampDownStep,
                                                   int scalingPatienceCycles) {
+        this(minThreads, maxThreads, utilizationWindow, windowUnit, scaleDownThreshold,
+             scaleUpThreshold, maxRampUpStep, maxRampDownStep, scalingPatienceCycles, null);
+    }
+
+    /**
+     * Creates a new factory for a scaling-enabled {@link EventExecutorChooser} with an explicit scheduler.
+     * Liberty specific: Allows passing Liberty's managed {@link ScheduledExecutorService} so periodic monitoring
+     * runs on daemon threads, avoiding Netty's default non-daemon {@link GlobalEventExecutor#INSTANCE}.
+     *
+     * @param minThreads               the minimum number of threads to keep active.
+     * @param maxThreads               the maximum number of threads to scale up to.
+     * @param utilizationWindow        the period at which to check group utilization.
+     * @param windowUnit               the unit for {@code utilizationWindow}.
+     * @param scaleDownThreshold       the average utilization below which a thread may be suspended.
+     * @param scaleUpThreshold         the average utilization above which a thread may be resumed.
+     * @param maxRampUpStep            the maximum number of threads to add in one cycle.
+     * @param maxRampDownStep          the maximum number of threads to remove in one cycle.
+     * @param scalingPatienceCycles    the number of consecutive cycles a condition must be met before scaling.
+     * @param scheduler                the {@link ScheduledExecutorService} used to run periodic utilization checks,
+     *                                 or {@code null} to default to {@link GlobalEventExecutor#INSTANCE}.
+     */
+    public AutoScalingEventExecutorChooserFactory(int minThreads, int maxThreads, long utilizationWindow,
+                                                  TimeUnit windowUnit, double scaleDownThreshold,
+                                                  double scaleUpThreshold, int maxRampUpStep, int maxRampDownStep,
+                                                  int scalingPatienceCycles, ScheduledExecutorService scheduler) {
         minChildren = ObjectUtil.checkPositiveOrZero(minThreads, "minThreads");
         maxChildren = ObjectUtil.checkPositive(maxThreads, "maxThreads");
         if (minThreads > maxThreads) {
@@ -129,6 +159,7 @@ public final class AutoScalingEventExecutorChooserFactory implements EventExecut
         this.maxRampUpStep = ObjectUtil.checkPositive(maxRampUpStep, "maxRampUpStep");
         this.maxRampDownStep = ObjectUtil.checkPositive(maxRampDownStep, "maxRampDownStep");
         this.scalingPatienceCycles = ObjectUtil.checkPositiveOrZero(scalingPatienceCycles, "scalingPatienceCycles");
+        this.scheduler = scheduler;
     }
 
     @Override
@@ -179,9 +210,17 @@ public final class AutoScalingEventExecutorChooserFactory implements EventExecut
             AutoScalingState initialState = new AutoScalingState(maxChildren, 0L, executors);
             state = new AtomicReference<>(initialState);
 
-            ScheduledFuture<?> utilizationMonitoringTask = GlobalEventExecutor.INSTANCE.scheduleAtFixedRate(
-                    new UtilizationMonitor(), utilizationCheckPeriodNanos, utilizationCheckPeriodNanos,
-                    TimeUnit.NANOSECONDS);
+            // Liberty specific: Use injected daemon scheduler if provided, otherwise default to Netty GlobalEventExecutor
+            ScheduledFuture<?> utilizationMonitoringTask;
+            if (scheduler != null) {
+                utilizationMonitoringTask = scheduler.scheduleAtFixedRate(
+                        new UtilizationMonitor(), utilizationCheckPeriodNanos, utilizationCheckPeriodNanos,
+                        TimeUnit.NANOSECONDS);
+            } else {
+                utilizationMonitoringTask = GlobalEventExecutor.INSTANCE.scheduleAtFixedRate(
+                        new UtilizationMonitor(), utilizationCheckPeriodNanos, utilizationCheckPeriodNanos,
+                        TimeUnit.NANOSECONDS);
+            }
 
             if (executors.length > 0) {
                 executors[0].terminationFuture().addListener(future -> utilizationMonitoringTask.cancel(false));

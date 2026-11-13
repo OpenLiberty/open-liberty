@@ -68,6 +68,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.ThreadPerTaskExecutor;
 import io.openliberty.channel.config.ChannelFrameworkConfig;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
@@ -157,11 +158,12 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
         // Compared to channelfw, quiesce is hit every time because
         // connections are lazy cleaned on deactivate
-        DefaultThreadFactory threadFactory = new DefaultThreadFactory("Shared TCPChannel NonBlocking Accept Thread");
+        DefaultThreadFactory threadFactory = new DefaultThreadFactory("Shared TCPChannel NonBlocking Accept Thread", true);
         sharedAcceptGroup = new MultiThreadIoEventLoopGroup(1, threadFactory, ioFactory);
 
         AutoScalingEventExecutorChooserFactory scaler = createThreadScaler(config);
-        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, null, scaler, ioFactory);
+        DefaultThreadFactory workerThreadFactory = new DefaultThreadFactory("TCPChannel NonBlocking Worker Thread", true);
+        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, new ThreadPerTaskExecutor(workerThreadFactory), scaler, ioFactory);
         outboundConnections = new DefaultChannelGroup(childGroup.next());
 
         if (metricsWindow > 0 && TraceComponent.isAnyTracingEnabled() && NettyThreadMetrics.tc.isDebugEnabled()) {
@@ -189,7 +191,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Creating AutoScaler with minThreads: " + minThreads + ", maxThreads: " + maxThreads + ", windowSize: " + windowSize + ", downThreshold: " + downThreshold + ", upThreshold: " + upThreshold + ", upStep: " + upStep + ", downStep: " + downStep + ", cycles: " + cycles);
         }
-        return new AutoScalingEventExecutorChooserFactory(minThreads, maxThreads, windowSize, TimeUnit.MILLISECONDS, downThreshold, upThreshold, upStep, downStep, cycles);
+        return new AutoScalingEventExecutorChooserFactory(minThreads, maxThreads, windowSize, TimeUnit.MILLISECONDS, downThreshold, upThreshold, upStep, downStep, cycles, this.scheduledExecutorService);
     }
 
     private Double parseDouble(String property, double defaultValue) {
@@ -238,7 +240,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     public MultiThreadIoEventLoopGroup getDedicatedAcceptGroup() {
         IoHandlerFactory ioFactory = createHandlerFactory();
-        DefaultThreadFactory threadFactory = new DefaultThreadFactory("Dedicated TCPChannel NonBlocking Accept Thread");
+        DefaultThreadFactory threadFactory = new DefaultThreadFactory("Dedicated TCPChannel NonBlocking Accept Thread", true);
         MultiThreadIoEventLoopGroup acceptGroup = new MultiThreadIoEventLoopGroup(1, threadFactory, ioFactory);
         // Channel is not yet known at bootstrap creation time; parked in pendingDedicatedGroups
         // until TCPUtils.open() calls registerDedicatedAcceptGroup() on successful bind.
