@@ -14,6 +14,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -37,6 +38,8 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.message.BodyQueue;
+import com.ibm.ws.http.netty.pipeline.http2.H2InboundContent;
+import com.ibm.ws.http.netty.pipeline.http2.H2InboundRequest;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.FlowState;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
@@ -83,8 +86,10 @@ import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.TooLongHttpLineException;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Error;
+import io.netty.handler.codec.http2.Http2Exception;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
 import io.netty.handler.codec.http2.Http2Stream;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -127,6 +132,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     private boolean aggregatedBodyEnqueued;
 
     private final Map<String, HttpInputStream> streamMap = new ConcurrentHashMap<>();
+    private final Map<Integer, H2InboundStream> h2Streams = new HashMap<>();
 
     public HttpDispatcherHandler(NettyHttpChannelConfig config) {
         super(false);
@@ -243,6 +249,14 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             }
             return;
         }
+        if (msg instanceof H2InboundRequest) {
+            beginH2Stream(ctx, (H2InboundRequest) msg);
+            return;
+        }
+        if (msg instanceof H2InboundContent) {
+            acceptH2Content(ctx, (H2InboundContent) msg);
+            return;
+        }
         if (msg instanceof HttpRequest) {
             HttpRequest req = (HttpRequest) msg;
 
@@ -356,6 +370,102 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 firePendingAsyncRead(ctx);
             }
             return;
+        }
+    }
+
+    private void beginH2Stream(ChannelHandlerContext ctx, H2InboundRequest request) {
+        RequestMetadata metadata = RequestMetadata.capture(ctx.channel(), request);
+        HttpToHttp2ConnectionHandler handler = ctx.pipeline().get(HttpToHttp2ConnectionHandler.class);
+        if (!metadata.isHttp2() || metadata.streamId() != request.streamId() || handler == null
+                        || handler.connection().stream(request.streamId()) == null
+                        || h2Streams.containsKey(request.streamId())) {
+            throw new InvalidRequestMetadataException("HTTP/2 decoder stream ID does not match the request owner");
+        }
+        if (QuiesceState.isQuiesceInProgress()
+                        || Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.QUIESCING).get())) {
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.SERVICE_UNAVAILABLE);
+            response.headers().setInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), request.streamId());
+            HttpUtil.setContentLength(response, 0);
+            ctx.writeAndFlush(response);
+            return;
+        }
+
+        BodyQueue bodyQueue = BodyQueue.forHttp2(ctx.alloc(), config.getH2MaxFrameSize());
+        HttpDispatcherLink requestLink = new HttpDispatcherLink();
+        requestLink.initStreaming(ctx, request, config, false, metadata);
+        HttpRequestImpl appRequest = (HttpRequestImpl) requestLink.getRequest();
+        HttpInputStreamImpl body = appRequest.getBody();
+        VirtualConnection vc = requestLink.getVirtualConnection();
+        vc.getStateMap().put(NettyHttpConstants.VC_HTTP_INPUT_STREAM, body);
+        vc.getStateMap().put(NettyHttpConstants.VC_HTTP2_STREAM_ID, Integer.toString(request.streamId()));
+        AsyncReadDispatchState asyncReadState = AsyncReadDispatchState.forRequest(ctx.channel(), vc);
+
+        long contentLength = HttpUtil.getContentLength(request, -1);
+        body.nettyConfigureStreaming(bodyQueue, ctx, request.headers().get(HttpHeaderNames.CONTENT_ENCODING),
+                        contentLength, HttpUtil.isTransferEncodingChunked(request));
+        h2Streams.put(request.streamId(), new H2InboundStream(bodyQueue, requestLink, appRequest, asyncReadState));
+        int count = ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
+        ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(count + 1);
+        HttpDispatcher.getExecutorService().execute(requestLink::ready);
+    }
+
+    private void acceptH2Content(ChannelHandlerContext ctx, H2InboundContent content) throws Http2Exception {
+        H2InboundStream stream = h2Streams.get(content.streamId());
+        Runnable completion = content.takeCompletion();
+        try {
+            if (stream == null) {
+                throw Http2Exception.streamError(content.streamId(), Http2Error.PROTOCOL_ERROR,
+                                "DATA received without an HTTP/2 request owner");
+            }
+            if (content.content().isReadable()) {
+                if (!stream.queue.enqueueRetained(content.content(), completion)) {
+                    completion = null; // the queue settled the rejected fragment
+                    throw Http2Exception.streamError(content.streamId(), Http2Error.ENHANCE_YOUR_CALM,
+                                    "HTTP/2 request body queue capacity exceeded");
+                }
+                completion = null; // the queue now owns settlement after copy or discard
+            }
+            if (content.trailers() != null && !content.trailers().isEmpty()) {
+                stream.request.setTrailers(content.trailers());
+            }
+            if (content.endStream()) {
+                stream.queue.signalEos();
+                stream.link.setBodyComplete();
+                h2Streams.remove(content.streamId());
+            }
+        } finally {
+            try {
+                content.release();
+            } finally {
+                if (completion != null) {
+                    completion.run();
+                }
+            }
+        }
+        stream.asyncReadState.signal();
+    }
+
+    private void failH2Stream(int streamId, Throwable cause) {
+        H2InboundStream stream = h2Streams.remove(streamId);
+        if (stream != null && !stream.queue.isEosSignaled()) {
+            stream.queue.drainAndRelease();
+            stream.queue.signalError(cause);
+            stream.asyncReadState.fail();
+        }
+    }
+
+    private static final class H2InboundStream {
+        final BodyQueue queue;
+        final HttpDispatcherLink link;
+        final HttpRequestImpl request;
+        final AsyncReadDispatchState asyncReadState;
+
+        H2InboundStream(BodyQueue queue, HttpDispatcherLink link, HttpRequestImpl request,
+                        AsyncReadDispatchState asyncReadState) {
+            this.queue = queue;
+            this.link = link;
+            this.request = request;
+            this.asyncReadState = asyncReadState;
         }
     }
 
@@ -657,6 +767,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
         if (cause instanceof StreamException) {
             StreamException c = (StreamException) cause;
+            failH2Stream(c.streamId(), new EOFException("HTTP/2 stream closed before request body completed."));
             HttpToHttp2ConnectionHandler handler = ctx.pipeline().get(HttpToHttp2ConnectionHandler.class);
             Http2Connection connection = handler.connection();
 
@@ -851,6 +962,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     public void channelInactive(ChannelHandlerContext context) throws Exception {
 
         upgradingNow = false;
+        for (Integer streamId : new java.util.ArrayList<>(h2Streams.keySet())) {
+            failH2Stream(streamId, new EOFException("Channel closed before HTTP/2 request body completed."));
+        }
 
         //If there was an upgrade promise, we need to fail it.
         CompletableFuture<Void> promise = context.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).getAndSet(null);

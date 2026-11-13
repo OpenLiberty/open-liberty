@@ -106,6 +106,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private String forwardedRemoteAddress = null;
     private String forwardedProto = null;
     private String forwardedHost = null;
+    private RequestMetadata nettyForwardedMetadata;
     private boolean suppress0ByteChunk = false;
     private long bytesWritten;
 
@@ -142,6 +143,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                                          NettyHttpChannelConfig config, RequestMetadata requestMetadata) {
         this(context, vc, config);
         initializeRequestMetadata(requestMetadata);
+        this.nettyForwardedMetadata = requestMetadata.isHttp2() ? requestMetadata : null;
     }
 
     /**
@@ -1851,8 +1853,20 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     }
 
     private VirtualConnection getNettyRequestBodyBuffer(InterChannelCallback callback, boolean bForce){
-        HttpInputStreamImpl body = this.nettyContext.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).get();
-        if (body == null){
+        HttpInputStreamImpl body = null;
+        if (isNettyHttp2Request()) {
+            VirtualConnection vc = getVC();
+            if (vc != null && vc.getStateMap() != null){
+                Object stream = vc.getStateMap().get(NettyHttpConstants.VC_HTTP_INPUT_STREAM);
+                if (stream instanceof HttpInputStreamImpl){
+                    body = (HttpInputStreamImpl) stream;
+                }
+            }
+        }
+        if (body == null) {
+            body = this.nettyContext.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).get();
+        }
+        if (body == null && !isNettyHttp2Request()) {
             VirtualConnection vc = getVC();
             if (vc != null && vc.getStateMap() != null){
                 Object stream = vc.getStateMap().get(NettyHttpConstants.VC_HTTP_INPUT_STREAM);
@@ -1892,13 +1906,13 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     }
 
     private void dispatchNettyRequestBodyCallback(Runnable pending) {
-        AsyncReadDispatchState.forChannel(this.nettyContext.channel())
+        nettyAsyncReadState()
                         .submitReady(pending, null);
     }
 
     private void armNettyRequestBodyCallback(InterChannelCallback callback) {
         AtomicBoolean delivered = new AtomicBoolean();
-        AsyncReadDispatchState state = AsyncReadDispatchState.forChannel(this.nettyContext.channel());
+        AsyncReadDispatchState state = nettyAsyncReadState();
         Runnable success = () -> {
             if (!delivered.compareAndSet(false, true)) {
                 return;
@@ -1914,7 +1928,13 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         };
 
         state.arm(success, error);
-        ReadFlowHandler.setBodyReadWanted(this.nettyContext.channel(), true);
+        if (!isNettyHttp2Request()) {
+            ReadFlowHandler.setBodyReadWanted(this.nettyContext.channel(), true);
+        }
+    }
+
+    private AsyncReadDispatchState nettyAsyncReadState() {
+        return AsyncReadDispatchState.forRequest(this.nettyContext.channel(), getVC());
     }
 
     public void countDownFirstReadLatch(boolean force) {
@@ -2403,7 +2423,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Connected endpoint matched, verifying forwarded FOR list addresses");
             }
-            String[] forwardedForList = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_FOR_KEY).get();
+            String[] forwardedForList = nettyForwardedMetadata != null ? nettyForwardedMetadata.forwardedFor()
+                            : this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_FOR_KEY).get();
             if (Objects.isNull(forwardedForList) || forwardedForList.length == 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "No forwarded FOR addresses provided, forwarded values will not be used");
@@ -2434,7 +2455,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             }
 
             //Check if a port was included
-            attribute = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_PORT_KEY).get();
+            attribute = nettyForwardedMetadata != null ? nettyForwardedMetadata.forwardedPort()
+                            : this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_PORT_KEY).get();
             if (Objects.nonNull(attribute)) {
                 //If this port does not resolve to an integer, because it is obfuscated,
                 //malformed, or otherwise, then the address cannot be verified as being
@@ -2452,8 +2474,10 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             }
 
             this.forwardedRemoteAddress = forwardedForList[0];
-            this.forwardedHost = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_HOST_KEY).get();
-            this.forwardedProto = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_PROTO_KEY).get();
+            this.forwardedHost = nettyForwardedMetadata != null ? nettyForwardedMetadata.forwardedHost()
+                            : this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_HOST_KEY).get();
+            this.forwardedProto = nettyForwardedMetadata != null ? nettyForwardedMetadata.forwardedProto()
+                            : this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_PROTO_KEY).get();
 
         }
 
