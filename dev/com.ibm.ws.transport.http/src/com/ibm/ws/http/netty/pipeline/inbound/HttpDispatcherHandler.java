@@ -548,7 +548,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 // Generic Servlet upgrades may still need the HTTP persistence deadline.
                 TimeoutHandler timeoutHandler = p.get(TimeoutHandler.class);
                 if (timeoutHandler != null) {
-                    timeoutHandler.suspendForUpgrade();
+                    timeoutHandler.suspendForUpgrade(ctx.channel());
                 }
             }
             removeIfPresent(p, WriteTimeoutHandler.class);
