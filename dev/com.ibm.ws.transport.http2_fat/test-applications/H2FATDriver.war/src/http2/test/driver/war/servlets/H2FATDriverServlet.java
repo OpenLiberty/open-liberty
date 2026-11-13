@@ -5374,8 +5374,8 @@ public class H2FATDriverServlet extends FATServlet {
                 HpackConstants.LiteralIndexType.NEVERINDEX, false));
 
         int currentStream = 1;
-        // create another 100 streams
-        for (int i = 0; i < server_max_streams + 1; i++) {
+        // create 100 streams (50 inbound and 50 outbound resets)
+        for (int i = 0; i < server_max_streams; i++) {
             currentStream += 2;
             if (i % 2 == 0) {
                 if (LOGGER.isLoggable(Level.INFO)) {
@@ -5386,10 +5386,7 @@ public class H2FATDriverServlet extends FATServlet {
                         true, false, false, false, false);
                 frameHeadersToSend.setHeaderEntries(validHeadersToSend);
                 h2Client.sendFrame(frameHeadersToSend);
-                // Last HEADERS already triggers GOAWAY; skip the RST_STREAM, which would be unread when the server closes.
-                if (i < server_max_streams) {
-                    h2Client.sendFrame(new FrameRstStream(currentStream, 0, false));
-                }
+                h2Client.sendFrame(new FrameRstStream(currentStream, 0, false));
 
             } else {
                 if (LOGGER.isLoggable(Level.INFO)) {
@@ -5404,6 +5401,12 @@ public class H2FATDriverServlet extends FATServlet {
             }
 
         }
+
+        // one more HEADERS (no RST_STREAM) to trigger the GOAWAY
+        FrameHeadersClient triggerHeaders = new FrameHeadersClient(currentStream + 2, null, 0, 0, 0, false,
+                true, false, false, false, false);
+        triggerHeaders.setHeaderEntries(validHeadersToSend);
+        h2Client.sendFrame(triggerHeaders);
 
         blockUntilConnectionIsDone.await();
         handleErrors(h2Client, testName);
