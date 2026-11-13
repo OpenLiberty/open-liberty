@@ -205,7 +205,13 @@ public class GenericEndpointImpl {
 					}
 				}
 
-				r.run();
+				try {
+					r.run();
+				} catch (Exception e) {
+					if (c_logger.isErrorEnabled()) {
+						c_logger.error("error.exception", Situation.SITUATION_STOP, new Object[] { r }, e);
+					}
+				}
 			}
 		}
 	};
