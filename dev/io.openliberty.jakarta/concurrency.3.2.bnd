@@ -37,7 +37,7 @@ Import-Package: \
   *
 
 -includeresource: \
-  @${repo;jakarta.concurrency:jakarta.concurrency-api;3.2.0.M2;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.concurrency:jakarta.concurrency-api;3.2.0.M3;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
-   dep1;groupId=jakarta.concurrency;artifactId=jakarta.concurrency-api;version=3.2.0-M2;scope=runtime
+   dep1;groupId=jakarta.concurrency;artifactId=jakarta.concurrency-api;version=3.2.0-M3;scope=runtime

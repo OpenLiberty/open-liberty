@@ -26,13 +26,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
         <maven.compiler.release>21</maven.compiler.release>
         
         <!-- Jakarta EE API -->
         <jakarta.concurrent.tck.groupid>jakarta.concurrency</jakarta.concurrent.tck.groupid>
-        <jakarta.concurrent.tck.version>3.2.0-M2</jakarta.concurrent.tck.version>
+        <jakarta.concurrent.tck.version>3.2.0-SNAPSHOT</jakarta.concurrent.tck.version>
         <jakarta.concurrent.version>3.2.0</jakarta.concurrent.version>
         
         <!-- Test Infrastructure versions -->

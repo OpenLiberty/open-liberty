@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -48,8 +48,8 @@ public class ConcurrentTckLauncherWeb {
     @BeforeClass
     public static void setUp() throws Exception {
         //Comment out to use snapshot version
-//        additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
-//        additionalProps.put("jakarta.concurrent.tck.version", "3.2.0");
+        additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
+        additionalProps.put("jakarta.concurrent.tck.version", "3.2.0-M3");
 
         //Jakarta TCK platform
         additionalProps.put("jakarta.tck.platform", "web");
