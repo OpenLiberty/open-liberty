@@ -1022,6 +1022,74 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
      *
      * Intended to be used to restore EJB bindings when the ORB is restarted.
      */
+    @SuppressWarnings("unchecked")
+    protected <T> void bindAllRemoteInterfaces() {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "bindAllRemoteInterfaces");
+
+        int beansBound = 0;
+        List<HomeRecord> hrs = null;
+        Map<EJBModuleMetaDataImpl, NameSpaceBinder<?>> binders = new HashMap<EJBModuleMetaDataImpl, NameSpaceBinder<?>>();
+
+        // Start with the list of all HomeRecords. Not all of these beans may have
+        // started, but this is the complete set of everything that would have been
+        // bound into some naming context. The container may not be available yet
+        // if the EJB feature is just starting, but then there is nothing to do.
+        HomeOfHomes homeOfHomes = (ivContainer != null) ? ivContainer.getHomeOfHomes() : null;
+        if (homeOfHomes != null) {
+            hrs = homeOfHomes.getAllHomeRecords();
+
+            for (HomeRecord hr : hrs) {
+                if (hr.remoteBindingDeferred) {
+                    // Clear the flag before binding, rather than after; the binder sets it again
+                    // if the bind must be deferred (e.g. the ORB is not yet available), and that
+                    // must not be overwritten here or the bean would never be bound.
+                    hr.remoteBindingDeferred = false;
+                    try {
+                        BeanMetaData bmd = hr.getBeanMetaData();
+                        EJSHome home = hr.getHome();
+                        HomeWrapperSet homeSet = (home != null) ? home.getWrapperSet() : null;
+
+                        int numRemoteInterfaces = countInterfaces(bmd, false);
+                        int numLocalInterfaces = countInterfaces(bmd, true);
+                        boolean singleGlobalInterface = (numRemoteInterfaces + numLocalInterfaces) == 1;
+
+                        if (numRemoteInterfaces > 0) {
+                            EJBModuleMetaDataImpl mmd = hr.getEJBModuleMetaData();
+                            NameSpaceBinder<T> binder = (NameSpaceBinder<T>) binders.get(mmd);
+                            if (binder == null) {
+                                binder = (NameSpaceBinder<T>) createNameSpaceBinder(mmd);
+                                binders.put(mmd, binder);
+                            }
+                            bindInterfaces(binder, bmd, homeSet, false, numRemoteInterfaces, singleGlobalInterface);
+                            beansBound++;
+                        }
+                    } catch (Exception ex) {
+                        FFDCFilter.processException(ex, CLASS_NAME + ".bindAllRemoteInterfaces", "1061", this);
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "bindAllRemoteInterfaces: exception", ex);
+                        // Bind did not complete; leave the bean eligible for the next attempt
+                        hr.remoteBindingDeferred = true;
+                    }
+                }
+            }
+        }
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "bindAllRemoteInterfaces : beans= " + (hrs == null ? 0 : hrs.size()) + ", bound=" + beansBound);
+    }
+
+    /**
+     * Bind the remote interfaces for all beans known to the container.
+     *
+     * Intended to be used to restore EJB bindings when the ORB is restarted.
+     *
+     * @deprecated No longer called. Use {@link #bindAllRemoteInterfaces()}, which
+     *             restores the bindings using the same code path as application
+     *             start, and whose deferred state is tracked correctly if the
+     *             bind cannot be completed.
+     */
+    @Deprecated
     protected void bindAllRemoteInterfacesToContextRoot() {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         if (isTraceOn && tc.isEntryEnabled())
@@ -1035,7 +1103,7 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
         // if the EJB feature is just starting, but then there is nothing to do.
         HomeOfHomes homeOfHomes = (ivContainer != null) ? ivContainer.getHomeOfHomes() : null;
         if (homeOfHomes != null) {
-            List<HomeRecord> hrs = ivContainer.getHomeOfHomes().getAllHomeRecords();
+            List<HomeRecord> hrs = homeOfHomes.getAllHomeRecords();
 
             for (HomeRecord hr : hrs) {
                 if (hr.remoteBindingDeferred && hr.bindToContextRoot()) {
@@ -1107,6 +1175,57 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
     }
 
     /**
+     * Unbind the remote interfaces for all beans known to the container.
+     *
+     * Intended to be used to remove EJB bindings when the ORB is restarted.
+     */
+    protected void unbindAllRemoteInterfacesFromContextRoot() {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "unbindAllRemoteInterfacesFromContextRoot");
+
+        Map<EJBModuleMetaDataImpl, NameSpaceBinder<?>> binders = new HashMap<EJBModuleMetaDataImpl, NameSpaceBinder<?>>();
+
+        // Start with the list of all HomeRecords. Not all of these beans may have
+        // started, but this is the complete set of everything that would have been
+        // bound into some naming context.
+        HomeOfHomes homeOfHomes = (ivContainer != null) ? ivContainer.getHomeOfHomes() : null;
+        if (homeOfHomes != null) {
+            List<HomeRecord> hrs = homeOfHomes.getAllHomeRecords();
+
+            for (HomeRecord hr : hrs) {
+                if (hr.bindToContextRoot()) {
+                    // The remote bindings must be restored when the ORB returns. Only done here,
+                    // and not in the binder, since the binder is also used when the application
+                    // is uninstalled, when the bean must not be rebound.
+                    hr.remoteBindingDeferred = true;
+
+                    // A failure for one bean must not prevent the remaining beans from being unbound
+                    try {
+                        EJBModuleMetaDataImpl mmd = hr.getEJBModuleMetaData();
+                        NameSpaceBinder<?> binder = binders.get(mmd);
+                        if (binder == null) {
+                            binder = createNameSpaceBinder(mmd);
+                            binders.put(mmd, binder);
+                        }
+
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "processing bindings for " + hr.getJ2EEName());
+                        binder.unbindBindingsRemote(hr);
+                    } catch (Exception ex) {
+                        FFDCFilter.processException(ex, CLASS_NAME + ".unbindAllRemoteInterfacesFromContextRoot", "1203", this);
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "unbindAllRemoteInterfacesFromContextRoot: exception for " + hr.getJ2EEName(), ex);
+                    }
+                }
+            }
+        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "unbindAllRemoteInterfacesFromContextRoot");
+    }
+
+    /**
      * Binds the binding object for an interface into java:global.
      *
      * @param binder                the namespace binder
@@ -1142,30 +1261,28 @@ public abstract class AbstractEJBRuntime implements EJBRuntime, InjectionMetaDat
         if (isTraceOn && tc.isDebugEnabled())
             Tr.debug(tc, "names=" + jndiNames + ", global=" + hr.bindToJavaGlobalNameSpace());
 
-        // d660700 - Bind to java:global if necessary.
-        if (hr.bindToJavaGlobalNameSpace()) {
-            if (bindingObject != null) {
-                sendBindingMessage(bmd, beanName, interfaceName, interfaceIndex, local);
-            }
-
-            for (String jndiName : jndiNames) {
-                if (bindingObject != null) {
-                    binder.bindJavaGlobal(jndiName, bindingObject); // F69147.2
-                }
-                hr.ivJavaGlobalBindings.add(jndiName);
-            }
-        }
-
-        // d660700 - Bind to java:app.
-        for (String jndiName : jndiNames) {
-            if (bindingObject != null) {
-                binder.bindJavaApp(jndiName, bindingObject); // F69147.2
-            }
-            hr.ivJavaAppBindings.add(jndiName);
-        }
-
-        // d660700 - Bind to java:module.
         if (bindingObject != null) {
+            // d660700 - Bind to java:global if necessary.
+            if (hr.bindToJavaGlobalNameSpace()) {
+                sendBindingMessage(bmd, beanName, interfaceName, interfaceIndex, local);
+
+                for (String jndiName : jndiNames) {
+                    binder.bindJavaGlobal(jndiName, bindingObject); // F69147.2
+                    if (!hr.ivJavaGlobalBindings.contains(jndiName)) {
+                        hr.ivJavaGlobalBindings.add(jndiName);
+                    }
+                }
+            }
+
+            // d660700 - Bind to java:app.
+            for (String jndiName : jndiNames) {
+                binder.bindJavaApp(jndiName, bindingObject); // F69147.2
+                if (!hr.ivJavaAppBindings.contains(jndiName)) {
+                    hr.ivJavaAppBindings.add(jndiName);
+                }
+            }
+
+            // d660700 - Bind to java:module.
             for (String jndiName : jndiNames) {
                 binder.bindJavaModule(jndiName, bindingObject); // F69147.2
             }

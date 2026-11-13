@@ -84,6 +84,7 @@ public class RebindConfigUpdateTest extends FATServletClient {
     private static int ALL_LOCAL_BINDINGS = 15;
     private static int ALL_REMOTE_BINDINGS = 16;
 
+    // @formatter:off
     // Expected binding location suffixes for all local CNTR0167I messages
     private static final List<String> EXPECTED_LOCAL_BINDING_LOCATIONS = Arrays.asList(
             // JavaColonLookupBean - local home only
@@ -137,6 +138,7 @@ public class RebindConfigUpdateTest extends FATServletClient {
             "#ejb/global/ConfigTestsTestApp/ConfigTestsEJB/ConfigTestsTestBean!com\\.ibm\\.ws\\.ejbcontainer\\.remote\\.configtests\\.ejb\\.ConfigTestsRemoteBusiness",
             "#ejb/global/ConfigTestsTestApp/ConfigTestsWeb/ConfigTestsWarTestBean!com\\.ibm\\.ws\\.ejbcontainer\\.remote\\.configtests\\.web\\.ejb\\.ConfigTestsWarRemoteHome",
             "#ejb/global/ConfigTestsTestApp/ConfigTestsWeb/ConfigTestsWarTestBean!com\\.ibm\\.ws\\.ejbcontainer\\.remote\\.configtests\\.web\\.ejb\\.ConfigTestsWarRemoteBusiness");
+    // @formatter:on
 
     @Server("com.ibm.ws.ejbcontainer.remote.config.fat.server")
     public static LibertyServer server;
@@ -330,14 +332,18 @@ public class RebindConfigUpdateTest extends FATServletClient {
      * Note: For this scenario, the application should be restarted after each configuration change.
      */
     @Test
-    @ExpectedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
+    // InjectionException - failure looking up remote reference before ORB start
+    // ClassNotFoundException - failure to find factory for corbaname lookup before ORB start
+    @ExpectedFFDC({ "com.ibm.wsspi.injectionengine.InjectionException", "java.lang.ClassNotFoundException" })
     public void testBindWhenEjbRemoteAdded() throws Exception {
         String remoteFeatureName = removeRemoteFeature();
         server.startServer();
+        // local bindings only; remote feature not included
         verifyBindings(server, ALL_LOCAL_BINDINGS, 0);
         FATServletClient.runTest(server, servlet, "testBindWhenEjbRemoteAdded_Initial");
 
         addRemoteFeature(remoteFeatureName);
+        // application restarted; local and remote bindings
         verifyBindings(server, ALL_LOCAL_BINDINGS, ALL_REMOTE_BINDINGS);
         FATServletClient.runTest(server, servlet, "testBindWhenEjbRemoteAdded_Added");
     }
@@ -349,9 +355,22 @@ public class RebindConfigUpdateTest extends FATServletClient {
      * available again after the remote feature has been added.
      *
      * Note: For this scenario, the application should be restarted after each configuration change.
+     *
+     * Note: This test is ignored because removing and re-adding the remote feature fails in Yoko.
+     * The Yoko spec bundles (io.openliberty.yoko.spec.corba, io.openliberty.yoko.osgi and
+     * io.openliberty.yoko.rmi.spec) remain active when the remote feature is removed, and their
+     * static delegates keep referring to the old io.openliberty.yoko.rmi.impl and
+     * io.openliberty.yoko.core classes. The static delegates are:
+     * javax.rmi.CORBA.Util.DELEGATE, javax.rmi.PortableRemoteObject.DELEGATE,
+     * javax.rmi.CORBA.Stub.DelegateHelper.DELEGATE_CONSTRUCTOR and
+     * org.omg.CORBA.ORB.OrbSingletonHolder.ORB_SINGLETON.
+     * After the feature is added again, the first remote call fails with
+     * "ClassCastException: org.apache.yoko.orb.CORBA.Delegate incompatible with
+     * org.apache.yoko.orb.CORBA.Delegate" in org.apache.yoko.orb.OB.SendingContextRuntimes.&lt;clinit&gt;.
+     * The EJB container unbinds and rebinds the remote interfaces correctly; the failure is in Yoko.
      */
     @Test
-    @Ignore("ORB restart not supported on Liberty - issue with yoko ORB") //TODO
+    @Ignore("ORB restart not supported on Liberty - static delegates in the Yoko spec bundles are not refreshed (see Javadoc)") //TODO
     @ExpectedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
     public void testRebindWhenEjbRemoteRemovedAdded() throws Exception {
         server.startServer();
@@ -394,15 +413,36 @@ public class RebindConfigUpdateTest extends FATServletClient {
      * Note: For this scenario, the application should not be restarted after the configuration update.
      */
     @Test
-    @Ignore("ORB restart not supported on Liberty") //TODO
     public void testRebindAfterOrbUpdated() throws Exception {
         server.startServer();
         verifyBindings(server, ALL_LOCAL_BINDINGS, ALL_REMOTE_BINDINGS);
         FATServletClient.runTest(server, servlet, "testRebindAfterOrbUpdated_Initial");
 
         updateOrbConfig();
+        // application not restarted; rebind of remote only
         waitForBindings(server, 0, ALL_REMOTE_BINDINGS);
         FATServletClient.runTest(server, servlet, "testRebindAfterOrbUpdated_Updated");
+    }
+
+    /**
+     * Test that the Enterprise Beans remote feature (ejbRemote or enterpriseBeansRemote) works properly
+     * after the ORB feature configuration is dynamically updated in an active server, including
+     * corbaname lookups. The remote bean interfaces should be available in JNDI and work properly after
+     * the server configuration update.
+     *
+     * Note: For this scenario, the application should be restarted after the configuration update,
+     * due to the use of corbaname lookups.
+     */
+    @Test
+    public void testRebindAfterOrbUpdatedCorbaname() throws Exception {
+        server.startServer();
+        verifyBindings(server, ALL_LOCAL_BINDINGS, ALL_REMOTE_BINDINGS);
+        FATServletClient.runTest(server, servlet, "testRebindAfterOrbUpdatedCorbaname_Initial");
+
+        updateOrbConfig();
+        // application restarted; local and remote bindings
+        waitForBindings(server, ALL_LOCAL_BINDINGS, ALL_REMOTE_BINDINGS);
+        FATServletClient.runTest(server, servlet, "testRebindAfterOrbUpdatedCorbaname_Updated");
     }
 
     /**
@@ -414,14 +454,15 @@ public class RebindConfigUpdateTest extends FATServletClient {
      * Note: For this scenario, the application should not be restarted after the configuration update.
      */
     @Test
-    @Ignore("ORB restart not supported on Liberty") //TODO
-    @ExpectedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
+    // InjectionException - failure looking up remote reference before ORB start
+    // ClassNotFoundException - failure to find factory for corbaname lookup before ORB start
+    @ExpectedFFDC({ "com.ibm.wsspi.injectionengine.InjectionException", "java.lang.ClassNotFoundException" })
     public void testRebindAfterOrbLateStart() throws Exception {
         List<Element> removed = removeQuickStartConfig();
         server_ssl.startServer();
+        server_ssl.waitForLTPAConfigReady();
         // Security service and ORB will not start without QuickStartSecurity
         assertTrue("Security service reported it was ready", server_ssl.findStringsInLogsUsingMark("CWWKS0008I", server_ssl.getDefaultLogFile()).isEmpty());
-        server.waitForLTPAConfigReady();
         assertTrue("ORB reported it was ready", server_ssl.findStringsInLogsUsingMark("CWWKI0001I", server_ssl.getDefaultLogFile()).isEmpty());
         expected_ssl_exceptions = new String[] { "CWWKS9582E", "CWWKS9660E" }; // No user registry
 
@@ -429,6 +470,7 @@ public class RebindConfigUpdateTest extends FATServletClient {
         FATServletClient.runTest(server_ssl, servlet, "testRebindAfterOrbLateStart_Initial");
 
         restoreQuickStartConfig(removed);
+        // application not restarted; rebind of remote only
         waitForBindings(server_ssl, 0, ALL_REMOTE_BINDINGS);
         FATServletClient.runTest(server_ssl, servlet, "testRebindAfterOrbLateStart_Started");
     }
@@ -441,12 +483,12 @@ public class RebindConfigUpdateTest extends FATServletClient {
      * Note: For this scenario, the application should not be restarted after the configuration update.
      */
     @Test
-    @Ignore("ORB restart not supported on Liberty") //TODO
+    // InjectionException - failure looking up remote reference before ORB start
     @ExpectedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
     public void testRebindAfterOrbStoppedStarted() throws Exception {
         server_ssl.startServer();
+        server_ssl.waitForLTPAConfigReady();
         assertNotNull("Security service did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKS0008I"));
-        server.waitForLTPAConfigReady();
         assertNotNull("ORB did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKI0001I"));
         expected_ssl_exceptions = new String[] { "CWWKS9582E" }; // ORB did not start in 10 seconds
 
@@ -454,12 +496,48 @@ public class RebindConfigUpdateTest extends FATServletClient {
         FATServletClient.runTest(server_ssl, servlet, "testRebindAfterOrbStoppedStarted_Initial");
 
         List<Element> removed = removeQuickStartConfig();
+        // application not restarted; no rebinds
         verifyBindings(server_ssl, 0, 0);
         FATServletClient.runTest(server_ssl, servlet, "testRebindAfterOrbStoppedStarted_Stopped");
 
         restoreQuickStartConfig(removed);
+        // application not restarted; rebind of remote only
         waitForBindings(server_ssl, 0, ALL_REMOTE_BINDINGS);
         FATServletClient.runTest(server_ssl, servlet, "testRebindAfterOrbStoppedStarted_Started");
+    }
+
+    /**
+     * Test that the Enterprise Beans remote feature (ejbRemote or enterpriseBeansRemote) works properly
+     * after the ORB feature is dynamically stopped and then started in an active server, including
+     * corbaname lookups. The remote bean interfaces should be available in JNDI and work properly after
+     * the server configuration update.
+     *
+     * Note: For this scenario, the application should be restarted after the first configuration update,
+     * due to the use of corbaname lookups.
+     */
+    @Test
+    // InjectionException - failure looking up remote reference before ORB start
+    // ClassNotFoundException - failure to find factory for corbaname lookup before ORB start
+    @ExpectedFFDC({ "com.ibm.wsspi.injectionengine.InjectionException", "java.lang.ClassNotFoundException" })
+    public void testRebindAfterOrbStoppedStartedCorbaname() throws Exception {
+        server_ssl.startServer();
+        server_ssl.waitForLTPAConfigReady();
+        assertNotNull("Security service did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKS0008I"));
+        assertNotNull("ORB did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKI0001I"));
+        expected_ssl_exceptions = new String[] { "CWWKS9582E" }; // ORB did not start in 10 seconds
+
+        verifyBindings(server_ssl, ALL_LOCAL_BINDINGS, ALL_REMOTE_BINDINGS);
+        FATServletClient.runTest(server_ssl, servlet, "testRebindAfterOrbStoppedStartedCorbaname_Initial");
+
+        List<Element> removed = removeQuickStartConfig();
+        // application restarted with local bindings only
+        verifyBindings(server_ssl, ALL_LOCAL_BINDINGS, 0);
+        FATServletClient.runTest(server_ssl, servlet, "testRebindAfterOrbStoppedStartedCorbaname_Stopped");
+
+        restoreQuickStartConfig(removed);
+        // application not restarted; rebind of remote only
+        waitForBindings(server_ssl, 0, ALL_REMOTE_BINDINGS);
+        FATServletClient.runTest(server_ssl, servlet, "testRebindAfterOrbStoppedStartedCorbaname_Started");
     }
 
     /**

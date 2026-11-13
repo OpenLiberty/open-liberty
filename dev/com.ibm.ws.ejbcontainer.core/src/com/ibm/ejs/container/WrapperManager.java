@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2015 IBM Corporation and others.
+ * Copyright (c) 2001, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -259,7 +259,7 @@ public class WrapperManager
         } catch (Exception ex)
         {
             FFDCFilter.processException(ex, CLASS_NAME + ".createWrapper", "294", this);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            if (isTraceOn && tc.isEventEnabled())
                 Tr.event(tc, "Malformed object key", ex);
             throw new CSIException("Wrapper creation failure: " + ex, ex);
         }
@@ -325,7 +325,8 @@ public class WrapperManager
     throws CSIException,
                     RemoteException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "getWrapper");
 
         EJSWrapperCommon result = null; // f111627
@@ -347,7 +348,7 @@ public class WrapperManager
         } catch (FaultException ex) {
 
             FFDCFilter.processException(ex, CLASS_NAME + ".getWrapper", "259", this);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            if (isTraceOn && tc.isEventEnabled())
                 Tr.event(tc, "Unable to fault in wrapper", ex);
             throw new CSIException(ex.toString());
         }
@@ -359,7 +360,7 @@ public class WrapperManager
         if (!id._isHome && id.pkey != null)
             beanIdCache.add(result.getBeanId());
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "getWrapper");
         return result;
     } // getWrapper
@@ -378,7 +379,8 @@ public class WrapperManager
     {
         boolean removed = false;
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "unregister",
                      new Object[] { beanId, new Boolean(dropRef) }); // d181569
 
@@ -397,7 +399,7 @@ public class WrapperManager
             // Swallow the exception for now, and let the Eviction thread
             // take care of the object later
             FFDCFilter.processException(ex, CLASS_NAME + ".unregister", "351", this);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) { // d144064
+            if (isTraceOn && tc.isEventEnabled()) { // d144064
                 Tr.event(tc,
                          "unregister ignoring IllegalOperationException for object "
                                          + beanId); // d181569
@@ -406,11 +408,11 @@ public class WrapperManager
         } catch (DiscardException ex)
         {
             FFDCFilter.processException(ex, CLASS_NAME + ".unregister", "358", this);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) // d144064
+            if (isTraceOn && tc.isEventEnabled()) // d144064
                 Tr.event(tc, "Unable to discard element");
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "unregister");
 
         return removed;
@@ -424,7 +426,8 @@ public class WrapperManager
     public void unregisterHome(J2EEName homeName, EJSHome homeObj)
                     throws CSIException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "unregisterHome");
 
         J2EEName cacheHomeName;
@@ -455,7 +458,7 @@ public class WrapperManager
             }
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) { // d103404.1 d103404.2
+        if (isTraceOn && tc.isDebugEnabled()) { // d103404.1 d103404.2
             Tr.debug(tc, "Unregistered " + numRemoved +
                          " wrappers (total = " + numEnumerated + ")");
         }
@@ -463,8 +466,35 @@ public class WrapperManager
         // Now remove any cached BeanIds for this home.                    d152323
         beanIdCache.removeAll(homeObj);
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "unregisterHome");
+    }
+
+    /**
+     * Unregisters all cached remote objects from the orb object adapter.
+     */
+    public void unregisterRemote() {
+        boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "unregisterRemote");
+
+        Enumeration<?> enumerate = wrapperCache.enumerateElements();
+        while (enumerate.hasMoreElements()) {
+            // A failure for one wrapper must not prevent the remaining wrappers from being unregistered
+            try {
+                EJSWrapperCommon wCommon = (EJSWrapperCommon) ((CacheElement) enumerate.nextElement()).getObject();
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "disconnecting remote wrappers for " + wCommon.getBeanId());
+                wCommon.disconnectRemote();
+            } catch (Exception ex) {
+                FFDCFilter.processException(ex, CLASS_NAME + ".unregisterRemote", "489", this);
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "unregisterRemote: exception", ex);
+            }
+        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "unregisterRemote");
     }
 
     /**
@@ -474,13 +504,14 @@ public class WrapperManager
     @Override
     public void discardObject(EJBCache wrapperCache, Object key, Object ele)
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "discardObject", new Object[] { key, ele });
 
         EJSWrapperCommon wrapperCommon = (EJSWrapperCommon) ele;
         wrapperCommon.disconnect(); // @MD20022C, F58064
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "discardObject");
     } // castout
 
@@ -502,7 +533,8 @@ public class WrapperManager
     public EJSRemoteWrapper keyToObject(byte[] key)
                     throws RemoteException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "keyToObject");
 
         EJSWrapperCommon wc = null;
@@ -571,12 +603,12 @@ public class WrapperManager
         } catch (FaultException ex)
         {
             FFDCFilter.processException(ex, CLASS_NAME + ".keyToObject", "501", this);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            if (isTraceOn && tc.isEventEnabled())
                 Tr.event(tc, "Unable to fault in wrapper", ex);
             throw new RemoteException(ex.getMessage(), ex); // d356676.1
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "keyToObject", wrapper);
         return wrapper;
 
@@ -592,7 +624,8 @@ public class WrapperManager
     public Object faultOnKey(EJBCache cache, Object key)
                     throws FaultException
     {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "faultOnKey", key);
 
         ByteArray wrapperKey = (ByteArray) key;
@@ -618,23 +651,23 @@ public class WrapperManager
             Throwable cause = ex.getCause();
             if (cause instanceof EJBNotFoundException)
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                if (isTraceOn && tc.isEventEnabled())
                     Tr.event(tc, "Application Not Started", ex);
                 throw new FaultException((EJBNotFoundException) cause,
                                 "Application not started or not installed");
             }
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            if (isTraceOn && tc.isEventEnabled())
                 Tr.event(tc, "Malformed object key", ex);
             throw new FaultException(ex, "Malformed object key");
         } catch (Exception ex)
         {
             FFDCFilter.processException(ex, CLASS_NAME + ".faultOnKey", "548", this);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+            if (isTraceOn && tc.isEventEnabled())
                 Tr.event(tc, "Malformed object key", ex);
             throw new FaultException(ex, "Malformed object key");
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+        if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "faultOnKey");
 
         return result;

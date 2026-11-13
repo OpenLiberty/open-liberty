@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2021 IBM Corporation and others.
+ * Copyright (c) 2001, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -142,7 +142,7 @@ public final class EJSWrapperCommon extends Element // d195605
     /**
      * Reference to either the wrapper or the wrapper proxy for the local
      * component views.
-     * 
+     *
      * <p>Note: EJBLocalHome wrappers have traditionally also implemented
      * EJBLocalObject (by extending EJSLocalWrapper). We do the same for
      * EJBLocalHome wrapper proxies, so the type of this field can be
@@ -258,7 +258,7 @@ public final class EJSWrapperCommon extends Element // d195605
                 remoteWrapper.ivCommon = this; // d140003.9
                 remoteWrapper.isManagedWrapper = true; // d174057.2
                 remoteWrapper.ivInterface = isHome ? WrapperInterface.HOME // d366807
-                : WrapperInterface.REMOTE; // d366807
+                                : WrapperInterface.REMOTE; // d366807
 
                 // LIDB2018 start
                 // For Stateful Session bean instances, with remote interfaces,
@@ -311,7 +311,7 @@ public final class EJSWrapperCommon extends Element // d195605
                 localWrapper.ivCommon = this; // d140003.9
                 localWrapper.isManagedWrapper = false; // d174057.2
                 localWrapper.ivInterface = isHome ? WrapperInterface.LOCAL_HOME // d366807
-                : WrapperInterface.LOCAL; // d366807
+                                : WrapperInterface.LOCAL; // d366807
 
                 localObject = localWrapper;
 
@@ -462,7 +462,7 @@ public final class EJSWrapperCommon extends Element // d195605
 
     /**
      * Get the value of a field from an object.
-     * 
+     *
      * @param fieldClassValue the Field class value
      * @param obj the object
      * @return the field value
@@ -483,7 +483,7 @@ public final class EJSWrapperCommon extends Element // d195605
      * Returns the EJSWrapperBase object for an object that implements
      * LocalBeanWrapper. This operation should never fail, but if it does,
      * exceptions will be thrown as EJBException.
-     * 
+     *
      * @param obj the LocalBeanWrapper
      * @return the EJSWrapperBase for the local bean wrapper
      */
@@ -497,7 +497,7 @@ public final class EJSWrapperCommon extends Element // d195605
      * Returns the wrapper proxy object for an object that implements
      * LocalBeanWrapperProxy. This operation should never fail, but if it
      * does, exceptions will be thrown as EJBException.
-     * 
+     *
      * @param obj the LocalBeanWrapperProxy
      * @return the wrapper proxy for the local bean wrapper proxy
      */
@@ -508,7 +508,7 @@ public final class EJSWrapperCommon extends Element // d195605
 
     /**
      * EJSWrapperCommmon constructor for EJBFactory wrapper.
-     * 
+     *
      * Initializes EJBFactory wrapper with minimal data. The EJBFactory
      * Wrapper is NOT intended to go through EjbPreInvoke. If EjbPreInvoke
      * processing is required, it will be invoked on the wrapper of the
@@ -550,11 +550,11 @@ public final class EJSWrapperCommon extends Element // d195605
 
     /**
      * Return instance of remote EJSWrapper. <p>
-     * 
+     *
      * This will return either the remote home or remote component interface.
      * The remote home wrapper extends EJSWrapper, which means it (somewhat
      * unexpectedly) implements EJBObject in addition to EJBHome. <p>
-     * 
+     *
      * @throws IllegalStateException if the EJB does not have the interface
      */
     public EJSWrapper getRemoteWrapper()
@@ -570,11 +570,11 @@ public final class EJSWrapperCommon extends Element // d195605
 
     /**
      * Return instance of remote object (wrapper). <p>
-     * 
+     *
      * This will return either the remote home, remote component interface,
      * or remote EJBFactory wrapper. Will NOT return a remote business
      * interface wrapper. <p>
-     * 
+     *
      * @throws IllegalStateException if the EJB does not have the interface
      **/
     public EJSRemoteWrapper getRemoteObjectWrapper()
@@ -752,6 +752,14 @@ public final class EJSWrapperCommon extends Element // d195605
             }
         }
 
+        disconnectRemote();
+    }
+
+    /**
+     * Unregisters the remote wrapper servants from ORB.
+     */
+    protected void disconnectRemote() {
+
         if (ivRemoteObjectWrapper != null)
         { // synchronized on the remote Wrapper to set the isRemoteRegistered flag
             synchronized (ivRemoteObjectWrapper)
@@ -847,7 +855,7 @@ public final class EJSWrapperCommon extends Element // d195605
      * Return instance of local EJSLocalWrapper. This method should only be
      * used in the rare cases when an actual EJSLocalWrapper object is needed
      * rather than a client proxy.
-     * 
+     *
      * @see #getLocalObject
      */
     public EJSLocalWrapper getLocalWrapper()
@@ -867,7 +875,7 @@ public final class EJSWrapperCommon extends Element // d195605
 
     /**
      * Method to get a business object given the name of the interface.
-     * 
+     *
      * @param interfaceName the interface name
      * @return the business object
      * @throws IllegalStateException if the interface name is not valid
@@ -891,7 +899,7 @@ public final class EJSWrapperCommon extends Element // d195605
      * Method to get the local business object, given the index of the
      * interface. The returned object will be a wrapper, a no-interface
      * wrapper, or a local wrapper proxy.
-     * 
+     *
      * @param interfaceIndex index of the interface
      * @return the object at the passed in interface
      */
@@ -920,12 +928,11 @@ public final class EJSWrapperCommon extends Element // d195605
         }
         return (EJSWrapperBase) ivBusinessLocal[0];
     }
-    
+
     public Object getRemoteHomeObject(Object stub, Class<?> homeInterfaceClass) throws RemoteException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getRemoteHomeObject : " + homeInterfaceClass);
-        
-        
+
         ClassLoader moduleContextClassLoader = ivBMD.ivContextClassLoader;
         ClassLoader contextClassLoader = svThreadContextAccessor.getContextClassLoaderForUnprivileged(Thread.currentThread());
 
@@ -936,7 +943,7 @@ public final class EJSWrapperCommon extends Element // d195605
             } else {
                 contextHomeInterfaceClass = contextClassLoader.loadClass(homeInterfaceClass.getName());
             }
-            
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "getRemoteHomeObject : Performing narrow with contextClassLoader and interface " + contextHomeInterfaceClass);
             return PortableRemoteObject.narrow(stub, contextHomeInterfaceClass);
@@ -966,17 +973,17 @@ public final class EJSWrapperCommon extends Element // d195605
                     Tr.debug(tc, "ignoring loadClass/narrow exception", ex);
             }
         }
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getRemoteHomeObject : Could not narrow, returning stub");
         return stub;
-        
+
     }
 
     /**
      * Method to get the remote business object, given the index of the
      * interface.
-     * 
+     *
      * @param interfaceIndex index of the interface
      * @return the object at the passed in interface
      * @throws RemoteException
@@ -1013,7 +1020,7 @@ public final class EJSWrapperCommon extends Element // d195605
      * is not required to return a properly narrowed stub, but we don't have any
      * better options.
      * </ul>
-     * 
+     *
      * @param wrapper the remote business interface wrapper
      * @param moduleContextClassLoader the EJB module context class loader
      * @param businessClass the EJB business interface class
@@ -1101,19 +1108,19 @@ public final class EJSWrapperCommon extends Element // d195605
     /**
      * Returns the specific Remote Business interface wrapper for the specified
      * WrapperId. <p>
-     * 
+     *
      * The returned wrapper will be registered with the ORB/OA at this time, if
      * it has not already been registered. <p>
-     * 
+     *
      * This method is intended for use during processing of a 'keyToObject'
      * request from the ORB. It knows how to extract the remote business
      * interface specific information from the WrapperId and use it to
      * determine the corresponding wrapper. <p>
-     * 
+     *
      * This method will continue to work even when an application has been
      * changed by adding or removing remote business interfaces, as long
      * as the interface requested is not removed. <p>
-     * 
+     *
      * @param wrapperId EJB Wrapper Identifier.
      * @throws IllegalStateException if the EJB does not have the interface
      **/
@@ -1164,13 +1171,13 @@ public final class EJSWrapperCommon extends Element // d195605
     /**
      * Returns an aggregate wrapper of all local business interfaces, including
      * the no-interface view. <p>
-     * 
+     *
      * The aggregate local wrapper class will be generated with JITDeploy the
      * first time this method is called for a bean. <p>
-     * 
+     *
      * @return the aggregate local wrapper instance.
      * @throws EJBException if a failure occurs attempting to generate the
-     *             aggregate wrapper class or create an instance of it.
+     *                          aggregate wrapper class or create an instance of it.
      */
     // F743-34304
     public Object getAggregateLocalWrapper()
@@ -1317,9 +1324,9 @@ public final class EJSWrapperCommon extends Element // d195605
      * more than once, but pinOnce() will not obtain an additional pin if the
      * object is already pinned, so a call to <code>unpin()</code> is only
      * required if true is returned. <p>
-     * 
+     *
      * Note that false is returned if the object does not exist in the cache. <p>
-     * 
+     *
      * @return true if a pin is obtained, false if the element
      *         does not exist, or is already pinned.
      **/
@@ -1351,10 +1358,10 @@ public final class EJSWrapperCommon extends Element // d195605
      * not pinned may be cast-out of the cache during trimming operations.
      * Calls to <code>unpin()</code> must be symmetric with calls to
      * <code>pinOnce()</code>. <p>
-     * 
+     *
      * No action is taken if the object is either not pinned or not currently
      * in the EJS Wrapper Cache. <p>
-     * 
+     *
      * @see Cache#pin
      **/
     // d195605
