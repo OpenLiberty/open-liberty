@@ -57,6 +57,24 @@ public final class ProtocolVersionRequests {
                     }
                     """;
 
+    /** The echo request with the _meta which carries the protocol version in the request body from 2026-07-28 */
+    private static final String ECHO_REQUEST_WITH_META_2026_07_28 = """
+                    {
+                      "jsonrpc": "2.0",
+                      "id": 1,
+                      "method": "tools/call",
+                      "params": {
+                        "name": "echo",
+                        "arguments": {
+                          "input": "Hello"
+                        },
+                        "_meta": {
+                          "io.modelcontextprotocol/protocolVersion": "2026-07-28"
+                        }
+                      }
+                    }
+                    """;
+
     private static final String INITIALIZE_REQUEST = """
                     {
                       "jsonrpc": "2.0",
@@ -101,7 +119,7 @@ public final class ProtocolVersionRequests {
      * @param sessionId the value for the Mcp-Session-Id header, or {@code null} to omit the header
      */
     public static void assertEchoAcceptedInSession(LibertyServer server, String appName, String protocolVersion, String sessionId) throws Exception {
-        String response = post(server, appName, protocolVersion, sessionId, ECHO_REQUEST, 200);
+        String response = post(server, appName, protocolVersion, sessionId, echoRequest(protocolVersion), 200);
         assertThat("Expected the echo tool to run with protocol version " + protocolVersion,
                    response, containsString("Hello"));
     }
@@ -126,7 +144,7 @@ public final class ProtocolVersionRequests {
     public static void assertEchoRejectedInSession(LibertyServer server, String appName, String protocolVersion, String sessionId,
                                                    String expectedSupportedValues)
                     throws Exception {
-        String response = post(server, appName, protocolVersion, sessionId, ECHO_REQUEST, 400);
+        String response = post(server, appName, protocolVersion, sessionId, echoRequest(protocolVersion), 400);
         assertRejectedResponse(protocolVersion, response, expectedSupportedValues);
     }
 
@@ -207,6 +225,14 @@ public final class ProtocolVersionRequests {
                    response, containsString(UNSUPPORTED_MESSAGE));
         assertThat("Expected error message to list the supported versions",
                    response, containsString("Supported values: " + expectedSupportedValues));
+    }
+
+    /**
+     * Builds the echo request. From 2026-07-28 the protocol version in the MCP-Protocol-Version header must match the
+     * one in the body's _meta, so the _meta is only added when the header is for that version.
+     */
+    private static String echoRequest(String protocolVersion) {
+        return V_2026_07_28.equals(protocolVersion) ? ECHO_REQUEST_WITH_META_2026_07_28 : ECHO_REQUEST;
     }
 
     private static String post(LibertyServer server, String appName, String protocolVersion, String sessionId, String body, int expectedCode) throws Exception {

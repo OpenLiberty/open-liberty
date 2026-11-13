@@ -100,6 +100,11 @@ public class McpTransport {
             throw unsupportedProtocolVersion(mcpConfig);
         }
         this.mcpRequest = toRequest();
+        // A missing header is interpreted as 2025-03-26, which may be outside the configured range.
+        // The initialize request is exempt because it negotiates the version and does not need the header.
+        if (!headerPresent && mcpRequest.getRequestMethod() != RequestMethod.INITIALIZE && !mcpConfig.isAccepted(version)) {
+            throw unsupportedProtocolVersion(mcpConfig);
+        }
         HeaderValidation.validateProtocolVersionMatchesBody(version, mcpRequest);
         this.appName = extractAppName();
         final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
@@ -319,13 +324,15 @@ public class McpTransport {
     public void sendJsonRpcException(JSONRPCException e) {
         // A header mismatch is rejected at the HTTP level, before the message is accepted.
         // This must not be turned into the 202 which is sent for accepted notifications.
+        RequestId id = mcpRequest != null ? mcpRequest.id() : null;
+        boolean notification = mcpRequest != null && id == null;
         boolean rejectedWithHttpError = e.getErrorCode() == JSONRPCErrorCode.HEADER_MISMATCH;
         if (rejectedWithHttpError) {
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
 
         // JSON-RPC notifications must not receive a response body.
-        if (mcpRequest != null && mcpRequest.id() == null) {
+        if (notification) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Ignoring JSONRPCException for notification (no id): " + e.getMessage(), e);
             }
@@ -334,7 +341,6 @@ public class McpTransport {
             }
             return;
         }
-        RequestId id = (mcpRequest != null) ? mcpRequest.id() : null;
         McpResponse mcpResponse = new McpErrorResponse(id, e);
 
         res.setContentType("application/json");
