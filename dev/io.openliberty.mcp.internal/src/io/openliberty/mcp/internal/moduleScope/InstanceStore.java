@@ -12,6 +12,8 @@ package io.openliberty.mcp.internal.moduleScope;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import jakarta.enterprise.context.spi.Contextual;
@@ -22,8 +24,9 @@ import jakarta.enterprise.context.spi.CreationalContext;
  */
 // Unchecked casts are safe because we ensure that the keys and values in instances map match
 @SuppressWarnings("unchecked")
-@Trivial
 class InstanceStore {
+
+    private static final TraceComponent tc = Tr.register(InstanceStore.class);
 
     /**
      * An entry in the instance store
@@ -48,14 +51,23 @@ class InstanceStore {
      * @param creationalContext the creational context to use if an instance needs to be created
      * @return the instance, either retrieved from the store or newly created.
      */
+    @Trivial
     public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
         if (creationalContext == null) {
             var entry = instances.get(contextual);
             return entry == null ? null : (T) entry.instance();
         } else {
-            var entry = instances.computeIfAbsent(contextual, (c) -> new InstanceEntry<>(contextual.create(creationalContext), creationalContext));
+            var entry = instances.computeIfAbsent(contextual, (c) -> new InstanceEntry<>(createInstance(contextual, creationalContext), creationalContext));
             return (T) entry.instance;
         }
+    }
+
+    @Trivial
+    private <T> T createInstance(Contextual<T> contextual, CreationalContext<T> creationalContext) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Creating new instance of " + contextual);
+        }
+        return contextual.create(creationalContext);
     }
 
     /**
@@ -64,6 +76,7 @@ class InstanceStore {
      * @param <T> the contextual type
      * @param contextual the contextual
      */
+    @Trivial
     public <T> void destroy(Contextual<T> contextual) {
         var entry = (InstanceEntry<T>) instances.remove(contextual);
         if (entry != null) {
