@@ -48,7 +48,8 @@ public class TicketCacheBadPrincipalJava8 extends CommonBindTest {
 
     @BeforeClass
     public static void setStopMessages() throws IOException {
-        if(System.getProperty("os.name").equalsIgnoreCase("OS/400")){
+        String os = System.getProperty("os.name");
+        if(os.equalsIgnoreCase("OS/400") || os.equalsIgnoreCase("Z/OS")){
             JavaInfo ji = JavaInfo.forServer(server);
             assumeThat(ji.serviceRelease()>8 || ji.fixpack() >= 65, is(true));
         }
