@@ -19,7 +19,8 @@ src: \
     test-applications/FileUpload.war,\
     test-applications/ConfigTest.war/src,\
     test-applications/HeaderCasing.war/src,\
-    test-applications/privateHeaderApp/src
+    test-applications/privateHeaderApp/src,\
+    test-applications/downgradeApp/src
 
 fat.project: true
 
