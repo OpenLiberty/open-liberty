@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.wsspi.persistence.internal;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -33,17 +34,25 @@ import com.ibm.wsspi.persistence.InMemoryMappingFile;
  */
 @Component(name = "InMemoryUrlStreamHandler",
            service = { URLStreamHandlerService.class, InMemoryUrlStreamHandler.class },
-           property = { "url.handler.protocol=persistence-service", "url.handler.protocol=persistence-service" })
+           property = { "url.handler.protocol=persistence-service" })
 public class InMemoryUrlStreamHandler extends AbstractURLStreamHandlerService {
-    private final Map<String, InMemoryMappingFile> _data;
+    private static final Map<String, InMemoryMappingFile> _data = new ConcurrentHashMap<String, InMemoryMappingFile>();
 
     public InMemoryUrlStreamHandler() {
-        _data = new ConcurrentHashMap<String, InMemoryMappingFile>();
+    }
+
+    private static String normalizeKey(String file) {
+        if (file == null) {
+            return "";
+        }
+        return file.startsWith("/") ? file.substring(1) : file;
     }
 
     @Override
     public URLConnection openConnection(URL u) throws IOException {
-        return new PsURLConnection(u, _data.get(u.getFile()));
+        String file = u.getFile();
+        InMemoryMappingFile mappingFile = _data.get(normalizeKey(file));
+        return new PsURLConnection(u, mappingFile);
     }
 
     void clear() {
@@ -55,7 +64,7 @@ public class InMemoryUrlStreamHandler extends AbstractURLStreamHandlerService {
      */
     void deregister(List<URL> urls) {
         for (URL url : urls) {
-            _data.remove(url.getFile());
+            _data.remove(normalizeKey(url.getFile()));
         }
     }
 
@@ -63,11 +72,11 @@ public class InMemoryUrlStreamHandler extends AbstractURLStreamHandlerService {
      * Register the URL mapping to the provided InMemoryMappingFile.
      */
     void register(URL url, InMemoryMappingFile immf) {
-        _data.put(url.getFile(), immf);
+        _data.put(normalizeKey(url.getFile()), immf);
     }
 
-    class PsURLConnection extends URLConnection {
-        InMemoryMappingFile _mappingFile;
+    static class PsURLConnection extends URLConnection {
+        final InMemoryMappingFile _mappingFile;
 
         public PsURLConnection(URL u, InMemoryMappingFile mappingFile) {
             super(u);
@@ -81,6 +90,9 @@ public class InMemoryUrlStreamHandler extends AbstractURLStreamHandlerService {
 
         @Override
         public InputStream getInputStream() throws IOException {
+            if (_mappingFile == null) {
+                throw new FileNotFoundException("In-memory mapping file not found for URL: " + url);
+            }
             return new ByteArrayInputStream(_mappingFile.getMappingFile());
         }
     }
