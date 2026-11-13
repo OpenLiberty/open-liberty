@@ -13,6 +13,7 @@ import static io.openliberty.mcp.internal.McpProtocolVersion.V_2025_03_26;
 import static io.openliberty.mcp.internal.McpProtocolVersion.V_2025_11_25;
 import static io.openliberty.mcp.internal.RequestMethod.PING;
 import static io.openliberty.mcp.internal.RequestMethod.TOOLS_CALL;
+import static io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode.PARSE_ERROR;
 import static io.openliberty.mcp.internal.requests.parsing.McpOperationRequestParser.MCP_PROTOCOL_VERSION_HEADER;
 import static io.openliberty.mcp.internal.requests.parsing.McpOperationRequestParser.MCP_SESSION_ID_HEADER;
 import static io.openliberty.mcp.internal.test.exception.ExceptionAssertions.assertThrows;
@@ -389,6 +390,32 @@ public class McpOperationRequestParserTest {
     }
 
     @Test
+    public void testPreParseNullRequestId() throws IOException {
+        String json = """
+                        {
+                            "jsonrpc": "2.0",
+                            "id": null,
+                            "method": "ping"
+                        }
+                        """;
+        var partialRequest = parser.preParse(validRequestFor(json));
+        assertEquals("acceptHeader", ACCEPT_VALUE, partialRequest.acceptHeader());
+        assertEquals("protocolVersion", V_2025_11_25, partialRequest.protocolVersion());
+        assertTrue("protocolVersionHeaderPresent", partialRequest.protocolVersionHeaderPresent());
+        assertNull("sessionId", partialRequest.sessionId());
+        assertNull("TO", partialRequest.requestTo());
+
+        // Presence of parseException here shows that id was treated as invalid rather than missing
+        assertThat("parseException",
+                   partialRequest.parseException(),
+                   exception().ofType(JSONRPCException.class)
+                              .and(hasProperty("errorCode", equalTo(JSONRPCErrorCode.INVALID_REQUEST))));
+
+        assertEquals("requestId", RequestId.UNPARSABLE, partialRequest.id());
+        assertNull("method", partialRequest.method());
+    }
+
+    @Test
     public void testParseInvalidAcceptHeader() throws IOException {
         String json = """
                         {
@@ -640,7 +667,7 @@ public class McpOperationRequestParserTest {
         assertEquals("protocolVersion", V_2025_11_25, partialRequest.protocolVersion());
         assertNull("requestTo", partialRequest.requestTo());
         assertThat(partialRequest.parseException(), exception().ofType(JSONRPCException.class)
-                                                               .and(hasProperty("errorCode", equalTo(JSONRPCErrorCode.PARSE_ERROR))));
+                                                               .and(hasProperty("errorCode", equalTo(PARSE_ERROR))));
         assertEquals("requestId", RequestId.UNPARSABLE, partialRequest.id());
         assertNull("method", partialRequest.method());
     }
@@ -649,7 +676,7 @@ public class McpOperationRequestParserTest {
     public void testParseMalformedJson() throws IOException {
         var partialRequest = parser.preParse(validRequestFor("{ this is not json"));
         assertThrows(() -> parser.parse(partialRequest), exception().ofType(JSONRPCException.class)
-                                                                    .and(hasProperty("errorCode", equalTo(JSONRPCErrorCode.PARSE_ERROR))));
+                                                                    .and(hasProperty("errorCode", equalTo(PARSE_ERROR))));
     }
 
     @Test
@@ -829,6 +856,51 @@ public class McpOperationRequestParserTest {
         var partialRequest = parser.preParse(req);
         assertThrows(() -> parser.parse(partialRequest), exception().ofType(HttpResponseException.class)
                                                                     .and(hasProperty("statusCode", equalTo(SC_BAD_REQUEST))));
+    }
+
+    @Test
+    public void testParsePingWithoutProtocolHeaderWith20250326Disallowed() throws IOException {
+        setupWithConfig(MockMcpConfig.createStateless().setMinimumProtocolVersion(V_2025_11_25));
+
+        String json = """
+                        {
+                            "jsonrpc": "2.0",
+                            "id": "5",
+                            "method": "ping"
+                        }
+                        """;
+        // No MCP-Protocol-Version header, so the request is interpreted as 2025-03-26, which is below the configured minimum
+        var req = new MockHttpServletRequest(json);
+        req.addHeader(ACCEPT, ACCEPT_VALUE);
+        var partialRequest = parser.preParse(req);
+
+        // Ping is allowed before initialize completes, so this should be accepted
+        var request = parser.parse(partialRequest);
+        assertEquals("method", RequestMethod.PING, request.method());
+    }
+
+    @Test
+    public void testParseInvalidJsonWithoutProtocolHeaderWith20250326Disallowed() throws IOException {
+        setupWithConfig(MockMcpConfig.createStateless().setMinimumProtocolVersion(V_2025_11_25));
+
+        String json = """
+                        {
+                            "jsonrpc": "2.0",
+                            "id": "5",
+                            "method": "tools/call",
+                            "params": true
+                            }
+                        }
+                        """;
+        // No MCP-Protocol-Version header, so the request is interpreted as 2025-03-26, which is below the configured minimum
+        var req = new MockHttpServletRequest(json);
+        req.addHeader(ACCEPT, ACCEPT_VALUE);
+        var partialRequest = parser.preParse(req);
+
+        // Where the body is unparsable, the protocol version header is missing and 2025-03-06 is disallowed, we want the parse error, not the bad protocol version error.
+        // This is because the intention may have been to call "initialize" which shouldn't have the protocol version header
+        assertThrows(() -> parser.parse(partialRequest), exception().ofType(JSONRPCException.class)
+                                                                    .and(hasProperty("errorCode", equalTo(PARSE_ERROR))));
     }
 
     @Test

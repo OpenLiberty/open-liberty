@@ -254,10 +254,20 @@ public class McpOperationRequestParser {
             throw new HttpResponseException(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }
 
-        validateProtocolVersion(partialReq);
+        if (partialReq.protocolVersionHeaderPresent()) {
+            validateProtocolVersion(partialReq);
+        }
 
         if (partialReq.parseException() != null) {
             throw partialReq.parseException();
+        }
+
+        // If there's no header, it could be a pre-init request, so defer checking the protocol version until
+        // we know which method is being called.
+        if (!partialReq.protocolVersionHeaderPresent()) {
+            if (partialReq.method() == null || !partialReq.method().isPreInit()) {
+                validateProtocolVersion(partialReq);
+            }
         }
 
         JsonRpcRequestTO requestTO = partialReq.requestTo();
@@ -291,12 +301,6 @@ public class McpOperationRequestParser {
      * @param partialReq
      */
     private void validateProtocolVersion(McpOperationPartialRequest partialReq) {
-        if (!partialReq.protocolVersionHeaderPresent()
-            && partialReq.method() != null
-            && partialReq.method().isPreInit()) {
-            // Pre-init method, protocol version header not required
-            return;
-        }
         if (partialReq.protocolVersion() == null) {
             throw unsupportedProtocolVersion();
         }
