@@ -950,6 +950,9 @@ public final class ReadFlowHandler extends ChannelDuplexHandler {
      * @return true if a body is expected; false otherwise.
      */
     private static boolean isBodyExpected(HttpRequest request) {
+        // Codec already rejected this request; HttpDispatcherHandler will answer with an error.
+        if (request.decoderResult().isFailure()) return false;
+
         if (HttpUtil.is100ContinueExpected(request)) return true;
         if (HttpUtil.isTransferEncodingChunked(request)) return true;
         return HttpUtil.getContentLength(request, -1) > 0;
