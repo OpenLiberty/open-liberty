@@ -6,7 +6,7 @@ visibility = private
   io.openliberty.webBundleSecurity.internal-1.0, \
   io.openliberty.servlet.internal-6.0; ibm.tolerates:="6.1, 6.2", \
   com.ibm.websphere.appserver.httptransport-1.0, \
-  io.openliberty.xmlws.common-4.0; apiJar=false
+  io.openliberty.xmlws.impl-4.0
 -bundles=\
   io.openliberty.webservices.handler, \
   com.ibm.ws.javaee.ddmodel.ws, \

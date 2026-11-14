@@ -1,0 +1,48 @@
+-include= ~${workspace}/cnf/resources/bnd/feature.props
+symbolicName=io.openliberty.xmlws.impl-4.0
+visibility=private
+singleton=true
+IBM-App-ForceRestart: uninstall, \
+ install
+IBM-Process-Types: client, \
+ server
+Subsystem-Name: Internal xmlWS 4.0 implementation bundles (no API or SPI packages) for xmlWS-4.0, xmlWSClient-4.0 and WS-AT
+-features=io.openliberty.jakarta.xmlWS-4.0, \
+  io.openliberty.xmlBinding.internal-4.0, \
+  io.openliberty.activation.impl-2.1; ibm.tolerates:="2.2", \
+  com.ibm.websphere.appserver.httpcommons-1.0, \
+  io.openliberty.jakarta.mail-2.1; ibm.tolerates:="2.2", \
+  com.ibm.websphere.appserver.injection-2.0, \
+  com.ibm.websphere.appserver.internal.slf4j-1.7
+-bundles=\
+ io.openliberty.org.osgi.service.http; location:="dev/api/spec/,lib/", \
+ com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.bindings.xml.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.core.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.hc.3.2, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.tools.common.3.2.jakarta, \
+ com.ibm.ws.org.apache.cxf.cxf.tools.validator.3.2.jakarta, \
+ io.openliberty.org.apache.neethi, \
+ com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
+ com.ibm.ws.org.apache.xml.resolver.1.2, \
+ com.ibm.websphere.javaee.wsdl4j.1.2; location:="dev/api/spec/,lib/"; mavenCoordinates="wsdl4j:wsdl4j:1.6.3", \
+ com.ibm.ws.prereq.wsdl4j.1.6.2, \
+ com.ibm.websphere.prereq.wsdl4j.api; location:="dev/api/spec/,lib/", \
+ com.ibm.ws.javaee.ddmodel.wsbnd, \
+ com.ibm.ws.org.jvnet.mimepull, \
+ io.openliberty.xmlWS.3.0.internal.tools, \
+ io.openliberty.com.sun.xml.messaging.saaj.3.0, \
+ io.openliberty.org.codehaus.woodstox.stax2.api, \
+ io.openliberty.com.fasterxml.woodstox.core
+kind=ga
+edition=base
+WLP-Activation-Type: parallel
