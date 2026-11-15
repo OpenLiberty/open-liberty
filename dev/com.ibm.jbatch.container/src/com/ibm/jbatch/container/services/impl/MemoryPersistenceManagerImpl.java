@@ -1061,9 +1061,18 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
     private static class StepExecutionStartDateComparator implements Comparator<StepExecution> {
         public static final StepExecutionStartDateComparator INSTANCE = new StepExecutionStartDateComparator();
 
+        /**
+         * A step execution has a null start time from when it is created until startStep() sets it
+         * (and for good if the step is stopped before it starts), so sort those last.
+         */
         @Override
         public int compare(final StepExecution o1, StepExecution o2) {
-            return o1.getStartTime().compareTo((o2.getStartTime()));
+            Date d1 = o1.getStartTime();
+            Date d2 = o2.getStartTime();
+            if (d1 == null) {
+                return (d2 == null) ? 0 : 1;
+            }
+            return (d2 == null) ? -1 : d1.compareTo(d2);
         }
     }
 
