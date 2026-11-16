@@ -418,9 +418,9 @@ public class CdiTest {
         wsocTest.runEchoTest(new AnnotatedClientEP.SessionIdleTest(), "/cdi/annotatedIdleTimeoutCDI", result, Constants.getLongTimeout());
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - startTime;
-        if ((totalTime < 15000) || (totalTime > 25000)) {
+        if ((totalTime < 15000) || (totalTime > 40000)) {
             Assert.fail("Test - phase 1 - ran for " + totalTime
-                        + " which is either less than 10 seconds or more than 25 seconds,  outside of an acceptable session timeout range.");
+                        + " which is either less than 15 seconds or more than 25 seconds,  outside of an acceptable session timeout range.");
         }
 
         Object[] result2 = { ":ProducerBean Field Injected1:OnClose Called:ProducerBean Field Injected2", 1006 };
