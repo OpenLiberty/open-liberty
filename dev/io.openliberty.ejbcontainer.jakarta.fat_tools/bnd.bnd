@@ -47,8 +47,7 @@ test.project: true
 generate.replacement: true
 
 -buildpath: \
-	io.openliberty.yoko.spec.corba;version=latest,\
-	io.openliberty.yoko.rmi.spec;version=latest,\
+	io.openliberty.yoko.core;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
 	io.openliberty.jakarta.messaging.3.0;version=latest,\
 	io.openliberty.jakarta.interceptor.2.0;version=latest,\

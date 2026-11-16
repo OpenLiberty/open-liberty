@@ -34,8 +34,7 @@ publish.wlp.jar.suffix: dev/api/spec
 rmic.iiop.classes: javax.management.j2ee.Management, javax.management.j2ee.ManagementHome
 
 -buildpath: \
-	io.openliberty.yoko.spec.corba;version=latest,\
-	io.openliberty.yoko.rmi.spec;version=latest,\
+	io.openliberty.yoko.core;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 	

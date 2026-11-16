@@ -45,7 +45,7 @@ tested.features:\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.logging,\
-	io.openliberty.yoko.rmi.spec,\
+	io.openliberty.yoko.core;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning,\
 	com.ibm.ws.transaction.fat.util,\
 	com.ibm.ws.transaction.test.util,\
