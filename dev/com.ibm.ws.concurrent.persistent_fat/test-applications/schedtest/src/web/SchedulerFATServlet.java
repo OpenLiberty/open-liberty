@@ -212,7 +212,9 @@ public class SchedulerFATServlet extends HttpServlet {
     private void pollForTableEntry(String key, int expectedValue) throws Exception {
         Integer value = null;
         for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
-            // Use a fresh connection on each attempt so that commits from other threads are observed
+            // Run each attempt in its own transaction so that no transaction or snapshot from a
+            // previous attempt is carried over, and commits from other threads are observed
+            tran.begin();
             try (Connection con = testDB.getConnection();
                             PreparedStatement pstmt = con.prepareStatement("SELECT MYVALUE FROM MYTABLE WHERE MYKEY=?")) {
                 pstmt.setString(1, key);
@@ -224,12 +226,34 @@ public class SchedulerFATServlet extends HttpServlet {
                     } else
                         value = null;
                 }
+            } finally {
+                tran.commit();
             }
         };
         if (value == null)
-            throw new Exception("Entry with key " + key + " not found");
+            throw new Exception("Entry with key " + key + " not found. " + describeTable());
         else
             throw new Exception("Unexpected value " + value + " for entry with key " + key);
+    }
+
+    /**
+     * Diagnostic information about MYTABLE, included in the failure message when a poll times out.
+     * Never throws, so it cannot mask the original failure.
+     */
+    private String describeTable() {
+        try {
+            tran.begin();
+            try (Connection con = testDB.getConnection();
+                            Statement stmt = con.createStatement();
+                            ResultSet result = stmt.executeQuery("SELECT COUNT(*) FROM MYTABLE")) {
+                result.next();
+                return "MYTABLE rows=" + result.getInt(1) + ", isolation=" + con.getTransactionIsolation() + ", autoCommit=" + con.getAutoCommit();
+            } finally {
+                tran.commit();
+            }
+        } catch (Throwable x) {
+            return "unable to describe MYTABLE: " + x;
+        }
     }
 
     /**
@@ -238,7 +262,9 @@ public class SchedulerFATServlet extends HttpServlet {
     private void pollForTableEntryMinimumValue(String key, int minimumValue) throws Exception {
         Integer value = null;
         for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL)) {
-            // Use a fresh connection on each attempt so that commits from other threads are observed
+            // Run each attempt in its own transaction so that no transaction or snapshot from a
+            // previous attempt is carried over, and commits from other threads are observed
+            tran.begin();
             try (Connection con = testDB.getConnection();
                             PreparedStatement pstmt = con.prepareStatement("SELECT MYVALUE FROM MYTABLE WHERE MYKEY=?")) {
                 pstmt.setString(1, key);
@@ -250,10 +276,12 @@ public class SchedulerFATServlet extends HttpServlet {
                     } else
                         value = null;
                 }
+            } finally {
+                tran.commit();
             }
         };
         if (value == null)
-            throw new Exception("Entry with key " + key + " not found");
+            throw new Exception("Entry with key " + key + " not found. " + describeTable());
         else
             throw new Exception("Unexpected value " + value + " for entry with key " + key);
     }
