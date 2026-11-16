@@ -20,7 +20,8 @@ public class HttpOptions extends ConfigElement {
     private String readTimeout;
     private String writeTimeout;
     private Boolean throwIOEForInboundConnections;
-
+    private Boolean keepAliveEnabled;
+    private Integer maxKeepAliveRequests;
 
     public Integer getMessageSizeLimit() {
         return this.messageSizeLimit;
@@ -76,7 +77,23 @@ public class HttpOptions extends ConfigElement {
         this.throwIOEForInboundConnections = throwIOEForInboundConnections;
     }
 
+    public Boolean isKeepAliveEnabled() {
+        return this.keepAliveEnabled;
+    }
 
+    @XmlAttribute
+    public void setKeepAliveEnabled(Boolean keepAliveEnabled) {
+        this.keepAliveEnabled = keepAliveEnabled;
+    }
+
+    public Integer getMaxKeepAliveRequests() {
+        return this.maxKeepAliveRequests;
+    }
+
+    @XmlAttribute
+    public void setMaxKeepAliveRequests(Integer maxKeepAliveRequests) {
+        this.maxKeepAliveRequests = maxKeepAliveRequests;
+    }
 
     @Override
     public String toString() {
@@ -95,6 +112,10 @@ public class HttpOptions extends ConfigElement {
             buf.append("writeTimeout=\"" + writeTimeout + "\" ");
         if (throwIOEForInboundConnections != null)
             buf.append("ThrowIOEForInboundConnections=\"" + throwIOEForInboundConnections + "\" ");
+        if (keepAliveEnabled != null)
+            buf.append("keepAliveEnabled=\"" + keepAliveEnabled + "\" ");
+        if (maxKeepAliveRequests != null)
+            buf.append("maxKeepAliveRequests=\"" + maxKeepAliveRequests + "\" ");
 
         buf.append("}");
         return buf.toString();

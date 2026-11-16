@@ -1,0 +1,38 @@
+<!--
+    Copyright 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<server description="Keep-alive enforcement with WebSocket (keepAliveEnabled / maxKeepAliveRequests)">
+
+    <include location="../fatTestCommon.xml"/>
+
+    <!--
+        The EE9, EE10 and EE11 repeats replace websocket-1.1 with websocket-2.0, 2.1
+        and 2.2. servlet-3.1 is listed explicitly so every repeat can replace it too;
+        the repeat check fails if the runtime servlet feature is not the expected one.
+    -->
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>websocket-1.1</feature>
+    </featureManager>
+
+    <!--
+        No keepAliveEnabled or maxKeepAliveRequests are set here, so the defaults
+        apply (keepAliveEnabled=true, maxKeepAliveRequests=-1). Each test sets the
+        values it needs through the fattest.simplicity HttpOptions model.
+    -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+        <tcpOptions portOpenRetries="60"/>
+    </httpEndpoint>
+
+    <application location="keepAliveWebSocketApp.war" />
+
+</server>
