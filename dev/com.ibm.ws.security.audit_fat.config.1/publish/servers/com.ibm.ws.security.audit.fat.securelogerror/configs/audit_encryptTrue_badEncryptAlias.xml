@@ -1,0 +1,48 @@
+<server description="com.ibm.ws.security.audit.fat.config">
+
+	<featureManager>
+		<feature>appSecurity-2.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>audit-1.0</feature>
+	</featureManager>
+
+    <keyStore
+         id="auditEncKeyStore"
+         password="Liberty"
+         location="${server.config.dir}/resources/security/AuditEncryptionKeyStore.jks"
+         type="JKS" />
+
+	<auditFileHandler 
+		 encrypt="true"
+         encryptAlias="notExistAlias"
+         encryptKeyStoreRef="auditEncKeyStore">
+	</auditFileHandler>
+
+	<basicRegistry id="basic" realm="BasicRealm">
+		<user name="user0" password="user0pwd" />
+		<user name="user1" password="user1pwd" />
+		<group name="group1">
+			<member name="user0" />
+			<member name="user1" />
+		</group>
+	</basicRegistry>
+
+ 	<application type="war" id="AuditBasicAuthServlet" name="AuditBasicAuthServlet" location="AuditBasicAuthServlet.war">
+ 		<application-bnd>
+			<security-role name="audit_basic">
+				<user name="user1" />
+				<group name="group1" />
+			</security-role>	
+			<security-role name="audit_form">
+				<user name="user2" />
+				<group name="group2" />
+			</security-role>	
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+	<include location="../fatTestPorts.xml" />
+
+</server>

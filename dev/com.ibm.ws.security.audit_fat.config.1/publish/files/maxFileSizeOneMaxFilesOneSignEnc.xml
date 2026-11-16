@@ -1,0 +1,67 @@
+<server description="com.ibm.ws.security.audit.fat.config">
+
+	<featureManager>
+		<feature>appSecurity-2.0</feature>
+		<feature>jsp-2.2</feature>
+		<feature>servlet-3.1</feature>
+		<feature>audit-1.0</feature>
+				<feature>timedexit-1.0</feature>
+		
+	</featureManager>
+
+	 <keyStore
+         id="auditEncKeyStore"
+         password="Liberty"
+         location="${server.config.dir}/resources/security/AuditEncryptionKeyStore.jks"
+         type="JKS" />
+
+    <keyStore
+         id="auditSignKeyStore"
+         password="{xor}EzY9Oi0rJg=="
+         location="${server.config.dir}/resources/security/AuditSigningKeyStore2.jks"
+         type="JKS" />
+
+	<auditFileHandler 
+		encrypt="true"
+        encryptAlias="auditencryption"
+        encryptKeyStoreRef="auditEncKeyStore"
+	    sign="true"
+        signingAlias="auditsigning2"
+        signingKeyStoreRef="auditSignKeyStore"
+		maxFileSize="1"
+		maxFiles="1">
+	</auditFileHandler>
+
+	<basicRegistry id="basic" realm="BasicRealm">
+		<user name="user0" password="user0pwd" />
+		<user name="user1" password="user1pwd" />
+		<group name="group1">
+			<member name="user0" />
+			<member name="user1" />
+		</group>
+		<user name="user2" password="user2pwd" />
+		<group name="group2">
+			<member name="user2" />
+		</group>
+
+	</basicRegistry>
+
+ 	<application type="war" id="AuditBasicAuthServlet" name="AuditBasicAuthServlet" location="AuditBasicAuthServlet.war">
+ 		<application-bnd>
+			<security-role name="audit_basic">
+				<user name="user1" />
+				<group name="group1" />
+			</security-role>	
+			<security-role name="audit_form">
+				<user name="user2" />
+				<group name="group2" />
+			</security-role>	
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+	
+	<include location="../fatTestPorts.xml"/>
+
+</server>

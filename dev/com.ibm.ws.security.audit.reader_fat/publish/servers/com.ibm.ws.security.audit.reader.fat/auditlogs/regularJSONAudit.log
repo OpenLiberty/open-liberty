@@ -1,0 +1,109 @@
+{
+   "eventName": "SECURITY_AUTHN",
+   "eventSequenceNumber": 0,
+   "eventTime": "2018-01-18 13:33:16.798",
+   "initiator": {
+      "host": {
+         "address": "127.0.0.1",
+         "agent": "Apache-HttpClient/4.1.2 (java 1.5)"
+      }
+   },
+   "observer": {
+      "id": "websphere: 9.41.245.54:C:/Users/IBM_ADMIN/libertyGit/WS-CD-Open/dev/build.image/wlp/usr/:com.ibm.ws.security.audit.fat.config",
+      "name": "SecurityService",
+      "typeURI": "service/server"
+   },
+   "outcome": "redirect",
+   "reason": {
+      "reasonCode": 401,
+      "reasonType": "HTTP"
+   },
+   "target": {
+      "appname": "AuditBasicAuthServlet",
+      "credential": {
+         "type": "BASIC"
+      },
+      "host": {
+         "address": "127.0.0.1:8010"
+      },
+      "id": "websphere: 9.41.245.54:C:/Users/IBM_ADMIN/libertyGit/WS-CD-Open/dev/build.image/wlp/usr/:com.ibm.ws.security.audit.fat.config",
+      "method": "GET",
+      "name": "/AuditBasicAuthServlet/AuditBasic",
+      "realm": "Basic Authentication",
+      "session": "LYBy7zoHCEJFxPKRE8bJhsL",
+      "typeURI": "service/application/web"
+   }
+}
+{
+   "eventName": "SECURITY_AUTHN",
+   "eventSequenceNumber": 1,
+   "eventTime": "2018-01-18 13:33:17.455",
+   "initiator": {
+      "host": {
+         "address": "127.0.0.1",
+         "agent": "Apache-HttpClient/4.1.2 (java 1.5)"
+      }
+   },
+   "observer": {
+      "id": "websphere: 9.41.245.54:C:/Users/IBM_ADMIN/libertyGit/WS-CD-Open/dev/build.image/wlp/usr/:com.ibm.ws.security.audit.fat.config",
+      "name": "SecurityService",
+      "typeURI": "service/server"
+   },
+   "outcome": "denied",
+   "reason": {
+      "reasonCode": 401,
+      "reasonType": "HTTP"
+   },
+   "target": {
+      "appname": "AuditBasicAuthServlet",
+      "credential": {
+         "token": "baduser",
+         "type": "BASIC"
+      },
+      "host": {
+         "address": "127.0.0.1:8010"
+      },
+      "id": "websphere: 9.41.245.54:C:/Users/IBM_ADMIN/libertyGit/WS-CD-Open/dev/build.image/wlp/usr/:com.ibm.ws.security.audit.fat.config",
+      "method": "GET",
+      "name": "/AuditBasicAuthServlet/AuditBasic",
+      "realm": "Basic Authentication",
+      "session": "LYBy7zoHCEJFxPKRE8bJhsL",
+      "typeURI": "service/application/web"
+   }
+}
+{
+   "eventName": "SECURITY_AUTHN",
+   "eventSequenceNumber": 2,
+   "eventTime": "2018-01-18 13:33:17.639",
+   "initiator": {
+      "host": {
+         "address": "127.0.0.1",
+         "agent": "Apache-HttpClient/4.1.2 (java 1.5)"
+      }
+   },
+   "observer": {
+      "id": "websphere: 9.41.245.54:C:/Users/IBM_ADMIN/libertyGit/WS-CD-Open/dev/build.image/wlp/usr/:com.ibm.ws.security.audit.fat.config",
+      "name": "SecurityService",
+      "typeURI": "service/server"
+   },
+   "outcome": "redirect",
+   "reason": {
+      "reasonCode": 401,
+      "reasonType": "HTTP"
+   },
+   "target": {
+      "appname": "AuditBasicAuthServlet",
+      "credential": {
+         "type": "BASIC"
+      },
+      "host": {
+         "address": "127.0.0.1:8010"
+      },
+      "id": "websphere: 9.41.245.54:C:/Users/IBM_ADMIN/libertyGit/WS-CD-Open/dev/build.image/wlp/usr/:com.ibm.ws.security.audit.fat.config",
+      "method": "GET",
+      "name": "/AuditBasicAuthServlet/AuditBasic",
+      "realm": "Basic Authentication",
+      "session": "LYBy7zoHCEJFxPKRE8bJhsL",
+      "typeURI": "service/application/web"
+   }
+}

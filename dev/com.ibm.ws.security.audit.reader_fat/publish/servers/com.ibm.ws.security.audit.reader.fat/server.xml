@@ -1,0 +1,4 @@
+<server description="auditUtility auditReader FAT">
+<include location="../fatTestCommon.xml"/>   
+
+</server>
