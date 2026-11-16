@@ -334,10 +334,17 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Reference(service = ServerElementConfig.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setServerElementConfig(ServerElementConfig config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setServerElementConfig: " + config
+                         + (config != null ? ", quiesceTimeoutMillis=" + config.getQuiesceTimeoutMillis() : ""));
+        }
         this.serverElementConfig = config;
     }
 
     protected void unsetServerElementConfig(ServerElementConfig config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "unsetServerElementConfig: " + config);
+        }
         this.serverElementConfig = null;
     }
 
@@ -413,6 +420,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             isActive = false;
             // If the system is configured to quiesce connections..
             long timeout = serverElementConfig != null ? serverElementConfig.getQuiesceTimeoutMillis() : 30000L;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Quiesce timeout from serverElementConfig=" + serverElementConfig + ": " + timeout + "ms");
+            }
 
             if (timeout > 0) {
                 if (activeChannelMap.isEmpty() && outboundConnections.isEmpty()) {
@@ -785,7 +795,11 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Override
     public long getDefaultChainQuiesceTimeout() {
-        return serverElementConfig != null ? serverElementConfig.getQuiesceTimeoutMillis() : 30000L;
+        long timeout = serverElementConfig != null ? serverElementConfig.getQuiesceTimeoutMillis() : 30000L;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getDefaultChainQuiesceTimeout: serverElementConfig=" + serverElementConfig + ", timeout=" + timeout);
+        }
+        return timeout;
     }
 
     @Override
