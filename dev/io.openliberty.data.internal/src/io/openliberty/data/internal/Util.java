@@ -170,7 +170,7 @@ public class Util {
     /**
      * Return types for deleteBy that distinguish delete-only from find-and-delete.
      */
-    static final Set<Class<?>> RETURN_TYPES_FOR_UPDATE_COUNT = //
+    public static final Set<Class<?>> RETURN_TYPES_FOR_UPDATE_COUNT = //
                     Set.of(void.class, Void.class,
                            boolean.class, Boolean.class,
                            int.class, Integer.class,

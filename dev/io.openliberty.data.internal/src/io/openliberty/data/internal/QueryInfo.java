@@ -256,7 +256,7 @@ public abstract class QueryInfo {
      * The type of data structure that returns multiple results for this query.
      * Null if the query return type limits to single results.
      */
-    final Class<?> multiType;
+    protected final Class<?> multiType;
 
     /**
      * Producer for the repository bean.
@@ -1539,11 +1539,15 @@ public abstract class QueryInfo {
      * Persistence Native Query that peforms a SQL statement.
      *
      * @param entityHandler EntityAgent or EntityManager
+     * @param isStatement   size 1 array to be populated with whether the
+     *                          query is an executable statement vs a
+     *                          query that returns a result set.
      * @return jakarta.persistence.Statement or jakarta.persistence.TypedQuery,
      *         as determined by the Jakarta Persistence provider from the SQL
      */
     protected abstract jakarta.persistence.Query //
-                    ehCreateNativeStatementOrQuery(AutoCloseable entityHandler);
+                    ehCreateNativeStatementOrQuery(AutoCloseable entityHandler,
+                                                   boolean[] isStatement);
 
     /**
      * Delegates to the EntityAgent or EntityManager to create a
@@ -4741,12 +4745,19 @@ public abstract class QueryInfo {
                          ql,
                          entityInfo.entityClass.getName());
 
+            boolean[] isStatement = new boolean[1];
             jakarta.persistence.Query query = //
-                            ehCreateNativeStatementOrQuery(entityHandler);
+                            ehCreateNativeStatementOrQuery(entityHandler,
+                                                           isStatement);
 
             setParameters(query, args, Collections.emptyMap(), null, null);
 
-            if (query instanceof TypedQuery typedQuery) {
+            if (isStatement[0]) {
+                returnValue = toReturnValue(query.executeUpdate(),
+                                            singleType);
+            } else {
+                TypedQuery<?> typedQuery = (TypedQuery<?>) query;
+
                 int startAt = limit != null //
                                 ? computeOffset(limit) //
                                 : pageReq != null //
@@ -4766,9 +4777,6 @@ public abstract class QueryInfo {
                 }
 
                 returnValue = getQueryResults(entityHandler, qc, query, txStatus);
-            } else {
-                returnValue = toReturnValue(query.executeUpdate(),
-                                            singleType);
             }
         }
 
