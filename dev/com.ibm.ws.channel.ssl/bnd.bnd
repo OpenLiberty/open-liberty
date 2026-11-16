@@ -57,6 +57,7 @@ instrument.disabled: true
 	com.ibm.ws.channelfw;version=latest,\
 	com.ibm.websphere.appserver.api.ssl;version=latest,\
 	com.ibm.websphere.appserver.spi.ssl;version=latest,\
+	com.ibm.ws.ssl;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
