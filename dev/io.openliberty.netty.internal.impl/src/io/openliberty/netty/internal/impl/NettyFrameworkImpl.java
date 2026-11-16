@@ -27,6 +27,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -68,7 +69,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.Future;
-import io.openliberty.channel.config.ChannelFrameworkConfig;
+
+import com.ibm.ws.runtime.update.ServerElementConfig;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ConfigConstants;
@@ -118,7 +120,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     private ScheduledExecutorService scheduledExecutorService = null;
 
-    private ChannelFrameworkConfig channelConfig;
+    private ServerElementConfig serverElementConfig;
 
     private boolean useNativeIO = true;
 
@@ -169,6 +171,12 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                 NettyThreadMetrics.logMetrics(childGroup);
             }, metricsWindow, metricsWindow, TimeUnit.MILLISECONDS);
         }
+    }
+
+    @Modified
+    protected synchronized void modified(Map<String, Object> config) {
+        // Log warning that dynamic Netty configuration changes are not supported
+        Tr.warning(tc, "netty.dynamic.config.not.supported");
     }
 
     /**
@@ -323,23 +331,20 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         this.executorService = executorService;
     }
 
-    /*
-     * Used for share config between legacy channel framework and the netty framework.
-     */
-    @Reference(service = ChannelFrameworkConfig.class, cardinality = ReferenceCardinality.MANDATORY)
-    protected void setChannelFWConfig(ChannelFrameworkConfig config) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Updating ChannelFrameworkConfig: " + config);
+    @Reference(service = ServerElementConfig.class, cardinality = ReferenceCardinality.MANDATORY)
+    protected void setServerElementConfig(ServerElementConfig config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setServerElementConfig: " + config
+                         + (config != null ? ", quiesceTimeoutMillis=" + config.getQuiesceTimeoutMillis() : ""));
         }
-        this.channelConfig = config;
+        this.serverElementConfig = config;
     }
 
-    protected void updatedChannelFWConfig(ChannelFrameworkConfig config) {
-        this.channelConfig = config;
-    }
-
-    public ChannelFrameworkConfig getChannelFWConfig() {
-        return this.channelConfig;
+    protected void unsetServerElementConfig(ServerElementConfig config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "unsetServerElementConfig: " + config);
+        }
+        this.serverElementConfig = null;
     }
 
     /**
@@ -413,7 +418,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             }
             isActive = false;
             // If the system is configured to quiesce connections..
-            long timeout = channelConfig.getDefaultChainQuiesceTimeout();
+            long timeout = serverElementConfig != null ? serverElementConfig.getQuiesceTimeoutMillis() : 30000L;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Quiesce timeout from serverElementConfig=" + serverElementConfig + ": " + timeout + "ms");
+            }
 
             if (timeout > 0) {
                 if (activeChannelMap.isEmpty() && outboundConnections.isEmpty()) {
@@ -619,8 +627,11 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                     chan.pipeline().addFirst(new QuiesceHandler(quiesce));
                 }
             } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                    Tr.warning(tc, "Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");
+                // Not an active endpoint (e.g. the bind failed or the channel already closed).
+                // This is not a notable condition: any bind failure is already reported, so
+                // the quiesce task is simply ignored.
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Ignoring quiesce task for channel that is not a registered endpoint: " + chan);
                 }
             }
         }
@@ -760,7 +771,11 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Override
     public long getDefaultChainQuiesceTimeout() {
-        return channelConfig.getDefaultChainQuiesceTimeout();
+        long timeout = serverElementConfig != null ? serverElementConfig.getQuiesceTimeoutMillis() : 30000L;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getDefaultChainQuiesceTimeout: serverElementConfig=" + serverElementConfig + ", timeout=" + timeout);
+        }
+        return timeout;
     }
 
     @Override
