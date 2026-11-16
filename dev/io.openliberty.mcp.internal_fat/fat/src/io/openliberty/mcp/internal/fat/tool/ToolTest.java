@@ -13,11 +13,18 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static componenttest.rules.repeater.EERepeatActions.EE10;
 import static componenttest.rules.repeater.EERepeatActions.EE11;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.INTERNAL_ERROR;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.INVALID_PARAMS;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.INVALID_REQUEST;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.METHOD_NOT_FOUND;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.PARSE_ERROR;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcResponseMatcher.jsonRpcResponse;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -260,19 +267,12 @@ public class ToolTest extends FATServletClient {
                         }
                         """;
 
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"error":{"code":-32600,
-                        "data":[
-                            "The jsonrpc field must be present. Only JSONRPC 2.0 is currently supported.",
-                            "The method field is empty.",
-                            "The id type is not an acceptable type. The id must be a string or integer."
-                            ],
-                        "message":"Invalid request"},
-                        "id": null,
-                        "jsonrpc":"2.0"}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.call(request),
+                   jsonRpcResponse().withErrorCode(INVALID_REQUEST)
+                                    .withErrorMessage("Invalid request")
+                                    .withErrorDataItems("The jsonrpc field must be present. Only JSONRPC 2.0 is currently supported.",
+                                                        "The method field is empty.",
+                                                        "The id type is not an acceptable type. The id must be a string or integer."));
     }
 
     @Test
@@ -285,15 +285,10 @@ public class ToolTest extends FATServletClient {
                         }
                         """;
 
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"error":{"code":-32700,
-                        "message":"Parse error",
-                        "data":["Invalid token=CURLYCLOSE at (line no=1, column no=3, offset=2). Expected tokens are: [CURLYOPEN, SQUAREOPEN, STRING, NUMBER, TRUE, FALSE, NULL]"]},
-                        "id": null,
-                        "jsonrpc":"2.0"}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, false);
+        assertThat(client.call(request),
+                   jsonRpcResponse().withErrorCode(PARSE_ERROR)
+                                    .withErrorMessage("Parse error")
+                                    .withErrorDataItems("Invalid token=CURLYCLOSE at (line no=1, column no=3, offset=2). Expected tokens are: [CURLYOPEN, SQUAREOPEN, STRING, NUMBER, TRUE, FALSE, NULL]"));
     }
 
     @Test
@@ -381,17 +376,10 @@ public class ToolTest extends FATServletClient {
                         }
                         """;
 
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"error":{"code":-32601,
-                        "data":[
-                            "call/tools not found"
-                            ],
-                        "message":"Method not found"},
-                        "id":"2",
-                        "jsonrpc":"2.0"}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.call(request),
+                   jsonRpcResponse().withErrorCode(METHOD_NOT_FOUND)
+                                    .withErrorMessage("Method not found")
+                                    .withErrorDataItems("call/tools not found"));
     }
 
     @Test
@@ -832,21 +820,10 @@ public class ToolTest extends FATServletClient {
                           }
                         }
                         """;
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {
-                            "id": 1,
-                            "jsonrpc": "2.0",
-                            "error": {
-                                "code": -32602,
-                                "data": "CWMCM0022E: The \\"optional-cursor-value\\" cursor value is invalid.",
-                                "message": "Invalid params"
-                            }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.call(request),
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS)
+                                    .withErrorMessage("Invalid params")
+                                    .withErrorData("CWMCM0022E: The \"optional-cursor-value\" cursor value is invalid."));
     }
 
     @Test
@@ -892,19 +869,10 @@ public class ToolTest extends FATServletClient {
                         }
                         """;
 
-        String response = client.callMCP(request);
-        JSONObject jsonResponse = new JSONObject(response);
-
-        String expectedResponseString = """
-                        {"error":{"code":-32603,
-                        "data":[
-                            "Could not call privateEcho"
-                            ],
-                        "message":"Internal error"},
-                        "id":2,
-                        "jsonrpc":"2.0"}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.call(request),
+                   jsonRpcResponse().withErrorCode(INTERNAL_ERROR)
+                                    .withErrorMessage("Internal error")
+                                    .withErrorDataItems("Could not call privateEcho"));
     }
 
     @Test
@@ -924,21 +892,10 @@ public class ToolTest extends FATServletClient {
                         }
                         """;
 
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {
-                            "id": 2,
-                            "jsonrpc": "2.0",
-                            "error": {
-                                "code": -32602,
-                                "data": [
-                                    "Method privateEchoMissing not found"
-                                ],
-                                "message": "Invalid params"
-                            }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.call(request),
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS)
+                                    .withErrorMessage("Invalid params")
+                                    .withErrorDataItems("Method privateEchoMissing not found"));
     }
 
     @Test

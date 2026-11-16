@@ -10,6 +10,8 @@
 package io.openliberty.mcp.internal.fat.isolation;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.INVALID_PARAMS;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcResponseMatcher.jsonRpcResponse;
 import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
@@ -147,13 +149,13 @@ public class MultiAppIsolationTest extends FATServletClient {
     @Test
     public void testCallingBetaToolFromAlphaAppFails() throws Exception {
         assertThat(alphaClient.callTool("betaOnlyTool", Map.of("input", "Hello")),
-                   toolResponse().withJsonRpcError(-32602, "Invalid params", "Method betaOnlyTool not found"));
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorDataItems("Method betaOnlyTool not found"));
     }
 
     @Test
     public void testCallingAlphaToolFromBetaAppFails() throws Exception {
         assertThat(betaClient.callTool("alphaOnlyTool", Map.of("input", "Hello")),
-                   toolResponse().withJsonRpcError(-32602, "Invalid params", "Method alphaOnlyTool not found"));
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorDataItems("Method alphaOnlyTool not found"));
     }
 
     //Calling a tool with the same name deployed in different apps will return different results

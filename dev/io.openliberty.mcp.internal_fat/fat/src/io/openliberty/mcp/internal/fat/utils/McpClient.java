@@ -16,7 +16,6 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_D
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_APPLICATION_JSON;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -34,6 +33,7 @@ import java.util.Map;
 import javax.net.ssl.SSLContext;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.rules.ExternalResource;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -488,41 +488,92 @@ public class McpClient extends ExternalResource implements AutoCloseable {
 
     /**
      * Sends a {@code tools/call} request, filling in the JSON-RPC envelope, and parses the
-     * response. Use {@link ToolResponseMatcher} to assert on the result.
-     *
-     * <p>The JSON-RPC envelope of the response is validated before it is returned: {@code jsonrpc}
-     * must be {@code "2.0"} and {@code id} must match the id of the request.
+     * response. Use {@link ToolResponseMatcher} to assert on a tool result and
+     * {@link JsonRpcResponseMatcher} to assert on a JSON-RPC error; both also validate the
+     * JSON-RPC envelope of the response.
      *
      * @param toolName the name of the tool to call
      * @param arguments the tool arguments, or {@code null} to send no {@code arguments} field
      * @return the parsed response
-     * @throws Exception if the request fails, the response status is not 200 or the JSON-RPC envelope is invalid
+     * @throws Exception if the request fails or the response status is not 200
      */
     public ToolResponse callTool(String toolName, Map<String, Object> arguments) throws Exception {
-        JSONObject params = new JSONObject().put("name", toolName);
-        if (arguments != null) {
-            params.put("arguments", new JSONObject(arguments));
-        }
-        String requestId = String.valueOf(nextRequestId++);
-        JSONObject request = new JSONObject()
-                                             .put("jsonrpc", "2.0")
-                                             .put("id", requestId)
-                                             .put("method", "tools/call")
-                                             .put("params", params);
-        JSONObject response = new JSONObject(callMCP(request.toString()));
-        validateJsonRpcEnvelope(response, requestId);
-        return new ToolResponse(response);
+        McpRequest request = toolCallRequest(toolName, arguments);
+        return new ToolResponse(new JSONObject(callMCP(request.toString())), request.getId(), VALUE_MCP_PROTOCOL_VERSION);
     }
 
     /**
-     * Validates the JSON-RPC envelope of a response to a request with the given id.
-     *
-     * @param response the parsed JSON-RPC response
-     * @param expectedRequestId the id that was sent in the request
+     * Builds, without sending it, a {@code tools/call} request for a tool that takes no arguments.
+     * See {@link #toolCallRequest(String, Map)}.
      */
-    private void validateJsonRpcEnvelope(JSONObject response, String expectedRequestId) {
-        assertEquals("JSON-RPC response 'jsonrpc' must be 2.0: " + response, "2.0", response.opt("jsonrpc"));
-        assertEquals("JSON-RPC response 'id' must match the request id: " + response, expectedRequestId, response.opt("id"));
+    public McpRequest toolCallRequest(String toolName) {
+        return toolCallRequest(toolName, null);
+    }
+
+    /**
+     * Builds, without sending it, a {@code tools/call} request, filling in the JSON-RPC envelope
+     * with a fresh request id. Send it with {@link #send(McpRequest)}, or with
+     * {@link #callMCPRaw(String)} when the test needs control over the HTTP exchange (e.g. to
+     * expect a 403).
+     *
+     * @param toolName the name of the tool to call
+     * @param arguments the tool arguments, or {@code null} to send no {@code arguments} field
+     * @return the request
+     */
+    public McpRequest toolCallRequest(String toolName, Map<String, Object> arguments) {
+        String requestId = String.valueOf(nextRequestId++);
+        try {
+            JSONObject params = new JSONObject().put("name", toolName);
+            if (arguments != null) {
+                params.put("arguments", new JSONObject(arguments));
+            }
+            JSONObject json = new JSONObject()
+                                              .put("jsonrpc", "2.0")
+                                              .put("id", requestId)
+                                              .put("method", "tools/call")
+                                              .put("params", params);
+            return new McpRequest(requestId, "tools/call", json);
+        } catch (JSONException e) {
+            throw new IllegalArgumentException("Could not build a tools/call request for " + toolName, e);
+        }
+    }
+
+    /**
+     * Sends a request built by this client and parses the response. Expects HTTP 200. Use
+     * {@link JsonRpcResponseMatcher} to assert on the response.
+     *
+     * @param request the request to send
+     * @return the parsed response
+     * @throws Exception if the request fails or the response status is not 200
+     */
+    public McpResponse send(McpRequest request) throws Exception {
+        return new McpResponse(new JSONObject(callMCP(request.toString())), request.getId(), VALUE_MCP_PROTOCOL_VERSION);
+    }
+
+    /**
+     * Sends an arbitrary request body, which need not be a valid JSON-RPC request, and parses the
+     * response. Expects HTTP 200. Use this for tests of malformed requests.
+     *
+     * <p>The response is expected to have the {@code id} of the request if the body is a JSON
+     * object with a string or integer {@code id}, and a {@code null} id otherwise. A parse error
+     * or an invalid request error may also have a {@code null} id, as the server may not be able
+     * to read the id of such a request.
+     *
+     * @param jsonRequestBody the request body
+     * @return the parsed response
+     * @throws Exception if the request fails or the response status is not 200
+     */
+    public McpResponse call(String jsonRequestBody) throws Exception {
+        Object requestId = JSONObject.NULL;
+        try {
+            Object id = new JSONObject(jsonRequestBody).opt("id");
+            if (id instanceof String || id instanceof Integer) {
+                requestId = id;
+            }
+        } catch (JSONException e) {
+            // malformed body: the server can't know an id, so none is expected
+        }
+        return new McpResponse(new JSONObject(callMCP(jsonRequestBody)), requestId, VALUE_MCP_PROTOCOL_VERSION);
     }
 
     /**

@@ -11,6 +11,8 @@ package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.tool.toolManagerApp.ToolEditorServlet.DYNAMIC_REPEATER;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.INVALID_PARAMS;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcResponseMatcher.jsonRpcResponse;
 import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
 import static java.util.function.Function.identity;
 import static org.hamcrest.Matchers.hasKey;
@@ -49,6 +51,7 @@ import io.openliberty.mcp.internal.fat.tool.toolManagerApp.ToolEditorServlet;
 import io.openliberty.mcp.internal.fat.tool.toolManagerApp.ToolManagerStartupTestBean;
 import io.openliberty.mcp.internal.fat.tool.toolManagerApp.ToolManagerTestServlet;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
 
 /**
  * Test use of the ToolManager bean
@@ -116,7 +119,8 @@ public class ToolManagerTest extends FATServletClient {
 
             // Calling the tool after removal must return an error — removal is immediate
             assertThat(client.callTool("dynamicRepeater", Map.of("inputString", "hello")),
-                       toolResponse().withJsonRpcError(-32602, "Invalid params", "Method dynamicRepeater not found"));
+                       jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorMessage("Invalid params")
+                                        .withErrorDataItems("Method dynamicRepeater not found"));
         } finally {
             // Ensure we remove the tool if the test fails to not interfere with other tests
             toolEditorClient.removeDynamicRepeaterTool();
@@ -253,12 +257,12 @@ public class ToolManagerTest extends FATServletClient {
     @Test
     public void testCallSyncTool() throws Exception {
         assertThat(client.callTool("sync-test-tool", Map.of("action", "success")), toolResponse().withTextContent("OK"));
-        assertThat(client.callTool("sync-test-tool", Map.of("action", "error")), toolResponse().withErrorText("Error"));
+        assertThat(client.callTool("sync-test-tool", Map.of("action", "error")), toolResponse().withError("Error"));
         assertThat(client.callTool("tool-with-defaultvalue", Map.of()), toolResponse().withTextContent("2025"));
 
         serverLifecycle.getServer().setMarkToEndOfLog();
         assertThat(client.callTool("sync-test-tool", Map.of("action", "exception")),
-                   toolResponse().withErrorText("An internal server error occurred while running the tool."));
+                   toolResponse().withError("An internal server error occurred while running the tool."));
         assertNotNull(serverLifecycle.getServer()
                                      .waitForStringInLogUsingMark("CWMCM0010E: The sync-test-tool tool method threw an unexpected exception. The exception is .*Test Exception"));
     }
@@ -274,18 +278,18 @@ public class ToolManagerTest extends FATServletClient {
     @Test
     public void testCallAsyncTool() throws Exception {
         assertThat(client.callTool("async-test-tool", Map.of("action", "success")), toolResponse().withTextContent("OK"));
-        assertThat(client.callTool("async-test-tool", Map.of("action", "error")), toolResponse().withErrorText("Error"));
-        assertThat(client.callTool("async-test-tool", Map.of("action", "async-error")), toolResponse().withErrorText("Error"));
+        assertThat(client.callTool("async-test-tool", Map.of("action", "error")), toolResponse().withError("Error"));
+        assertThat(client.callTool("async-test-tool", Map.of("action", "async-error")), toolResponse().withError("Error"));
 
         serverLifecycle.getServer().setMarkToEndOfLog();
         assertThat(client.callTool("async-test-tool", Map.of("action", "exception")),
-                   toolResponse().withErrorText("An internal server error occurred while running the tool."));
+                   toolResponse().withError("An internal server error occurred while running the tool."));
         assertNotNull(serverLifecycle.getServer()
                                      .waitForStringInLogUsingMark("CWMCM0010E: The async-test-tool tool method threw an unexpected exception. The exception is .*Test Exception"));
 
         serverLifecycle.getServer().setMarkToEndOfLog();
         assertThat(client.callTool("async-test-tool", Map.of("action", "async-exception")),
-                   toolResponse().withErrorText("An internal server error occurred while running the tool."));
+                   toolResponse().withError("An internal server error occurred while running the tool."));
         assertNotNull(serverLifecycle.getServer()
                                      .waitForStringInLogUsingMark("CWMCM0010E: The async-test-tool tool method threw an unexpected exception. The exception is .*Test Async Exception"));
     }
@@ -300,21 +304,9 @@ public class ToolManagerTest extends FATServletClient {
      */
     @Test
     public void testCallSyncToolThrowsToolCallUnauthorizedException() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 10,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "sync-unauthorized-tool",
-                            "arguments": {
-                              "message": "not allowed"
-                            }
-                          }
-                        }
-                        """;
+        McpRequest request = client.toolCallRequest("sync-unauthorized-tool", Map.of("message", "not allowed"));
 
-        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).expectedStatus(403).run();
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request.toString()).expectedStatus(403).run();
 
         assertEquals(403, response.statusCode());
         assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
@@ -332,21 +324,9 @@ public class ToolManagerTest extends FATServletClient {
      */
     @Test
     public void testCallAsyncToolThrowsToolCallUnauthorizedException() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 11,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "async-unauthorized-tool",
-                            "arguments": {
-                              "message": "not allowed"
-                            }
-                          }
-                        }
-                        """;
+        McpRequest request = client.toolCallRequest("async-unauthorized-tool", Map.of("message", "not allowed"));
 
-        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).expectedStatus(403).run();
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request.toString()).expectedStatus(403).run();
 
         assertEquals(403, response.statusCode());
         assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
@@ -407,7 +387,8 @@ public class ToolManagerTest extends FATServletClient {
     @Test
     public void testCallNonExistentToolReturnsError() throws Exception {
         assertThat(client.callTool("toolThatWasNeverRegistered", Map.of()),
-                   toolResponse().withJsonRpcError(-32602, "Invalid params", "Method toolThatWasNeverRegistered not found"));
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorMessage("Invalid params")
+                                    .withErrorDataItems("Method toolThatWasNeverRegistered not found"));
     }
 
     /**
@@ -419,6 +400,7 @@ public class ToolManagerTest extends FATServletClient {
     @Test
     public void testCallRemovedToolReturnsError() throws Exception {
         assertThat(client.callTool("methodToolToBeRemoved", Map.of()),
-                   toolResponse().withJsonRpcError(-32602, "Invalid params", "Method methodToolToBeRemoved not found"));
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorMessage("Invalid params")
+                                    .withErrorDataItems("Method methodToolToBeRemoved not found"));
     }
 }

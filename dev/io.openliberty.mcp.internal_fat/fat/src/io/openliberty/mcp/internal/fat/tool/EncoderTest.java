@@ -92,7 +92,7 @@ public class EncoderTest extends FATServletClient {
     @Test
     public void testToolResponseEncoderErrorResponse() throws Exception {
         assertThat(client.callTool("testToolResponseEncoder", Map.of("isSuccessful", false)),
-                   toolResponse().withErrorText("Database Query failed with error: Some SQL execution error"));
+                   toolResponse().withError("Database Query failed with error: Some SQL execution error"));
     }
 
     @Test

@@ -9,40 +9,37 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.utils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONCompare;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.skyscreamer.jsonassert.JSONCompareResult;
 
 /**
- * Hamcrest matcher for asserting on a {@link ToolResponse} without spelling out the whole
- * JSON-RPC response.
+ * Hamcrest matcher for asserting on the tool result of a {@link ToolResponse} without spelling
+ * out the whole JSON-RPC response. It also validates that the JSON-RPC envelope of the response
+ * is valid.
  *
  * <p>Start with {@link #toolResponse()} and chain the conditions the response must meet:
  *
  * <pre>{@code
  * ToolResponse response = client.callTool("myTool");
  * assertThat(response, toolResponse().withTextContent("expected text"));
- * assertThat(response, toolResponse().withErrorText("expected error text"));
+ * assertThat(response, toolResponse().withError("expected error text"));
  * assertThat(response, toolResponse().withTextContent(json.toString()).withStructureContent(json));
- * assertThat(response, toolResponse().withJsonRpcError(-32602, "Invalid params", "Method foo not found"));
  * }</pre>
+ *
+ * <p>To assert on a JSON-RPC error use {@link JsonRpcResponseMatcher#jsonRpcResponse()}.
  */
 public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse> {
 
     private Boolean expectedIsError;
     private List<String> expectedTexts;
     private JSONObject expectedStructureContent;
-    private Integer expectedRpcErrorCode;
-    private String expectedRpcErrorMessage;
-    private List<String> expectedRpcErrorData;
 
     private ToolResponseMatcher() {}
 
@@ -73,7 +70,7 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
      * Requires a tool error response ({@code isError} is {@code true}) whose content is exactly
      * one {@code text} item with exactly the given text.
      */
-    public ToolResponseMatcher withErrorText(String expectedText) {
+    public ToolResponseMatcher withError(String expectedText) {
         this.expectedIsError = true;
         this.expectedTexts = List.of(expectedText);
         return this;
@@ -85,44 +82,33 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
         return this;
     }
 
-    /**
-     * Requires the response to be a JSON-RPC error (rather than a tool result) with the given
-     * {@code code}, {@code message} and {@code data} items.
-     */
-    public ToolResponseMatcher withJsonRpcError(int code, String message, String... data) {
-        this.expectedRpcErrorCode = code;
-        this.expectedRpcErrorMessage = message;
-        this.expectedRpcErrorData = Arrays.asList(data);
-        return this;
-    }
-
     @Override
     public void describeTo(Description description) {
-        if (expectedRpcErrorCode != null) {
-            description.appendText("a JSON-RPC error with code ").appendValue(expectedRpcErrorCode)
-                       .appendText(", message ").appendValue(expectedRpcErrorMessage)
-                       .appendText(" and data ").appendValue(expectedRpcErrorData);
-            return;
-        }
-        description.appendText("a tool response");
+        description.appendText("a valid tool response");
+        String joiner = " with ";
         if (expectedIsError != null) {
-            description.appendText(expectedIsError ? " with isError true" : " with isError not true");
+            description.appendText(joiner).appendText(expectedIsError ? "isError true" : "isError not true");
+            joiner = " and ";
         }
         if (expectedTexts != null) {
-            description.appendText(" and text content of ").appendValue(expectedTexts);
+            description.appendText(joiner).appendText("text content of ").appendValue(expectedTexts);
+            joiner = " and ";
         }
         if (expectedStructureContent != null) {
-            description.appendText(" and structured content of ").appendText(expectedStructureContent.toString());
+            description.appendText(joiner).appendText("structured content of ").appendText(expectedStructureContent.toString());
         }
     }
 
     @Override
     protected boolean matchesSafely(ToolResponse response, Description mismatch) {
-        if (expectedRpcErrorCode != null) {
-            return matchesJsonRpcError(response, mismatch);
+        String envelopeProblem = JsonRpcEnvelope.validate(response);
+        if (envelopeProblem != null) {
+            mismatch.appendText("had an invalid JSON-RPC envelope, it ").appendText(envelopeProblem)
+                    .appendText(": ").appendText(response.toString());
+            return false;
         }
         if (response.getResult() == null) {
-            mismatch.appendText("had no result: ").appendText(response.toString());
+            mismatch.appendText("was a JSON-RPC error rather than a tool result: ").appendText(response.toString());
             return false;
         }
         if (expectedIsError != null && response.isError() != expectedIsError) {
@@ -173,28 +159,6 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
             }
         } catch (Exception e) {
             mismatch.appendText("structuredContent could not be compared: ").appendText(e.toString());
-            return false;
-        }
-        return true;
-    }
-
-    private boolean matchesJsonRpcError(ToolResponse response, Description mismatch) {
-        JSONObject error = response.getError();
-        if (error == null) {
-            mismatch.appendText("was not a JSON-RPC error: ").appendText(response.toString());
-            return false;
-        }
-        if (error.optInt("code") != expectedRpcErrorCode || !expectedRpcErrorMessage.equals(error.optString("message", null))) {
-            mismatch.appendText("error had code ").appendValue(error.opt("code")).appendText(" and message ").appendValue(error.opt("message"));
-            return false;
-        }
-        JSONArray data = error.optJSONArray("data");
-        List<Object> actualData = new ArrayList<>();
-        for (int i = 0; data != null && i < data.length(); i++) {
-            actualData.add(data.opt(i));
-        }
-        if (data == null || !expectedRpcErrorData.equals(actualData)) {
-            mismatch.appendText("error data was ").appendValue(error.opt("data"));
             return false;
         }
         return true;

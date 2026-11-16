@@ -18,30 +18,14 @@ import org.json.JSONObject;
 /**
  * The response to a {@code tools/call} request, as returned by {@link McpClient#callTool(String)}.
  *
- * <p>Wraps the raw JSON-RPC response and exposes the parts of the tool result that tests
- * commonly assert on. Use {@link ToolResponseMatcher} to assert on a response.
+ * <p>Adds the parts of a tool result that tests commonly assert on to the generic
+ * {@link McpResponse}. Use {@link ToolResponseMatcher} to assert on a tool result and
+ * {@link JsonRpcResponseMatcher} to assert on a JSON-RPC error.
  */
-public class ToolResponse {
+public class ToolResponse extends McpResponse {
 
-    private final JSONObject json;
-
-    ToolResponse(JSONObject json) {
-        this.json = json;
-    }
-
-    /** Returns the full JSON-RPC response. */
-    public JSONObject getJson() {
-        return json;
-    }
-
-    /** Returns the JSON-RPC {@code result} object, or {@code null} if the response has none (e.g. a JSON-RPC error). */
-    public JSONObject getResult() {
-        return json.optJSONObject("result");
-    }
-
-    /** Returns the JSON-RPC {@code error} object, or {@code null} if the response is not a JSON-RPC error. */
-    public JSONObject getError() {
-        return json.optJSONObject("error");
+    ToolResponse(JSONObject json, Object requestId, String protocolVersion) {
+        super(json, requestId, protocolVersion);
     }
 
     /** Returns the {@code isError} flag of the tool result, or {@code false} if there is no result. */
@@ -67,10 +51,5 @@ public class ToolResponse {
             }
         }
         return items;
-    }
-
-    @Override
-    public String toString() {
-        return json.toString();
     }
 }

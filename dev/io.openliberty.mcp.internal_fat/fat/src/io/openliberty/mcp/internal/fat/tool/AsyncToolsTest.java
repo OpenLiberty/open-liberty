@@ -101,21 +101,21 @@ public class AsyncToolsTest extends FATServletClient {
     @Test
     public void testCompletionStageThatFailsImmediately() throws Exception {
         assertThat(client.callTool("asyncEcho", Map.of("input", "throw error")),
-                   toolResponse().withErrorText("An internal server error occurred while running the tool."));
+                   toolResponse().withError("An internal server error occurred while running the tool."));
         assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("Method call caused runtime exception", serverLifecycle.getServer().getDefaultLogFile()));
     }
 
     @Test
     public void testCompletionStageThatFailsLater() throws Exception {
         assertThat(client.callTool("asyncDelayedEcho", Map.of("input", "throw error")),
-                   toolResponse().withErrorText("An internal server error occurred while running the tool."));
+                   toolResponse().withError("An internal server error occurred while running the tool."));
         assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("Method call caused runtime exception", serverLifecycle.getServer().getDefaultLogFile()));
     }
 
     @Test
     public void testAsyncEchoWithInvalidParamsException() throws Exception {
         assertThat(client.callTool("asyncEcho"),
-                   toolResponse().withErrorText("The method expected the following arguments but did not receive them: [input]."));
+                   toolResponse().withError("The method expected the following arguments but did not receive them: [input]."));
     }
 
     @Test
