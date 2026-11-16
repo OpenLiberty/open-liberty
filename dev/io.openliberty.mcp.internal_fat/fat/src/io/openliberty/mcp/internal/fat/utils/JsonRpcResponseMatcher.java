@@ -40,8 +40,8 @@ import org.json.JSONArray;
  */
 public class JsonRpcResponseMatcher extends TypeSafeDiagnosingMatcher<JsonRpcResponse> {
 
-    private Integer expectedCode;
-    private String expectedMessage;
+    private Integer errorCode;
+    private String errorMessage;
     private Matcher<?> errorDataMatcher;
 
     private JsonRpcResponseMatcher() {}
@@ -53,13 +53,13 @@ public class JsonRpcResponseMatcher extends TypeSafeDiagnosingMatcher<JsonRpcRes
 
     /** Requires the error's {@code code} to equal the given code. See {@link JsonRpcErrorCode}. */
     public JsonRpcResponseMatcher withErrorCode(int code) {
-        this.expectedCode = code;
+        this.errorCode = code;
         return this;
     }
 
     /** Requires the error's {@code message} to equal the given message. */
     public JsonRpcResponseMatcher withErrorMessage(String message) {
-        this.expectedMessage = message;
+        this.errorMessage = message;
         return this;
     }
 
@@ -91,12 +91,12 @@ public class JsonRpcResponseMatcher extends TypeSafeDiagnosingMatcher<JsonRpcRes
     public void describeTo(Description description) {
         description.appendText("a valid JSON-RPC error response");
         String joiner = " with ";
-        if (expectedCode != null) {
-            description.appendText(joiner).appendText("code ").appendValue(expectedCode);
+        if (errorCode != null) {
+            description.appendText(joiner).appendText("code ").appendValue(errorCode);
             joiner = " and ";
         }
-        if (expectedMessage != null) {
-            description.appendText(joiner).appendText("message ").appendValue(expectedMessage);
+        if (errorMessage != null) {
+            description.appendText(joiner).appendText("message ").appendValue(errorMessage);
             joiner = " and ";
         }
         if (errorDataMatcher != null) {
@@ -116,11 +116,11 @@ public class JsonRpcResponseMatcher extends TypeSafeDiagnosingMatcher<JsonRpcRes
             mismatch.appendText("was not a JSON-RPC error: ").appendText(response.toString());
             return false;
         }
-        if (expectedCode != null && !expectedCode.equals(response.getErrorCode())) {
+        if (errorCode != null && !errorCode.equals(response.getErrorCode())) {
             mismatch.appendText("error code was ").appendValue(response.getErrorCode()).appendText(": ").appendText(response.toString());
             return false;
         }
-        if (expectedMessage != null && !expectedMessage.equals(response.getErrorMessage())) {
+        if (errorMessage != null && !errorMessage.equals(response.getErrorMessage())) {
             mismatch.appendText("error message was ").appendValue(response.getErrorMessage()).appendText(": ").appendText(response.toString());
             return false;
         }

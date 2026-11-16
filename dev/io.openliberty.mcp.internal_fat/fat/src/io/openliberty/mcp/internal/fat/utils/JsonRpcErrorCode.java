@@ -11,6 +11,9 @@ package io.openliberty.mcp.internal.fat.utils;
 
 /**
  * The standard JSON-RPC 2.0 error codes, for use with {@link JsonRpcResponseMatcher#withErrorCode(int)}.
+ *
+ * <p>Using the named constants rather than the numeric values keeps tests readable:
+ * {@code withErrorCode(METHOD_NOT_FOUND)} rather than {@code withErrorCode(-32601)}.
  */
 public final class JsonRpcErrorCode {
 
