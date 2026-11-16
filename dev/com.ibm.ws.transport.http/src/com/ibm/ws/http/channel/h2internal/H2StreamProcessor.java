@@ -508,6 +508,14 @@ public class H2StreamProcessor {
                             try {
                                 processPINGFrame();
                             } catch (Http2Exception e) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "processNextFrame: verifyReadFrameSequence threw " + e.getClass().getSimpleName()
+                                                + " on stream " + myID + " state " + state
+                                                + " frameType " + frameType + " direction " + direction
+                                                + " isReadFrame " + currentFrame.isReadFrame()
+                                                + " errorCode " + e.getErrorString()
+                                                + " msg: " + e.getMessage());
+                                }
                                 if (addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
                                     addFrame = ADDITIONAL_FRAME.GOAWAY;
                                     addFrameException = e;
