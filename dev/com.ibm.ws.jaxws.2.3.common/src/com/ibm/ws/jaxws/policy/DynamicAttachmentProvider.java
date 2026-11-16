@@ -22,6 +22,7 @@ import java.net.URI;
 import org.apache.cxf.ws.policy.attachment.external.EndpointReferenceDomainExpression;
 
 import javax.xml.namespace.QName;
+import com.ibm.ws.jaxws.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -76,6 +77,15 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
 
     public String getLocation() {
         return location;
+    }
+
+    /**
+     * @return true if this provider belongs to a server (provider) side bus, false for a client side bus
+     *         or when the bus type cannot be determined.
+     */
+    boolean isServerSide() {
+        LibertyApplicationBus.Type busType = (bus != null) ? bus.getExtension(LibertyApplicationBus.Type.class) : null;
+        return LibertyApplicationBus.Type.SERVER.equals(busType);
     }
 
     @Override
@@ -354,19 +364,24 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
                                         policyAddr = policyAddr.trim();
                                         epAddr = epAddr.trim();
 
-                                        // 1. Direct or suffix match
-                                        if (policyAddr.equals(epAddr) || policyAddr.endsWith(epAddr) || epAddr.endsWith(policyAddr)) {
+                                        // 1. Direct match. On the server side a relative policy address is qualified
+                                        // against the endpoint address first so both sides are compared fully
+                                        // qualified. On the client side the endpoint address is the remote target, so
+                                        // it cannot be used to qualify the policy address.
+                                        String qualifiedPolicyAddr = isServerSide() ? qualifyPolicyAddress(policyAddr, epAddr) : policyAddr;
+                                        if (qualifiedPolicyAddr.equals(epAddr)) {
                                             return true;
                                         }
 
-                                        // 2. Normalized path match (strips scheme://host:port)
+                                        // 2. Normalized path match (strips scheme://host:port).
+                                        // Only an exact path match is accepted.
                                         try {
                                             String pPath = (policyAddr.startsWith("http://") || policyAddr.startsWith("https://")) 
                                                             ? URI.create(policyAddr).getPath() : policyAddr;
                                             String ePath = (epAddr.startsWith("http://") || epAddr.startsWith("https://")) 
                                                             ? URI.create(epAddr).getPath() : epAddr;
                                             if (pPath != null && ePath != null) {
-                                                if (pPath.equals(ePath) || pPath.endsWith(ePath) || ePath.endsWith(pPath)) {
+                                                if (pPath.equals(ePath)) {
                                                     return true;
                                                 }
                                             }
@@ -405,6 +420,24 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
             }
         }
         return des;
+    }
+
+    /**
+     * Qualifies a relative policy address using the (already fully qualified) endpoint address, which is the
+     * only place the scheme, host, port and context path are known at policy lookup time.
+     * "/Service" is qualified with the endpoint's base, "/context/Service" with the endpoint's origin.
+     * Returns the policy address unchanged if it is already absolute or the endpoint address is not absolute.
+     */
+    static String qualifyPolicyAddress(String policyAddr, String epAddr) {
+        if (policyAddr.startsWith("http://") || policyAddr.startsWith("https://")
+            || !(epAddr.startsWith("http://") || epAddr.startsWith("https://"))) {
+            return policyAddr;
+        }
+        if (policyAddr.startsWith("/") && epAddr.endsWith(policyAddr)) {
+            return epAddr;
+        }
+        URI ep = URI.create(epAddr);
+        return ep.getScheme() + "://" + ep.getRawAuthority() + (policyAddr.startsWith("/") ? "" : "/") + policyAddr;
     }
 
     // for test
