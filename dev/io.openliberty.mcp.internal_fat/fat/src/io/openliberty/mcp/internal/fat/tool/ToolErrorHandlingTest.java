@@ -10,10 +10,11 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -37,7 +38,6 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.businessExceptionApp.ToolErrorHandlingTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.ToolResponse;
-import io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher;
 
 /**
  *
@@ -68,43 +68,43 @@ public class ToolErrorHandlingTest extends FATServletClient {
     @Test
     public void testToolThrowsToolCallException() throws Exception {
         ToolResponse response = client.callTool("businessErrorTool", Map.of("input", "bad-value"));
-        assertThat(response, ToolResponseMatcher.withErrorText("Invalid business input: bad-value"));
+        assertThat(response, toolResponse().withErrorText("Invalid business input: bad-value"));
     }
 
     @Test
     public void testToolThrowsExceptionWithoutWrapBusiness() throws Exception {
         ToolResponse response = client.callTool("unwrappedExceptionTool", Map.of("input", "trigger"));
-        assertThat(response, ToolResponseMatcher.withErrorText("An internal server error occurred while running the tool."));
+        assertThat(response, toolResponse().withErrorText("An internal server error occurred while running the tool."));
     }
 
     @Test
     public void testToolThrowsExceptionWithWrapNoArgs() throws Exception {
         ToolResponse response = client.callTool("wrappedNoArgsTool", Map.of("input", "trigger"));
-        assertThat(response, ToolResponseMatcher.withErrorText("Wrapped error for input: trigger"));
+        assertThat(response, toolResponse().withErrorText("Wrapped error for input: trigger"));
     }
 
     @Test
     public void testToolThrowsListedWrappedException() throws Exception {
         ToolResponse response = client.callTool("listedWrappedExceptionTool", Map.of("input", "bad-value"));
-        assertThat(response, ToolResponseMatcher.withErrorText("Invalid business input: bad-value"));
+        assertThat(response, toolResponse().withErrorText("Invalid business input: bad-value"));
     }
 
     @Test
     public void testToolThrowsExceptionWrappedBySuperclass() throws Exception {
         ToolResponse response = client.callTool("superclassWrappedExceptionTool", Map.of("input", "test arg"));
-        assertThat(response, ToolResponseMatcher.withErrorText("Invalid input for superclass: test arg"));
+        assertThat(response, toolResponse().withErrorText("Invalid input for superclass: test arg"));
     }
 
     @Test
     public void testToolThrowsUnwrappedException() throws Exception {
         ToolResponse response = client.callTool("excludeExceptionTool", Map.of("input", "fail-now"));
-        assertThat(response, ToolResponseMatcher.withErrorText("An internal server error occurred while running the tool."));
+        assertThat(response, toolResponse().withErrorText("An internal server error occurred while running the tool."));
     }
 
     @Test
     public void testCheckedExceptionTool() throws Exception {
         ToolResponse response = client.callTool("checkedExceptionTool", Map.of("input", "abc"));
-        assertThat(response, ToolResponseMatcher.withErrorText("Checked error for: abc"));
+        assertThat(response, toolResponse().withErrorText("Checked error for: abc"));
     }
 
     @Test
@@ -112,7 +112,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
         ToolResponse response = client.callTool("unwrappedCheckedExceptionTool", Map.of("input", "abc"));
         Log.info(getClass(), "unwrappedCheckedExceptionTool", "Raw MCP response: " + response);
 
-        assertThat(response, ToolResponseMatcher.withErrorText("An internal server error occurred while running the tool."));
+        assertThat(response, toolResponse().withErrorText("An internal server error occurred while running the tool."));
 
         assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("Unwrapped checked error for: abc", serverLifecycle.getServer().getDefaultLogFile()));
     }
@@ -120,19 +120,19 @@ public class ToolErrorHandlingTest extends FATServletClient {
     @Test
     public void testUnexpectedArgumentSupplied() throws Exception {
         ToolResponse response = client.callTool("inputValidationTool", Map.of("input", "Hi", "count", 2, "extra", "unexpected"));
-        assertThat(response, ToolResponseMatcher.withErrorText("The following arguments were passed but were not found in the method: [extra]."));
+        assertThat(response, toolResponse().withErrorText("The following arguments were passed but were not found in the method: [extra]."));
     }
 
     @Test
     public void testMissingRequiredArgument() throws Exception {
         ToolResponse response = client.callTool("inputValidationTool", Map.of("count", 2));
-        assertThat(response, ToolResponseMatcher.withErrorText("The method expected the following arguments but did not receive them: [input]."));
+        assertThat(response, toolResponse().withErrorText("The method expected the following arguments but did not receive them: [input]."));
     }
 
     @Test
     public void testArgumentTypeMismatch() throws Exception {
         ToolResponse response = client.callTool("inputValidationTool", Map.of("input", "hello", "count", "oops"));
-        assertThat(response, ToolResponseMatcher.withErrorText("The count argument cannot be converted to the java.lang.Integer type."));
+        assertThat(response, toolResponse().withErrorText("The count argument cannot be converted to the java.lang.Integer type."));
     }
 
     @Test

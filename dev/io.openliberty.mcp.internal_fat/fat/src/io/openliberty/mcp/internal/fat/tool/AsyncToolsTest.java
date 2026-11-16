@@ -10,10 +10,13 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -87,271 +90,66 @@ public class AsyncToolsTest extends FATServletClient {
 
     @Test
     public void testCompletionStageThatCompletesImmediately() throws Exception {
-        String request = """
-                          {
-                            "jsonrpc": "2.0",
-                            "id": "3",
-                            "method": "tools/call",
-                            "params": {
-                              "name": "asyncEcho",
-                              "arguments": {
-                                "input": "Async Hello"
-                              }
-                            }
-                          }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"3","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Async Hello: (async)"}],"isError":false}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("asyncEcho", Map.of("input", "Async Hello")), toolResponse().withTextContent("Async Hello: (async)"));
     }
 
     @Test
     public void testCompletionStageThatCompletesLater() throws Exception {
-        String request = """
-                          {
-                            "jsonrpc": "2.0",
-                            "id": "3",
-                            "method": "tools/call",
-                            "params": {
-                              "name": "asyncDelayedEcho",
-                              "arguments": {
-                                "input": "Async Hello"
-                              }
-                            }
-                          }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"3","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Async Hello: (async)"}],"isError":false}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("asyncDelayedEcho", Map.of("input", "Async Hello")), toolResponse().withTextContent("Async Hello: (async)"));
     }
 
     @Test
     public void testCompletionStageThatFailsImmediately() throws Exception {
-        String request = """
-                          {
-                            "jsonrpc": "2.0",
-                            "id": "2",
-                            "method": "tools/call",
-                            "params": {
-                              "name": "asyncEcho",
-                              "arguments": {
-                                "input": "throw error"
-                              }
-                            }
-                          }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("asyncEcho", Map.of("input", "throw error")),
+                   toolResponse().withErrorText("An internal server error occurred while running the tool."));
         assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("Method call caused runtime exception", serverLifecycle.getServer().getDefaultLogFile()));
     }
 
     @Test
     public void testCompletionStageThatFailsLater() throws Exception {
-        String request = """
-                          {
-                            "jsonrpc": "2.0",
-                            "id": "2",
-                            "method": "tools/call",
-                            "params": {
-                              "name": "asyncDelayedEcho",
-                              "arguments": {
-                                "input": "throw error"
-                              }
-                            }
-                          }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("asyncDelayedEcho", Map.of("input", "throw error")),
+                   toolResponse().withErrorText("An internal server error occurred while running the tool."));
         assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("Method call caused runtime exception", serverLifecycle.getServer().getDefaultLogFile()));
     }
 
     @Test
     public void testAsyncEchoWithInvalidParamsException() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "asyncEcho"
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "result": {
-                            "isError": true,
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "The method expected the following arguments but did not receive them: [input]."
-                              }
-                            ]
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("asyncEcho"),
+                   toolResponse().withErrorText("The method expected the following arguments but did not receive them: [input]."));
     }
 
     @Test
     public void testAsyncToolReturningSingleObject() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "asyncObjectTool",
-                            "arguments": {
-                              "name": "Manchester"
-                            }
-                          }
-                        }
-                        """;
+        JSONObject expectedJson = new JSONObject()
+                                                  .put("country", "England")
+                                                  .put("isCapital", false)
+                                                  .put("name", "Manchester")
+                                                  .put("population", 8000);
 
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":8000}"
-                              }
-                            ],
-                            "structuredContent": {
-                              "country": "England",
-                              "isCapital": false,
-                              "name": "Manchester",
-                              "population": 8000
-                            },
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("asyncObjectTool", Map.of("name", "Manchester")),
+                   toolResponse().withTextContent("{\"country\":\"England\",\"isCapital\":false,\"name\":\"Manchester\",\"population\":8000}")
+                                 .withStructureContent(expectedJson));
     }
 
     @Test(expected = Exception.class)
     @Mode(TestMode.FULL)
     public void testCompletionStageThatNeverCompletes() throws Exception {
-        String request = """
-                          {
-                            "jsonrpc": "2.0",
-                            "id": "2",
-                            "method": "tools/call",
-                            "params": {
-                              "name": "asyncToolThatNeverCompletes",
-                              "arguments": {
-                                "input": "Hello"
-                              }
-                            }
-                          }
-                        """;
-        shortTimeoutClient.callMCP(request);
+        shortTimeoutClient.callTool("asyncToolThatNeverCompletes", Map.of("input", "Hello"));
     }
 
     @Test
     public void testContentEncoderThatReturnsCompletionStage() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testContentEncoderCompletionStage",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"age\\\":32,\\\"fistName\\\":\\\"Jon\\\",\\\"lastName\\\":\\\"Encoded by PersonContentEncoder\\\"}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testContentEncoderCompletionStage"),
+                   toolResponse().withTextContent("{\"age\":32,\"fistName\":\"Jon\",\"lastName\":\"Encoded by PersonContentEncoder\"}"));
     }
 
     @Test
     public void testContentEncoderCompletionStageWithListEncoding() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testContentEncoderEncodingACompletionStageContainingAList",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"age\\\":32,\\\"fistName\\\":\\\"Jon\\\",\\\"lastName\\\":\\\"Encoded by PersonContentEncoder\\\"}"
-                              },
-                              {
-                                "type":"text",
-                                "text":"{\\\"age\\\":22,\\\"fistName\\\":\\\"Jane\\\",\\\"lastName\\\":\\\"Encoded by PersonContentEncoder\\\"}"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testContentEncoderEncodingACompletionStageContainingAList"),
+                   toolResponse().withTextContents("{\"age\":32,\"fistName\":\"Jon\",\"lastName\":\"Encoded by PersonContentEncoder\"}",
+                                                   "{\"age\":22,\"fistName\":\"Jane\",\"lastName\":\"Encoded by PersonContentEncoder\"}"));
     }
 
     @Test
@@ -472,5 +270,4 @@ public class AsyncToolsTest extends FATServletClient {
             }
         }
     }
-
 }

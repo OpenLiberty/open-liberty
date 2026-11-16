@@ -50,6 +50,12 @@ public class ToolResponse {
         return result != null && result.optBoolean("isError", false);
     }
 
+    /** Returns the tool result's {@code structuredContent} object, or {@code null} if there is none. */
+    public JSONObject getStructuredContent() {
+        JSONObject result = getResult();
+        return result == null ? null : result.optJSONObject("structuredContent");
+    }
+
     /** Returns the items of the tool result's {@code content} array, or an empty list if there are none. */
     public List<JSONObject> getContent() {
         List<JSONObject> items = new ArrayList<>();

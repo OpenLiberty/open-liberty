@@ -10,8 +10,9 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -29,7 +30,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.encoderToolApp.EncoderTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
-import io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher;
 
 @RunWith(FATRunner.class)
 public class EncoderTest extends FATServletClient {
@@ -58,75 +58,75 @@ public class EncoderTest extends FATServletClient {
     @Test
     public void testFallbackBuiltInJsonTextContentEncoder() throws Exception {
         assertThat(client.callTool("testDefaultEncoderResponse", Map.of("name", "Manchester")),
-                   ToolResponseMatcher.withTextContent("{\"country\":\"England\",\"isCapital\":false,\"name\":\"Manchester\",\"population\":8000}"));
+                   toolResponse().withTextContent("{\"country\":\"England\",\"isCapital\":false,\"name\":\"Manchester\",\"population\":8000}"));
     }
 
     @Test
     public void testContentEncoder() throws Exception {
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
         assertThat(client.callTool("testContentEncoder"),
-                   ToolResponseMatcher.withTextContent("{\"age\":32,\"fistName\":\"Jon\",\"lastName\":\"Encoded by PersonContentEncoder\"}"));
+                   toolResponse().withTextContent("{\"age\":32,\"fistName\":\"Jon\",\"lastName\":\"Encoded by PersonContentEncoder\"}"));
     }
 
     @Test
     public void testContentEncoderListEncoding() throws Exception {
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
         assertThat(client.callTool("testContentEncoderEncodingAList"),
-                   ToolResponseMatcher.withTextContent("{\"age\":32,\"fistName\":\"Jon\",\"lastName\":\"Encoded by PersonContentEncoder\"}"));
+                   toolResponse().withTextContent("{\"age\":32,\"fistName\":\"Jon\",\"lastName\":\"Encoded by PersonContentEncoder\"}"));
     }
 
     @Test
     public void testEncoderPriority() throws Exception {
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
         assertThat(client.callTool("testEncoderPriority"),
-                   ToolResponseMatcher.withTextContent("{\"hello\":\"Hello from HigerPriorityEncoder\"}"));
+                   toolResponse().withTextContent("{\"hello\":\"Hello from HigerPriorityEncoder\"}"));
     }
 
     @Test
     public void testToolResponseEncoderSuccess() throws Exception {
         assertThat(client.callTool("testToolResponseEncoder", Map.of("isSuccessful", true)),
-                   ToolResponseMatcher.withTextContent("[{\"country\":\"England\",\"isCapital\":true,\"name\":\"London\",\"population\":18000},"
-                                                       + "{\"country\":\"England\",\"isCapital\":false,\"name\":\"Machester\",\"population\":8000}]"));
+                   toolResponse().withTextContent("[{\"country\":\"England\",\"isCapital\":true,\"name\":\"London\",\"population\":18000},"
+                                                  + "{\"country\":\"England\",\"isCapital\":false,\"name\":\"Machester\",\"population\":8000}]"));
     }
 
     @Test
     public void testToolResponseEncoderErrorResponse() throws Exception {
         assertThat(client.callTool("testToolResponseEncoder", Map.of("isSuccessful", false)),
-                   ToolResponseMatcher.withErrorText("Database Query failed with error: Some SQL execution error"));
+                   toolResponse().withErrorText("Database Query failed with error: Some SQL execution error"));
     }
 
     @Test
     public void testDependentBeanEncoder() throws Exception {
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
         assertThat(client.callTool("testDependantBeanEncoder"),
-                   ToolResponseMatcher.withTextContent("{\"hello\":\"Hello from DependantBeanEncoder\"}"));
+                   toolResponse().withTextContent("{\"hello\":\"Hello from DependantBeanEncoder\"}"));
     }
 
     @Test
     public void testRequestScopedBeanEncoder() throws Exception {
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
         assertThat(client.callTool("testRequestScopedBeanEncoder"),
-                   ToolResponseMatcher.withTextContent("{\"hello\":\"Hello from RequestScopedBeanEncoder\"}"));
+                   toolResponse().withTextContent("{\"hello\":\"Hello from RequestScopedBeanEncoder\"}"));
     }
 
     @Test
     public void testSessionScopedBeanEncoder() throws Exception {
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
         assertThat(client.callTool("testSessionScopedBeanEncoder"),
-                   ToolResponseMatcher.withTextContent("{\"hello\":\"Hello from SessionScopedBeanEncoder\"}"));
+                   toolResponse().withTextContent("{\"hello\":\"Hello from SessionScopedBeanEncoder\"}"));
     }
 
     @Test
     public void testSingletonBeanEncoderWillNOTBeDiscovered() throws Exception {
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
         assertThat(client.callTool("testSingletonBeanEncoder"),
-                   ToolResponseMatcher.withTextContent("{\"hello\":\"Hello\"}"));
+                   toolResponse().withTextContent("{\"hello\":\"Hello\"}"));
     }
 
     @Test
     public void testToolResponseEncoderOverContentEncoderSuccess() throws Exception {
         assertThat(client.callTool("testToolResponseEncoderPriorityOverContentEncoder", Map.of("isSuccessful", true)),
-                   ToolResponseMatcher.withTextContent("{\"content\":\"Encoded by RestResponseToolResponseEncoder\",\"isSuccessfull\":true,\"statusCode\":200}"));
+                   toolResponse().withTextContent("{\"content\":\"Encoded by RestResponseToolResponseEncoder\",\"isSuccessfull\":true,\"statusCode\":200}"));
     }
 
     /**
@@ -142,7 +142,7 @@ public class EncoderTest extends FATServletClient {
         // Should use BaseEncoderWithPriority (priority 200), not SubclassEncoderNoPriority
         // which would incorrectly inherit priority 200 with the old buggy implementation
         assertThat(client.callTool("testPriorityNotInherited"),
-                   ToolResponseMatcher.withTextContent("{\"message\":\"Encoded by BaseEncoderWithPriority (priority 50)\"}"));
+                   toolResponse().withTextContent("{\"message\":\"Encoded by BaseEncoderWithPriority (priority 50)\"}"));
     }
 
     @Test
@@ -150,7 +150,7 @@ public class EncoderTest extends FATServletClient {
         // The CDI base encoder has @Priority(400), while the subclass has @Priority(50),
         // so the base encoder should be selected.
         assertThat(client.callTool("testCdiBasePriorityHighest"),
-                   ToolResponseMatcher.withTextContent("{\"message\":\"Encoded by CdiBaseEncoderWithHighestPriority (priority 400)\"}"));
+                   toolResponse().withTextContent("{\"message\":\"Encoded by CdiBaseEncoderWithHighestPriority (priority 400)\"}"));
     }
 
     /**
@@ -161,7 +161,7 @@ public class EncoderTest extends FATServletClient {
     @Test
     public void testGetTypeExactMatch() throws Exception {
         assertThat(client.callTool("testGetTypeExactMatch"),
-                   ToolResponseMatcher.withTextContent("encoded by ShapeEncoder: Shape"));
+                   toolResponse().withTextContent("encoded by ShapeEncoder: Shape"));
     }
 
     /**
@@ -173,7 +173,7 @@ public class EncoderTest extends FATServletClient {
     @Test
     public void testGetTypeSubtypeMatch() throws Exception {
         assertThat(client.callTool("testGetTypeSubtypeMatch"),
-                   ToolResponseMatcher.withTextContent("encoded by ShapeEncoder: Circle"));
+                   toolResponse().withTextContent("encoded by ShapeEncoder: Circle"));
     }
 
     /**

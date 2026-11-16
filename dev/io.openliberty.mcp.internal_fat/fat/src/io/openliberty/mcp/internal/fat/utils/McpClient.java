@@ -16,6 +16,7 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_D
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_APPLICATION_JSON;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -489,22 +490,39 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * Sends a {@code tools/call} request, filling in the JSON-RPC envelope, and parses the
      * response. Use {@link ToolResponseMatcher} to assert on the result.
      *
+     * <p>The JSON-RPC envelope of the response is validated before it is returned: {@code jsonrpc}
+     * must be {@code "2.0"} and {@code id} must match the id of the request.
+     *
      * @param toolName the name of the tool to call
      * @param arguments the tool arguments, or {@code null} to send no {@code arguments} field
      * @return the parsed response
-     * @throws Exception if the request fails or the response status is not 200
+     * @throws Exception if the request fails, the response status is not 200 or the JSON-RPC envelope is invalid
      */
     public ToolResponse callTool(String toolName, Map<String, Object> arguments) throws Exception {
         JSONObject params = new JSONObject().put("name", toolName);
         if (arguments != null) {
             params.put("arguments", new JSONObject(arguments));
         }
+        String requestId = String.valueOf(nextRequestId++);
         JSONObject request = new JSONObject()
                                              .put("jsonrpc", "2.0")
-                                             .put("id", String.valueOf(nextRequestId++))
+                                             .put("id", requestId)
                                              .put("method", "tools/call")
                                              .put("params", params);
-        return new ToolResponse(new JSONObject(callMCP(request.toString())));
+        JSONObject response = new JSONObject(callMCP(request.toString()));
+        validateJsonRpcEnvelope(response, requestId);
+        return new ToolResponse(response);
+    }
+
+    /**
+     * Validates the JSON-RPC envelope of a response to a request with the given id.
+     *
+     * @param response the parsed JSON-RPC response
+     * @param expectedRequestId the id that was sent in the request
+     */
+    private void validateJsonRpcEnvelope(JSONObject response, String expectedRequestId) {
+        assertEquals("JSON-RPC response 'jsonrpc' must be 2.0: " + response, "2.0", response.opt("jsonrpc"));
+        assertEquals("JSON-RPC response 'id' must match the request id: " + response, expectedRequestId, response.opt("id"));
     }
 
     /**

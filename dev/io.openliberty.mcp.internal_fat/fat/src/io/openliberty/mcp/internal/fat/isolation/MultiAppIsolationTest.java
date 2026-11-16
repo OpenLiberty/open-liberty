@@ -10,9 +10,10 @@
 package io.openliberty.mcp.internal.fat.isolation;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
@@ -26,7 +27,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
@@ -34,7 +34,6 @@ import io.openliberty.mcp.internal.fat.isolation.alpha.AlphaTools;
 import io.openliberty.mcp.internal.fat.isolation.beta.BetaTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.ToolResponse;
-import io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher;
 
 /**
  * Multi-application isolation tests for MCP server features
@@ -147,74 +146,22 @@ public class MultiAppIsolationTest extends FATServletClient {
     //Calling a tool that exists in one app from another app should fail with method not found
     @Test
     public void testCallingBetaToolFromAlphaAppFails() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "betaOnlyTool",
-                            "arguments": {
-                              "input": "Hello"
-                            }
-                          }
-                        }
-                        """;
-
-        String expectedResponseString = """
-                        {
-                            "id": "2",
-                            "jsonrpc": "2.0",
-                            "error": {
-                                "code": -32602,
-                                "data": ["Method betaOnlyTool not found"],
-                                "message": "Invalid params"
-                            }
-                        }
-                        """;
-
-        String response = alphaClient.callMCP(request);
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(alphaClient.callTool("betaOnlyTool", Map.of("input", "Hello")),
+                   toolResponse().withJsonRpcError(-32602, "Invalid params", "Method betaOnlyTool not found"));
     }
 
     @Test
     public void testCallingAlphaToolFromBetaAppFails() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "alphaOnlyTool",
-                            "arguments": {
-                              "input": "Hello"
-                            }
-                          }
-                        }
-                        """;
-
-        String expectedResponseString = """
-                        {
-                            "id": "2",
-                            "jsonrpc": "2.0",
-                            "error": {
-                                "code": -32602,
-                                "data": ["Method alphaOnlyTool not found"],
-                                "message": "Invalid params"
-                            }
-                        }
-                        """;
-
-        String response = betaClient.callMCP(request);
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(betaClient.callTool("alphaOnlyTool", Map.of("input", "Hello")),
+                   toolResponse().withJsonRpcError(-32602, "Invalid params", "Method alphaOnlyTool not found"));
     }
 
     //Calling a tool with the same name deployed in different apps will return different results
 
     @Test
     public void testCallingToolsWithTheSameNameInDifferentAops() throws Exception {
-        assertThat(alphaClient.callTool("sharedToolName"), ToolResponseMatcher.withTextContent("from-alpha"));
-        assertThat(betaClient.callTool("sharedToolName"), ToolResponseMatcher.withTextContent("from-beta"));
+        assertThat(alphaClient.callTool("sharedToolName"), toolResponse().withTextContent("from-alpha"));
+        assertThat(betaClient.callTool("sharedToolName"), toolResponse().withTextContent("from-beta"));
     }
 
     //Test for ToolResponseEncoders
@@ -222,7 +169,7 @@ public class MultiAppIsolationTest extends FATServletClient {
     @Test
     public void testAlphaToolUsesAlphaToolResponseEncoderForLocalDate() throws Exception {
         ToolResponse response = alphaClient.callTool("alphaEncodedTool");
-        assertThat(response, ToolResponseMatcher.withTextContent("encoded by AlphaToolResponseEncoder: 2026-03-03"));
+        assertThat(response, toolResponse().withTextContent("encoded by AlphaToolResponseEncoder: 2026-03-03"));
     }
 
     //Testing that the AlphaToolResponseEncoder from the Alpha app is not seen by the Beta app
@@ -230,14 +177,14 @@ public class MultiAppIsolationTest extends FATServletClient {
     public void testBetaToolDoesNotUseAlphaToolResponseEncoderForLocalDate() throws Exception {
         ToolResponse response = betaClient.callTool("betaEncodedTool");
         // No encoder applies, so the date is serialized as a JSON string (including the quotes)
-        assertThat(response, ToolResponseMatcher.withTextContent("\"2026-03-03\""));
+        assertThat(response, toolResponse().withTextContent("\"2026-03-03\""));
     }
 
     //A content encoder registered in the Beta app will be visible to only the beta tools deployed in the beta app
     @Test
     public void testBetaToolUsesBetaContentEncoderForLocalDateTime() throws Exception {
         ToolResponse response = betaClient.callTool("betaContentEncodedTool");
-        assertThat(response, ToolResponseMatcher.withTextContent("encoded by BetaContentEncoder: 2026-03-03T03:03"));
+        assertThat(response, toolResponse().withTextContent("encoded by BetaContentEncoder: 2026-03-03T03:03"));
     }
 
     //A content encoder registered in the Beta app will NOT be visible to Alpha tools deployed in the alpha app
@@ -245,7 +192,7 @@ public class MultiAppIsolationTest extends FATServletClient {
     public void testAlphaToolDoesNotUseBetaContentEncoderForLocalDateTime() throws Exception {
         ToolResponse response = alphaClient.callTool("alphaContentEncodedTool");
         // No encoder applies, so the date-time is serialized as a JSON string (including the quotes)
-        assertThat(response, ToolResponseMatcher.withTextContent("\"2026-03-03T03:03:00\""));
+        assertThat(response, toolResponse().withTextContent("\"2026-03-03T03:03:00\""));
     }
 
     // Negative Tests
@@ -345,7 +292,7 @@ public class MultiAppIsolationTest extends FATServletClient {
         ToolResponse alphaResponse = alphaClient.callTool("alphaOnlyTool", Map.of("input", "ping"));
         ToolResponse betaResponse = betaClient.callTool("betaOnlyTool", Map.of("input", "ping"));
 
-        assertThat(alphaResponse, ToolResponseMatcher.withTextContent("alpha-response: ping"));
-        assertThat(betaResponse, ToolResponseMatcher.withTextContent("beta-response: ping"));
+        assertThat(alphaResponse, toolResponse().withTextContent("alpha-response: ping"));
+        assertThat(betaResponse, toolResponse().withTextContent("beta-response: ping"));
     }
 }
