@@ -501,6 +501,19 @@ public class McpClient extends ExternalResource implements AutoCloseable {
     }
 
     /**
+     * Like {@link #callTool(String, Map)}, but also sends a request {@code _meta} object.
+     *
+     * @param toolName the name of the tool to call
+     * @param arguments the tool arguments, or {@code null} to send no {@code arguments} field
+     * @param meta the entries of the request {@code _meta} object, or {@code null} to send none
+     * @return the parsed response
+     * @throws Exception if the request fails or the response status is not 200
+     */
+    public ToolResponse callTool(String toolName, Map<String, Object> arguments, Map<String, Object> meta) throws Exception {
+        return callTool(toolCallRequest(toolName, arguments, meta));
+    }
+
+    /**
      * Sends a {@code tools/call} request built by {@link #toolCallRequest(String, Map)} and parses
      * the response. Use this instead of {@link #callTool(String, Map)} when the test needs the
      * request id before the response arrives, e.g. to cancel the request.
@@ -532,10 +545,25 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * @return the request
      */
     public McpRequest toolCallRequest(String toolName, Map<String, Object> arguments) {
+        return toolCallRequest(toolName, arguments, null);
+    }
+
+    /**
+     * Like {@link #toolCallRequest(String, Map)}, but also sets the request {@code _meta} object.
+     *
+     * @param toolName the name of the tool to call
+     * @param arguments the tool arguments, or {@code null} to send no {@code arguments} field
+     * @param meta the entries of the request {@code _meta} object, or {@code null} to send none
+     * @return the request
+     */
+    public McpRequest toolCallRequest(String toolName, Map<String, Object> arguments, Map<String, Object> meta) {
         try {
             JSONObject params = new JSONObject().put("name", toolName);
             if (arguments != null) {
                 params.put("arguments", new JSONObject(arguments));
+            }
+            if (meta != null) {
+                params.put("_meta", new JSONObject(meta));
             }
             return request("tools/call", params);
         } catch (JSONException e) {

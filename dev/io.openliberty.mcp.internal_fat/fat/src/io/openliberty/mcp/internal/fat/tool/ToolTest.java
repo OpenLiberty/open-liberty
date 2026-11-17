@@ -24,6 +24,7 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_V
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -32,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -66,6 +68,7 @@ import io.openliberty.mcp.internal.fat.tool.metaKeyApp.MetaKeyValidationTestServ
 import io.openliberty.mcp.internal.fat.tool.progressApp.ProgressTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
 
 /**
  *
@@ -293,71 +296,14 @@ public class ToolTest extends FATServletClient {
 
     @Test
     public void testEchoWithInvalidParamsException() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "echo"
-                          }
-                        }
-                        """;
-
-        String expectedResponseString = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "result": {
-                            "isError": true,
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "The method expected the following arguments but did not receive them: [input]."
-                              }
-                            ]
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("echo"),
+                   toolResponse().withError("The method expected the following arguments but did not receive them: [input]."));
     }
 
     @Test
     public void testEchoWithInvalidParamsArgumentMismatchException() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "echo",
-                            "arguments": {
-                              "other": "Hello"
-                            }
-                          }
-                        }
-                        """;
-
-        String expectedResponseString = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "result": {
-                            "isError": true,
-                            "content": [
-                              {
-                                "type": "text",
-                                    "text": "The following arguments were passed but were not found in the method: [other]. The method expected the following arguments but did not receive them: [input]."
-                              }
-                            ]
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("echo", Map.of("other", "Hello")),
+                   toolResponse().withError("The following arguments were passed but were not found in the method: [other]. The method expected the following arguments but did not receive them: [input]."));
     }
 
     @Test
@@ -384,413 +330,143 @@ public class ToolTest extends FATServletClient {
 
     @Test
     public void testToolReturnsListOfContent() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "textContentTool",
-                            "arguments": {
-                              "input": "hello"
-                            }
-                          }
-                        }
-                        """;
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {
-                          "id": 1,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              { "type": "text", "text": "Echo: hello" }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("textContentTool", Map.of("input", "hello")),
+                   toolResponse().withContent(new JSONObject("""
+                                   { "type": "text", "text": "Echo: hello" }
+                                   """)));
     }
 
     @Test
     public void testToolReturnsListOfContentWithAnnotations() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "textContentToolWithContentAnnotation",
-                            "arguments": {
-                              "input": "hello"
-                            }
-                          }
-                        }
-                        """;
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {
-                          "id": 1,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "annotations": {
-                                  "audience": ["assistant"],
-                                  "lastModified": "2025-08-26T08:40:00Z",
-                                  "priority": 0.5
-                                },
-                                "text": "Echo: hello",
-                                "type": "text"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("textContentToolWithContentAnnotation", Map.of("input", "hello")),
+                   toolResponse().withContent(new JSONObject("""
+                                   {
+                                     "annotations": {
+                                       "audience": ["assistant"],
+                                       "lastModified": "2025-08-26T08:40:00Z",
+                                       "priority": 0.5
+                                     },
+                                     "text": "Echo: hello",
+                                     "type": "text"
+                                   }
+                                   """)));
     }
 
     @Test
     public void testToolReturnsImageContentList() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "imageContentTool",
-                            "arguments": {
-                              "imageData": "aGkJ"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {
-                            "id": 1,
-                            "jsonrpc": "2.0",
-                            "result": {
-                              "content": [
-                                {
-                                  "data": "aGkJ",
-                                  "mimeType": "image/png",
-                                  "type": "image"
-                                }
-                              ],
-                              "isError": false
-                            }
-                         }
-                         """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("imageContentTool", Map.of("imageData", "aGkJ")),
+                   toolResponse().withContent(new JSONObject("""
+                                   {
+                                     "data": "aGkJ",
+                                     "mimeType": "image/png",
+                                     "type": "image"
+                                   }
+                                   """)));
     }
 
     @Test
     public void testToolReturnsImageContentListWithAnnotations() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "imageContentToolWithContentAnnotation",
-                            "arguments": {
-                              "imageData": "aGkK"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {
-                            "id": 1,
-                            "jsonrpc": "2.0",
-                            "result": {
-                              "content": [
-                                {
-                                  "annotations": {
-                                    "audience": ["user"],
-                                    "lastModified": "2025-08-26T08:40:00Z",
-                                    "priority": 0.8
-                                  },
-                                  "data": "aGkK",
-                                  "mimeType": "image/png",
-                                  "type": "image"
-                                }
-                              ],
-                              "isError": false
-                            }
-                         }
-                         """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("imageContentToolWithContentAnnotation", Map.of("imageData", "aGkK")),
+                   toolResponse().withContent(new JSONObject("""
+                                   {
+                                     "annotations": {
+                                       "audience": ["user"],
+                                       "lastModified": "2025-08-26T08:40:00Z",
+                                       "priority": 0.8
+                                     },
+                                     "data": "aGkK",
+                                     "mimeType": "image/png",
+                                     "type": "image"
+                                   }
+                                   """)));
     }
 
     @Test
     public void testToolReturnsAudioContentList() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "audioContentTool",
-                            "arguments": {
-                              "audioData": "aGkK"
-                            }
-                          }
-                        }
-                        """;
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {
-                           "id": 1,
-                           "jsonrpc": "2.0",
-                           "result": {
-                             "content": [
-                               {
-                                 "data": "aGkK",
-                                 "mimeType": "audio/mpeg",
-                                 "type": "audio"
-                               }
-                             ],
-                             "isError": false
-                           }
-                         }
-                         """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("audioContentTool", Map.of("audioData", "aGkK")),
+                   toolResponse().withContent(new JSONObject("""
+                                   {
+                                     "data": "aGkK",
+                                     "mimeType": "audio/mpeg",
+                                     "type": "audio"
+                                   }
+                                   """)));
     }
 
     @Test
     public void testToolReturnsAudioContentListWithAnnotations() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "audioContentToolWithContentAnnotation",
-                            "arguments": {
-                              "audioData": "aGkK"
-                            }
-                          }
-                        }
-                        """;
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                                                {
-                          "id": 1,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "annotations": {
-                                  "audience": ["assistant"],
-                                  "lastModified": "2025-08-26T08:40:00Z",
-                                  "priority": 0.3
-                                },
-                                "data": "aGkK",
-                                "mimeType": "audio/mpeg",
-                                "type": "audio"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("audioContentToolWithContentAnnotation", Map.of("audioData", "aGkK")),
+                   toolResponse().withContent(new JSONObject("""
+                                   {
+                                     "annotations": {
+                                       "audience": ["assistant"],
+                                       "lastModified": "2025-08-26T08:40:00Z",
+                                       "priority": 0.3
+                                     },
+                                     "data": "aGkK",
+                                     "mimeType": "audio/mpeg",
+                                     "type": "audio"
+                                   }
+                                   """)));
     }
 
     @Test
     public void testMixedContentTool() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "mixedContentTool",
-                            "arguments": {
-                              "input": "Hello"
-                            }
-                          }
-                        }
-                        """;
-        String response = client.callMCP(request);
-
         // Note: base64 encoding of literal strings "base64-encoded-image" and "base64-encoded-audio"
-        String expectedResponseString = """
-                        {
-                          "id": 1,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              { "text": "Echo: Hello", "type": "text" },
-                              { "data": "YmFzZTY0LWVuY29kZWQtaW1hZ2U=", "mimeType": "image/png", "type": "image" },
-                              { "data": "YmFzZTY0LWVuY29kZWQtYXVkaW8=", "mimeType": "audio/mpeg", "type": "audio" }
-                            ],
-                            "isError": false
-                          }
-                        }
-                         """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("mixedContentTool", Map.of("input", "Hello")),
+                   toolResponse().withContent(new JSONObject("""
+                                   { "text": "Echo: Hello", "type": "text" }
+                                   """),
+                                              new JSONObject("""
+                                                              { "data": "YmFzZTY0LWVuY29kZWQtaW1hZ2U=", "mimeType": "image/png", "type": "image" }
+                                                              """),
+                                              new JSONObject("""
+                                                              { "data": "YmFzZTY0LWVuY29kZWQtYXVkaW8=", "mimeType": "audio/mpeg", "type": "audio" }
+                                                              """)));
     }
 
     @Test
     public void testMixedContentListTool() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "mixedContentListTool",
-                            "arguments": {
-                              "input": "Hello"
-                            }
-                          }
-                        }
-                        """;
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {
-                          "id": 1,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              { "text": "Echo: Hello", "type": "text" },
-                              { "data": "%s", "mimeType": "image/png", "type": "image" },
-                              { "data": "%s", "mimeType": "audio/mpeg", "type": "audio" }
-                            ],
-                            "isError": false
-                          }
-                        }
-                         """.formatted(TestConstants.TEST_IMAGE_DATA_64, TestConstants.TEST_AUDIO_DATA_64);
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("mixedContentListTool", Map.of("input", "Hello")),
+                   toolResponse().withContent(new JSONObject("""
+                                   { "text": "Echo: Hello", "type": "text" }
+                                   """),
+                                              new JSONObject("""
+                                                              { "data": "%s", "mimeType": "image/png", "type": "image" }
+                                                              """.formatted(TestConstants.TEST_IMAGE_DATA_64)),
+                                              new JSONObject("""
+                                                              { "data": "%s", "mimeType": "audio/mpeg", "type": "audio" }
+                                                              """.formatted(TestConstants.TEST_AUDIO_DATA_64))));
     }
 
     @Test
     public void testToolCallWithoutNonRequiredStringArg() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testToolArgStringNotRequired",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "null"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testToolArgStringNotRequired", Map.of()),
+                   toolResponse().withTextContent("null"));
     }
 
     @Test
     public void testToolCallWithoutNonRequiredIntArg() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testToolArgIntNotRequired",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "0"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testToolArgIntNotRequired", Map.of()),
+                   toolResponse().withTextContent("0"));
     }
 
     @Test
     public void testToolCallWithoutNonRequiredArrayArg() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testToolArgArrayNotRequired",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "null"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testToolArgArrayNotRequired", Map.of()),
+                   toolResponse().withTextContent("null"));
     }
 
     @Test
     public void testToolCallWithoutNonRequiredObjectArg() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testToolArgObjectNotRequired",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "null"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testToolArgObjectNotRequired", Map.of()),
+                   toolResponse().withTextContent("null"));
     }
 
     @Test
     public void testToolCallWithTwoToolArgsWithoutNonRequiredArg() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testMultipleToolArgsOneNotRequired",
-                            "arguments": {
-                              "planet": "Earth"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "Planet Earth was created in the year 0"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testMultipleToolArgsOneNotRequired", Map.of("planet", "Earth")),
+                   toolResponse().withTextContent("Planet Earth was created in the year 0"));
     }
 
     @Test
@@ -830,26 +506,8 @@ public class ToolTest extends FATServletClient {
     public void testEchoMethodCallError() throws Exception {
         server.setMarkToEndOfLog();
 
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "echo",
-                            "arguments": {
-                              "input": "throw error"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("echo", Map.of("input", "throw error")),
+                   toolResponse().withError("An internal server error occurred while running the tool."));
         assertNotNull(server.waitForStringInLogUsingMark("Method call caused runtime exception", server.getDefaultLogFile()));
     }
 
@@ -900,479 +558,126 @@ public class ToolTest extends FATServletClient {
 
     @Test
     public void testAddWithIntegerInputArgs() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "add",
-                            "arguments": {
-                              "num1": 100,
-                              "num2": 200
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        JSONObject jsonResponse = new JSONObject(response);
-
-        // Lenient mode tests
-        JSONAssert.assertEquals("{\"result\":{\"content\":[{\"type\":\"text\",\"text\": \"300\"}]}}", jsonResponse, false);
-
-        // Strict Mode tests
-        String expectedResponseString = """
-                        {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text": "300"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("add", Map.of("num1", 100, "num2", 200)),
+                   toolResponse().withTextContent("300"));
     }
 
     @Test
     public void testToggleWithBooleanArgs() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "toggle",
-                            "arguments": {
-                              "value": true
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text": "false"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("toggle", Map.of("value", true)),
+                   toolResponse().withTextContent("false"));
     }
 
     @Test
     public void testJSONCharacter() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONCharacter",
-                            "arguments": {
-                              "c": "c"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"c"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONCharacter", Map.of("c", "c")),
+                   toolResponse().withTextContent("c"));
     }
 
     @Test
     public void testJSONcharacter() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONcharacter",
-                            "arguments": {
-                              "c": "c"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"c"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONcharacter", Map.of("c", "c")),
+                   toolResponse().withTextContent("c"));
     }
 
     @Test
     public void testJSONlong() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONlong",
-                            "arguments": {
-                              "num1": 2
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"2"}],"isError":false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONlong", Map.of("num1", 2)),
+                   toolResponse().withTextContent("2"));
     }
 
     @Test
     public void testJSONdouble() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONdouble",
-                            "arguments": {
-                              "num1": 2.2
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"2.2"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONdouble", Map.of("num1", 2.2)),
+                   toolResponse().withTextContent("2.2"));
     }
 
     @Test
     public void testJSONbyte() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONbyte",
-                            "arguments": {
-                              "num1": 2
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"2"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONbyte", Map.of("num1", 2)),
+                   toolResponse().withTextContent("2"));
     }
 
     @Test
     public void testJSONfloat() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONfloat",
-                            "arguments": {
-                              "num1": 2.5
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"2.5"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONfloat", Map.of("num1", 2.5)),
+                   toolResponse().withTextContent("2.5"));
     }
 
     @Test
     public void testJSONshort() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONshort",
-                            "arguments": {
-                              "num1": 2
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"2"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONshort", Map.of("num1", 2)),
+                   toolResponse().withTextContent("2"));
     }
 
     @Test
     public void testJSONLong() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONLong",
-                            "arguments": {
-                              "num1": 2
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"2"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONLong", Map.of("num1", 2)),
+                   toolResponse().withTextContent("2"));
     }
 
     @Test
     public void testJSONDouble() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONDouble",
-                            "arguments": {
-                              "num1": 2.5
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"2.5"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONDouble", Map.of("num1", 2.5)),
+                   toolResponse().withTextContent("2.5"));
     }
 
     @Test
     public void testJSONByte() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONByte",
-                            "arguments": {
-                              "num1": 2
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"2"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONByte", Map.of("num1", 2)),
+                   toolResponse().withTextContent("2"));
     }
 
     @Test
     public void testJSONFloat() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONFloat",
-                            "arguments": {
-                              "num1": 2.5
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"2.5"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONFloat", Map.of("num1", 2.5)),
+                   toolResponse().withTextContent("2.5"));
     }
 
     @Test
     public void testJSONShort() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONShort",
-                            "arguments": {
-                              "num1": 2
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"2"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONShort", Map.of("num1", 2)),
+                   toolResponse().withTextContent("2"));
     }
 
     @Test
     public void testJSONInteger() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONInteger",
-                            "arguments": {
-                              "num1": 2
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"2"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONInteger", Map.of("num1", 2)),
+                   toolResponse().withTextContent("2"));
     }
 
     @Test
     public void testJSONBoolean() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testJSONBoolean",
-                            "arguments": {
-                              "b": true
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"true"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testJSONBoolean", Map.of("b", true)),
+                   toolResponse().withTextContent("true"));
     }
 
     @Test
     public void testReturningObject() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testObjectResponse",
-                            "arguments": {
-                              "name": "Manchester"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":8000}"
-                              }
-                            ],
-                            "structuredContent": {
-                              "country": "England",
-                              "isCapital": false,
-                              "name": "Manchester",
-                              "population": 8000
-                            },
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testObjectResponse", Map.of("name", "Manchester")),
+                   toolResponse().withTextContent("{\"country\":\"England\",\"isCapital\":false,\"name\":\"Manchester\",\"population\":8000}")
+                                 .withStructureContent(new JSONObject("""
+                                                 {
+                                                   "country": "England",
+                                                   "isCapital": false,
+                                                   "name": "Manchester",
+                                                   "population": 8000
+                                                 }
+                                                 """)));
     }
 
     @Test
     public void testStringNotReturnedAsStructuredContent() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testStringStructuredContentResponse",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello World"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testStringStructuredContentResponse", Map.of()),
+                   toolResponse().withTextContent("Hello World")
+                                 .withNoStructuredContent());
     }
 
     @Test
     public void testStaticInnerTool() throws Exception {
-        String request = """
-                        {
-                          "id": "2",
-                          "jsonrpc": "2.0",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "staticInnerTool",
-                            "arguments": {
-                              "input": "World"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                                                  {
-                                                  "id":"2",
-                                                  "jsonrpc":"2.0",
-                                                  "result": {
-                                                    "content": [
-                                                      {
-                                                        "type":"text",
-                                                        "text":"Hello World"
-                                                      }
-                                                    ],
-                                                    "isError": false
-                                                  }
-                                                }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, false);
+        assertThat(client.callTool("staticInnerTool", Map.of("input", "World")),
+                   toolResponse().withTextContent("Hello World"));
     }
 
     public void testSpecialCharactersInToolName() throws Exception {
@@ -1565,112 +870,324 @@ public class ToolTest extends FATServletClient {
 //        Company company = new Company("IBM", companyAddress, companyList, companyMap);
 //        Address personAddress = new Address(002, new Street("Poles Ln", "n/a"), "so21 2rt", "near hursley park");
 //        Person person = new Person("John Smith", personAddress, company);
-
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "checkPerson",
-                            "arguments": {
-                                            "person":{
+        JSONObject arguments = new JSONObject("""
+                        {
+                                "person":{
+                                "address": {
+                                    "number": 2,
+                                    "postcode": "so21 2rt",
+                                    "street": {
+                                        "streetName": "Poles Ln",
+                                        "roadType": "n/a"
+                                    }
+                                },
+                                "company": {
+                                    "address": {
+                                        "number": 100,
+                                        "postcode": "so21 2er",
+                                        "street": {
+                                            "streetName": "Hursley Park Rd",
+                                            "roadType": "Private Property"
+                                        }
+                                    },
+                                    "name": "IBM",
+                                    "shareholder": [
+                                        {
                                             "address": {
-                                                "number": 2,
-                                                "postcode": "so21 2rt",
+                                                "number": 100,
+                                                "postcode": "so21 2er",
                                                 "street": {
-                                                    "streetName": "Poles Ln",
-                                                    "roadType": "n/a"
+                                                    "streetName": "Hursley Park Rd",
+                                                    "roadType": "Private Property"
                                                 }
                                             },
-                                            "company": {
-                                                "address": {
-                                                    "number": 100,
-                                                    "postcode": "so21 2er",
-                                                    "street": {
-                                                        "streetName": "Hursley Park Rd",
-                                                        "roadType": "Private Property"
-                                                    }
-                                                },
-                                                "name": "IBM",
-                                                "shareholder": [
-                                                    {
-                                                        "address": {
-                                                            "number": 100,
-                                                            "postcode": "so21 2er",
-                                                            "street": {
-                                                                "streetName": "Hursley Park Rd",
-                                                                "roadType": "Private Property"
-                                                            }
-                                                        },
-                                                        "fullname": "Shareholder 1"
-                                                    }
-                                                ],
-                                                "shareholderRegistry": {
-                                                    "1": {
-                                                        "address": {
-                                                            "number": 100,
-                                                            "postcode": "so21 2er",
-                                                            "street": {
-                                                                "streetName": "Hursley Park Rd",
-                                                                "roadType": "Private Property"
-                                                            }
-                                                        },
-                                                        "fullname": "Shareholder 1"
-                                                    }
+                                            "fullname": "Shareholder 1"
+                                        }
+                                    ],
+                                    "shareholderRegistry": {
+                                        "1": {
+                                            "address": {
+                                                "number": 100,
+                                                "postcode": "so21 2er",
+                                                "street": {
+                                                    "streetName": "Hursley Park Rd",
+                                                    "roadType": "Private Property"
                                                 }
                                             },
-                                            "fullname": "John Smith"
+                                            "fullname": "Shareholder 1"
+                                        }
+                                    }
+                                },
+                                "fullname": "John Smith"
+                            },
+                            "company": {
+                                    "address": {
+                                        "number": 100,
+                                        "postcode": "so21 2er",
+                                        "street": {
+                                            "streetName": "Hursley Park Rd",
+                                            "roadType": "Private Property"
+                                        }
+                                    },
+                                    "name": "IBM",
+                                    "shareholder": [
+                                        {
+                                            "address": {
+                                                "number": 100,
+                                                "postcode": "so21 2er",
+                                                "street": {
+                                                    "streetName": "Hursley Park Rd",
+                                                    "roadType": "Private Property"
+                                                }
+                                            },
+                                            "fullname": "Shareholder 1"
+                                        }
+                                    ],
+                                    "shareholderRegistry": {
+                                        "1": {
+                                            "address": {
+                                                "number": 100,
+                                                "postcode": "so21 2er",
+                                                "street": {
+                                                    "streetName": "Hursley Park Rd",
+                                                    "roadType": "Private Property"
+                                                }
+                                            },
+                                            "fullname": "Shareholder 1"
+                                        }
+                                    }
+                                }
+                        }
+                        """);
+        assertThat(callToolWithJson("checkPerson", arguments, null),
+                   toolResponse().withTextContent("true"));
+    }
+
+    /** The {@code arguments} shared by the {@code addPersonToList*} tool calls. */
+    private static final String ADD_PERSON_ARGUMENTS = """
+                    {
+                            "person":{
+                            "address": {
+                                "number": 2,
+                                "postcode": "so21 2rt",
+                                "street": {
+                                    "streetName": "Poles Ln",
+                                    "roadType": "n/a"
+                                }
+                            },
+                            "company": {
+                                "address": {
+                                    "number": 100,
+                                    "postcode": "so21 2er",
+                                    "street": {
+                                        "streetName": "Hursley Park Rd",
+                                        "roadType": "Private Property"
+                                    }
+                                },
+                                "name": "IBM",
+                                "shareholder": [
+                                    {
+                                        "address": {
+                                            "number": 100,
+                                            "postcode": "so21 2er",
+                                            "street": {
+                                                "streetName": "Hursley Park Rd",
+                                                "roadType": "Private Property"
+                                            }
+                                        },
+                                        "fullname": "Shareholder 1"
+                                    }
+                                ]
+                            },
+                            "fullname": "John Smith"
+                        },
+                        "employeeList": [
+                                    {
+                                        "address": {
+                                            "number": 2,
+                                            "postcode": "so21 2rt",
+                                            "street": {
+                                                "streetName": "Poles Ln",
+                                                "roadType": "n/a"
+                                            }
                                         },
                                         "company": {
+                                            "address": {
+                                                "number": 100,
+                                                "postcode": "so21 2er",
+                                                "street": {
+                                                    "streetName": "Hursley Park Rd",
+                                                    "roadType": "Private Property"
+                                                }
+                                            },
+                                            "name": "IBM",
+                                            "shareholder": [
+                                                {
+                                                    "address": {
+                                                        "number": 100,
+                                                        "postcode": "so21 2er",
+                                                        "street": {
+                                                            "streetName": "Hursley Park Rd",
+                                                            "roadType": "Private Property"
+                                                        }
+                                                    },
+                                                    "fullname": "Shareholder 1"
+                                                }
+                                            ],
+                                            "shareholderRegistry": {
+                                                "1": {
+                                                    "address": {
+                                                        "number": 100,
+                                                        "postcode": "so21 2er",
+                                                        "street": {
+                                                            "streetName": "Hursley Park Rd",
+                                                            "roadType": "Private Property"
+                                                        }
+                                                    },
+                                                    "fullname": "Shareholder 1"
+                                                }
+                                            }
+                                        },
+                                        "fullname": "John Smith"
+                                    },
+                                    {
+                                        "address": {
+                                            "number": 100,
+                                            "postcode": "so21 2er",
+                                            "street": {
+                                                "streetName": "Hursley Park Rd",
+                                                "roadType": "Private Property"
+                                            }
+                                        },
+                                        "fullname": "Shareholder 1"
+                                    }
+                                ]
+                    }
+                    """;
+
+    /** The {@code structuredContent} returned by the {@code addPersonToList*} tools for {@link #ADD_PERSON_ARGUMENTS}. */
+    private static final String PERSON_LIST_STRUCTURED_CONTENT = """
+                    {
+                        "returnList": [
+                                {
+                                    "address": {
+                                        "number": 2,
+                                        "street": {
+                                            "streetName": "Poles Ln",
+                                            "roadType": "n/a"
+                                        },
+                                        "postcode": "so21 2rt"
+                                    },
+                                    "company": {
+                                        "address": {
+                                            "number": 100,
+                                            "street": {
+                                                "streetName": "Hursley Park Rd",
+                                                "roadType": "Private Property"
+                                            },
+                                            "postcode": "so21 2er"
+                                        },
+                                        "shareholderRegistry": {
+                                            "1": {
                                                 "address": {
                                                     "number": 100,
-                                                    "postcode": "so21 2er",
                                                     "street": {
                                                         "streetName": "Hursley Park Rd",
                                                         "roadType": "Private Property"
-                                                    }
+                                                    },
+                                                    "postcode": "so21 2er"
                                                 },
-                                                "name": "IBM",
-                                                "shareholder": [
-                                                    {
-                                                        "address": {
-                                                            "number": 100,
-                                                            "postcode": "so21 2er",
-                                                            "street": {
-                                                                "streetName": "Hursley Park Rd",
-                                                                "roadType": "Private Property"
-                                                            }
-                                                        },
-                                                        "fullname": "Shareholder 1"
-                                                    }
-                                                ],
-                                                "shareholderRegistry": {
-                                                    "1": {
-                                                        "address": {
-                                                            "number": 100,
-                                                            "postcode": "so21 2er",
-                                                            "street": {
-                                                                "streetName": "Hursley Park Rd",
-                                                                "roadType": "Private Property"
-                                                            }
-                                                        },
-                                                        "fullname": "Shareholder 1"
-                                                    }
-                                                }
+                                                "fullname": "Shareholder 1"
                                             }
-                                    }
-                          }
-                        }
-                        """;
+                                        },
+                                        "name": "IBM"
+                                    },
+                                    "fullname": "John Smith"
+                                },
+                                {
+                                    "address": {
+                                        "number": 100,
+                                        "street": {
+                                            "streetName": "Hursley Park Rd",
+                                            "roadType": "Private Property"
+                                        },
+                                        "postcode": "so21 2er"
+                                    },
+                                    "fullname": "Shareholder 1"
+                                },
+                                {
+                                    "address": {
+                                        "number": 2,
+                                        "street": {
+                                            "streetName": "Poles Ln",
+                                            "roadType": "n/a"
+                                        },
+                                        "postcode": "so21 2rt"
+                                    },
+                                    "company": {
+                                        "address": {
+                                            "number": 100,
+                                            "street": {
+                                                "streetName": "Hursley Park Rd",
+                                                "roadType": "Private Property"
+                                            },
+                                            "postcode": "so21 2er"
+                                        },
+                                        "name": "IBM"
+                                    },
+                                    "fullname": "John Smith"
+                                }
+                        ]
+                    }
+                    """;
 
-        String response = client.callMCP(request);
-        JSONObject jsonResponse = new JSONObject(response);
-        // Strict Mode tests
-        String expectedResponseString = """
-                        {"result":{"isError":false,"content":[{"text":"true","type":"text"}]},"id":2,"jsonrpc":"2.0"}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+    /**
+     * The text content returned by the {@code addPersonToList*} tools for {@link #ADD_PERSON_ARGUMENTS}: the
+     * structured content serialised to JSON, with its fields in the order the server writes them.
+     */
+    private static final String PERSON_LIST_TEXT = """
+                    {"returnList":[{"address":{"number":2,"postcode":"so21 2rt","street":{"streetName":"Poles Ln","roadType":"n/a"}},"company":{"address":{"number":100,"postcode":"so21 2er","street":{"streetName":"Hursley Park Rd","roadType":"Private Property"}},"name":"IBM","shareholderRegistry":{"1":{"address":{"number":100,"postcode":"so21 2er","street":{"streetName":"Hursley Park Rd","roadType":"Private Property"}},"fullname":"Shareholder 1"}}},"fullname":"John Smith"},{"address":{"number":100,"postcode":"so21 2er","street":{"streetName":"Hursley Park Rd","roadType":"Private Property"}},"fullname":"Shareholder 1"},{"address":{"number":2,"postcode":"so21 2rt","street":{"streetName":"Poles Ln","roadType":"n/a"}},"company":{"address":{"number":100,"postcode":"so21 2er","street":{"streetName":"Hursley Park Rd","roadType":"Private Property"}},"name":"IBM"},"fullname":"John Smith"}]}""";
+
+    /** The request {@code _meta} sent to, and the result {@code _meta} returned by, the {@code addPersonToListToolResponse*} tools. */
+    private static final String PERSON_META = """
+                    {
+                        "api.ibmtest.org/location": "Hursley",
+                        "api.libertytest.org/person": {
+                            "address": {
+                                "number": 2,
+                                "postcode": "so21 2rt",
+                                "street": {
+                                    "streetName": "Poles Ln",
+                                    "roadType": "n/a"
+                                }
+                            },
+                            "company": {
+                                "address": {
+                                    "number": 100,
+                                    "postcode": "so21 2er",
+                                    "street": {
+                                        "streetName": "Hursley Park Rd",
+                                        "roadType": "Private Property"
+                                    }
+                                },
+                                "name": "IBM"
+                            },
+                            "fullname": "John Smith"
+                        },
+                        "timestamp": 1762860699
+                    }
+                    """;
+
+    /**
+     * Calls a tool whose arguments, and optionally request {@code _meta}, are given as JSON, for the
+     * tests whose arguments are too large to build from a {@link Map}.
+     */
+    private ToolResponse callToolWithJson(String toolName, JSONObject arguments, JSONObject meta) throws Exception {
+        JSONObject params = new JSONObject().put("name", toolName).put("arguments", arguments);
+        if (meta != null) {
+            params.put("_meta", meta);
+        }
+        return client.callTool(client.request("tools/call", params));
     }
 
     @Test
@@ -1685,205 +1202,9 @@ public class ToolTest extends FATServletClient {
 //        Company company = new Company("IBM", companyAddress, companyList, companyMap);
 //        Address personAddress = new Address(002, new Street("Poles Ln", "n/a"), "so21 2rt", "near hursley park");
 //        Person person = new Person("John Smith", personAddress, company);
-
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "addPersonToList",
-                            "arguments": {
-                                            "person":{
-                                            "address": {
-                                                "number": 2,
-                                                "postcode": "so21 2rt",
-                                                "street": {
-                                                    "streetName": "Poles Ln",
-                                                    "roadType": "n/a"
-                                                }
-                                            },
-                                            "company": {
-                                                "address": {
-                                                    "number": 100,
-                                                    "postcode": "so21 2er",
-                                                    "street": {
-                                                        "streetName": "Hursley Park Rd",
-                                                        "roadType": "Private Property"
-                                                    }
-                                                },
-                                                "name": "IBM",
-                                                "shareholder": [
-                                                    {
-                                                        "address": {
-                                                            "number": 100,
-                                                            "postcode": "so21 2er",
-                                                            "street": {
-                                                                "streetName": "Hursley Park Rd",
-                                                                "roadType": "Private Property"
-                                                            }
-                                                        },
-                                                        "fullname": "Shareholder 1"
-                                                    }
-                                                ]
-                                            },
-                                            "fullname": "John Smith"
-                                        },
-                                        "employeeList": [
-                                                    {
-                                                        "address": {
-                                                            "number": 2,
-                                                            "postcode": "so21 2rt",
-                                                            "street": {
-                                                                "streetName": "Poles Ln",
-                                                                "roadType": "n/a"
-                                                            }
-                                                        },
-                                                        "company": {
-                                                            "address": {
-                                                                "number": 100,
-                                                                "postcode": "so21 2er",
-                                                                "street": {
-                                                                    "streetName": "Hursley Park Rd",
-                                                                    "roadType": "Private Property"
-                                                                }
-                                                            },
-                                                            "name": "IBM",
-                                                            "shareholder": [
-                                                                {
-                                                                    "address": {
-                                                                        "number": 100,
-                                                                        "postcode": "so21 2er",
-                                                                        "street": {
-                                                                            "streetName": "Hursley Park Rd",
-                                                                            "roadType": "Private Property"
-                                                                        }
-                                                                    },
-                                                                    "fullname": "Shareholder 1"
-                                                                }
-                                                            ],
-                                                            "shareholderRegistry": {
-                                                                "1": {
-                                                                    "address": {
-                                                                        "number": 100,
-                                                                        "postcode": "so21 2er",
-                                                                        "street": {
-                                                                            "streetName": "Hursley Park Rd",
-                                                                            "roadType": "Private Property"
-                                                                        }
-                                                                    },
-                                                                    "fullname": "Shareholder 1"
-                                                                }
-                                                            }
-                                                        },
-                                                        "fullname": "John Smith"
-                                                    },
-                                                    {
-                                                        "address": {
-                                                            "number": 100,
-                                                            "postcode": "so21 2er",
-                                                            "street": {
-                                                                "streetName": "Hursley Park Rd",
-                                                                "roadType": "Private Property"
-                                                            }
-                                                        },
-                                                        "fullname": "Shareholder 1"
-                                                    }
-                                                ]
-                                    }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        JSONObject jsonResponse = new JSONObject(response);
-        // Strict Mode tests
-        String expectedResponseString = """
-                            {
-                            "result": {
-                                "isError": false,
-                                "structuredContent": { "returnList": [
-                                    {
-                                        "address": {
-                                            "number": 2,
-                                            "street": {
-                                                "streetName": "Poles Ln",
-                                                "roadType": "n/a"
-                                            },
-                                            "postcode": "so21 2rt"
-                                        },
-                                        "company": {
-                                            "address": {
-                                                "number": 100,
-                                                "street": {
-                                                    "streetName": "Hursley Park Rd",
-                                                    "roadType": "Private Property"
-                                                },
-                                                "postcode": "so21 2er"
-                                            },
-                                            "shareholderRegistry": {
-                                                "1": {
-                                                    "address": {
-                                                        "number": 100,
-                                                        "street": {
-                                                            "streetName": "Hursley Park Rd",
-                                                            "roadType": "Private Property"
-                                                        },
-                                                        "postcode": "so21 2er"
-                                                    },
-                                                    "fullname": "Shareholder 1"
-                                                }
-                                            },
-                                            "name": "IBM"
-                                        },
-                                        "fullname": "John Smith"
-                                    },
-                                    {
-                                        "address": {
-                                            "number": 100,
-                                            "street": {
-                                                "streetName": "Hursley Park Rd",
-                                                "roadType": "Private Property"
-                                            },
-                                            "postcode": "so21 2er"
-                                        },
-                                        "fullname": "Shareholder 1"
-                                    },
-                                    {
-                                        "address": {
-                                            "number": 2,
-                                            "street": {
-                                                "streetName": "Poles Ln",
-                                                "roadType": "n/a"
-                                            },
-                                            "postcode": "so21 2rt"
-                                        },
-                                        "company": {
-                                            "address": {
-                                                "number": 100,
-                                                "street": {
-                                                    "streetName": "Hursley Park Rd",
-                                                    "roadType": "Private Property"
-                                                },
-                                                "postcode": "so21 2er"
-                                            },
-                                            "name": "IBM"
-                                        },
-                                        "fullname": "John Smith"
-                                    }
-                                ]},
-                                "content": [
-                                    {
-                                        "text": "{\\\"returnList\\\":[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]}",
-                                        "type": "text"
-                                    }
-                                ]
-                            },
-                            "id": 2,
-                            "jsonrpc": "2.0"
-                        }
-                                                                                                """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(callToolWithJson("addPersonToList", new JSONObject(ADD_PERSON_ARGUMENTS), null),
+                   toolResponse().withTextContent(PERSON_LIST_TEXT)
+                                 .withStructureContent(new JSONObject(PERSON_LIST_STRUCTURED_CONTENT)));
     }
 
     @Test
@@ -1898,231 +1219,10 @@ public class ToolTest extends FATServletClient {
 //        Company company = new Company("IBM", companyAddress, companyList, companyMap);
 //        Address personAddress = new Address(002, new Street("Poles Ln", "n/a"), "so21 2rt", "near hursley park");
 //        Person person = new Person("John Smith", personAddress, company);
-
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "addPersonToListToolResponse",
-                            "arguments": {
-                                            "person":{
-                                            "address": {
-                                                "number": 2,
-                                                "postcode": "so21 2rt",
-                                                "street": {
-                                                    "streetName": "Poles Ln",
-                                                    "roadType": "n/a"
-                                                }
-                                            },
-                                            "company": {
-                                                "address": {
-                                                    "number": 100,
-                                                    "postcode": "so21 2er",
-                                                    "street": {
-                                                        "streetName": "Hursley Park Rd",
-                                                        "roadType": "Private Property"
-                                                    }
-                                                },
-                                                "name": "IBM",
-                                                "shareholder": [
-                                                    {
-                                                        "address": {
-                                                            "number": 100,
-                                                            "postcode": "so21 2er",
-                                                            "street": {
-                                                                "streetName": "Hursley Park Rd",
-                                                                "roadType": "Private Property"
-                                                            }
-                                                        },
-                                                        "fullname": "Shareholder 1"
-                                                    }
-                                                ]
-                                            },
-                                            "fullname": "John Smith"
-                                        },
-                                        "employeeList": [
-                                                    {
-                                                        "address": {
-                                                            "number": 2,
-                                                            "postcode": "so21 2rt",
-                                                            "street": {
-                                                                "streetName": "Poles Ln",
-                                                                "roadType": "n/a"
-                                                            }
-                                                        },
-                                                        "company": {
-                                                            "address": {
-                                                                "number": 100,
-                                                                "postcode": "so21 2er",
-                                                                "street": {
-                                                                    "streetName": "Hursley Park Rd",
-                                                                    "roadType": "Private Property"
-                                                                }
-                                                            },
-                                                            "name": "IBM",
-                                                            "shareholder": [
-                                                                {
-                                                                    "address": {
-                                                                        "number": 100,
-                                                                        "postcode": "so21 2er",
-                                                                        "street": {
-                                                                            "streetName": "Hursley Park Rd",
-                                                                            "roadType": "Private Property"
-                                                                        }
-                                                                    },
-                                                                    "fullname": "Shareholder 1"
-                                                                }
-                                                            ],
-                                                            "shareholderRegistry": {
-                                                                "1": {
-                                                                    "address": {
-                                                                        "number": 100,
-                                                                        "postcode": "so21 2er",
-                                                                        "street": {
-                                                                            "streetName": "Hursley Park Rd",
-                                                                            "roadType": "Private Property"
-                                                                        }
-                                                                    },
-                                                                    "fullname": "Shareholder 1"
-                                                                }
-                                                            }
-                                                        },
-                                                        "fullname": "John Smith"
-                                                    },
-                                                    {
-                                                        "address": {
-                                                            "number": 100,
-                                                            "postcode": "so21 2er",
-                                                            "street": {
-                                                                "streetName": "Hursley Park Rd",
-                                                                "roadType": "Private Property"
-                                                            }
-                                                        },
-                                                        "fullname": "Shareholder 1"
-                                                    }
-                                                ]
-                                    }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        JSONObject jsonResponse = new JSONObject(response);
-        // Strict Mode tests
-        String expectedResponseString = """
-                                                                {
-                            "result": {
-                                "isError": false,
-                                "structuredContent": { "returnList": [
-                                    {
-                                        "address": {
-                                            "number": 2,
-                                            "street": {
-                                                "streetName": "Poles Ln",
-                                                "roadType": "n/a"
-                                            },
-                                            "postcode": "so21 2rt"
-                                        },
-                                        "company": {
-                                            "address": {
-                                                "number": 100,
-                                                "street": {
-                                                    "streetName": "Hursley Park Rd",
-                                                    "roadType": "Private Property"
-                                                },
-                                                "postcode": "so21 2er"
-                                            },
-                                            "shareholderRegistry": {
-                                                "1": {
-                                                    "address": {
-                                                        "number": 100,
-                                                        "street": {
-                                                            "streetName": "Hursley Park Rd",
-                                                            "roadType": "Private Property"
-                                                        },
-                                                        "postcode": "so21 2er"
-                                                    },
-                                                    "fullname": "Shareholder 1"
-                                                }
-                                            },
-                                            "name": "IBM"
-                                        },
-                                        "fullname": "John Smith"
-                                    },
-                                    {
-                                        "address": {
-                                            "number": 100,
-                                            "street": {
-                                                "streetName": "Hursley Park Rd",
-                                                "roadType": "Private Property"
-                                            },
-                                            "postcode": "so21 2er"
-                                        },
-                                        "fullname": "Shareholder 1"
-                                    },
-                                    {
-                                        "address": {
-                                            "number": 2,
-                                            "street": {
-                                                "streetName": "Poles Ln",
-                                                "roadType": "n/a"
-                                            },
-                                            "postcode": "so21 2rt"
-                                        },
-                                        "company": {
-                                            "address": {
-                                                "number": 100,
-                                                "street": {
-                                                    "streetName": "Hursley Park Rd",
-                                                    "roadType": "Private Property"
-                                                },
-                                                "postcode": "so21 2er"
-                                            },
-                                            "name": "IBM"
-                                        },
-                                        "fullname": "John Smith"
-                                    }
-                                ]},
-                                "content": [
-                                    {
-                                        "text": "{\\\"returnList\\\":[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "_meta":{
-                                        "api.ibmtest.org/location": "Hursley",
-                                        "api.libertytest.org/person": {
-                                            "address": {
-                                                "number": 2,
-                                                "postcode": "so21 2rt",
-                                                "street": {
-                                                    "streetName": "Poles Ln",
-                                                    "roadType": "n/a"
-                                                }
-                                            },
-                                            "company": {
-                                                "address": {
-                                                    "number": 100,
-                                                    "postcode": "so21 2er",
-                                                    "street": {
-                                                        "streetName": "Hursley Park Rd",
-                                                        "roadType": "Private Property"
-                                                    }
-                                                },
-                                                "name": "IBM"
-                                            },
-                                            "fullname": "John Smith"
-                                        },
-                                        "timestamp": 1762860699
-                                    }
-                            },
-                            "id": 2,
-                            "jsonrpc": "2.0"
-                        }
-                                                                                                """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(callToolWithJson("addPersonToListToolResponse", new JSONObject(ADD_PERSON_ARGUMENTS), null),
+                   toolResponse().withTextContent(PERSON_LIST_TEXT)
+                                 .withStructureContent(new JSONObject(PERSON_LIST_STRUCTURED_CONTENT))
+                                 .withMeta(new JSONObject(PERSON_META)));
     }
 
     @Test
@@ -2137,336 +1237,24 @@ public class ToolTest extends FATServletClient {
 //        Company company = new Company("IBM", companyAddress, companyList, companyMap);
 //        Address personAddress = new Address(002, new Street("Poles Ln", "n/a"), "so21 2rt", "near hursley park");
 //        Person person = new Person("John Smith", personAddress, company);
-
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "_meta":{
-                                        "api.ibmtest.org/location": "Hursley",
-                                        "api.libertytest.org/person": {
-                                            "address": {
-                                                "number": 2,
-                                                "postcode": "so21 2rt",
-                                                "street": {
-                                                    "streetName": "Poles Ln",
-                                                    "roadType": "n/a"
-                                                }
-                                            },
-                                            "company": {
-                                                "address": {
-                                                    "number": 100,
-                                                    "postcode": "so21 2er",
-                                                    "street": {
-                                                        "streetName": "Hursley Park Rd",
-                                                        "roadType": "Private Property"
-                                                    }
-                                                },
-                                                "name": "IBM"
-                                            },
-                                            "fullname": "John Smith"
-                                        },
-                                        "timestamp": 1762860699
-                                    },
-                            "name": "addPersonToListToolResponseWithMetaRequest",
-                            "arguments": {
-                                            "person":{
-                                            "address": {
-                                                "number": 2,
-                                                "postcode": "so21 2rt",
-                                                "street": {
-                                                    "streetName": "Poles Ln",
-                                                    "roadType": "n/a"
-                                                }
-                                            },
-                                            "company": {
-                                                "address": {
-                                                    "number": 100,
-                                                    "postcode": "so21 2er",
-                                                    "street": {
-                                                        "streetName": "Hursley Park Rd",
-                                                        "roadType": "Private Property"
-                                                    }
-                                                },
-                                                "name": "IBM",
-                                                "shareholder": [
-                                                    {
-                                                        "address": {
-                                                            "number": 100,
-                                                            "postcode": "so21 2er",
-                                                            "street": {
-                                                                "streetName": "Hursley Park Rd",
-                                                                "roadType": "Private Property"
-                                                            }
-                                                        },
-                                                        "fullname": "Shareholder 1"
-                                                    }
-                                                ]
-                                            },
-                                            "fullname": "John Smith"
-                                        },
-                                        "employeeList": [
-                                                    {
-                                                        "address": {
-                                                            "number": 2,
-                                                            "postcode": "so21 2rt",
-                                                            "street": {
-                                                                "streetName": "Poles Ln",
-                                                                "roadType": "n/a"
-                                                            }
-                                                        },
-                                                        "company": {
-                                                            "address": {
-                                                                "number": 100,
-                                                                "postcode": "so21 2er",
-                                                                "street": {
-                                                                    "streetName": "Hursley Park Rd",
-                                                                    "roadType": "Private Property"
-                                                                }
-                                                            },
-                                                            "name": "IBM",
-                                                            "shareholder": [
-                                                                {
-                                                                    "address": {
-                                                                        "number": 100,
-                                                                        "postcode": "so21 2er",
-                                                                        "street": {
-                                                                            "streetName": "Hursley Park Rd",
-                                                                            "roadType": "Private Property"
-                                                                        }
-                                                                    },
-                                                                    "fullname": "Shareholder 1"
-                                                                }
-                                                            ],
-                                                            "shareholderRegistry": {
-                                                                "1": {
-                                                                    "address": {
-                                                                        "number": 100,
-                                                                        "postcode": "so21 2er",
-                                                                        "street": {
-                                                                            "streetName": "Hursley Park Rd",
-                                                                            "roadType": "Private Property"
-                                                                        }
-                                                                    },
-                                                                    "fullname": "Shareholder 1"
-                                                                }
-                                                            }
-                                                        },
-                                                        "fullname": "John Smith"
-                                                    },
-                                                    {
-                                                        "address": {
-                                                            "number": 100,
-                                                            "postcode": "so21 2er",
-                                                            "street": {
-                                                                "streetName": "Hursley Park Rd",
-                                                                "roadType": "Private Property"
-                                                            }
-                                                        },
-                                                        "fullname": "Shareholder 1"
-                                                    }
-                                                ]
-                                    }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        JSONObject jsonResponse = new JSONObject(response);
-        // Strict Mode tests
-        String expectedResponseString = """
-                                                                {
-                            "result": {
-                                "isError": false,
-                                "structuredContent": { "returnList": [
-                                    {
-                                        "address": {
-                                            "number": 2,
-                                            "street": {
-                                                "streetName": "Poles Ln",
-                                                "roadType": "n/a"
-                                            },
-                                            "postcode": "so21 2rt"
-                                        },
-                                        "company": {
-                                            "address": {
-                                                "number": 100,
-                                                "street": {
-                                                    "streetName": "Hursley Park Rd",
-                                                    "roadType": "Private Property"
-                                                },
-                                                "postcode": "so21 2er"
-                                            },
-                                            "shareholderRegistry": {
-                                                "1": {
-                                                    "address": {
-                                                        "number": 100,
-                                                        "street": {
-                                                            "streetName": "Hursley Park Rd",
-                                                            "roadType": "Private Property"
-                                                        },
-                                                        "postcode": "so21 2er"
-                                                    },
-                                                    "fullname": "Shareholder 1"
-                                                }
-                                            },
-                                            "name": "IBM"
-                                        },
-                                        "fullname": "John Smith"
-                                    },
-                                    {
-                                        "address": {
-                                            "number": 100,
-                                            "street": {
-                                                "streetName": "Hursley Park Rd",
-                                                "roadType": "Private Property"
-                                            },
-                                            "postcode": "so21 2er"
-                                        },
-                                        "fullname": "Shareholder 1"
-                                    },
-                                    {
-                                        "address": {
-                                            "number": 2,
-                                            "street": {
-                                                "streetName": "Poles Ln",
-                                                "roadType": "n/a"
-                                            },
-                                            "postcode": "so21 2rt"
-                                        },
-                                        "company": {
-                                            "address": {
-                                                "number": 100,
-                                                "street": {
-                                                    "streetName": "Hursley Park Rd",
-                                                    "roadType": "Private Property"
-                                                },
-                                                "postcode": "so21 2er"
-                                            },
-                                            "name": "IBM"
-                                        },
-                                        "fullname": "John Smith"
-                                    }
-                                ]},
-                                "content": [
-                                    {
-                                        "text": "{\\\"returnList\\\":[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "_meta":{
-                                        "api.ibmtest.org/location": "Hursley",
-                                        "api.libertytest.org/person": {
-                                            "address": {
-                                                "number": 2,
-                                                "postcode": "so21 2rt",
-                                                "street": {
-                                                    "streetName": "Poles Ln",
-                                                    "roadType": "n/a"
-                                                }
-                                            },
-                                            "company": {
-                                                "address": {
-                                                    "number": 100,
-                                                    "postcode": "so21 2er",
-                                                    "street": {
-                                                        "streetName": "Hursley Park Rd",
-                                                        "roadType": "Private Property"
-                                                    }
-                                                },
-                                                "name": "IBM"
-                                            },
-                                            "fullname": "John Smith"
-                                        },
-                                        "timestamp": 1762860699
-                                    }
-                            },
-                            "id": 2,
-                            "jsonrpc": "2.0"
-                        }
-                                                                                                """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(callToolWithJson("addPersonToListToolResponseWithMetaRequest", new JSONObject(ADD_PERSON_ARGUMENTS), new JSONObject(PERSON_META)),
+                   toolResponse().withTextContent(PERSON_LIST_TEXT)
+                                 .withStructureContent(new JSONObject(PERSON_LIST_STRUCTURED_CONTENT))
+                                 .withMeta(new JSONObject(PERSON_META)));
     }
 
     @Test
     public void simpleMetaRequest() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "_meta":{
-                                        "api.ibmtest.org/location": "Hursley",
-                                        "timestamp": 1762860699
-                                    },
-                            "name": "simpleMetaRequest",
-                            "arguments": {
-                                            "name": "IBMUser"
-                                    }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        JSONObject jsonResponse = new JSONObject(response);
-        // Strict Mode tests
-        String expectedResponseString = """
-                                                                {
-                            "result": {
-                                "isError": false,
-                                "content": [
-                                    {
-                                        "text": "Hello IBMUser you have called this tool from Hursley at timestamp 1762860699",
-                                        "type": "text"
-                                    }
-                                ],
-                            },
-                            "id": 2,
-                            "jsonrpc": "2.0"
-                        }
-                                                                                                """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("simpleMetaRequest", Map.of("name", "IBMUser"),
+                                   Map.of("api.ibmtest.org/location", "Hursley", "timestamp", 1762860699)),
+                   toolResponse().withTextContent("Hello IBMUser you have called this tool from Hursley at timestamp 1762860699"));
     }
 
     @Test
     public void noArgRequest() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "_meta":{
-                                        "api.ibmtest.org/location": "Hursley",
-                                        "timestamp": 1762860699
-                                    },
-                            "name": "noArgsRequest"
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        JSONObject jsonResponse = new JSONObject(response);
-        // Strict Mode tests
-        String expectedResponseString = """
-                                                                {
-                            "result": {
-                                "isError": false,
-                                "content": [
-                                    {
-                                        "text": "You have called this tool from Hursley at timestamp 1762860699",
-                                        "type": "text"
-                                    }
-                                ],
-                            },
-                            "id": 2,
-                            "jsonrpc": "2.0"
-                        }
-                                                                                                """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("noArgsRequest", null,
+                                   Map.of("api.ibmtest.org/location", "Hursley", "timestamp", 1762860699)),
+                   toolResponse().withTextContent("You have called this tool from Hursley at timestamp 1762860699"));
     }
 
     @Test
@@ -2508,20 +1296,7 @@ public class ToolTest extends FATServletClient {
         String redactedSessionId = sessionId.substring(0, visibleSessionIdLength) + "*".repeat(sessionId.length() - visibleSessionIdLength);
 
         assertNotNull("Expected session ID from MCP initialization", sessionId);
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "textContentTool",
-                            "arguments": {
-                              "input": "hello"
-                            }
-                          }
-                        }
-                        """;
-        client.callMCP(request);
+        client.callTool("textContentTool", Map.of("input", "hello"));
 
         assertNotNull(server.waitForStringInTrace(Pattern.quote(redactedSessionId)));
         assertNull(server.waitForStringInTrace(sessionId, TestConstants.NEGATIVE_TIMEOUT_MS)); // negative check to confirm full session Id not found in trace
@@ -2562,306 +1337,97 @@ public class ToolTest extends FATServletClient {
 
     @Test
     public void testNonLatinCharacters() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "1",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "get-user-jp",
-                            "arguments": {
-                              "userid": "ユーザー1"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expected = """
-                          {
-                            "jsonrpc": "2.0",
-                            "id": "1",
-                            "result": {
-                                "isError": false,
-                                "content": [
-                                    {
-                                        "text": "ID: ユーザー1, Name: 仮名, role: user",
-                                        "type": "text"
-                                    }
-                                ],
-                            }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expected, response, JSONCompareMode.STRICT);
+        assertThat(client.callTool("get-user-jp", Map.of("userid", "ユーザー1")),
+                   toolResponse().withTextContent("ID: ユーザー1, Name: 仮名, role: user"));
     }
 
     @Test
     public void testStructuredContentResponseWithNonLatinCharacters() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testNonLatinStringStructuredContent",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"{\\\"country\\\":\\\"日本\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"東京\\\",\\\"population\\\":14000000}"
-                              }
-                            ],
-                            "structuredContent": {
-                              "country": "日本",
-                              "isCapital": true,
-                              "name": "東京",
-                              "population": 14000000
-                            },
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("testNonLatinStringStructuredContent", Map.of()),
+                   toolResponse().withTextContent("{\"country\":\"日本\",\"isCapital\":true,\"name\":\"東京\",\"population\":14000000}")
+                                 .withStructureContent(new JSONObject("""
+                                                 {
+                                                   "country": "日本",
+                                                   "isCapital": true,
+                                                   "name": "東京",
+                                                   "population": 14000000
+                                                 }
+                                                 """)));
     }
 
     @Test
     public void testMcpRequest() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "checkMcpRequest"
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponse = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"OK"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+        assertThat(client.callTool("checkMcpRequest"),
+                   toolResponse().withTextContent("OK"));
     }
 
     @Test
     public void testMcpRequestHasSessionId() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "readSessionIdReversed"
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
         String reverseSessionId = new StringBuilder(client.getSessionId()).reverse().toString();
-        String expectedResponse = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"%s"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """.formatted(reverseSessionId);
-
-        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+        assertThat(client.callTool("readSessionIdReversed"),
+                   toolResponse().withTextContent(reverseSessionId));
     }
 
     @Test
     public void testResourceLinkTool() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "resourceLinkTool",
-                            "arguments": {
-                              "name": "readme",
-                              "uri": "file:///readme.md"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponse = """
-                        {
-                          "id": "2",
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type": "resource_link",
-                                "name": "readme",
-                                "uri": "file:///readme.md",
-                                "title": "Resource: readme",
-                                "mimeType": "text/plain"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+        assertThat(client.callTool("resourceLinkTool", Map.of("name", "readme", "uri", "file:///readme.md")),
+                   toolResponse().withContent(new JSONObject("""
+                                   {
+                                     "type": "resource_link",
+                                     "name": "readme",
+                                     "uri": "file:///readme.md",
+                                     "title": "Resource: readme",
+                                     "mimeType": "text/plain"
+                                   }
+                                   """)));
     }
 
     @Test
     public void testResourceLinkToolWithAnnotation() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "resourceLinkToolWithAnnotation",
-                            "arguments": {
-                              "name": "readme",
-                              "uri": "file:///readme.md"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        JSONAssert.assertEquals("""
-                        {
-                          "id": "2",
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type": "resource_link",
-                                "name": "readme",
-                                "uri": "file:///readme.md",
-                                "annotations": {
-                                  "audience": ["user"],
-                                  "lastModified": "2025-08-26T08:40:00Z",
-                                  "priority": null
-                                }
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """, response, JSONCompareMode.STRICT);
+        assertThat(client.callTool("resourceLinkToolWithAnnotation", Map.of("name", "readme", "uri", "file:///readme.md")),
+                   toolResponse().withContent(new JSONObject("""
+                                   {
+                                     "type": "resource_link",
+                                     "name": "readme",
+                                     "uri": "file:///readme.md",
+                                     "annotations": {
+                                       "audience": ["user"],
+                                       "lastModified": "2025-08-26T08:40:00Z",
+                                       "priority": null
+                                     }
+                                   }
+                                   """)));
     }
 
     @Test
     public void testEmbeddedTextResourceTool() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "embeddedTextResourceTool",
-                            "arguments": {
-                              "text": "Hello world",
-                              "uri": "file:///readme.md"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        JSONAssert.assertEquals("""
-                        {
-                          "id": "2",
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type": "resource",
-                                "resource": {
-                                  "uri": "file:///readme.md",
-                                  "text": "Hello world",
-                                  "mimeType": "text/plain"
-                                }
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """, response, JSONCompareMode.STRICT);
+        assertThat(client.callTool("embeddedTextResourceTool", Map.of("text", "Hello world", "uri", "file:///readme.md")),
+                   toolResponse().withContent(new JSONObject("""
+                                   {
+                                     "type": "resource",
+                                     "resource": {
+                                       "uri": "file:///readme.md",
+                                       "text": "Hello world",
+                                       "mimeType": "text/plain"
+                                     }
+                                   }
+                                   """)));
     }
 
     @Test
     public void testEmbeddedBlobResourceTool() throws Exception {
         String imageData64 = TestConstants.TEST_IMAGE_DATA_64;
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "embeddedBlobResourceTool",
-                            "arguments": {
-                              "imageData": "%s",
-                              "uri": "file:///image.png"
-                            }
-                          }
-                        }
-                        """.formatted(imageData64);
-
-        String response = client.callMCP(request);
-        JSONAssert.assertEquals("""
-                        {
-                          "id": "2",
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type": "resource",
-                                "resource": {
-                                  "uri": "file:///image.png",
-                                  "blob": "%s",
-                                  "mimeType": "image/png"
-                                }
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """.formatted(imageData64), response, JSONCompareMode.STRICT);
+        assertThat(client.callTool("embeddedBlobResourceTool", Map.of("imageData", imageData64, "uri", "file:///image.png")),
+                   toolResponse().withContent(new JSONObject("""
+                                   {
+                                     "type": "resource",
+                                     "resource": {
+                                       "uri": "file:///image.png",
+                                       "blob": "%s",
+                                       "mimeType": "image/png"
+                                     }
+                                   }
+                                   """.formatted(imageData64))));
     }
 
     /**
@@ -2871,41 +1437,10 @@ public class ToolTest extends FATServletClient {
      */
     @Test
     public void testProgressInjectedWithNoToken() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "1",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "progressTool",
-                            "arguments": {
-                              "input": "hello"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = progressClient.callMCP(request);
-
         // The tool returns "progressTokenPresent=false,input=hello" when no progress
         // token is present, confirming the no-op ProgressImpl was injected.
-        String expectedResponse = """
-                        {
-                          "id": "1",
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "progressTokenPresent=false,input=hello"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponse, response, true);
+        assertThat(progressClient.callTool("progressTool", Map.of("input", "hello")),
+                   toolResponse().withTextContent("progressTokenPresent=false,input=hello"));
     }
 
     /**
@@ -2944,73 +1479,14 @@ public class ToolTest extends FATServletClient {
 
     @Test
     public void testUnannotatedToolArgs() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "unannotatedArgTool",
-                            "arguments": {
-                              "name": "fred",
-                              "count": 3
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponse = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"hello hello hello fred of FAT Test Client"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+        assertThat(client.callTool("unannotatedArgTool", Map.of("name", "fred", "count", 3)),
+                   toolResponse().withTextContent("hello hello hello fred of FAT Test Client"));
     }
 
     @Test
     public void testNoParamNameTool() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "echoNoParamName",
-                            "arguments": {
-                              "input": "test1"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponse = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"test1"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+        assertThat(client.callTool("echoNoParamName", Map.of("input", "test1")),
+                   toolResponse().withTextContent("test1"));
     }
 
     @Test
@@ -3047,30 +1523,10 @@ public class ToolTest extends FATServletClient {
 
     @Test
     public void testOutputSchemaFromOverridesReturnTypeToolCall() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testOutputSchemaFromOverridesReturnType",
-                            "arguments": { "name": "Lyon" }
-                          }
-                        }
-                        """;
-        String response = client.callMCP(request);
-        // Returns String — schema is City (from outputSchemaFrom) but response is plain text
-        String expected = """
-                        {
-                          "id": 2,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "isError": false,
-                            "content": [{ "type": "text", "text": "Lyon" }]
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expected, response, JSONCompareMode.NON_EXTENSIBLE);
+        // Returns String - schema is City (from outputSchemaFrom) but response is plain text
+        assertThat(client.callTool("testOutputSchemaFromOverridesReturnType", Map.of("name", "Lyon")),
+                   toolResponse().withTextContent("Lyon")
+                                 .withNoStructuredContent());
     }
 
     @Test

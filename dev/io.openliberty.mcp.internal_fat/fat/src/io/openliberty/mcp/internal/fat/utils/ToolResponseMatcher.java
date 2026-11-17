@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.skyscreamer.jsonassert.JSONCompare;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -31,6 +32,19 @@ import org.skyscreamer.jsonassert.JSONCompareResult;
  * assertThat(response, toolResponse().withTextContent("expected text"));
  * assertThat(response, toolResponse().withError("expected error text"));
  * assertThat(response, toolResponse().withTextContent(json.toString()).withStructureContent(json));
+ *
+ * // Content that is not plain text (i.e. image, audio, annotations, resource links)
+ * assertThat(response, toolResponse().withContent(new JSONObject("""
+ *                 {"type": "image", "data": "aGkJ", "mimeType": "image/png"}
+ *                 """)));
+ *
+ * // The _meta object of the tool result
+ * assertThat(response, toolResponse().withTextContent("done").withMeta(new JSONObject("{\"key\": \"value\"}")));
+ *
+ * // Only check the fields that the test mentions
+ * assertThat(response, toolResponse().withContent(new JSONObject("""
+ *                 {"type": "text", "text": "Echo: hello"}
+ *                 """)).lenient());
  * }</pre>
  *
  * <p>To assert on a JSON-RPC error use {@link JsonRpcResponseMatcher#jsonRpcResponse()}.
@@ -39,8 +53,11 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
 
     private Boolean expectedIsError;
     private List<String> expectedTexts;
+    private List<JSONObject> expectedContent;
     private JSONObject expectedStructureContent;
     private boolean expectNoStructuredContent;
+    private JSONObject expectedMeta;
+    private boolean lenient;
 
     private ToolResponseMatcher() {}
 
@@ -52,6 +69,10 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
     /**
      * Requires a successful tool response ({@code isError} is {@code false}) whose content is
      * exactly one {@code text} item with exactly the given text.
+     *
+     * <p>Only the {@code type} and {@code text} of the item are checked, so any other field of
+     * the item, such as {@code annotations}, is ignored. Use {@link #withContent(JSONObject...)}
+     * to check the whole item.
      */
     public ToolResponseMatcher withTextContent(String expectedText) {
         return withTextContents(expectedText);
@@ -60,10 +81,33 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
     /**
      * Requires a successful tool response ({@code isError} is {@code false}) whose content is
      * exactly the given {@code text} items, in order.
+     *
+     * <p>Only the {@code type} and {@code text} of each item are checked, so any other field of
+     * an item, such as {@code annotations}, is ignored. Use {@link #withContent(JSONObject...)}
+     * to check whole items.
      */
     public ToolResponseMatcher withTextContents(String... expectedTexts) {
         this.expectedIsError = false;
         this.expectedTexts = Arrays.asList(expectedTexts);
+        return this;
+    }
+
+    /**
+     * Requires a successful tool response ({@code isError} is {@code false}) whose {@code content}
+     * array is exactly the given items, in order. Unlike {@link #withTextContents(String...)}, each
+     * item is compared as a whole JSON object, so this can assert on content of any type
+     * ({@code text}, {@code image}, {@code audio}, {@code resource_link}, {@code resource}) and on
+     * fields such as {@code annotations} and {@code _meta}.
+     *
+     * <p>The comparison is strict: an item of the response may not have a field that the expected
+     * item does not have. Call {@link #lenient()} to allow that. The number and the order of the
+     * items must always match.
+     *
+     * <p>To assert on a tool error use {@link #withError(String)}.
+     */
+    public ToolResponseMatcher withContent(JSONObject... expectedItems) {
+        this.expectedIsError = false;
+        this.expectedContent = Arrays.asList(expectedItems);
         return this;
     }
 
@@ -80,9 +124,21 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
         return this;
     }
 
-    /** Requires the tool result's {@code structuredContent} to equal the given object (strict comparison). */
+    /**
+     * Requires the tool result's {@code structuredContent} to equal the given object. The
+     * comparison is strict unless {@link #lenient()} is called.
+     */
     public ToolResponseMatcher withStructureContent(JSONObject expectedStructureContent) {
         this.expectedStructureContent = expectedStructureContent;
+        return this;
+    }
+
+    /**
+     * Requires the {@code _meta} object of the tool result (not of a content item) to equal the
+     * given object. The comparison is strict unless {@link #lenient()} is called.
+     */
+    public ToolResponseMatcher withMeta(JSONObject expectedMeta) {
+        this.expectedMeta = expectedMeta;
         return this;
     }
 
@@ -92,6 +148,23 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
      */
     public ToolResponseMatcher withNoStructuredContent() {
         this.expectNoStructuredContent = true;
+        return this;
+    }
+
+    /**
+     * Makes the comparison of {@link #withContent(JSONObject...)},
+     * {@link #withStructureContent(JSONObject)} and {@link #withMeta(JSONObject)} lenient, so that a test only has to spell out the
+     * fields it is interested in: the response may contain fields that the expected JSON does not
+     * mention, at any depth.
+     *
+     * <p>Arrays are still compared in order and must have the same number of items, so the
+     * content items must still match one to one. The checks made by
+     * {@link #withTextContent(String)}, {@link #withTextContents(String...)} and
+     * {@link #withError(String)} are not affected, as they only look at the type and text of the
+     * items anyway.
+     */
+    public ToolResponseMatcher lenient() {
+        this.lenient = true;
         return this;
     }
 
@@ -107,8 +180,17 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
             description.appendText(joiner).appendText("text content of ").appendValue(expectedTexts);
             joiner = " and ";
         }
+        if (expectedContent != null) {
+            description.appendText(joiner).appendText(lenient ? "content containing " : "content of ").appendText(expectedContent.toString());
+            joiner = " and ";
+        }
         if (expectedStructureContent != null) {
-            description.appendText(joiner).appendText("structured content of ").appendText(expectedStructureContent.toString());
+            description.appendText(joiner).appendText(lenient ? "structured content containing " : "structured content of ")
+                       .appendText(expectedStructureContent.toString());
+            joiner = " and ";
+        }
+        if (expectedMeta != null) {
+            description.appendText(joiner).appendText(lenient ? "_meta containing " : "_meta of ").appendText(expectedMeta.toString());
             joiner = " and ";
         }
         if (expectNoStructuredContent) {
@@ -139,7 +221,13 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
         if (expectedTexts != null && !matchesTexts(response, mismatch)) {
             return false;
         }
+        if (expectedContent != null && !matchesContent(response, mismatch)) {
+            return false;
+        }
         if (expectedStructureContent != null && !matchesStructureContent(response, mismatch)) {
+            return false;
+        }
+        if (expectedMeta != null && !matchesMeta(response, mismatch)) {
             return false;
         }
         if (expectNoStructuredContent && response.getResult().has("structuredContent")) {
@@ -147,6 +235,11 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
             return false;
         }
         return true;
+    }
+
+    /** The mode used to compare JSON: strict, or lenient about extra fields but not about array order. */
+    private JSONCompareMode compareMode() {
+        return lenient ? JSONCompareMode.STRICT_ORDER : JSONCompareMode.STRICT;
     }
 
     private boolean matchesTexts(ToolResponse response, Description mismatch) {
@@ -170,6 +263,29 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
         return true;
     }
 
+    private boolean matchesContent(ToolResponse response, Description mismatch) {
+        JSONArray actual = response.getResult().optJSONArray("content");
+        if (actual == null) {
+            mismatch.appendText("had no content array: ").appendText(response.toString());
+            return false;
+        }
+        JSONArray expected = new JSONArray();
+        for (JSONObject item : expectedContent) {
+            expected.put(item);
+        }
+        try {
+            JSONCompareResult comparison = JSONCompare.compareJSON(expected.toString(), actual.toString(), compareMode());
+            if (comparison.failed()) {
+                mismatch.appendText("content differed: ").appendText(comparison.getMessage());
+                return false;
+            }
+        } catch (Exception e) {
+            mismatch.appendText("content could not be compared: ").appendText(e.toString());
+            return false;
+        }
+        return true;
+    }
+
     private boolean matchesStructureContent(ToolResponse response, Description mismatch) {
         JSONObject actual = response.getStructuredContent();
         if (actual == null) {
@@ -177,13 +293,32 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
             return false;
         }
         try {
-            JSONCompareResult comparison = JSONCompare.compareJSON(expectedStructureContent.toString(), actual.toString(), JSONCompareMode.STRICT);
+            JSONCompareResult comparison = JSONCompare.compareJSON(expectedStructureContent.toString(), actual.toString(), compareMode());
             if (comparison.failed()) {
                 mismatch.appendText("structuredContent differed: ").appendText(comparison.getMessage());
                 return false;
             }
         } catch (Exception e) {
             mismatch.appendText("structuredContent could not be compared: ").appendText(e.toString());
+            return false;
+        }
+        return true;
+    }
+
+    private boolean matchesMeta(ToolResponse response, Description mismatch) {
+        JSONObject actual = response.getResult().optJSONObject("_meta");
+        if (actual == null) {
+            mismatch.appendText("had no _meta: ").appendText(response.toString());
+            return false;
+        }
+        try {
+            JSONCompareResult comparison = JSONCompare.compareJSON(expectedMeta.toString(), actual.toString(), compareMode());
+            if (comparison.failed()) {
+                mismatch.appendText("_meta differed: ").appendText(comparison.getMessage());
+                return false;
+            }
+        } catch (Exception e) {
+            mismatch.appendText("_meta could not be compared: ").appendText(e.toString());
             return false;
         }
         return true;
