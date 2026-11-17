@@ -68,6 +68,9 @@ PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Make sure {aes} and {hash} passwo
 PASSWORDUTIL_DEFAULT_KEY_WARNING=CWWKS1865W: One or more of your AES-encrypted passwords were encrypted without a custom encryption key. To improve the security of your stored credentials, re-encrypt them by using a custom encryption key. Be sure to store this key in a secure location.
 PASSWORDUTIL_DEFAULT_KEY_WARNING.explanation=AES-encrypted passwords in the server configuration use the default wlp.password.encryption.key value. A custom encryption key is more secure.
 PASSWORDUTIL_DEFAULT_KEY_WARNING.useraction=Define a custom encryption key by setting the wlp.password.encryption.key or wlp.aes.encryption.key variable, and then re-encrypt your passwords using the securityUtility encode command with your custom key.
+PASSWORDUTIL_INVALID_CRYPTO_ALGORITHM=CWWKS1866E: The password was not encoded because it starts with a tag for the algorithm {0}, which is not a supported password algorithm.
+PASSWORDUTIL_INVALID_CRYPTO_ALGORITHM.explanation=The password to encode starts with an algorithm tag that does not match a supported password algorithm, so the password was not encoded. 
+PASSWORDUTIL_INVALID_CRYPTO_ALGORITHM.useraction=If the password is meant to be plain text and starts with a brace-enclosed value, change it so that it does not start with one. If the password was meant to be encoded already, make sure that the algorithm tag is one of the supported algorithms.
 
 AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=The key length of the value that is specified in the wlp.aes.encryption.key variable must be 256-bit.
 AESKEYMANAGER_NOT_BASE64_EXCEPTION=The value that is specified in the wlp.aes.encryption.key variable must be base64 encoded.

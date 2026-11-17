@@ -514,7 +514,7 @@ public class PasswordUtil {
             // Return Null if the decoded_string is not tagged with a valid crypto algorithm to avoid NPE.
             if (!isValidCryptoAlgorithm(current_crypto_algorithm)) {
                 // Since it contains an "{invalid_crypto_algorithm}", return a debug message.
-                logger.logp(Level.FINEST, PasswordUtil.class.getName(), "passwordEncode", "PASSWORDUTIL_INVALID_CRYPTO_ALGORITHM", current_crypto_algorithm);
+                logger.logp(Level.SEVERE, PasswordUtil.class.getName(), "passwordEncode", "PASSWORDUTIL_INVALID_CRYPTO_ALGORITHM", current_crypto_algorithm);
                 return null;
             }
 
