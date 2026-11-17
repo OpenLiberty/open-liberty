@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2022, 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-privatepackage: \
+    com.ibm.ws.jpa.tests.spec20.tests.*,\
+    com.ibm.ws.jpa.cache.*,\
+    com.ibm.ws.jpa.commonentities.*,\
+    com.ibm.ws.jpa.entitymanager.*,\
+    com.ibm.ws.jpa.example.*,\
+    com.ibm.ws.jpa.fvt.*,\
+    com.ibm.ws.jpa.olgh10515.*,\
+    com.ibm.ws.jpa.olgh16686.*,\
+    com.ibm.ws.jpa.olgh9018.*,\
+    com.ibm.ws.jpa.olgh9339.*,\
+    com.ibm.ws.jpa.query.*,\
+    dead.eentities,\
+    jpahelper.databasemanagement
