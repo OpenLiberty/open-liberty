@@ -11,6 +11,7 @@ package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static io.openliberty.mcp.internal.fat.utils.ToolsListResponseMatcher.toolsList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
@@ -19,14 +20,13 @@ import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
@@ -62,81 +62,65 @@ public class GenericToolTest extends FATServletClient {
 
     @Test
     public void testToolList() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/list"
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedString = """
-                            {
-                            "id": 1,
-                            "jsonrpc": "2.0",
-                            "result": {
-                                "tools": [
-                                    {
-                                        "description": "adds person to Generic Array, returns nothing",
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "generic list 2": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "description": "List of generics 1 "
-                                                },
-                                                "generic": {
-                                                    "type": "string",
-                                                    "description": "Generic object"
-                                                },
-                                                "generic list 1": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string"
-                                                    },
-                                                    "description": "List of generics 1"
-                                                }
-                                            },
-                                            "required": [
-                                                "generic list 2",
-                                                "generic",
-                                                "generic list 1"
-                                            ]
-                                        },
-                                        "name": "addGenericToGenericArray",
-                                        "outputSchema": {
-                                            "type": "object",
-                                            "properties":{
-                                                "returnList":{
-                                                    "type": "array",
-                                                    "items": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string"
-                                                    }
-                                                   }
-                                               }
-                                            }
-                                            ,
-                                            "description": "Returns list of  object",
-                                            "required":["returnList"]
-                                        },
-                                        "title": "adds generic to generic Array"
+        JSONArray expectedTools = new JSONArray("""
+                        [
+                          {
+                            "description": "adds person to Generic Array, returns nothing",
+                            "inputSchema": {
+                              "type": "object",
+                              "properties": {
+                                "generic list 2": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
                                     }
-                                ]
-                            }
-                        }
-                            """;
-        JSONAssert.assertEquals(expectedString, response, JSONCompareMode.NON_EXTENSIBLE);
+                                  },
+                                  "description": "List of generics 1 "
+                                },
+                                "generic": {
+                                  "type": "string",
+                                  "description": "Generic object"
+                                },
+                                "generic list 1": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "description": "List of generics 1"
+                                }
+                              },
+                              "required": [
+                                "generic list 2",
+                                "generic",
+                                "generic list 1"
+                              ]
+                            },
+                            "name": "addGenericToGenericArray",
+                            "outputSchema": {
+                              "type": "object",
+                              "properties": {
+                                "returnList": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              },
+                              "description": "Returns list of  object",
+                              "required": ["returnList"]
+                            },
+                            "title": "adds generic to generic Array"
+                          }
+                        ]
+                        """);
 
+        assertThat(client.call(client.request("tools/list", null)),
+                   toolsList().withTools(expectedTools));
     }
 
     @Test
