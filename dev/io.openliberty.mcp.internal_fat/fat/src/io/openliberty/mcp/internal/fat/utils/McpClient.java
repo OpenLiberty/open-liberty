@@ -29,6 +29,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.net.ssl.SSLContext;
 
@@ -69,9 +70,10 @@ import componenttest.topology.impl.LibertyServer;
  * cases.</li>
  * <li>{@link #callTool(String)} / {@link #callTool(String, Map)} — calls a tool and returns a
  * {@link ToolResponse} to assert on with {@link ToolResponseMatcher}.</li>
- * <li>{@link #toolCallRequest(String, Map)} / {@link #callTool(McpRequest)} — build a
- * {@code tools/call} request separately from sending it, e.g. to know its id before the
- * response arrives.</li>
+ * <li>{@link #request(String, JSONObject)} / {@link #toolCallRequest(String, Map)} /
+ * {@link #callTool(McpRequest)} — build a request separately from sending it, e.g. to
+ * know its id before the response arrives. {@code request} is the one place that fills
+ * in the JSON-RPC envelope and allocates request ids, for every method.</li>
  * <li>{@link #send(McpRequest)} / {@link #call(String)} — send any request and return a
  * {@link McpResponse} to assert on with {@link JsonRpcResponseMatcher}.
  * {@code call} accepts a malformed body.</li>
@@ -112,8 +114,8 @@ public class McpClient extends ExternalResource implements AutoCloseable {
     private final String path;
     private boolean sessionDeleted = false;
     private String sessionId;
-    /** Id for the next request created by {@link #callTool}; 1 is used by {@code initialize}. */
-    private int nextRequestId = 2;
+    /** Source of the id of every request built by {@link #request(String, JSONObject)}; the first request, normally {@code initialize}, gets id 1. */
+    private final AtomicInteger nextRequestId = new AtomicInteger(1);
 
     public static enum StateMode {
         /** Uses sessions and session IDs to maintain state across requests. */
@@ -287,30 +289,25 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         // Clear any stale session ID so it is not sent on the initialize request.
         sessionId = null;
 
-        String request = """
+        McpRequest request = request("initialize", new JSONObject("""
                         {
-                          "jsonrpc": "2.0",
-                          "id": "1",
-                          "method": "initialize",
-                          "params": {
-                            "protocolVersion": "2025-11-25",
-                            "capabilities": {
-                              "roots": {
-                                "listChanged": true
-                              },
-                              "sampling": {},
-                              "elicitation": {}
+                          "protocolVersion": "2025-11-25",
+                          "capabilities": {
+                            "roots": {
+                              "listChanged": true
                             },
-                            "clientInfo": {
-                              "name": "fat-test-client",
-                              "title": "FAT Test Client",
-                              "version": "1.0.0"
-                            }
+                            "sampling": {},
+                            "elicitation": {}
+                          },
+                          "clientInfo": {
+                            "name": "fat-test-client",
+                            "title": "FAT Test Client",
+                            "version": "1.0.0"
                           }
                         }
-                        """;
+                        """));
 
-        HttpResponse<String> response = post(getMcpUrl(), request);
+        HttpResponse<String> response = post(getMcpUrl(), request.toString());
 
         if (response.statusCode() != 200) {
             throw new Exception("initialize failed with HTTP " + response.statusCode() + ": " + response.body());
@@ -320,12 +317,12 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         String expectedResponse = """
                         {
                           "jsonrpc": "2.0",
-                          "id": "1",
+                          "id": "%s",
                           "result": {
                             "protocolVersion": "2025-11-25"
                           }
                         }
-                        """;
+                        """.formatted(request.getId());
         JSONAssert.assertEquals(expectedResponse, response.body(), JSONCompareMode.LENIENT);
 
         JSONObject json = new JSONObject(response.body());
@@ -345,12 +342,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         assertThat("Content-Type must be application/json", contentType, containsString(VALUE_APPLICATION_JSON));
 
         // Notify the server that initialization was successful
-        callMCPNotification("""
-                        {
-                          "jsonrpc": "2.0",
-                          "method": "notifications/initialized"
-                        }
-                        """);
+        callMCPNotification(envelope(null, "notifications/initialized", null).toString());
     }
 
     /** {@inheritDoc} — delegates to {@link #initialize()}. */
@@ -380,6 +372,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         close();
     }
 
+    /** Returns the {@code Mcp-Session-Id} of this client's session, or {@code null} if it has none (not initialized, or stateless mode). */
     public String getSessionId() {
         return this.sessionId;
     }
@@ -539,20 +532,54 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * @return the request
      */
     public McpRequest toolCallRequest(String toolName, Map<String, Object> arguments) {
-        String requestId = String.valueOf(nextRequestId++);
         try {
             JSONObject params = new JSONObject().put("name", toolName);
             if (arguments != null) {
                 params.put("arguments", new JSONObject(arguments));
             }
-            JSONObject json = new JSONObject()
-                                              .put("jsonrpc", "2.0")
-                                              .put("id", requestId)
-                                              .put("method", "tools/call")
-                                              .put("params", params);
-            return new McpRequest(requestId, "tools/call", json);
+            return request("tools/call", params);
         } catch (JSONException e) {
             throw new IllegalArgumentException("Could not build a tools/call request for " + toolName, e);
+        }
+    }
+
+    /**
+     * Builds, without sending it, a JSON-RPC request for any method. This is the single place
+     * where the JSON-RPC envelope ({@code jsonrpc}, {@code id}, {@code method}, {@code params})
+     * is filled in for requests built by this client, and where request ids are allocated: each
+     * call takes the next id from a per-client counter, as a string ({@code "1"}, {@code "2"}, ...),
+     * so ids never repeat within one client. Send the request with {@link #send(McpRequest)}.
+     *
+     * @param method the JSON-RPC method, e.g. {@code ping} or {@code tools/list}
+     * @param params the request params, or {@code null} to send no {@code params} field
+     * @return the request
+     */
+    public McpRequest request(String method, JSONObject params) {
+        String requestId = String.valueOf(nextRequestId.getAndIncrement());
+        return new McpRequest(requestId, method, envelope(requestId, method, params));
+    }
+
+    /**
+     * Builds the JSON-RPC envelope shared by requests and notifications, which differ only in
+     * that a notification has no {@code id}.
+     *
+     * @param id the request id, or {@code null} for a notification
+     * @param method the JSON-RPC method
+     * @param params the params, or {@code null} to send no {@code params} field
+     */
+    private static JSONObject envelope(String id, String method, JSONObject params) {
+        try {
+            JSONObject json = new JSONObject().put("jsonrpc", "2.0");
+            if (id != null) {
+                json.put("id", id);
+            }
+            json.put("method", method);
+            if (params != null) {
+                json.put("params", params);
+            }
+            return json;
+        } catch (JSONException e) {
+            throw new IllegalArgumentException("Could not build a JSON-RPC message for " + method, e);
         }
     }
 
@@ -612,38 +639,21 @@ public class McpClient extends ExternalResource implements AutoCloseable {
     }
 
     /**
-     * Returns the list of all tools, merging paginated responses into a single tools list.
+     * Sends {@code tools/list} requests, following {@code nextCursor} until there are no more
+     * pages, and merges the pages.
+     *
+     * @return a synthesized JSON-RPC response string whose {@code result.tools} array holds the
+     * tools from all pages and whose {@code id} is always 1
+     * @throws Exception if a request fails or the response status is not 200
      */
     public String listAllTools() throws Exception {
         JSONArray allTools = new JSONArray();
         String cursor = null;
         String lastResponse = null;
-        int requestId = 1;
 
         do {
-            String request;
-            if (cursor == null) {
-                request = String.format("""
-                                {
-                                   "jsonrpc": "2.0",
-                                   "id": %d,
-                                   "method": "tools/list"
-                                 }
-                                """, requestId++);
-            } else {
-                request = String.format("""
-                                {
-                                   "jsonrpc": "2.0",
-                                   "id": %d,
-                                   "method": "tools/list",
-                                   "params": {
-                                     "cursor": "%s"
-                                   }
-                                 }
-                                """, requestId++, cursor);
-            }
-
-            lastResponse = callMCP(request);
+            JSONObject params = cursor == null ? null : new JSONObject().put("cursor", cursor);
+            lastResponse = callMCP(request("tools/list", params).toString());
 
             JSONObject jsonResponse = new JSONObject(lastResponse);
             JSONObject result = jsonResponse.getJSONObject("result");
