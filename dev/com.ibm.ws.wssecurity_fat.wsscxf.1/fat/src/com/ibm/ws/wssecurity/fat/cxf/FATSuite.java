@@ -22,7 +22,9 @@ import com.ibm.ws.wssecurity.fat.cxf.sample.CxfBspTests;
 import com.ibm.ws.wssecurity.fat.cxf.sample.CxfInteropX509Tests;
 import com.ibm.ws.wssecurity.fat.cxf.sample.CxfSampleTests;
 import com.ibm.ws.wssecurity.fat.cxf.sample.CxfSymSampleTests;
-import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CXFMultiModuleUntTests;
+import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CXFMultiModuleUntEndpointAddressTests;
+import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CXFMultiModuleUntEndpointFullAddressTests;
+import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CXFMultiModuleUntUriTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfDeriveKeyTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfPasswordDigestTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfUNTBasicTests;
@@ -39,7 +41,9 @@ import componenttest.rules.repeater.RepeatTests;
                 //Lite for EE9, EE10 tests
                 //Full mode also runs EE7-wsseccbh-1.0 (also old ehcache) and EE7-wsseccbh-2.0 (also new ehcache)
                 CxfUNTBasicTests.class,
-                CXFMultiModuleUntTests.class,
+                CXFMultiModuleUntUriTests.class,
+                CXFMultiModuleUntEndpointAddressTests.class,
+                CXFMultiModuleUntEndpointFullAddressTests.class,
                 CxfNoWssecTests.class,
                 CxfSampleTests.class,
                 CxfSymSampleTests.class,

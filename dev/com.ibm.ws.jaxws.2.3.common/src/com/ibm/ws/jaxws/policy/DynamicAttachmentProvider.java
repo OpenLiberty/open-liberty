@@ -79,15 +79,6 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
         return location;
     }
 
-    /**
-     * @return true if this provider belongs to a server (provider) side bus, false for a client side bus
-     *         or when the bus type cannot be determined.
-     */
-    boolean isServerSide() {
-        LibertyApplicationBus.Type busType = (bus != null) ? bus.getExtension(LibertyApplicationBus.Type.class) : null;
-        return LibertyApplicationBus.Type.SERVER.equals(busType);
-    }
-
     @Override
     public Policy getEffectivePolicy(BindingFaultInfo bfi, Message m) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -368,7 +359,7 @@ public class DynamicAttachmentProvider extends AbstractPolicyProvider implements
                                         // against the endpoint address first so both sides are compared fully
                                         // qualified. On the client side the endpoint address is the remote target, so
                                         // it cannot be used to qualify the policy address.
-                                        String qualifiedPolicyAddr = isServerSide() ? qualifyPolicyAddress(policyAddr, epAddr) : policyAddr;
+                                        String qualifiedPolicyAddr = qualifyPolicyAddress(policyAddr, epAddr);
                                         if (qualifiedPolicyAddr.equals(epAddr)) {
                                             return true;
                                         }

@@ -18,14 +18,12 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh20;
 import com.ibm.ws.wssecurity.fat.utils.common.SharedTools;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
@@ -33,10 +31,7 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.vulnerability.LeakedPasswordChecker;
 
@@ -51,14 +46,26 @@ import componenttest.vulnerability.LeakedPasswordChecker;
  *
  * If the first module's attachment file were applied to every module, the nonce pair would fail
  * (or the basic pair would fail on the provider that requires Nonce and Created).
+ *
+ * This class holds the tests only. Each concrete subclass runs them against one policy attachment style
+ * by calling {@link #deployAndStart(String)} from its own @BeforeClass with the name of a folder under
+ * publish/files/{@value #POLICY_ATTACHMENTS_DIR}. Each folder contains basic/ and nonce/ directories with the
+ * policy-attachments-client.xml and policy-attachments-server.xml files for that module pair.
+ *
+ * The subclasses must repeat @Mode and @SkipForRepeat because the FAT filters do not read inherited
+ * class annotations, and each subclass must be listed in the FATSuite (this class is abstract).
  */
-@SkipForRepeat({ RepeatWithEE7cbh20.ID })
-@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class CXFMultiModuleUntTests {
+public abstract class CXFMultiModuleUntTests {
 
     static final private String serverName = "com.ibm.ws.wssecurity_fat";
     static final private String EAR_NAME = "untMultiModuleApp";
+
+    /**
+     * Folder (below the autoFVT test files directory, which is publish/files in the source tree) holding one
+     * sub-folder per policy attachment style.
+     */
+    protected static final String POLICY_ATTACHMENTS_DIR = "policy-attachments/";
 
     @Server(serverName)
     public static LibertyServer server;
@@ -74,8 +81,13 @@ public class CXFMultiModuleUntTests {
 
     private static LeakedPasswordChecker leakedPasswordChecker;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    /**
+     * Builds the four WARs, replaces their WEB-INF policy attachment files with the ones from
+     * {@code <test files>/policy-attachments/<policyStyle>/{basic,nonce}/}, deploys them in one EAR, and starts the server.
+     *
+     * @param policyStyle name of the folder under {@link #POLICY_ATTACHMENTS_DIR}, e.g. "uri"
+     */
+    protected static void deployAndStart(String policyStyle) throws Exception {
 
         WebArchive basicClient = ShrinkHelper.buildDefaultApp("untBasicClient",
                                                               "com.ibm.ws.wssecurity.fat.untmmbasicclient",
@@ -87,6 +99,11 @@ public class CXFMultiModuleUntTests {
                                                               "fats.cxf.basic.wssec", "fats.cxf.basic.wssec.types");
         WebArchive nonceProvider = ShrinkHelper.buildDefaultApp("untNonceProvider",
                                                                 "com.ibm.ws.wssecurity.fat.untmmnonceprovider");
+
+        addPolicyAttachment(basicClient, policyStyle, "basic", "policy-attachments-client.xml");
+        addPolicyAttachment(basicProvider, policyStyle, "basic", "policy-attachments-server.xml");
+        addPolicyAttachment(nonceClient, policyStyle, "nonce", "policy-attachments-client.xml");
+        addPolicyAttachment(nonceProvider, policyStyle, "nonce", "policy-attachments-server.xml");
 
         // Liberty reads permissions.xml from the application (EAR) root; the per-WAR files are not applied to EAR modules
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, EAR_NAME + ".ear");
@@ -108,6 +125,16 @@ public class CXFMultiModuleUntTests {
         nonceClientUrl = "http://localhost:" + httpPortNumber + "/untNonceClient/CxfUntNonceClientServlet";
 
         leakedPasswordChecker = new LeakedPasswordChecker(server);
+    }
+
+    /**
+     * Puts the given policy attachment file into the WAR's WEB-INF directory under its standard name,
+     * replacing the copy that buildDefaultApp took from test-applications/.../resources/WEB-INF.
+     */
+    private static void addPolicyAttachment(WebArchive war, String policyStyle, String module, String fileName) {
+        File policyFile = new File(server.pathToAutoFVTTestFiles + POLICY_ATTACHMENTS_DIR + policyStyle + "/" + module + "/" + fileName);
+        assertTrue("Policy attachment file not found: " + policyFile.getAbsolutePath(), policyFile.isFile());
+        war.addAsWebInfResource(policyFile, fileName);
     }
 
     @AfterClass

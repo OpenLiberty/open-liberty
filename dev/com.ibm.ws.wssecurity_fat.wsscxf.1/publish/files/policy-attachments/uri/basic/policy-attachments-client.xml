@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<attachments
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:wsp="http://www.w3.org/ns/ws-policy"
+	xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+	xmlns:sp13="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200802">
+
+	<wsp:PolicyAttachment>
+		<wsp:AppliesTo>
+			<wsp:URI>http://wssec.basic.cxf.fats#wsdl11.service(SOAPService2)</wsp:URI>
+		</wsp:AppliesTo>
+		<!-- UsernameToken with plain text password (client) -->
+		<wsp:Policy wsu:Id="UserNameToken1">
+			<wsp:ExactlyOne>
+				<wsp:All>
+					<sp:SupportingTokens>
+						<wsp:Policy>
+							<sp:UsernameToken
+								sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+								<wsp:Policy>
+									<sp:WssUsernameToken11 />
+								</wsp:Policy>
+							</sp:UsernameToken>
+						</wsp:Policy>
+					</sp:SupportingTokens>
+				</wsp:All>
+			</wsp:ExactlyOne>
+		</wsp:Policy>
+	</wsp:PolicyAttachment>
+
+</attachments>
