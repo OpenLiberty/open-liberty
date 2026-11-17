@@ -36,8 +36,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.observability.telemetry.PullExporterAutoConfigurationCustomizerProvider;
-import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.JsonRpcResponse;
+import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 
 @RunWith(FATRunner.class)
@@ -162,7 +162,9 @@ public class TelemetryOperationsTest extends FATServletClient {
     public void testPingMetrics() throws Exception {
         // Call ping
         String response = client.callMCP(PING_REQUEST);
-        assertTrue("Ping should succeed", response.contains("\"result\""));
+        JSONAssert.assertEquals("""
+                        {"jsonrpc":"2.0","id":4,"result":{}}
+                        """, response, STRICT);
 
         FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testPingMetrics");
     }
