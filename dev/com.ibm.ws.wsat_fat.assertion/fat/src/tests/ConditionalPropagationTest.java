@@ -36,9 +36,6 @@ import componenttest.topology.impl.LibertyServer;
  * Tests for the {@code propagation} attribute of {@code <wsAtomicTransaction/>} on the public
  * {@code wsAtomicTransaction-1.2} feature (NEW_TESTS.md sections 3.x, 4.x and 5.x).
  *
- * <p>{@code propagation} is a beta attribute, so the {@code WSATConditional} server runs with
- * {@code -Dcom.ibm.ws.beta.edition=true} (see its {@code jvm.options}).
- *
  * <p>Every successful scenario is run to <b>both</b> commit and rollback completion, because that
  * is what proves whether the endpoint was actually enlisted in the client's transaction. See
  * {@link PropagationTestBase#assertOutcome}.
@@ -252,6 +249,52 @@ public class ConditionalPropagationTest extends PropagationTestBase {
 
         assertOutcome(baseUrl, baseUrl, NONE, false, false); // still check_wsdl
         assertOutcome(baseUrl, baseUrl, OPTIONAL, true, false); // and still propagating when asserted
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // 6.x Indeterminate policy: a Dispatch client created without a WSDL
+    //
+    // The other indeterminate cases (no CXF Endpoint on the exchange, no EffectivePolicy) are not
+    // covered here because they are very difficult to reproduce in a FAT. A JAX-WS proxy or Dispatch
+    // always has an Endpoint on its exchange, and a client whose policy contains the WS-AT assertion
+    // never reaches WSCoorUtil.isOptional (CoorContextOutInterceptor tests WSCoorUtil.assertAT first).
+    // Forcing them would need a test feature exposing CXF internals and custom interceptors that
+    // strip the Endpoint and the AssertionInfoMap, which would test those hacks as much as the product.
+    // They are covered by com.ibm.ws.wsat.utils.WSCoorUtilTest in com.ibm.ws.wsat.webservice.
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * 6.1 In {@code check_wsdl} mode an indeterminate policy is treated as "no assertion": plain SOAP, no
+     * WS-AT context, endpoint not enlisted (its row survives rollback). The target endpoint does declare an
+     * optional assertion, so it would have been enlisted had the client been able to see it (see 6.2 and 4.2).
+     */
+    @Test
+    public void test6_1_CheckWsdl_DispatchWithoutWsdl_Commit() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, DISPATCH, false, true);
+    }
+
+    @Test
+    public void test6_1_CheckWsdl_DispatchWithoutWsdl_Rollback() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, DISPATCH, false, false);
+    }
+
+    /** 6.2 Control: with {@code always} the same {@code Dispatch} call is propagated and enlisted. */
+    @Test
+    public void test6_2_Always_DispatchWithoutWsdl_Commit() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, DISPATCH, true, true);
+    }
+
+    @Test
+    public void test6_2_Always_DispatchWithoutWsdl_Rollback() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, DISPATCH, true, false);
     }
 
     // ---------------------------------------------------------------------------------------------

@@ -113,8 +113,8 @@ public class InternalFeatureOnlyTest extends PropagationTestBase {
     /**
      * 1.1 {@code propagation} is declared in the {@code com.ibm.ws.wsat.common} metatype, which is
      * loaded by both the internal and public features, so the config service accepts it without a
-     * {@code CWWKG0032W} warning even when only the internal feature is present. The attribute is
-     * beta, so it is hidden from the schema, and the public feature alone supplies its default.
+     * {@code CWWKG0032W} warning even when only the internal feature is present. The public feature
+     * alone supplies its default.
      *
      * <p>The attribute is <em>inert</em> at runtime because {@code WSATPolicyAwareInterceptor} only
      * adds the outbound coordination context interceptor when

@@ -13,6 +13,7 @@
 package web.assertion.client.assertion;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.Map;
 
@@ -23,7 +24,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
+import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Dispatch;
+import javax.xml.ws.Service;
+import javax.xml.ws.soap.SOAPBinding;
+
+import org.w3c.dom.Document;
 
 import com.ibm.tx.jta.ut.util.TxTestUtils;
 
@@ -41,7 +52,8 @@ import web.assertion.server.TxProbe;
  * <p>Parameters:
  * <ul>
  * <li>{@code op} = invoke | count | init (default invoke)</li>
- * <li>{@code service} = Required | Optional | None</li>
+ * <li>{@code service} = Required | Optional | None | Dispatch. {@code Dispatch} calls the Optional endpoint
+ * through a {@link Dispatch} client created without any WSDL, so its policy cannot be determined.</li>
  * <li>{@code tran} = GlobalCommit | GlobalRollback | NoTran</li>
  * <li>{@code key} = unique key. The endpoint inserts a row with this key; {@code op=count} reports how many exist.</li>
  * <li>{@code baseurl}</li>
@@ -91,7 +103,7 @@ public class ConditionalPropagationServlet extends HttpServlet {
 
             final String reply;
             try {
-                reply = proxy(service, baseURL).sayHelloToOther(key);
+                reply = "Dispatch".equals(service) ? dispatch(key, baseURL) : proxy(service, baseURL).sayHelloToOther(key);
             } catch (RuntimeException e) {
                 if (begun) {
                     rollbackQuietly();
@@ -147,6 +159,25 @@ public class ConditionalPropagationServlet extends HttpServlet {
         ctx.put("javax.xml.ws.service.endpoint.address", baseURL + "/assertion/" + name);
         TxTestUtils.setTimeouts(ctx);
         return proxy;
+    }
+
+    /**
+     * Call {@code sayHelloToOther} on the Optional endpoint with a {@link Dispatch} client created
+     * without a WSDL. The endpoint advertises a WS-AT assertion, but this client never reads it, so
+     * its effective policy cannot be determined.
+     */
+    private String dispatch(String key, String baseURL) throws Exception {
+        final String ns = "http://server.assertion.web/";
+        final QName portName = new QName(ns, "DispatchNoWsdlPort");
+        final Service service = Service.create(new QName(ns, "DispatchNoWsdlService"));
+        service.addPort(portName, SOAPBinding.SOAP11HTTP_BINDING, baseURL + "/assertion/HelloImplAssertionOptionalService");
+        final Dispatch<Source> dispatch = service.createDispatch(portName, Source.class, Service.Mode.PAYLOAD);
+        TxTestUtils.setTimeouts(dispatch.getRequestContext());
+
+        final Source request = new StreamSource(new StringReader("<ns:sayHelloToOther xmlns:ns=\"" + ns + "\"><arg0>" + key + "</arg0></ns:sayHelloToOther>"));
+        final DOMResult response = new DOMResult();
+        TransformerFactory.newInstance().newTransformer().transform(dispatch.invoke(request), response);
+        return ((Document) response.getNode()).getElementsByTagNameNS("*", "return").item(0).getTextContent();
     }
 
     private static String param(HttpServletRequest r, String name, String dflt) {
