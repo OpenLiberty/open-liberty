@@ -172,9 +172,10 @@ public class McpTransport {
      * responded to, including with error responses. If the current request is a notification,
      * no JSON-RPC error body is sent and the response is an empty 202 Accepted.
      * <p>
-     * The exception is a {@link JSONRPCErrorCode#HEADER_MISMATCH}. This is a validation failure which means the
-     * server cannot accept the message, so the MCP Streamable HTTP specification requires it to be rejected with
-     * HTTP 400. For a notification that is a 400 with no body.
+     * If the exception specifies an HTTP status code (see {@link JSONRPCException#hasStatusCode()}), the response
+     * is sent with that status. For example a header mismatch means the server cannot accept the message, so the
+     * MCP Streamable HTTP specification requires it to be rejected with HTTP 400. For a notification that is a
+     * 400 with no body.
      *
      * @param e The JSONRPCException to be included in the error response.
      */

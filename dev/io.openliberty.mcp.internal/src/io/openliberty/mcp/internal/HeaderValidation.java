@@ -20,6 +20,7 @@ import io.openliberty.mcp.internal.requests.McpRequest;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class HeaderValidation {
 
@@ -69,7 +70,7 @@ public class HeaderValidation {
      *     the body does not carry a protocol version
      */
     public static void validateProtocolVersionMatchesBody(McpProtocolVersion headerVersion, McpRequest request) throws JSONRPCException {
-        if (headerVersion != McpProtocolVersion.V_2026_07_28) {
+        if (!headerVersion.connectionInfoInMeta()) {
             return;
         }
 
@@ -85,15 +86,9 @@ public class HeaderValidation {
         }
 
         if (!headerVersion.getVersion().equals(bodyVersion)) {
-            String message = buildVersionMismatchMessage(headerVersion.getVersion(), bodyVersion);
-            throw new JSONRPCException(JSONRPCErrorCode.HEADER_MISMATCH, List.of(message));
+            String message = Tr.formatMessage(tc, "header.mismatch.protocol.version");
+            throw new JSONRPCException(JSONRPCErrorCode.HEADER_MISMATCH, List.of(message), HttpServletResponse.SC_BAD_REQUEST);
         }
-    }
-
-    private static String buildVersionMismatchMessage(String headerVersion, String bodyVersion) {
-        return bodyVersion == null ? Tr.formatMessage(tc, "header.mismatch.protocol.version.missing",
-                                                      headerVersion, META_PROTOCOL_VERSION) : Tr.formatMessage(tc, "header.mismatch.protocol.version",
-                                                                                                               headerVersion, META_PROTOCOL_VERSION, bodyVersion);
     }
 
 }

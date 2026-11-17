@@ -72,15 +72,14 @@ public class HeaderProtocolVersionValidationTest {
     }
 
     @Test
-    public void testMismatchMessageNamesBothValues() {
+    public void testMismatchRejectedWithBadRequestStatus() {
         McpRequest request = requestWithMeta("{\"io.modelcontextprotocol/protocolVersion\": \"2025-11-25\"}");
         try {
             HeaderValidation.validateProtocolVersionMatchesBody(McpProtocolVersion.V_2026_07_28, request);
             fail("Expected a HeaderMismatch JSONRPCException");
         } catch (JSONRPCException e) {
-            String data = String.valueOf(e.getData());
-            assertTrue(data, data.contains("2026-07-28"));
-            assertTrue(data, data.contains("2025-11-25"));
+            assertTrue(e.hasStatusCode());
+            assertEquals(400, e.getStatusCode());
         }
     }
 
