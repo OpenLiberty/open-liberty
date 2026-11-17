@@ -498,7 +498,19 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * @throws Exception if the request fails or the response status is not 200
      */
     public ToolResponse callTool(String toolName, Map<String, Object> arguments) throws Exception {
-        McpRequest request = toolCallRequest(toolName, arguments);
+        return callTool(toolCallRequest(toolName, arguments));
+    }
+
+    /**
+     * Sends a {@code tools/call} request built by {@link #toolCallRequest(String, Map)} and parses
+     * the response. Use this instead of {@link #callTool(String, Map)} when the test needs the
+     * request id before the response arrives, e.g. to cancel the request.
+     *
+     * @param request the request to send
+     * @return the parsed response
+     * @throws Exception if the request fails or the response status is not 200
+     */
+    public ToolResponse callTool(McpRequest request) throws Exception {
         return new ToolResponse(new JSONObject(callMCP(request.toString())), request.getId(), VALUE_MCP_PROTOCOL_VERSION);
     }
 
