@@ -10,6 +10,9 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.INVALID_PARAMS;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcResponseMatcher.jsonRpcResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -72,9 +75,9 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
 
         // Converter test modules
         WebArchive customConverterModule = ShrinkWrap.create(WebArchive.class, "customConverterModule.war")
-                                                .addPackage(CustomConverterModuleTools.class.getPackage());
+                                                     .addPackage(CustomConverterModuleTools.class.getPackage());
         WebArchive sharedConvertersModule = ShrinkWrap.create(WebArchive.class, "sharedConvertersModule.war")
-                                                .addPackage(SharedConvertersModuleTools.class.getPackage());
+                                                      .addPackage(SharedConvertersModuleTools.class.getPackage());
 
         // 1) EarToolBean cannot share its tools across WARs (they need module context)
         // 2) EarToolBean also has a Person Encoder with a high priority (5000), but it correctly is never used.
@@ -138,12 +141,6 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
                         """, id, text);
     }
 
-    private static String errorResponse(String id, String toolName) {
-        return String.format("""
-                        {"id":"%s","jsonrpc":"2.0","error":{"code":-32602,"data":["Method %s not found"],"message":"Invalid params"}}
-                        """, id, toolName);
-    }
-
     // High-level assertion helpers that combine call + assertion
     private static void assertToolReturnsText(McpClient client, String id, String toolName, String expectedText) throws Exception {
         String response = client.callMCP(toolCallRequest(id, toolName));
@@ -151,8 +148,10 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
     }
 
     private static void assertToolNotFound(McpClient client, String id, String toolName) throws Exception {
-        String response = client.callMCP(toolCallRequest(id, toolName));
-        JSONAssert.assertEquals(errorResponse(id, toolName), response, JSONCompareMode.STRICT);
+        assertThat(client.call(toolCallRequest(id, toolName)),
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS)
+                                    .withErrorMessage("Invalid params")
+                                    .withErrorDataItems("Method " + toolName + " not found"));
     }
 
     /**
@@ -264,7 +263,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
         boolean exceptionThrown = false;
         try {
             defaultEncoderModuleMCPClient.callMCPRaw(toolCallRequest("1", "methodTool"))
-                    .sessionId(encoderModuleMCPClient.getSessionId()).run();
+                                         .sessionId(encoderModuleMCPClient.getSessionId()).run();
         } catch (Exception e) {
             exceptionThrown = true;
             assertTrue(e.getMessage().contains("Invalid or Expired Session Id"));

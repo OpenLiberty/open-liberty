@@ -18,6 +18,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -37,6 +38,7 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.asyncToolErrorHandlingApp.AsyncErrorHandlingTools;
 import io.openliberty.mcp.internal.fat.tool.asyncToolErrorHandlingApp.NonBusinessException;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
 
 /**
  *
@@ -203,23 +205,10 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
     private void doTest(Class<?> exceptionToThrow, FailureMechanism failureMechanism) {}
 
     private void callToolExpect403(String exceptionToThrow, String failureMechanism) throws Exception {
-        String request = String.format("""
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 3,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "asyncErrorTool",
-                            "arguments": {
-                              "exception": "%s",
-                              "failureMechanism": "%s"
-                            }
-                          }
-                        }
-                        """,
-                                       exceptionToThrow,
-                                       failureMechanism);
-        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).expectedStatus(403).run();
+        McpRequest request = client.toolCallRequest("asyncErrorTool",
+                                                    Map.of("exception", exceptionToThrow,
+                                                           "failureMechanism", failureMechanism));
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request.toString()).expectedStatus(403).run();
         Log.info(AsyncToolsErrorHandlingTest.class, "callToolExpect403", response.toString());
 
         assertEquals(403, response.statusCode());
