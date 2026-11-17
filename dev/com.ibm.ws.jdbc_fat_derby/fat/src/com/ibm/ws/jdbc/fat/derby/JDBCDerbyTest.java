@@ -37,7 +37,8 @@ public class JDBCDerbyTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKE0701E", //expected by testTransactionalSetting
+        server.stopServer("DSRA8071W", //Derby no longer maintained by community, issued in beta builds
+                          "CWWKE0701E", //expected by testTransactionalSetting
                           "DSRA4011E", //expected by testTNConfigIsoLvlReverse
                           "SRVE0319E"); //expected by testTNConfigTnsl
     }

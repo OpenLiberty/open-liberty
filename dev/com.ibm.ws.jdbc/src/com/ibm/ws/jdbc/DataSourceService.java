@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLNonTransientException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,9 +56,11 @@ import com.ibm.ws.jca.cm.AppDefinedResource;
 import com.ibm.ws.jca.cm.ConnectionManagerService;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jdbc.internal.DataSourceDef;
+import com.ibm.ws.jdbc.internal.DatabaseNotices;
 import com.ibm.ws.jdbc.internal.JDBCDriverService;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.ws.rsadapter.DSConfig;
@@ -256,8 +259,44 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             lock.writeLock().unlock();
         }
 
+        issueDatabaseNotices(context, properties);
+
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "activate");
+    }
+
+    /**
+     * Issues the one-time Derby and H2 notices (beta only) based on the data source configuration.
+     * Does nothing unless this is a beta build.
+     * Failures are never propagated, because notices must not prevent the data source from being configured.
+     *
+     * @param context component context, used to locate the JDBC driver service.
+     * @param configProps data source configuration.
+     */
+    void issueDatabaseNotices(ComponentContext context, Map<String, Object> configProps) {
+        if (!ProductInfo.getBetaEdition())
+            return;
+
+        try {
+            String vendorPID = null;
+            for (Map.Entry<String, Object> entry : configProps.entrySet()) {
+                String key = entry.getKey();
+                if (key.startsWith(PropertyService.PROPERTIES + '.') && key.endsWith(".config.referenceType") && entry.getValue() instanceof String) {
+                    vendorPID = (String) entry.getValue();
+                    break;
+                }
+            }
+
+            Collection<String> classNames = null;
+            JDBCDriverService driverSvc = (JDBCDriverService) priv.locateService(context, JDBC_DRIVER);
+            if (driverSvc != null)
+                classNames = driverSvc.getConfiguredAndInferredClassNames(vendorPID);
+
+            DatabaseNotices.issueNotices(vendorPID, classNames);
+        } catch (Exception x) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "unable to determine whether to issue database notices", x);
+        }
     }
 
     /**
@@ -786,6 +825,8 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
         } finally {
             lock.writeLock().unlock();
         }
+
+        issueDatabaseNotices(context, newProperties);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "modified");

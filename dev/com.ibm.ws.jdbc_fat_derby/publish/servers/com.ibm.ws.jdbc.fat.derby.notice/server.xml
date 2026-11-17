@@ -1,0 +1,51 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <featureManager>
+      <feature>servlet-3.1</feature>
+      <feature>jdbc-4.1</feature>
+      <feature>componenttest-1.0</feature>
+      <feature>jndi-1.0</feature>
+    </featureManager>
+ 
+    <library id="DerbyLib" fat.modify="true">
+      <fileset dir="${shared.resource.dir}/derby"/>
+    </library>
+    
+    <dataSource id="derbyEmbedded1" jndiName="jdbc/derbyEmbedded1">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <properties.derby.embedded databaseName="memory:noticeDb1" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="derbyEmbedded2" jndiName="jdbc/derbyEmbedded2">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <properties.derby.embedded databaseName="memory:noticeDb2" createDatabase="create"/>
+    </dataSource>
+
+    <dataSource id="derbyClient" jndiName="jdbc/derbyClient">
+      <jdbcDriver libraryRef="DerbyLib" />
+      <properties.derby.client databaseName="memory:noticeClientDb" serverName="localhost" portNumber="1527"/>
+    </dataSource>
+
+    <dataSource id="derbyGeneric" jndiName="jdbc/derbyGeneric">
+      <jdbcDriver libraryRef="DerbyLib" javax.sql.DataSource="org.apache.derby.jdbc.EmbeddedDataSource"/>
+      <properties databaseName="memory:noticeGenericDb" createDatabase="create"/>
+    </dataSource>
+
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codeBase="${server.config.dir}/derby/derby/" className="java.security.AllPermission"/>
+
+    <include location="../fatTestPorts.xml"/>
+
+</server>

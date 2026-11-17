@@ -99,6 +99,21 @@ public class H2Test extends FATServletClient {
                    !dsra8070e.isEmpty());
     }
 
+    /**
+     * Test that the beta H2 server logs DSRA8072I exactly once (despite multiple
+     * H2 data sources configured) and does not log DSRA8071W.
+     */
+    @Test
+    public void testH2DatabaseNotice() throws Exception {
+        List<String> dsra8072i = server.findStringsInLogs("DSRA8072I");
+        assertEquals("Expected DSRA8072I notice to be logged exactly once",
+                     1, dsra8072i.size());
+
+        List<String> dsra8071w = server.findStringsInLogs("DSRA8071W");
+        assertEquals("Expected DSRA8071W warning to not appear in logs",
+                     0, dsra8071w.size());
+    }
+
     @AfterClass
     public static void tearDown() throws Exception {
         try {

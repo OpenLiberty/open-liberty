@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,8 @@ import componenttest.topology.impl.LibertyServerFactory;
                 JDBCDerbyTest.class,
                 JDBCDynamicConfigTest.class,
                 JDBCDerbyPathLibTest.class,
-                JDBCDerbyPathToFolderLibTest.class
+                JDBCDerbyPathToFolderLibTest.class,
+                DerbyNoticeTest.class
 })
 public class FATSuite {
 
