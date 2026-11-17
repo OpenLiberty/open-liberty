@@ -185,9 +185,7 @@ public class McpTransport {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Ignoring JSONRPCException for notification (no id): " + e.getMessage(), e);
             }
-            if (!rejectedWithHttpError) {
-                sendEmptyResponse();
-            }
+            sendEmptyResponse();
             return;
         }
         McpResponse mcpResponse = new McpErrorResponse(requestId, e);

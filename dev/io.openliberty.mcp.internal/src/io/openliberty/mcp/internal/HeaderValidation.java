@@ -16,7 +16,7 @@ import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
-import io.openliberty.mcp.internal.requests.McpRequest;
+import io.openliberty.mcp.internal.requests.McpOperationPartialRequest;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
@@ -69,13 +69,13 @@ public class HeaderValidation {
      * @throws JSONRPCException with {@link JSONRPCErrorCode#HEADER_MISMATCH} if the values do not match or
      *     the body does not carry a protocol version
      */
-    public static void validateProtocolVersionMatchesBody(McpProtocolVersion headerVersion, McpRequest request) throws JSONRPCException {
+    public static void validateProtocolVersionMatchesBody(McpProtocolVersion headerVersion, McpOperationPartialRequest request) throws JSONRPCException {
         if (!headerVersion.connectionInfoInMeta()) {
             return;
         }
 
         String bodyVersion = null;
-        JsonObject params = request.params();
+        JsonObject params = request.requestTo().params();
         if (params != null && params.get("_meta") instanceof JsonObject meta) {
             JsonValue value = meta.get(META_PROTOCOL_VERSION);
             if (value instanceof JsonString str) {
