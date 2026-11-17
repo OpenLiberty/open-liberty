@@ -40,6 +40,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 Http2LiteModeTests.class, // LITE
                 Http2SecureTests.class, // LITE
                 Http2WindowSizeTests.class, // LITE
+                Http2QueuedBytesSmallCapTests.class, // LITE
                 Http2FullModeTests.class, // FULL
                 /** move tests to Http2FullTracingTests to diagnose failures via full tracing */
                 Http2FullTracingTests.class, // FULL
