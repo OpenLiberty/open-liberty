@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.persistenceService-2.0
 visibility=private
+singleton=true
 IBM-API-Package: com.ibm.websphere.persistence.mbean; type="ibm-api"
 -features=com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0, 12.0", \
   com.ibm.websphere.appserver.transaction-2.0; ibm.tolerates:="2.1", \

@@ -91,11 +91,23 @@ Import-Package: \
             com.ibm.wsspi.classloading,\
             org.jboss.logging;version="[3.6,4)", \
             org.jboss.jandex;version="[3.5,4)", \
+            org.hibernate.models.*;version="[1.3,2)", \
+            net.bytebuddy.*;version="[1.18,2)", \
+            org.antlr.v4.runtime.*;version="[4.13,5)", \
             !jakarta.activation, \
             javax.crypto;resolution:=optional, \
             javax.crypto.spec;resolution:=optional, \
+            jakarta.annotation;resolution:=optional, \
+            jakarta.enterprise.context;resolution:=optional, \
             jakarta.enterprise.context.spi;resolution:=optional, \
+            jakarta.enterprise.inject;resolution:=optional, \
             jakarta.enterprise.inject.spi;resolution:=optional, \
+            jakarta.enterprise.util;resolution:=optional, \
+            jakarta.inject;resolution:=optional, \
+            jakarta.json.bind;resolution:=optional, \
+            jakarta.validation.constraints;resolution:=optional, \
+            javax.xml;resolution:=optional, \
+            javax.xml.stream.util;resolution:=optional, \
             javax.imageio;resolution:=optional, \
             javax.imageio.stream;resolution:=optional, \
             jakarta.jms;resolution:=optional, \
@@ -105,9 +117,13 @@ Import-Package: \
             javax.management.openmbean;resolution:=optional, \
             jakarta.mail.internet;resolution:=optional, \
             javax.naming;resolution:=optional, \
+            javax.naming.event;resolution:=optional, \
+            javax.naming.spi;resolution:=optional, \
             jakarta.persistence;jpa="4.0";consumer="persistenceService";resolution:=optional, \
             jakarta.persistence.criteria;jpa="4.0";consumer="persistenceService", \
             jakarta.persistence.metamodel;jpa="4.0";consumer="persistenceService", \
+            jakarta.persistence.query;jpa="4.0";consumer="persistenceService", \
+            jakarta.persistence.sql;jpa="4.0";consumer="persistenceService", \
             jakarta.persistence.spi;jpa="4.0";consumer="persistenceService";resolution:=optional, \
             jakarta.resource;resolution:=optional, \
             jakarta.resource.cci;resolution:=optional, \

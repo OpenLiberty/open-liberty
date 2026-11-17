@@ -1,0 +1,12 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: io.openliberty.persistence.service.hibernate.consumer-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: io.openliberty.persistence.service.hibernate.consumer; version="[1,1.1)",
+  com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3"; type="osgi.subsystem.feature",
+  com.ibm.websphere.appserver.transaction-2.1; type="osgi.subsystem.feature",
+  io.openliberty.persistenceService-3.0; type="osgi.subsystem.feature"
+IBM-Feature-Version: 2
+Subsystem-Type: osgi.subsystem.feature
+IBM-ShortName: hibernateConsumer-1.0
+IBM-Test-Feature: true
+IBM-API-Package: io.openliberty.persistence.service.hibernate.fat.persistence.test; type="internal"
