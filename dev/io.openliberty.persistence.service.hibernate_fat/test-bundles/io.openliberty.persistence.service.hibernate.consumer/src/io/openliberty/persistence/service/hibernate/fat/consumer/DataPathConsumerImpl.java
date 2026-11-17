@@ -26,6 +26,9 @@ import com.ibm.wsspi.persistence.InMemoryMappingFile;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import io.openliberty.persistence.service.hibernate.fat.consumer.internal.model.AnnotatedItem;
+import io.openliberty.persistence.service.hibernate.fat.consumer.internal.model.Author;
+import io.openliberty.persistence.service.hibernate.fat.consumer.internal.model.Book;
+import io.openliberty.persistence.service.hibernate.fat.consumer.internal.model.CommercialAd;
 import io.openliberty.persistence.service.hibernate.fat.consumer.internal.model.UnannotatedItem;
 import io.openliberty.persistence.service.hibernate.fat.persistence.test.DataPathConsumer;
 import jakarta.persistence.EntityManager;
@@ -115,6 +118,70 @@ public class DataPathConsumerImpl implements DataPathConsumer {
                             .getSingleResult();
         } finally {
             em.close();
+        }
+    }
+
+    @Override
+    public void insertBook(long id, String title, long authorId, String authorName) {
+        EntityManager em = pu.createEntityManager();
+        try {
+            Author author = new Author(authorId, authorName);
+            em.persist(author);
+            em.persist(new Book(id, title, author));
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public String readLazyAuthor(long id) {
+        EntityManager em = pu.createEntityManager();
+        try {
+            Book book = em.find(Book.class, id);
+            if (book == null)
+                return "book not found";
+
+            // Loading the book must not have loaded the lazy author.
+            boolean loaded = em.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(book, "author");
+            if (loaded)
+                return "author was eagerly loaded";
+
+            // Using the author through the proxy initializes it from the database.
+            String name = book.getAuthor().getName();
+            boolean loadedNow = em.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(book, "author");
+            return loadedNow ? "lazy:" + name : "author not loaded after use";
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public void insertCommercialAd(long id, String title, int seconds) {
+        EntityManager em = pu.createEntityManager();
+        try {
+            em.persist(new CommercialAd(id, title, seconds));
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public int findCommercialAdSeconds(long id) {
+        EntityManager em = pu.createEntityManager();
+        try {
+            CommercialAd ad = em.find(CommercialAd.class, id);
+            return ad == null ? -1 : ad.getSeconds();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public String useEntityAgent() throws Exception {
+        // The agent is returned as AutoCloseable so callers need not compile
+        // against Jakarta Persistence 4.0, as DBStoreEHFactory does.
+        try (AutoCloseable agent = pu.createEntityAgent()) {
+            return agent == null ? null : agent.getClass().getName();
         }
     }
 

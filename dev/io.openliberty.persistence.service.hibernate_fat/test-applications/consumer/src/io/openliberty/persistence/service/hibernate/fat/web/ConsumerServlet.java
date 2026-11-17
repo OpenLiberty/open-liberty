@@ -242,6 +242,58 @@ public class ConsumerServlet extends FATServlet {
     }
 
     /**
+     * A lazy many-to-one association needs Hibernate to generate a proxy class at run
+     * time. The entity classes come from the consumer's class loader, which does not
+     * have Hibernate on its class path, as is the case for an application that does not
+     * bundle its own persistence provider.
+     */
+    @Test
+    public void testDataPathLazyManyToOneUsesProxy() throws Exception {
+        ut.begin();
+        dataPath.insertBook(50L, "A Book", 51L, "An Author");
+        ut.commit();
+
+        String result = dataPath.readLazyAuthor(50L);
+        if (!"lazy:An Author".equals(result))
+            throw new Exception("Unexpected result for lazy many-to-one: " + result);
+    }
+
+    /**
+     * Jakarta Data supplies a table name for every entity class, including a subclass in
+     * a SINGLE_TABLE hierarchy. Hibernate rejects a table mapping on such a subclass, so
+     * the persistence service must not pass it on. The unit must start, the subclass must
+     * share the root table, and no separate table must exist for the subclass.
+     */
+    @Test
+    public void testDataPathSingleTableSubclassSharesRootTable() throws Exception {
+        String prefix = dataPath.getTablePrefix().toUpperCase();
+        String ddl = dataPath.generateDDL().toUpperCase();
+        if (!ddl.contains("CREATE TABLE " + prefix + "DATAAD"))
+            throw new Exception("Expected table " + prefix + "DataAd in DDL:\n" + ddl);
+        if (ddl.contains("CREATE TABLE " + prefix + "DATACOMMERCIALAD"))
+            throw new Exception("Subclass must not have its own table in DDL:\n" + ddl);
+
+        ut.begin();
+        dataPath.insertCommercialAd(40L, "spot", 30);
+        ut.commit();
+
+        int seconds = dataPath.findCommercialAdSeconds(40L);
+        if (seconds != 30)
+            throw new Exception("Expected 30 seconds but got " + seconds);
+    }
+
+    /**
+     * Jakarta Data creates an EntityAgent (Jakarta Persistence 4.0) through the
+     * persistence service unit for repository methods that use entity graphs.
+     */
+    @Test
+    public void testDataPathCreateEntityAgent() throws Exception {
+        String agentClass = dataPath.useEntityAgent();
+        if (agentClass == null)
+            throw new Exception("createEntityAgent returned null");
+    }
+
+    /**
      * Jakarta Data passes entity classes that it generated for records as in-memory
      * resources via the generatedEntities property. The names of these resources do not
      * start with "mappingfile-" and must not be treated as ORM files, so the unit must

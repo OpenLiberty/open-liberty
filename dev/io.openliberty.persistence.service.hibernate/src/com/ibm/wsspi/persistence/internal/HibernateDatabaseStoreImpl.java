@@ -249,13 +249,16 @@ public class HibernateDatabaseStoreImpl implements DatabaseStore {
             }
         } else {
             // NONE path — Jakarta Data or generic entities
+            // Data's stateful repositories can flush outside a transaction.
+            // TODO remove once https://hibernate.atlassian.net/browse/HHH-18260 is fixed
+            puProps.putIfAbsent("hibernate.allow_update_outside_transaction", "true");
             @SuppressWarnings("unchecked")
             LinkedHashSet<String> tableNames = (LinkedHashSet<String>) properties.get(
                 "io.openliberty.persistence.internal.tableNames");
             String[] entityClassEntries = (String[]) properties.get(
                 "io.openliberty.persistence.internal.entityClassInfo");
             InMemoryMappingFile ormFile = createOrmFile(schema, tablePrefix, tableNames,
-                                                        entityClassNames, entityClassEntries);
+                                                        entityClassNames, entityClassEntries, loader);
             @SuppressWarnings("unchecked")
             List<InMemoryMappingFile> generatedEntities = (List<InMemoryMappingFile>) properties.get(
                 "io.openliberty.persistence.internal.generatedEntities");
@@ -330,13 +333,52 @@ public class HibernateDatabaseStoreImpl implements DatabaseStore {
                                                 String tablePrefix,
                                                 LinkedHashSet<String> tableNames,
                                                 String[] entityClassNames,
-                                                String[] entityClassEntries) {
+                                                String[] entityClassEntries,
+                                                ClassLoader loader) {
         return ((entityClassNames == null || entityClassNames.length == 0)
                 && (entityClassEntries == null || entityClassEntries.length == 0))
                        ? null
                        : new InMemoryMappingFile(
-                             createOrm(schemaName, tablePrefix, tableNames, entityClassNames, entityClassEntries)
+                             createOrm(schemaName, tablePrefix, tableNames, entityClassNames, entityClassEntries, loader)
                                  .getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * Hibernate rejects a table mapping on a subclass within a SINGLE_TABLE
+     * inheritance hierarchy (EclipseLink tolerated it). Returns true if the
+     * entity is such a subclass, in which case no table should be specified.
+     * Annotations are matched by name because the entity classes come from
+     * the consumer's class loader.
+     */
+    private static boolean isSingleTableSubclass(String entityClassName, ClassLoader loader) {
+        try {
+            Class<?> root = null;
+            for (Class<?> c = loader.loadClass(entityClassName).getSuperclass(); c != null; c = c.getSuperclass()) {
+                if (findAnnotation(c, "jakarta.persistence.Entity") != null) {
+                    root = c;
+                }
+            }
+            if (root == null) {
+                return false;
+            }
+            java.lang.annotation.Annotation inheritance = findAnnotation(root, "jakarta.persistence.Inheritance");
+            if (inheritance == null) {
+                return true; // default strategy is SINGLE_TABLE
+            }
+            Object strategy = inheritance.annotationType().getMethod("strategy").invoke(inheritance);
+            return "SINGLE_TABLE".equals(String.valueOf(strategy));
+        } catch (Exception | LinkageError x) {
+            return false;
+        }
+    }
+
+    private static java.lang.annotation.Annotation findAnnotation(Class<?> c, String annotationName) {
+        for (java.lang.annotation.Annotation a : c.getAnnotations()) {
+            if (annotationName.equals(a.annotationType().getName())) {
+                return a;
+            }
+        }
+        return null;
     }
 
     /**
@@ -348,7 +390,8 @@ public class HibernateDatabaseStoreImpl implements DatabaseStore {
                                String tablePrefix,
                                LinkedHashSet<String> tableNames,
                                String[] entityClassNames,
-                               String[] entityClassEntries) {
+                               String[] entityClassEntries,
+                               ClassLoader loader) {
         StringBuilder builder = new StringBuilder();
 
         builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + EOLN)
@@ -368,7 +411,11 @@ public class HibernateDatabaseStoreImpl implements DatabaseStore {
         if (entityClassNames != null && tableNames != null) {
             int i = 0;
             for (String tableName : tableNames) {
-                builder.append(" <entity class=" + enquote(entityClassNames[i++]) + ">" + EOLN)
+                String entityClassName = entityClassNames[i++];
+                if (isSingleTableSubclass(entityClassName, loader)) {
+                    continue;
+                }
+                builder.append(" <entity class=" + enquote(entityClassName) + ">" + EOLN)
                        .append("  <table name=" + enquote(tablePrefix + tableName) + "/>" + EOLN)
                        .append(" </entity>" + EOLN);
             }

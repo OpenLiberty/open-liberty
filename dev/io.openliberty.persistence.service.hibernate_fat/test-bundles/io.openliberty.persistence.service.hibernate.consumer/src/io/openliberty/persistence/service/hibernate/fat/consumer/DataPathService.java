@@ -30,6 +30,10 @@ import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.resource.ResourceInfo;
 
 import io.openliberty.persistence.service.hibernate.fat.consumer.internal.model.AnnotatedItem;
+import io.openliberty.persistence.service.hibernate.fat.consumer.internal.model.Ad;
+import io.openliberty.persistence.service.hibernate.fat.consumer.internal.model.Author;
+import io.openliberty.persistence.service.hibernate.fat.consumer.internal.model.Book;
+import io.openliberty.persistence.service.hibernate.fat.consumer.internal.model.CommercialAd;
 import io.openliberty.persistence.service.hibernate.fat.consumer.internal.model.UnannotatedItem;
 
 /**
@@ -60,6 +64,7 @@ public class DataPathService implements ResourceFactory {
     private static final String EOLN = System.lineSeparator();
 
     static final String ANNOTATED_TABLE = "DataAnnotated";
+    static final String AD_TABLE = "DataAd";
     static final String UNANNOTATED_TABLE = "UnannotatedItem";
 
     private DatabaseStore databaseStore;
@@ -90,8 +95,14 @@ public class DataPathService implements ResourceFactory {
         String prefix = databaseStore.getTablePrefix();
 
         // Annotated entity: only the class name and its table name are passed.
+        // Like Jakarta Data, a table name is supplied for every entity class, in the
+        // same order as the class names, including the subclass in the hierarchy.
         LinkedHashSet<String> tableNames = new LinkedHashSet<>();
         tableNames.add(ANNOTATED_TABLE);
+        tableNames.add(AD_TABLE);
+        tableNames.add("DataCommercialAd");
+        tableNames.add("DataAuthor");
+        tableNames.add("DataBook");
 
         // Unannotated entity: the mapping is passed as an ORM XML fragment.
         // This is the form that EntityParser/View produce.
@@ -119,7 +130,11 @@ public class DataPathService implements ResourceFactory {
 
         return databaseStore.createPersistenceServiceUnit(DataPathService.class.getClassLoader(),
                                                           props,
-                                                          AnnotatedItem.class.getName());
+                                                          AnnotatedItem.class.getName(),
+                                                          Ad.class.getName(),
+                                                          CommercialAd.class.getName(),
+                                                          Author.class.getName(),
+                                                          Book.class.getName());
     }
 
     String getTablePrefix() {

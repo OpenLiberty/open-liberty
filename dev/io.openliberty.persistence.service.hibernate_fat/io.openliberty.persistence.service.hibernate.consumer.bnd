@@ -29,6 +29,7 @@ Import-Package: \
   jakarta.persistence.query;consumer="persistenceService", \
   jakarta.persistence.sql;consumer="persistenceService", \
   org.antlr.v4.runtime.misc;version="[4.13,5)";resolution:=optional, \
+  org.hibernate.proxy;version="[8.0,9)";resolution:=optional, \
   *
 
 Include-Resource: \

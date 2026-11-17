@@ -36,6 +36,15 @@ public interface PersistenceServiceUnit {
      public EntityManager createEntityManager();
 
      /**
+      * Returns a non-thread safe jakarta.persistence.EntityAgent (Jakarta Persistence 4.0),
+      * typed as AutoCloseable so that callers need not compile against Persistence 4.0.
+      * The agent is expected to be short lived and must be closed when work is complete.
+      *
+      * @return An EntityAgent for this unit.
+      */
+     public AutoCloseable createEntityAgent();
+
+     /**
       * DataSource precedence : privileged, nonJta, jta
       * <p>
       * Only valid to be invoked via a client script. Cannot be invoked multiple times. TODO --

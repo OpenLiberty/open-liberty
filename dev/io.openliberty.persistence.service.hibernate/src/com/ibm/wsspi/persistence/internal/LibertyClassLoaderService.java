@@ -43,11 +43,18 @@ class LibertyClassLoaderService extends ClassLoaderServiceImpl {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <S> Collection<S> loadJavaServices(Class<S> serviceContract) {
         if (BytecodeProvider.class.equals(serviceContract)) {
-            // Return empty — BytecodeProviderInitiator.getBytecodeProvider() will
-            // fall back to the none/ no-op provider when the collection is empty.
-            return Collections.emptyList();
+            // ServiceLoader cannot instantiate the ByteBuddy provider across OSGi
+            // bundle boundaries, so create it directly. It is needed to generate
+            // proxies for lazy associations. Hibernate defines each proxy in the
+            // class loader of the entity class, so that loader must see org.hibernate.proxy.
+            try {
+                return (Collection<S>) Collections.singletonList(new org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl());
+            } catch (LinkageError | RuntimeException x) {
+                return Collections.emptyList();
+            }
         }
         return super.loadJavaServices(serviceContract);
     }

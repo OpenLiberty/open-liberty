@@ -34,6 +34,26 @@ public interface DataPathConsumer {
 
     long countUnannotatedByActive(boolean active);
 
+    void insertBook(long id, String title, long authorId, String authorName);
+
+    /**
+     * Loads a Book and verifies its lazy many-to-one Author is not loaded until used.
+     *
+     * @return "lazy:" followed by the author name, or a message describing the problem.
+     */
+    String readLazyAuthor(long id);
+
+    void insertCommercialAd(long id, String title, int seconds);
+
+    int findCommercialAdSeconds(long id);
+
+    /**
+     * Creates an EntityAgent from the unit and closes it.
+     *
+     * @return the class name of the agent.
+     */
+    String useEntityAgent() throws Exception;
+
     String generateDDL();
 
     /**

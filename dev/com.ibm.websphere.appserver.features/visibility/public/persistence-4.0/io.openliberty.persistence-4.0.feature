@@ -19,6 +19,7 @@ IBM-API-Package: \
  org.hibernate.dialect; type="third-party", \
  org.hibernate.engine; type="third-party", \
  org.hibernate.engine.jdbc; type="third-party", \
+ org.hibernate.engine.spi; type="third-party", \
  org.hibernate.id; type="third-party", \
  org.hibernate.jpa; type="third-party", \
  org.hibernate.loader; type="third-party", \

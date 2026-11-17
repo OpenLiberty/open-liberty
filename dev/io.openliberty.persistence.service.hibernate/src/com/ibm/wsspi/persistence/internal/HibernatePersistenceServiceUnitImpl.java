@@ -87,6 +87,11 @@ public final class HibernatePersistenceServiceUnitImpl implements PersistenceSer
     }
 
     @Override
+    public AutoCloseable createEntityAgent() {
+        return _emf.createEntityAgent();
+    }
+
+    @Override
     public void createTables() {
         _schemaMgr.generateSchema(SCHEMA_GENERATION_DATABASE_ACTION, CREATE);
     }
