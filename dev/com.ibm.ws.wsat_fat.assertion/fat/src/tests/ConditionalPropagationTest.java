@@ -253,6 +253,14 @@ public class ConditionalPropagationTest extends PropagationTestBase {
 
     // ---------------------------------------------------------------------------------------------
     // 6.x Indeterminate policy: a Dispatch client created without a WSDL
+    //
+    // The other indeterminate cases (no CXF Endpoint on the exchange, no EffectivePolicy) are not
+    // covered here because they are very difficult to reproduce in a FAT. A JAX-WS proxy or Dispatch
+    // always has an Endpoint on its exchange, and a client whose policy contains the WS-AT assertion
+    // never reaches WSCoorUtil.isOptional (CoorContextOutInterceptor tests WSCoorUtil.assertAT first).
+    // Forcing them would need a test feature exposing CXF internals and custom interceptors that
+    // strip the Endpoint and the AssertionInfoMap, which would test those hacks as much as the product.
+    // They are covered by com.ibm.ws.wsat.utils.WSCoorUtilTest in com.ibm.ws.wsat.webservice.
     // ---------------------------------------------------------------------------------------------
 
     /**
