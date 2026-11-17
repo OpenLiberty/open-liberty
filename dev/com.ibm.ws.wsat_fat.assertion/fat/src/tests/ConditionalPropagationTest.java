@@ -36,9 +36,6 @@ import componenttest.topology.impl.LibertyServer;
  * Tests for the {@code propagation} attribute of {@code <wsAtomicTransaction/>} on the public
  * {@code wsAtomicTransaction-1.2} feature (NEW_TESTS.md sections 3.x, 4.x and 5.x).
  *
- * <p>{@code propagation} is a beta attribute, so the {@code WSATConditional} server runs with
- * {@code -Dcom.ibm.ws.beta.edition=true} (see its {@code jvm.options}).
- *
  * <p>Every successful scenario is run to <b>both</b> commit and rollback completion, because that
  * is what proves whether the endpoint was actually enlisted in the client's transaction. See
  * {@link PropagationTestBase#assertOutcome}.

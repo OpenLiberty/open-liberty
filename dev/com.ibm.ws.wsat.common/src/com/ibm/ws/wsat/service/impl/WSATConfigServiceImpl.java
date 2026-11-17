@@ -37,7 +37,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.jaxws.wsat.components.WSATConfigService;
 import com.ibm.ws.jaxws.wsat.components.WSATFeatureService;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.wsat.service.Handler;
 import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.wsspi.http.VirtualHost;
@@ -249,11 +248,9 @@ public class WSATConfigServiceImpl implements WSATConfigService {
 
         clientAuth = (Boolean) properties.get(clientAuthRef);
 
-        // The propagation attribute is beta: it is hidden from the schema (ibm:beta) and,
-        // because the config layer does not enforce that, ignored here unless running a beta edition.
-        // Its default is supplied by the public wsAtomicTransaction-1.2 feature, so a value
-        // that is present without that feature has been set explicitly and can have no effect.
-        String propagationValue = ProductInfo.getBetaEdition() ? (String) properties.get(PROPAGATION) : null;
+        // The propagation default is supplied by the public wsAtomicTransaction-1.2 feature, so a
+        // value that is present without that feature has been set explicitly and can have no effect.
+        String propagationValue = (String) properties.get(PROPAGATION);
         checkWsdlMode = PROPAGATION_CHECK_WSDL.equals(propagationValue);
         if (propagationValue != null && TC.isDebugEnabled() && !WSATFeatureService.isPublicFeaturePresent()) {
             Tr.debug(TC, "The propagation attribute is set to [{0}] but has no effect unless the wsAtomicTransaction-1.2 feature is enabled", propagationValue);
