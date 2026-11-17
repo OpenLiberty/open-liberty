@@ -40,6 +40,7 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
     private Boolean expectedIsError;
     private List<String> expectedTexts;
     private JSONObject expectedStructureContent;
+    private boolean expectNoStructuredContent;
 
     private ToolResponseMatcher() {}
 
@@ -49,7 +50,7 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
     }
 
     /**
-     * Requires a successful tool response ({@code isError} is not {@code true}) whose content is
+     * Requires a successful tool response ({@code isError} is {@code false}) whose content is
      * exactly one {@code text} item with exactly the given text.
      */
     public ToolResponseMatcher withTextContent(String expectedText) {
@@ -57,7 +58,7 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
     }
 
     /**
-     * Requires a successful tool response ({@code isError} is not {@code true}) whose content is
+     * Requires a successful tool response ({@code isError} is {@code false}) whose content is
      * exactly the given {@code text} items, in order.
      */
     public ToolResponseMatcher withTextContents(String... expectedTexts) {
@@ -69,6 +70,9 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
     /**
      * Requires a tool error response ({@code isError} is {@code true}) whose content is exactly
      * one {@code text} item with exactly the given text.
+     *
+     * <p>Like {@link #withTextContent(String)}, this requires the {@code isError} field to be
+     * present in the result.
      */
     public ToolResponseMatcher withError(String expectedText) {
         this.expectedIsError = true;
@@ -82,12 +86,21 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
         return this;
     }
 
+    /**
+     * Requires the tool result to have no {@code structuredContent} field. Use this for tools that
+     * return plain text, so that the test fails if the server starts adding structured content.
+     */
+    public ToolResponseMatcher withNoStructuredContent() {
+        this.expectNoStructuredContent = true;
+        return this;
+    }
+
     @Override
     public void describeTo(Description description) {
         description.appendText("a valid tool response");
         String joiner = " with ";
         if (expectedIsError != null) {
-            description.appendText(joiner).appendText(expectedIsError ? "isError true" : "isError not true");
+            description.appendText(joiner).appendText(expectedIsError ? "isError true" : "isError false");
             joiner = " and ";
         }
         if (expectedTexts != null) {
@@ -96,6 +109,10 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
         }
         if (expectedStructureContent != null) {
             description.appendText(joiner).appendText("structured content of ").appendText(expectedStructureContent.toString());
+            joiner = " and ";
+        }
+        if (expectNoStructuredContent) {
+            description.appendText(joiner).appendText("no structured content");
         }
     }
 
@@ -111,6 +128,10 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
             mismatch.appendText("was a JSON-RPC error rather than a tool result: ").appendText(response.toString());
             return false;
         }
+        if (expectedIsError != null && !response.getResult().has("isError")) {
+            mismatch.appendText("had no isError field: ").appendText(response.toString());
+            return false;
+        }
         if (expectedIsError != null && response.isError() != expectedIsError) {
             mismatch.appendText("isError was ").appendValue(response.isError()).appendText(": ").appendText(response.toString());
             return false;
@@ -119,6 +140,10 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
             return false;
         }
         if (expectedStructureContent != null && !matchesStructureContent(response, mismatch)) {
+            return false;
+        }
+        if (expectNoStructuredContent && response.getResult().has("structuredContent")) {
+            mismatch.appendText("had structuredContent: ").appendText(response.toString());
             return false;
         }
         return true;
