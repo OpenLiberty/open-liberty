@@ -44,6 +44,8 @@ public abstract class PropagationTestBase extends WSATTest {
     protected static final String REQUIRED = "Required";
     protected static final String OPTIONAL = "Optional";
     protected static final String NONE = "None";
+    /** Optional endpoint called through a {@code Dispatch} client created without a WSDL. */
+    protected static final String DISPATCH = "Dispatch";
 
     protected static final String COMMIT = "GlobalCommit";
     protected static final String ROLLBACK = "GlobalRollback";

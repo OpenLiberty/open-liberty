@@ -252,6 +252,44 @@ public class ConditionalPropagationTest extends PropagationTestBase {
     }
 
     // ---------------------------------------------------------------------------------------------
+    // 6.x Indeterminate policy: a Dispatch client created without a WSDL
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * 6.1 In {@code check_wsdl} mode an indeterminate policy is treated as "no assertion": plain SOAP, no
+     * WS-AT context, endpoint not enlisted (its row survives rollback). The target endpoint does declare an
+     * optional assertion, so it would have been enlisted had the client been able to see it (see 6.2 and 4.2).
+     */
+    @Test
+    public void test6_1_CheckWsdl_DispatchWithoutWsdl_Commit() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, DISPATCH, false, true);
+    }
+
+    @Test
+    public void test6_1_CheckWsdl_DispatchWithoutWsdl_Rollback() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, DISPATCH, false, false);
+    }
+
+    /** 6.2 Control: with {@code always} the same {@code Dispatch} call is propagated and enlisted. */
+    @Test
+    public void test6_2_Always_DispatchWithoutWsdl_Commit() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, DISPATCH, true, true);
+    }
+
+    @Test
+    public void test6_2_Always_DispatchWithoutWsdl_Rollback() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, DISPATCH, true, false);
+    }
+
+    // ---------------------------------------------------------------------------------------------
 
     private void assertNoTranOk(String service) {
         final String key = newKey();
