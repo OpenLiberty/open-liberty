@@ -12,6 +12,7 @@ package io.openliberty.mcp.internal.fat.tool;
 import static io.openliberty.mcp.internal.fat.suite.McpTelemetryServerSuite.serverLifecycle;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.skyscreamer.jsonassert.JSONCompareMode.LENIENT;
@@ -23,6 +24,7 @@ import java.util.List;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -35,6 +37,7 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.observability.telemetry.PullExporterAutoConfigurationCustomizerProvider;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpResponse;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 
 @RunWith(FATRunner.class)
@@ -147,8 +150,10 @@ public class TelemetryOperationsTest extends FATServletClient {
     @Test
     public void testToolsListMetrics() throws Exception {
         captureMetrics();
-        String response = client.callMCP(TOOLS_LIST_REQUEST);
-        assertTrue("Tools list should succeed", response.contains("\"result\""));
+        McpResponse response = client.call(TOOLS_LIST_REQUEST);
+        JSONObject result = response.getResult();
+        assertNotNull("Tools list should return a result: " + response, result);
+        assertTrue("Tools list result should contain tools: " + response, result.has("tools"));
 
         FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpOperationMetricServlet", "testToolsListMetrics");
     }

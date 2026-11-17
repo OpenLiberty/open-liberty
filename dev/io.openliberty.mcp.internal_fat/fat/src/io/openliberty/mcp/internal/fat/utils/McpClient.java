@@ -69,6 +69,12 @@ import componenttest.topology.impl.LibertyServer;
  * cases.</li>
  * <li>{@link #callTool(String)} / {@link #callTool(String, Map)} — calls a tool and returns a
  * {@link ToolResponse} to assert on with {@link ToolResponseMatcher}.</li>
+ * <li>{@link #toolCallRequest(String, Map)} / {@link #callTool(McpRequest)} — build a
+ * {@code tools/call} request separately from sending it, e.g. to know its id before the
+ * response arrives.</li>
+ * <li>{@link #send(McpRequest)} / {@link #call(String)} — send any request and return a
+ * {@link McpResponse} to assert on with {@link JsonRpcResponseMatcher}.
+ * {@code call} accepts a malformed body.</li>
  * <li>{@link #callMCPNotification(String)} — sends a notification, expects HTTP 202 with
  * no response body.</li>
  * <li>{@link #listAllTools()} — convenience method that follows pagination to return all tools.</li>

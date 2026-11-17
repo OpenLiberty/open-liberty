@@ -14,10 +14,15 @@ package io.openliberty.mcp.internal.fat.utils;
  */
 public final class JsonRpcErrorCode {
 
+    /** Invalid JSON was received by the server. */
     public static final int PARSE_ERROR = -32700;
+    /** The JSON sent is not a valid JSON-RPC request object. */
     public static final int INVALID_REQUEST = -32600;
+    /** The requested method does not exist or is not available. */
     public static final int METHOD_NOT_FOUND = -32601;
+    /** The method's parameters are invalid. */
     public static final int INVALID_PARAMS = -32602;
+    /** An internal JSON-RPC error occurred in the server. */
     public static final int INTERNAL_ERROR = -32603;
 
     private JsonRpcErrorCode() {}
