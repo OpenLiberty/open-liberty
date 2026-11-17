@@ -244,23 +244,17 @@ public class NettyH2RateState {
     }
 
     /**
-     * Check what the flow controller holds right now (plus timed-out bytes) against maxQueuedBytes.
-     * Used after a flush, when whatever is still held really is parked.
-     *
-     * @see #checkQueuedBytes(long)
-     */
-    public QueuedBytesResult checkQueuedBytes() {
-        return checkQueuedBytes(parkedBytes);
-    }
-
-    /**
-     * Check a parked byte count (plus timed-out bytes) against maxQueuedBytes.
+     * Check a count of window-blocked bytes (plus timed-out bytes) against maxQueuedBytes.
      * <p>
-     * Pass the current total ({@link #checkQueuedBytes()}), or, before a frame is queued, a lower
-     * bound on what will still be parked after the next flush. Either way the count is never higher
-     * than what will really be parked, so a trip is never a false positive.
+     * Only bytes the peer's HTTP/2 flow-control windows hold back count, as on legacy, where these are
+     * the only bytes that ever queue (a slow socket blocks legacy's writeSync instead). Bytes waiting only
+     * because the socket is backed up are not counted here; WriteTimeoutHandler bounds those.
+     * <p>
+     * The caller passes the window-blocked byte count: before a frame is queued, the count with that
+     * frame added (sending does not change it, so this is exactly what will be blocked); after a flush,
+     * the current count.
      *
-     * @param parkedBytes bytes that are, or will certainly be, held in the remote flow controller
+     * @param parkedBytes bytes the peer's windows hold back in the remote flow controller
      * @return SUCCESS if within the limit (or the check is disabled); FIRST_TO_EXCEED the first time
      *         the limit is crossed (caller sends GOAWAY); ALREADY_EXCEEDED on every call after that
      */
