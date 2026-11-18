@@ -153,21 +153,8 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
     public static final boolean DEFAULT_VALIDATE_HEADERS = true;
     public static final int DEFAULT_INITIAL_BUFFER_SIZE = 128;
     public static final boolean DEFAULT_ALLOW_DUPLICATE_CONTENT_LENGTHS = false;
-
-    /*
-     * Netty uses a default of true, however for Open Liberty we need to set the default to false.
-     *
-     * If this is not set to false by default there are a number of CTS test failures.
-     *
-     * An exception similar to the following will be seen:
-     * io.netty.handler.codec.http.InvalidLineSeparatorException: Line Feed must be preceded by Carriage Return when terminating HTTP start- and header field-lines
-     * at io.netty.handler.codec.http.HttpObjectDecoder$2.run(HttpObjectDecoder.java:168)
-     * at io.netty.handler.codec.http.HttpObjectDecoder$HeaderParser.parse(HttpObjectDecoder.java:1223)
-     * at io.netty.handler.codec.http.HttpObjectDecoder.readHeaders(HttpObjectDecoder.java:754)
-     * at io.netty.handler.codec.http.HttpObjectDecoder.decode(HttpObjectDecoder.java:390)
-     */
     public static final boolean DEFAULT_STRICT_LINE_PARSING =
-            SystemPropertyUtil.getBoolean("io.netty.handler.codec.http.defaultStrictLineParsing", false);
+            SystemPropertyUtil.getBoolean("io.netty.handler.codec.http.defaultStrictLineParsing", true);
     public static final String PROP_RFC9112_TRANSFER_ENCODING = "io.netty.handler.codec.http.rfc9112TransferEncoding";
     public static final boolean RFC9112_TRANSFER_ENCODING =
             SystemPropertyUtil.getBoolean(PROP_RFC9112_TRANSFER_ENCODING, true);
