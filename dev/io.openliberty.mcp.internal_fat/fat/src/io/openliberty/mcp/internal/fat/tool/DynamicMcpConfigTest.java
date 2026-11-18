@@ -11,6 +11,7 @@ package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.utils.McpClient.initializeParams;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
@@ -60,23 +61,6 @@ public class DynamicMcpConfigTest extends FATServletClient {
     private static final String APP_TWO = "dynamicMcpMultiAppTwo";
     private static final String APP_THREE = "dynamicMcpMultiAppThree";
 
-    private static final String INITIALIZE_REQUEST = """
-                    {
-                      "jsonrpc": "2.0",
-                      "id": "1",
-                      "method": "initialize",
-                      "params": {
-                        "protocolVersion": "2025-11-25",
-                        "capabilities": {},
-                        "clientInfo": {
-                          "name": "fat-test-client",
-                          "title": "FAT Test Client",
-                          "version": "1.0.0"
-                        }
-                      }
-                    }
-                    """;
-
     @Server("mcp-server-dynamic-config")
     public static LibertyServer server;
 
@@ -96,7 +80,7 @@ public class DynamicMcpConfigTest extends FATServletClient {
             server.deleteFileFromLibertyServerRoot(INCLUDE_FILE);
             server.restoreServerConfiguration();
         } finally {
-            server.stopServer("SRVE0190E",  // File not found when probing unserved paths
+            server.stopServer("SRVE0190E", // File not found when probing unserved paths
                               "CWNEN0047W", // Resource annotations on fields ignored when mcp-1.0 not yet active
                               "CWNEN0049W"); // Resource annotations on methods ignored when mcp-1.0 not yet active
         }
@@ -120,7 +104,7 @@ public class DynamicMcpConfigTest extends FATServletClient {
 
     private void assertEndpointNotFound(String appName, String mcpPath) throws Exception {
         try (McpClient client = McpClient.builder(server, "/" + appName).path(mcpPath).build()) {
-            client.callMCPRaw(INITIALIZE_REQUEST).expectedStatus(404).run();
+            client.callMCPRaw(client.request("initialize", initializeParams()).toString()).expectedStatus(404).run();
         }
     }
 
@@ -152,25 +136,25 @@ public class DynamicMcpConfigTest extends FATServletClient {
             client.initialize();
             String tools = client.listAllTools();
             assertNotNull("Expected tool/list response", tools);
-        }
 
-        HttpRequest httpRequest = new HttpRequest(server, "/" + APP_NAME + endpoint)
-                                                                                     .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                                     .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
-                                                                                     .jsonBody(INITIALIZE_REQUEST)
-                                                                                     .method("POST")
-                                                                                     .expectCode(200);
-        String response = httpRequest.run(String.class);
-        JSONAssert.assertEquals("Expected serverInfo name ibm-mq-mcp-server",
-                                "{\"result\":{\"serverInfo\":{\"name\":\"ibm-mq-mcp-server\"}}}",
-                                response, JSONCompareMode.LENIENT);
+            HttpRequest httpRequest = new HttpRequest(server, "/" + APP_NAME + endpoint)
+                                                                                        .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                                        .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
+                                                                                        .jsonBody(client.request("initialize", initializeParams()).toString())
+                                                                                        .method("POST")
+                                                                                        .expectCode(200);
+            String response = httpRequest.run(String.class);
+            JSONAssert.assertEquals("Expected serverInfo name ibm-mq-mcp-server",
+                                    "{\"result\":{\"serverInfo\":{\"name\":\"ibm-mq-mcp-server\"}}}",
+                                    response, JSONCompareMode.LENIENT);
 
-        String sessionId = httpRequest.getResponseHeader(MCP_SESSION_ID);
-        if (sessionId != null) {
-            new HttpRequest(server, "/" + APP_NAME + endpoint)
-                                                              .requestProp(MCP_SESSION_ID, sessionId)
-                                                              .method("DELETE")
-                                                              .run(String.class);
+            String sessionId = httpRequest.getResponseHeader(MCP_SESSION_ID);
+            if (sessionId != null) {
+                new HttpRequest(server, "/" + APP_NAME + endpoint)
+                                                                  .requestProp(MCP_SESSION_ID, sessionId)
+                                                                  .method("DELETE")
+                                                                  .run(String.class);
+            }
         }
     }
 

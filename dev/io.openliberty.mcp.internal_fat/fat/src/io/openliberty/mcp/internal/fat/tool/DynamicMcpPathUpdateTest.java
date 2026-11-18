@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.utils.McpClient.initializeParams;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
@@ -37,6 +38,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
+import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
 
 @RunWith(FATRunner.class)
 public class DynamicMcpPathUpdateTest extends FATServletClient {
@@ -67,33 +70,16 @@ public class DynamicMcpPathUpdateTest extends FATServletClient {
         }
     }
 
+    /** Builds an {@code initialize} request. The client is only used to build it: requests are sent with {@link HttpRequest} so that the response headers can be checked. */
+    private static McpRequest initializeRequest() {
+        return McpClient.builder(server, "/" + APP_NAME).build().request("initialize", initializeParams());
+    }
+
     private String initializeSession(String mcpEndpoint) throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "1",
-                          "method": "initialize",
-                          "params": {
-                            "protocolVersion": "2025-11-25",
-                            "capabilities": {
-                              "roots": {
-                                "listChanged": true
-                              },
-                              "sampling": {},
-                              "elicitation": {}
-                            },
-                            "clientInfo": {
-                              "name": "FAT Test Client",
-                              "title": "FAT Test Client",
-                              "version": "1.0.0"
-                            }
-                          }
-                        }
-                        """;
         HttpRequest httpRequest = new HttpRequest(server, "/" + APP_NAME + mcpEndpoint)
                                                                                        .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                                        .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
-                                                                                       .jsonBody(request)
+                                                                                       .jsonBody(initializeRequest().toString())
                                                                                        .method("POST")
                                                                                        .expectCode(200);
         httpRequest.run(String.class);
@@ -129,32 +115,10 @@ public class DynamicMcpPathUpdateTest extends FATServletClient {
     }
 
     private void assertEndpointNotFound(String mcpEndpoint) throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "1",
-                          "method": "initialize",
-                          "params": {
-                            "protocolVersion": "2025-11-25",
-                            "capabilities": {
-                              "roots": {
-                                "listChanged": true
-                              },
-                              "sampling": {},
-                              "elicitation": {}
-                            },
-                            "clientInfo": {
-                              "name": "FAT Test Client",
-                              "title": "FAT Test Client",
-                              "version": "1.0.0"
-                            }
-                          }
-                        }
-                        """;
         new HttpRequest(server, "/" + APP_NAME + mcpEndpoint)
                                                              .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                              .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
-                                                             .jsonBody(request)
+                                                             .jsonBody(initializeRequest().toString())
                                                              .method("POST")
                                                              .expectCode(404)
                                                              .run(String.class);

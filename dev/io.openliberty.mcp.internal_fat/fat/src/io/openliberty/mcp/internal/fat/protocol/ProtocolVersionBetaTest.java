@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.protocol;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.McpClient.initializeParams;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static org.hamcrest.Matchers.containsString;
@@ -34,6 +35,7 @@ import io.openliberty.mcp.internal.fat.suite.BetaRepeatAction;
 import io.openliberty.mcp.internal.fat.suite.McpMainServerSuite;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
 
 /**
  * Tests that the beta MCP protocol version 2026-07-28 is usable when the runtime is a beta runtime.
@@ -81,21 +83,6 @@ public class ProtocolVersionBetaTest {
                       }
                     }""";
 
-    private static final String INITIALIZE_REQUEST = """
-                    {
-                      "jsonrpc": "2.0",
-                      "id": 1,
-                      "method": "initialize",
-                      "params": {
-                        "protocolVersion": "%s",
-                        "clientInfo": {
-                          "name": "test-client",
-                          "version": "0.1"
-                        }
-                      }
-                    }
-                    """;
-
     @Rule
     public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
 
@@ -123,24 +110,11 @@ public class ProtocolVersionBetaTest {
 
     @Test
     public void testInitializeNegotiatesBetaProtocolVersionOnBeta() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "initialize",
-                          "params": {
-                            "protocolVersion": "2026-07-28",
-                            "clientInfo": {
-                              "name": "test-client",
-                              "version": "0.1"
-                            }
-                          }
-                        }
-                        """;
+        McpRequest request = client.request("initialize", initializeParams("2026-07-28"));
 
         String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
                                                                                                .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                                               .jsonBody(request)
+                                                                                               .jsonBody(request.toString())
                                                                                                .method("POST")
                                                                                                .expectCode(200)
                                                                                                .run(String.class);
@@ -203,11 +177,11 @@ public class ProtocolVersionBetaTest {
     @Test
     public void testInitializeNegotiatesEachGaProtocolVersionOnBeta() throws Exception {
         for (String version : GA_VERSIONS) {
-            String request = INITIALIZE_REQUEST.formatted(version);
+            McpRequest request = client.request("initialize", initializeParams(version));
 
             String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
                                                                                                    .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                                                   .jsonBody(request)
+                                                                                                   .jsonBody(request.toString())
                                                                                                    .method("POST")
                                                                                                    .expectCode(200)
                                                                                                    .run(String.class);

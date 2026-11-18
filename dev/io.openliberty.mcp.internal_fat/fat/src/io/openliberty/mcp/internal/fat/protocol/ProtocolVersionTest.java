@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.protocol;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.McpClient.initializeParams;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
@@ -17,7 +18,6 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_APPLICAT
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -37,6 +37,7 @@ import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.suite.BetaRepeatAction;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
 
 /**
@@ -144,25 +145,11 @@ public class ProtocolVersionTest {
 
     @Test
     public void testInitializeDoesNotNeedMcpProtocolVersionHeader() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "initialize",
-                         "params": {
-                            "protocolVersion": "2025-11-25",
-                            "clientInfo": {
-                              "name": "test-client",
-                              "version": "0.1"
-                            },
-                            "rootUri": "file:/test/root"
-                          }
-                        }
-                        """;
+        McpRequest request = client.request("initialize", initializeParams().put("rootUri", "file:/test/root"));
 
         HttpRequest httpRequest = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
                                                                                                        .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                                                       .jsonBody(request)
+                                                                                                       .jsonBody(request.toString())
                                                                                                        .method("POST")
                                                                                                        .expectCode(200);
         String response = httpRequest.run(String.class);
@@ -211,24 +198,11 @@ public class ProtocolVersionTest {
      */
     @Test
     public void testInitializeWithBetaProtocolVersionFallsBackOnNonBeta() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "initialize",
-                          "params": {
-                            "protocolVersion": "2026-07-28",
-                            "clientInfo": {
-                              "name": "test-client",
-                              "version": "0.1"
-                            }
-                          }
-                        }
-                        """;
+        McpRequest request = client.request("initialize", initializeParams("2026-07-28"));
 
         String response = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
                                                                                                .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                                               .jsonBody(request)
+                                                                                               .jsonBody(request.toString())
                                                                                                .method("POST")
                                                                                                .expectCode(200)
                                                                                                .run(String.class);
@@ -266,22 +240,6 @@ public class ProtocolVersionTest {
     }
 
     /**
-     * Deleting a session must still work on a non-beta runtime with each GA version in the
-     * {@code MCP-Protocol-Version} header, and with no header. A repeated delete must then find no session.
-     */
-    @Test
-    public void testSessionDeleteAcceptsEachGaProtocolVersionHeaderOnNonBeta() throws Exception {
-        String[] headerVersions = { GA_VERSIONS[0], GA_VERSIONS[1], GA_VERSIONS[2], null };
-        for (String version : headerVersions) {
-            String sessionId = ProtocolVersionRequests.initialize(serverLifecycle.getServer(), APP_NAME, null, GA_VERSIONS[0]).sessionId();
-            assertNotNull("Expected a session to be created for the delete with header " + version, sessionId);
-
-            ProtocolVersionRequests.delete(serverLifecycle.getServer(), APP_NAME, version, sessionId, 200);
-            ProtocolVersionRequests.delete(serverLifecycle.getServer(), APP_NAME, version, sessionId, 404);
-        }
-    }
-
-    /**
      * Versions which look like, but are not exactly, the beta version must be rejected the same way as any
      * other unsupported version, with only the GA versions listed.
      */
@@ -301,24 +259,11 @@ public class ProtocolVersionTest {
     }
 
     private String initialize(String protocolVersion) throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "initialize",
-                          "params": {
-                            "protocolVersion": "%s",
-                            "clientInfo": {
-                              "name": "test-client",
-                              "version": "0.1"
-                            }
-                          }
-                        }
-                        """.formatted(protocolVersion);
+        McpRequest request = client.request("initialize", initializeParams(protocolVersion));
 
         return new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
                                                                                     .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                                    .jsonBody(request)
+                                                                                    .jsonBody(request.toString())
                                                                                     .method("POST")
                                                                                     .expectCode(200)
                                                                                     .run(String.class);

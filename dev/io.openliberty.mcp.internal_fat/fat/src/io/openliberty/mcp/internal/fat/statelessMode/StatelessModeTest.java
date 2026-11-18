@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.statelessMode;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.utils.McpClient.initializeParams;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -47,6 +49,9 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.tool.cancellationApp.CancellationTools;
+import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
@@ -92,53 +97,42 @@ public class StatelessModeTest extends FATServletClient {
 
     @Test
     public void testInitializeDoesNotReturnSessionIdInStatelessMode() throws Exception {
-        String request = """
+        // Only used to build the request, which is sent with HttpRequest so that the response headers can be checked
+        McpClient client = McpClient.builder(server, "/statelessModeTest").mode(StateMode.STATELESS).build();
+        McpRequest request = client.request("initialize", initializeParams(VALUE_MCP_PROTOCOL_VERSION, new JSONObject("""
                         {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "initialize",
-                          "params": {
-                            "protocolVersion": "2025-11-25",
-                            "capabilities": {
-                              "roots": {
-                                "listChanged": true
-                              },
-                              "sampling": {},
+                          "roots": {
+                            "listChanged": true
+                          },
+                          "sampling": {},
+                          "elicitation": {
+                            "form": {},
+                            "url": {}
+                          },
+                          "tasks": {
+                            "requests": {
                               "elicitation": {
-                                "form": {},
-                                "url": {}
+                                "create": {}
                               },
-                              "tasks": {
-                                "requests": {
-                                  "elicitation": {
-                                    "create": {}
-                                  },
-                                  "sampling": {
-                                    "createMessage": {}
-                                  }
-                                }
+                              "sampling": {
+                                "createMessage": {}
                               }
-                            },
-                            "clientInfo": {
-                              "name": "TestClient",
-                              "title": "Test client",
-                              "version": "1.0.0",
-                              "description": "A test MCP client, for testing"
                             }
                           }
-                        }""";
+                        }
+                        """)));
 
         HttpRequest httpRequest = new HttpRequest(server, ENDPOINT)
                                                                    .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                    .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
-                                                                   .jsonBody(request)
+                                                                   .jsonBody(request.toString())
                                                                    .method("POST")
                                                                    .expectCode(200);
 
         String expectedResponse = """
                         {
                           "jsonrpc": "2.0",
-                          "id": 1,
+                          "id": "%s",
                           "result": {
                             "protocolVersion": "2025-11-25",
                             "capabilities": {
@@ -152,7 +146,7 @@ public class StatelessModeTest extends FATServletClient {
                             }
                           }
                         }
-                        """;
+                        """.formatted(request.getId());
 
         String response = httpRequest.run(String.class);
 
@@ -185,7 +179,18 @@ public class StatelessModeTest extends FATServletClient {
                                                            .method("POST")
                                                            .run(String.class);
 
-        assertTrue("Tool response should contain echoed text", response.contains("hello"));
+        JSONAssert.assertEquals("""
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "1",
+                          "result": {
+                            "content": [
+                              { "type": "text", "text": "Echo: hello" }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """, response, STRICT);
     }
 
     @Test

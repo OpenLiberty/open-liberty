@@ -12,6 +12,7 @@ package io.openliberty.mcp.internal.fat.lifecycle.tests;
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.METHOD_NOT_FOUND;
 import static io.openliberty.mcp.internal.fat.utils.JsonRpcResponseMatcher.jsonRpcResponse;
+import static io.openliberty.mcp.internal.fat.utils.McpClient.initializeParams;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -27,6 +28,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import componenttest.custom.junit.runner.FATRunner;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
 
 /**
  *
@@ -55,35 +57,14 @@ public class LifecycleTest {
 
     @Test
     public void testInitialization() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "1",
-                          "method": "initialize",
-                          "params": {
-                            "protocolVersion": "2025-11-25",
-                            "capabilities": {
-                              "roots": {
-                                "listChanged": true
-                              },
-                              "sampling": {},
-                              "elicitation": {}
-                            },
-                            "clientInfo": {
-                              "name": "ExampleClient",
-                              "title": "Example Client Display Name",
-                              "version": "1.0.0"
-                            }
-                          }
-                        }
-                        """;
+        McpRequest request = client.request("initialize", initializeParams());
 
-        String response = client.callMCP(request);
+        String response = client.callMCP(request.toString());
 
         String expectedResponse = """
                         {
                           "jsonrpc": "2.0",
-                          "id": "1",
+                          "id": "%s",
                           "result": {
                             "protocolVersion": "2025-11-25",
                             "capabilities": {
@@ -97,7 +78,7 @@ public class LifecycleTest {
                             }
                           }
                         }
-                        """;
+                        """.formatted(request.getId());
         JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
     }
 
