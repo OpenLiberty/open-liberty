@@ -654,8 +654,9 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                 }
                 Filter userFilter = iLdapConfigMgr.getUserFilter();
                 //If principalName is not a DN and a userFilter exists, create the search
-                //filter using userFilter and principalName. This is the dynamically created
-                //search filter using PersonAccount objectclasses and loginProperty.
+                //filter using userFilter and principalName. This is the <filters> userFilter
+                //which has an attribute value assertion containing %v. This is replaced by
+                //principalName.
                 if (principalNameDN == null && userFilter != null) {
                     principalName = LdapHelper.encode(principalName, true);
                     sFilter = userFilter.prepare(principalName);
@@ -930,6 +931,9 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                 }
             }
         } else {
+            //This property is set in the Bridge classes, so this will be the case if we came through
+            //the WIMUserRegistry. Directly calling WIM through SCIM will also have this set if no filter
+			//was provided - meaning a search for all users or groups.
             if (root.isSetContexts()) {
                 String inputPattern = getContextProperty(root, SchemaConstants.USE_USER_FILTER_FOR_SEARCH);
                 if (inputPattern != null && inputPattern.length() > 0) {
@@ -941,7 +945,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                     }
                     if (dn == null) {
                         Filter f = iLdapConfigMgr.getUserFilter();
-                        //This will be NOT null if <filters> are defined. This is meant to take
+                        //This filter will be NOT null if <filters> are defined. This is meant to take
                         //precedence over the filter from SearchControl - which already has the
                         //encoded principal.
                         if (f != null) {
@@ -961,7 +965,7 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                         }
                         if (dn == null) {
                             Filter f = iLdapConfigMgr.getGroupFilter();
-                            //This will be NOT null if <filters> are defined. This is meant to take
+                            //This filter will be NOT null if <filters> are defined. This is meant to take
                             //precedence over the filter from SearchControl - which already has the
                             //encoded principal.
                             if (f != null) {
@@ -2900,21 +2904,23 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
                     String value = (String) pNameNode.getValue();
                     String uName = UniqueNameHelper.getValidUniqueName(value);
                     if (uName == null || ignoreDNBaseSearch) {
-                        //principalName is not a DN, so get the principalNameFilter using loginAttributes.
+                        //principalName is not a DN, so generate the filter using loginAttributes.
+                        //This does not include objectclasses yet.
                         //We will encode value in this method (handle special characters in value).
+
                         filter = getPrincipalNameFilter(value, encodeAsterisk);
                     } else {
                         //uName is a valid DN, so we can do an object scope search for DN
                         pNameBase = getDN(uName, SchemaConstants.DO_PERSON_ACCOUNT, null, true, false);
                     }
-
                 } else {
                     //The expression in the node did not include principalName.
                     //eg. expression=//entities[@xsi:type='LoginAccount' and cn='ldap_usercn']
-                    //Generally this means the input/output property mapping was changed
-                    //to something other than principalName.
+                    //Generally this means the security input name property mapping was changed
+                    //to something other than: uniqueId, uniqueName, externalId, externalName.
                     //To generate the search filter, we parse the node, encode
                     //the value, form the filter, and return it.
+                    //Is this also the path for SCIM calls that include their own filter?
                     filter = getSearchFilter(entityTypes, node, encodeAsterisk);
                 }
             } catch (ParseException e) {
@@ -2935,7 +2941,9 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository,
             }
         }
 
-        //Filter will be null for DN object scope searches and certificate logins
+        //filter is the login properties and getEntityTypesFilter returns the objectclass filter.
+        //eg. cn=user1 + objectclass=user
+        //filter will be null for DN object scope searches and certificate logins
         if (filter != null) {
             filter = "(&" + iLdapConfigMgr.getEntityTypesFilter(entityTypes) + filter + ")";
         } else {
