@@ -59,21 +59,17 @@ public class HeaderValidation {
     /**
      * Checks that the MCP-Protocol-Version header matches the protocol version carried in the request body.
      * <p>
-     * From protocol version 2026-07-28 the header value must match the
-     * {@code io.modelcontextprotocol/protocolVersion} field in the request's {@code params._meta}. Earlier
-     * versions do not carry the version in the body so no check is made for them. The specification does not define
-     * header requirements for notifications, so they are not checked either.
+     * The body is the canonical source of the protocol version, so if the request's {@code params._meta} contains an
+     * {@code io.modelcontextprotocol/protocolVersion} field it must match the header, whatever the header version.
+     * For protocol versions before 2026-07-28 the body is not required to carry the version, but from 2026-07-28
+     * it must.
      *
      * @param headerVersion the protocol version read from the MCP-Protocol-Version header
      * @param request the parsed request
-     * @throws JSONRPCException with {@link JSONRPCErrorCode#HEADER_MISMATCH} if the values do not match or
-     *     the body does not carry a protocol version
+     * @throws JSONRPCException with {@link JSONRPCErrorCode#HEADER_MISMATCH} if the body carries a protocol version
+     *     which does not match the header, or the body does not carry a protocol version when it is required
      */
     public static void validateProtocolVersionMatchesBody(McpProtocolVersion headerVersion, McpOperationPartialRequest request) throws JSONRPCException {
-        if (!headerVersion.connectionInfoInMeta()) {
-            return;
-        }
-
         String bodyVersion = null;
         JsonObject params = request.requestTo().params();
         if (params != null && params.get("_meta") instanceof JsonObject meta) {
@@ -85,7 +81,11 @@ public class HeaderValidation {
             }
         }
 
-        if (!headerVersion.getVersion().equals(bodyVersion)) {
+        boolean mismatch = bodyVersion == null
+                ? headerVersion.connectionInfoInMeta()
+                : !headerVersion.getVersion().equals(bodyVersion);
+
+        if (mismatch) {
             String message = Tr.formatMessage(tc, "header.mismatch.protocol.version");
             throw new JSONRPCException(JSONRPCErrorCode.HEADER_MISMATCH, List.of(message), HttpServletResponse.SC_BAD_REQUEST);
         }

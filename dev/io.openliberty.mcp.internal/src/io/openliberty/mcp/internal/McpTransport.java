@@ -185,11 +185,18 @@ public class McpTransport {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Ignoring JSONRPCException for notification (no id): " + e.getMessage(), e);
             }
-            sendEmptyResponse();
+            if (e.hasStatusCode()) {
+                res.setStatus(e.getStatusCode());
+            } else {
+                sendEmptyResponse();
+            }
             return;
         }
         McpResponse mcpResponse = new McpErrorResponse(requestId, e);
 
+        if (e.hasStatusCode()) {
+            res.setStatus(e.getStatusCode());
+        }
         res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }

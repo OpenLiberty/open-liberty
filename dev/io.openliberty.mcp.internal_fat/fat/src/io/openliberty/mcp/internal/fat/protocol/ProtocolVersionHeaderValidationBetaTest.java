@@ -191,14 +191,29 @@ public class ProtocolVersionHeaderValidationBetaTest {
     }
 
     /**
-     * Earlier protocol versions do not carry the version in the body, so a _meta value must not be compared
-     * with the header, even on a beta runtime.
+     * The body is the canonical source of the protocol version, so a version in the body must match the header
+     * even for versions before 2026-07-28.
      */
     @Test
-    public void testBodyMetaIsNotValidatedForGaVersions() throws Exception {
+    public void testHeaderMismatchWithBodyMetaIsRejectedForGaVersions() throws Exception {
         String request = ECHO_REQUEST_WITH_META.formatted(META_2026_07_28);
         for (String version : GA_VERSIONS) {
-            String response = client.callMCPRaw(request)
+            McpDetailedAuthResponse response = client.callMCPRaw(request)
+                                                     .protocolVersion(version)
+                                                     .expectedStatus(400)
+                                                     .run();
+
+            assertHeaderMismatch(response.body());
+        }
+    }
+
+    /**
+     * Versions before 2026-07-28 do not have to carry the version in the body.
+     */
+    @Test
+    public void testMissingBodyMetaIsAcceptedForGaVersions() throws Exception {
+        for (String version : GA_VERSIONS) {
+            String response = client.callMCPRaw(ECHO_REQUEST)
                                     .protocolVersion(version)
                                     .run()
                                     .body();
