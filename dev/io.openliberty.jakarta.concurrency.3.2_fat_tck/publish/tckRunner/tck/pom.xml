@@ -30,27 +30,6 @@
         <targetDirectory>${project.basedir}/target</targetDirectory>
     </properties>
 
-	<repositories>
-		<!-- For artifacts not yet in Maven Central -->
-		<repository>
-			<id>sonatype-nexus-staging</id>
-			<name>Sonatype Nexus Staging</name>
-			<url>https://jakarta.oss.sonatype.org/content/repositories/staging/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<!-- For artifacts not yet in Stagging repo use DHE -->
-		<repository>
-			<name>IBM DHE Maven repository</name>
-			<id>DHE</id>
-			<url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
-		</repository>
-	</repositories>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -64,6 +43,17 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- TEMPORARY (testing only): debug arquillian-junit5-container jar.
+             MUST remain the FIRST dependency. Maven orders the classpath by a pre-order walk of the dependency
+             graph, so any dependency declared before this one (e.g. the TCK jar) that transitively brings in the
+             stock arquillian-junit5-container would otherwise put the unpatched classes ahead of the debug ones. -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit5</groupId>
+            <artifactId>arquillian-junit5-container-debug</artifactId>
+            <version>1.10.3.Final-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../deps/arquillian-junit5-container-1.10.3.Final-SNAPSHOT.jar</systemPath>
+        </dependency>
         <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
         <dependency>
             <groupId>com.ibm.ws</groupId>
@@ -103,6 +93,7 @@
             <scope>system</scope>
             <systemPath>${io.openliberty.jakarta.enterpriseBeans.4.0}</systemPath>
         </dependency>
+        
         <!-- TEST DEPENDENCIES -->
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
@@ -111,6 +102,7 @@
             <type>pom</type>
             <scope>test</scope>
         </dependency>
+        
         <!-- Test dependencies needed by Liberty Arquillian Plugin for Junit5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -124,10 +116,6 @@
             <groupId>jakarta.tck</groupId>
             <artifactId>sigtest-maven-plugin</artifactId>
             <version>${sigtest.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
         </dependency>
     </dependencies>
 

@@ -29,6 +29,17 @@
 	</properties>
 
 	<dependencies>
+		<!-- TEMPORARY (testing only): debug arquillian-junit5-container jar.
+		     MUST remain the FIRST dependency. Maven orders the classpath by a pre-order walk of the dependency
+		     graph, so any dependency declared before this one (e.g. the TCK jar) that transitively brings in the
+		     stock arquillian-junit5-container would otherwise put the unpatched classes ahead of the debug ones. -->
+		<dependency>
+			<groupId>org.jboss.arquillian.junit5</groupId>
+			<artifactId>arquillian-junit5-container-debug</artifactId>
+			<version>1.10.3.Final-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/../deps/arquillian-junit5-container-1.10.3.Final-SNAPSHOT.jar</systemPath>
+		</dependency>
 		<!-- tck - data - external TCK -->
 		<dependency>
 			<groupId>${jakarta.data.groupid}</groupId>
@@ -113,11 +124,6 @@
 			<groupId>jakarta.tck</groupId>
 			<artifactId>sigtest-maven-plugin</artifactId>
 			<version>${sigtest.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.shrinkwrap.resolver</groupId>
-			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-			<version>${shrinkwrap.resolver.version}</version>
 		</dependency>
 		
 	</dependencies>
