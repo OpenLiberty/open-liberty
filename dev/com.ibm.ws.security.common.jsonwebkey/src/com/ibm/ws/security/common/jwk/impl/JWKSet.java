@@ -41,7 +41,7 @@ public class JWKSet {
     @Sensitive
     private Map<String, Set<JWK>> jwksBySetId = Collections.synchronizedMap(new HashMap<String, Set<JWK>>());
 
-    private final long Stale = 10 * 60 * 1000; //10 minutes
+    private final long Stale = 1 * 60 * 1000; //1 minute
 
     public JWKSet() {
 

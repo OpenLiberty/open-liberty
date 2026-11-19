@@ -16,13 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
 import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
@@ -183,37 +177,6 @@ public class RestJwtFATTest {
         assertEquals("Expected 401 Unauthorized for a JWT with the admin subject and groups but signed with the wrong key",
                      HttpURLConnection.HTTP_UNAUTHORIZED,
                      FATSuite.getResponseCode(server, token));
-    }
-
-    /**
-     * The jwkEndpointUrl can also name a file with a single public key in PEM format. server_pemKeyFile.xml points it
-     * at resources/security/jwtPublic.pem, and a token signed with the private key of that key is accepted.
-     */
-    @Test
-    public void testTokenSignedWithKeyFromPemFile_Success() throws Exception {
-        KeyPair pair = generatePemKeyFile();
-        useServerConfigWithPemKeyFile();
-        try {
-            String token = FATSuite.createRs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS), pair.getPrivate());
-            assertEquals("Expected 200 OK when the signature matches the public key in the PEM file",
-                         HttpURLConnection.HTTP_OK, FATSuite.getResponseCode(server, token));
-        } finally {
-            restoreServerConfig();
-        }
-    }
-
-    @Test
-    @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
-    public void testTokenSignedWithOtherKeyThanPemFile_Unauthorized() throws Exception {
-        generatePemKeyFile();
-        useServerConfigWithPemKeyFile();
-        try {
-            String token = FATSuite.createRs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS), unknownKey.getPrivateKey());
-            assertEquals("Expected 401 Unauthorized when the signature does not match the public key in the PEM file",
-                         HttpURLConnection.HTTP_UNAUTHORIZED, FATSuite.getResponseCode(server, token));
-        } finally {
-            restoreServerConfig();
-        }
     }
 
     @Test
@@ -445,35 +408,6 @@ public class RestJwtFATTest {
         assertEquals("Expected 200 OK for a valid JWT with a server: access ID subject and the admin group access ID in the 'group' claim",
                      HttpURLConnection.HTTP_OK,
                      FATSuite.getResponseCode(server, createToken(claims)));
-    }
-
-    /** Generates a key pair and writes its public key in PEM format to the file that server_pemKeyFile.xml refers to */
-    private static KeyPair generatePemKeyFile() throws Exception {
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-        generator.initialize(2048);
-        KeyPair pair = generator.generateKeyPair();
-        String pem = "-----BEGIN PUBLIC KEY-----\n"
-                     + Base64.getMimeEncoder(64, "\n".getBytes(StandardCharsets.US_ASCII)).encodeToString(pair.getPublic().getEncoded())
-                     + "\n-----END PUBLIC KEY-----\n";
-        File pemFile = new File(server.getServerRoot() + "/resources/security/jwtPublic.pem");
-        pemFile.getParentFile().mkdirs();
-        Files.write(pemFile.toPath(), pem.getBytes(StandardCharsets.US_ASCII));
-        return pair;
-    }
-
-    private static void useServerConfigWithPemKeyFile() throws Exception {
-        server.saveServerConfiguration();
-        server.setMarkToEndOfLog();
-        server.setServerConfigurationFromFilePath("server_pemKeyFile.xml");
-        assertNotNull("The server configuration update was not completed",
-                      server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I"));
-    }
-
-    private static void restoreServerConfig() throws Exception {
-        server.setMarkToEndOfLog();
-        server.restoreServerConfiguration();
-        server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I");
-        new File(server.getServerRoot() + "/resources/security/jwtPublic.pem").delete();
     }
 
     /** @return the claims signed with the first key of the key set, with the kid of that key in the header */

@@ -21,7 +21,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -29,10 +28,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.jose4j.jws.AlgorithmIdentifiers;
-import org.jose4j.jws.JsonWebSignature;
-import org.jose4j.jwt.JwtClaims;
-import org.jose4j.keys.HmacKey;
+import org.jose4j.jwk.RsaJsonWebKey;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -41,7 +37,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -59,15 +54,9 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
-@SkipForRepeat({ SkipForRepeat.EE9_OR_LATER_FEATURES })
 public class RestJwtNoJwtFATTest {
 
     private static final Class<?> c = RestJwtNoJwtFATTest.class;
-
-    // The token uses the REST issuer and audience, so RestJwtTAI would claim it if it were active
-    private static final String ISSUER = "IBMJMXConnectorRESTIssuer";
-    private static final String AUDIENCE = "IBMJMXConnectorREST";
-    private static final String SHARED_KEY = "superSecretSharedKeyForRestJwtTesting123456";
 
     // Anything that would only be logged if the restJwt bundle was started or the TAI was invoked
     private static final String TAI_TRACE_REGEX = "RestJwtTAI|restJwtTAI|io\\.openliberty\\.security\\.rest\\.jwt\\.tai";
@@ -118,7 +107,9 @@ public class RestJwtNoJwtFATTest {
      */
     @Test
     public void testBearerRequestNotProcessedByRestJwtTai() throws Exception {
-        String token = createJwtToken("adminUser", "liberty-admin");
+        // The token uses the REST issuer and audience, so RestJwtTAI would claim it if it were active
+        RsaJsonWebKey key = FATSuite.generateRsaKey("restJwtKey1");
+        String token = FATSuite.createRs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS), key);
 
         HttpURLConnection conn = sendRequest("Bearer " + token);
         assertEquals("Expected 401 because nothing in the server can authenticate a Bearer token without jwt-1.0",
@@ -126,23 +117,6 @@ public class RestJwtNoJwtFATTest {
 
         List<String> found = server.findStringsInTrace(TAI_TRACE_REGEX);
         assertTrue("RestJwtTAI should not process the request, but found: " + found, found.isEmpty());
-    }
-
-    private static String createJwtToken(String username, String group) throws Exception {
-        JwtClaims claims = new JwtClaims();
-        claims.setIssuer(ISSUER);
-        claims.setAudience(AUDIENCE);
-        claims.setSubject(username);
-        claims.setStringListClaim("groups", Collections.singletonList(group));
-        claims.setExpirationTimeMinutesInTheFuture(10);
-        claims.setIssuedAtToNow();
-        claims.setGeneratedJwtId();
-
-        JsonWebSignature jws = new JsonWebSignature();
-        jws.setPayload(claims.toJson());
-        jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.HMAC_SHA256);
-        jws.setKey(new HmacKey(SHARED_KEY.getBytes(StandardCharsets.UTF_8)));
-        return jws.getCompactSerialization();
     }
 
     private static HttpURLConnection sendRequest(String authorizationHeader) throws Exception {

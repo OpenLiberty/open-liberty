@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<server description="REST Admin JWT TAI FAT Server - public key file is rotated while the server runs">
+<server description="REST Admin JWT TAI FAT Server - JSON Web Key Set is rotated while the server runs">
     <include location="../fatTestPorts.xml"/>
 
     <featureManager>
@@ -18,23 +18,23 @@
     </virtualHost>
     <httpEndpoint id="adminEndpoint" host="*" httpPort="-1" httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
 
-    <!-- The jwtConsumer keeps the public key it read from the jwkEndpointUrl file until its configuration is
-         reloaded. After the test replaces resources/security/jwtPublic.pem it changes this variable, which
+    <!-- The jwtConsumer keeps the public keys it read from the jwkEndpointUrl file until its configuration is
+         reloaded. After the test replaces resources/security/jwks.json it changes this variable, which
          reloads the jwtConsumer (the 1 second difference in the clock skew is irrelevant to the tokens). -->
     <variable name="rotation.clockSkew" value="60s"/>
     <jwtConsumer id="JMXConnectorRESTConsumer"
                  issuer="IBMJMXConnectorRESTIssuer"
                  audiences="IBMJMXConnectorREST"
-                 jwkEndpointUrl="file:${server.config.dir}resources/security/jwtPublic.pem"
+                 jwkEnabled="true"
+                 jwkEndpointUrl="file:${server.config.dir}resources/security/jwks.json"
                  signatureAlgorithm="RS256"
                  clockSkew="${rotation.clockSkew}" />
 
-    <basicRegistry id="basic" realm="BasicRealm">
-        <user name="adminUser" password="password"/>
-        <group name="liberty-admin">
-            <member name="adminUser"/>
-        </group>
-    </basicRegistry>
-
-    <administrator-role group="liberty-admin" />
+    <!-- No user registry. The tokens carry user and group access IDs, so the roles are mapped by access ID. -->
+    <administrator-role>
+        <group>group:defaultWIMFileBasedRealm/liberty-admin</group>
+    </administrator-role>
+    <reader-role>
+        <group>group:defaultWIMFileBasedRealm/liberty-reader</group>
+    </reader-role>
 </server>
