@@ -21,7 +21,6 @@ import com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.channelfw.ChannelConfiguration;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
@@ -118,8 +117,7 @@ public class WsocOutboundChain {
         sslOptions.activate(context);
         sslFactoryProvider.activate(context);
 
-        useNettyTransport = ProductInfo.getBetaEdition() &&
-                            MetatypeUtils.parseBoolean(WS_CHAIN_NAME, NettyConstants.USE_NETTY, properties.get(NettyConstants.USE_NETTY), true);
+        useNettyTransport = MetatypeUtils.parseBoolean(WS_CHAIN_NAME, NettyConstants.USE_NETTY, properties.get(NettyConstants.USE_NETTY), true);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "activate, Netty bundle: " + nettyBundle);
@@ -139,8 +137,7 @@ public class WsocOutboundChain {
 
     @Modified
     protected void modified(Map<String, Object> config) {
-        boolean usingNetty = ProductInfo.getBetaEdition() &&
-                             MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", config.get("useNettyTransport"), true);
+        boolean usingNetty = MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", config.get("useNettyTransport"), true);
         boolean unchangedTransport = useNettyTransport && usingNetty;
         useNettyTransport = usingNetty;
         modified(unchangedTransport);

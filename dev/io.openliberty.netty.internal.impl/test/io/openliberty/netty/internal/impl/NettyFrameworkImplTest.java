@@ -40,15 +40,12 @@ import org.jmock.Mockery;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
-
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -110,8 +107,6 @@ public class NettyFrameworkImplTest {
 
     @Before
     public void setup() {
-        // Skip test if beta edition is not set
-        Assume.assumeTrue(ProductInfo.getBetaEdition());
         testChannels = new ArrayList<Channel>();
         framework = new NettyFrameworkImpl();
         framework.setExecutorService(GlobalEventExecutor.INSTANCE);
@@ -121,11 +116,6 @@ public class NettyFrameworkImplTest {
 
     @After
     public void tearDown() throws Exception {
-        // Skip tear down if beta edition is not set
-        if (!ProductInfo.getBetaEdition()) {
-            System.out.println("Beta edition is disabled!! Skipping tests...");
-            return;
-        }
         framework.deactivate(null, null);
         framework = null;
         testChannels = null;
