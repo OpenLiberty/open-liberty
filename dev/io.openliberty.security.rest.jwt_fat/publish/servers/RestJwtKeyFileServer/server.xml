@@ -23,6 +23,7 @@
     <jwtConsumer id="JMXConnectorRESTConsumer"
                  issuer="IBMJMXConnectorRESTIssuer"
                  audiences="IBMJMXConnectorREST"
+                 jwkEnabled="true"
                  jwkEndpointUrl="file:${server.config.dir}resources/security/jwtPublic.pem"
                  signatureAlgorithm="RS256"
                  clockSkew="1m" />

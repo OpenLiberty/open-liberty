@@ -12,8 +12,11 @@
  *******************************************************************************/
 package io.openliberty.security.rest.jwt.fat;
 
+import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.Key;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
@@ -26,6 +29,10 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.jose4j.jwk.JsonWebKey;
+import org.jose4j.jwk.JsonWebKeySet;
+import org.jose4j.jwk.RsaJsonWebKey;
+import org.jose4j.jwk.RsaJwkGenerator;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -47,8 +54,9 @@ import componenttest.topology.impl.LibertyServer;
                 AlwaysPassesTest.class,
                 RestJwtFATTest.class,
                 RestJwtNoConnectorFATTest.class,
-                RestJwtKeyFileFATTest.class,
-                RestJwtKeyFileInvalidFATTest.class
+                RestJwtNoJwtFATTest.class,
+                RestJwtKeyFileInvalidFATTest.class,
+                RestJwtKeyRotationFATTest.class
 })
 public class FATSuite {
 
@@ -67,9 +75,14 @@ public class FATSuite {
     public static final String OTHER_ISSUER = "https://other.issuer";
     public static final String OTHER_AUDIENCE = "someOtherAudience";
 
-    // HS256 shared key of the jwtConsumer in server.xml, and a key that does not match it
+    // HS256 shared key of the jwtConsumer of the RestJwtNoConnectorServer in server.xml
     public static final String SHARED_KEY = "superSecretSharedKeyForRestJwtTesting123456";
-    public static final String WRONG_KEY = "wrongSecretSharedKeyThatWillFailValidation1";
+
+    /**
+     * The file that the jwkEndpointUrl of the RestJwtServer jwtConsumer refers to, relative to the server directory:
+     * jwkEndpointUrl="file:${server.config.dir}resources/security/jwks.json"
+     */
+    public static final String JWKS_FILE = "resources/security/jwks.json";
 
     /*
      * The node agent builds the JWT with a server or user access ID as the subject and plain group names. The FAT
@@ -141,20 +154,60 @@ public class FATSuite {
 
     /** @return the claims signed as a compact JWT with HS256 and the shared key */
     public static String createHs256Jwt(JwtClaims claims, String sharedKey) throws Exception {
-        return sign(claims, AlgorithmIdentifiers.HMAC_SHA256, new HmacKey(sharedKey.getBytes("UTF-8")));
+        return sign(claims, AlgorithmIdentifiers.HMAC_SHA256, new HmacKey(sharedKey.getBytes("UTF-8")), null);
     }
 
     /** @return the claims signed as a compact JWT with RS256 and the private key */
     public static String createRs256Jwt(JwtClaims claims, PrivateKey privateKey) throws Exception {
-        return sign(claims, AlgorithmIdentifiers.RSA_USING_SHA256, privateKey);
+        return sign(claims, AlgorithmIdentifiers.RSA_USING_SHA256, privateKey, null);
     }
 
-    private static String sign(JwtClaims claims, String algorithm, Key key) throws Exception {
+    /** @return the claims signed as a compact JWT with RS256, with the kid of the key in the header */
+    public static String createRs256Jwt(JwtClaims claims, RsaJsonWebKey key) throws Exception {
+        return createRs256Jwt(claims, key.getPrivateKey(), key.getKeyId());
+    }
+
+    /**
+     * @param keyId the kid for the header, or null to leave the kid out of the header
+     * @return the claims signed as a compact JWT with RS256 and the private key
+     */
+    public static String createRs256Jwt(JwtClaims claims, PrivateKey privateKey, String keyId) throws Exception {
+        return sign(claims, AlgorithmIdentifiers.RSA_USING_SHA256, privateKey, keyId);
+    }
+
+    private static String sign(JwtClaims claims, String algorithm, Key key, String keyId) throws Exception {
         JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(claims.toJson());
         jws.setAlgorithmHeaderValue(algorithm);
+        if (keyId != null) {
+            jws.setKeyIdHeaderValue(keyId);
+        }
         jws.setKey(key);
         return jws.getCompactSerialization();
+    }
+
+    /** Generates a 2048 bit RSA key pair at run time, so that no private key is checked in */
+    public static RsaJsonWebKey generateRsaKey(String keyId) throws Exception {
+        RsaJsonWebKey key = RsaJwkGenerator.generateJwk(2048);
+        key.setKeyId(keyId);
+        return key;
+    }
+
+    /** @return the file in the server directory that the jwkEndpointUrl in server.xml refers to */
+    public static File getJwksFile(LibertyServer server) {
+        return new File(server.getServerRoot() + "/" + JWKS_FILE);
+    }
+
+    /** Writes a JSON Web Key Set with the public parts of the keys to the file, replacing the existing file */
+    public static void writeJwks(LibertyServer server, RsaJsonWebKey... keys) throws Exception {
+        writeKeyFile(server, new JsonWebKeySet(keys).toJson(JsonWebKey.OutputControlLevel.PUBLIC_ONLY));
+    }
+
+    /** Writes the text as it is to the file, replacing the existing file */
+    public static void writeKeyFile(LibertyServer server, String text) throws Exception {
+        File file = getJwksFile(server);
+        file.getParentFile().mkdirs();
+        Files.write(file.toPath(), text.getBytes(StandardCharsets.UTF_8));
     }
 
     /** @return an SSL context that trusts every server certificate, for the self-signed FAT servers */

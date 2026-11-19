@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="REST Admin JWT TAI negative FAT Server: restConnector-2.0 without jwt-1.0">
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- jwt-1.0 is intentionally absent, so the restJwt-1.0 auto-feature must not be provisioned -->
+    <featureManager>
+        <feature>restConnector-2.0</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="Liberty" />
+    <ltpa keysPassword="password" />
+
+    <!-- Route the admin REST connector (IBMJMXConnectorREST) through a dedicated admin endpoint/virtual host -->
+    <variable name="admin.virtual.host" value="admin_host"/>
+    <virtualHost id="admin_host" allowFromEndpointRef="adminEndpoint">
+        <hostAlias>*:${bvt.prop.HTTP_secondary.secure}</hostAlias>
+    </virtualHost>
+    <httpEndpoint id="adminEndpoint" host="*" httpPort="-1" httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="adminUser" password="password"/>
+        <group name="liberty-admin">
+            <member name="adminUser"/>
+        </group>
+    </basicRegistry>
+
+    <administrator-role group="liberty-admin" />
+</server>

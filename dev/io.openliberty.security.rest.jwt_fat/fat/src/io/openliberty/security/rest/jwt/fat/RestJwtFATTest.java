@@ -20,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.List;
 
+import org.jose4j.jwk.RsaJsonWebKey;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.NumericDate;
 import org.junit.AfterClass;
@@ -36,21 +37,38 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
+/**
+ * The jwtConsumer of RestJwtServer validates RS256 tokens with the public key in the JSON Web Key Set in
+ * resources/security/jwks.json, named by the jwkEndpointUrl in server.xml. Every token has the kid of its
+ * signing key in the header.
+ */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class RestJwtFATTest {
 
     private static final Class<?> c = RestJwtFATTest.class;
 
+    private static final String KEY_ID = "restJwtKey1";
+
     @Server("RestJwtServer")
     public static LibertyServer server;
+
+    // The key that is in the key set, and a key that is not in it
+    private static RsaJsonWebKey signingKey;
+    private static RsaJsonWebKey unknownKey;
 
     @BeforeClass
     public static void setUp() throws Exception {
         String methodName = "setUp";
+
+        // Generate the key pairs at run time so that no private key is checked in.
+        signingKey = FATSuite.generateRsaKey(KEY_ID);
+        unknownKey = FATSuite.generateRsaKey("restJwtUnknownKey");
+        FATSuite.writeJwks(server, signingKey);
+
         // The restJwt-1.0 auto-feature is provisioned from the product image because jwt-1.0 and
         // restConnector-2.0 are enabled in server.xml.
-        Log.info(c, methodName, "Starting RestJwtServer...");
+        Log.info(c, methodName, "Starting RestJwtServer with the JWKS file " + FATSuite.getJwksFile(server).getAbsolutePath());
         server.startServer();
         assertNotNull("IBMJMXConnectorREST application was not ready",
                       server.waitForStringInLog("SRVE0242I.*IBMJMXConnectorREST"));
@@ -147,11 +165,15 @@ public class RestJwtFATTest {
                      FATSuite.getResponseCode(server, token));
     }
 
+    /**
+     * The kid of the token is in the key set, so its public key is found, but the token is signed with another key.
+     */
     @Test
     @Mode(TestMode.LITE)
     @AllowedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     public void testInvalidSignatureJwt_Unauthorized() throws Exception {
-        String token = FATSuite.createHs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS), FATSuite.WRONG_KEY);
+        String token = FATSuite.createRs256Jwt(FATSuite.createClaims(FATSuite.SERVER_ID, FATSuite.ADMIN_GROUPS),
+                                               unknownKey.getPrivateKey(), KEY_ID);
         assertEquals("Expected 401 Unauthorized for a JWT with the admin subject and groups but signed with the wrong key",
                      HttpURLConnection.HTTP_UNAUTHORIZED,
                      FATSuite.getResponseCode(server, token));
@@ -388,8 +410,8 @@ public class RestJwtFATTest {
                      FATSuite.getResponseCode(server, createToken(claims)));
     }
 
-    /** @return the claims signed with the shared key of the jwtConsumer */
+    /** @return the claims signed with the first key of the key set, with the kid of that key in the header */
     private static String createToken(JwtClaims claims) throws Exception {
-        return FATSuite.createHs256Jwt(claims, FATSuite.SHARED_KEY);
+        return FATSuite.createRs256Jwt(claims, signingKey);
     }
 }

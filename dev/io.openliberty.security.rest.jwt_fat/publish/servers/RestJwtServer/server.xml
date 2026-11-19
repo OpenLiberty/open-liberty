@@ -18,11 +18,14 @@
     </virtualHost>
     <httpEndpoint id="adminEndpoint" host="*" httpPort="-1" httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
 
+    <!-- RS256 with no trustedAlias: the public keys come from the JSON Web Key Set that the tests write to
+         resources/security/jwks.json under the server directory before the server starts. -->
     <jwtConsumer id="JMXConnectorRESTConsumer"
                  issuer="IBMJMXConnectorRESTIssuer"
                  audiences="IBMJMXConnectorREST"
-                 sharedKey="superSecretSharedKeyForRestJwtTesting123456"
-                 signatureAlgorithm="HS256"
+                 jwkEnabled="true"
+                 jwkEndpointUrl="file:${server.config.dir}resources/security/jwks.json"
+                 signatureAlgorithm="RS256"
                  clockSkew="1m" />
 
     <!-- No user registry. The tokens carry user and group access IDs, so the roles are mapped by access ID. -->
