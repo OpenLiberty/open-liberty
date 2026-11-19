@@ -21,7 +21,7 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
 
 /**
- * Issues one-time notices (in beta builds only) for databases that are
+ * Issues one-time notices for databases that are
  * no longer community maintained (Derby) or intended for development only (H2).
  */
 public class DatabaseNotices {
@@ -40,9 +40,6 @@ public class DatabaseNotices {
      * @param classNames       configured or inferred data source/driver class names. Can be null.
      */
     public static void issueNotices(String vendorPID, Collection<String> classNames) {
-        if (!ProductInfo.getBetaEdition())
-            return;
-
         if (isDerby(vendorPID, classNames) && derbyNoticeIssued.compareAndSet(false, true)) {
             Tr.warning(tc, "8071_DERBY_NOT_MAINTAINED");
         }

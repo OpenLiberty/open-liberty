@@ -18,6 +18,8 @@
       <feature>componenttest-1.0</feature>
       <feature>jndi-1.0</feature>
     </featureManager>
+
+    <application location="noticeapp.war"/>
  
     <library id="DerbyLib" fat.modify="true">
       <fileset dir="${shared.resource.dir}/derby"/>
@@ -44,6 +46,7 @@
     </dataSource>
 
     <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codeBase="${shared.resource.dir}/derby/derbyclient.jar" className="java.security.AllPermission"/>
     <javaPermission codeBase="${server.config.dir}/derby/derby/" className="java.security.AllPermission"/>
 
     <include location="../fatTestPorts.xml"/>
