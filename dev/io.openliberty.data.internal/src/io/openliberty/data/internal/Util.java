@@ -10,6 +10,7 @@
 package io.openliberty.data.internal;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -539,7 +540,7 @@ public class Util {
                 for (StackTraceElement e : cause.getStackTrace())
                     writer.println(indent + "  at " + e.toString());
 
-                for (Throwable suppressed : x.getSuppressed())
+                for (Throwable suppressed : cause.getSuppressed())
                     printStackTrace(suppressed, writer, indent + "  ", alreadyPrinted);
             } else {
                 writer.println(indent + "[CIRCULAR REFERENCE: " +
@@ -581,6 +582,20 @@ public class Util {
         return ASYNC_STAGE_RETURN_TYPES.contains(method.getReturnType()) &&
                (ASYNCHRONOUS_ANNO_CLASS == null ||
                 !method.isAnnotationPresent(ASYNCHRONOUS_ANNO_CLASS));
+    }
+
+    /**
+     * Write the exception, its stack, and causes to a String value.
+     *
+     * @param x the exception or error
+     */
+    @Trivial
+    public static String toStackTrace(Throwable x) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        printStackTrace(x, pw, "", null);
+        pw.flush();
+        return sw.toString();
     }
 
     /**
