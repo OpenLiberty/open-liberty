@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -902,8 +903,21 @@ public class ESAAdaptor extends ArchiveAdaptor {
             FixAdaptor.preCheck(fixInfo, baseDir);
 
         // check the files to be uninstalled
-        for (File f : filesToDelete)
-            isFileLocked(targetFd, f);
+        if (filesToDelete != null && !filesToDelete.isEmpty()) {
+            final AtomicReference<InstallException> lockException = new AtomicReference<InstallException>();
+            filesToDelete.parallelStream().forEach(f -> {
+                if (lockException.get() == null) {
+                    try {
+                        isFileLocked(targetFd, f);
+                    } catch (InstallException e) {
+                        lockException.compareAndSet(null, e);
+                    }
+                }
+            });
+            if (lockException.get() != null) {
+                throw lockException.get();
+            }
+        }
 
         // check the feature license folder
         isFileLocked(targetFd, new File(baseDir, "/lafiles/" + targetFd.getSymbolicName()));
