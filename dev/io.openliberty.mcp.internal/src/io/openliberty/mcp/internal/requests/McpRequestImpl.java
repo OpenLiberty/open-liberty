@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,12 +27,12 @@ import io.openliberty.mcp.internal.sessions.McpSession;
  */
 public class McpRequestImpl implements McpRequest {
 
-    private io.openliberty.mcp.internal.requests.McpRequest requestMessage;
+    private McpOperationRequest requestMessage;
     private McpTransport transport;
     private McpSession session;
     private Map<String, Object> meta;
 
-    public McpRequestImpl(io.openliberty.mcp.internal.requests.McpRequest requestMessage,
+    public McpRequestImpl(McpOperationRequest requestMessage,
                           McpTransport transport,
                           McpSession session,
                           Map<String, Object> meta) {
@@ -50,10 +49,7 @@ public class McpRequestImpl implements McpRequest {
 
     @Override
     public ImplementationInfo clientInfo() {
-        if (session == null) {
-            return ImplementationInfoImpl.UNKNOWN;
-        }
-        return session.getClientInfo();
+        return requestMessage.clientInfo();
     }
 
     @Override
@@ -68,10 +64,7 @@ public class McpRequestImpl implements McpRequest {
 
     @Override
     public Map<String, Object> rawClientCapabilities() {
-        if (session == null) {
-            return Collections.emptyMap();
-        }
-        return session.getClientCapabilities();
+        return requestMessage.clientCapabilities();
     }
 
     @Override
