@@ -12,9 +12,13 @@ package io.openliberty.mcp.internal.requests.parsing;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import org.mcpjava.server.ImplementationInfo;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -30,6 +34,7 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.MCPRequestValidationException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.McpResponseException;
+import io.openliberty.mcp.internal.requests.ImplementationInfoImpl;
 import io.openliberty.mcp.internal.requests.McpOperationPartialRequest;
 import io.openliberty.mcp.internal.requests.McpOperationRequest;
 import io.openliberty.mcp.internal.requests.RequestId;
@@ -57,6 +62,8 @@ public class McpOperationRequestParser {
     public static final String MCP_SESSION_ID_HEADER = "Mcp-Session-Id";
     private static final List<String> REQUIRED_MCP_MIME_TYPES = List.of("text/event-stream", "application/json");
     private static final String ACCEPT_HEADER = "Accept";
+    private static final String META_CLIENT_INFO = "io.modelcontextprotocol/clientInfo";
+    private static final String META_CLIENT_CAPABILITIES = "io.modelcontextprotocol/clientCapabilities";
 
     private final McpSessionStore sessionStore;
     private final Jsonb jsonb;
@@ -280,7 +287,67 @@ public class McpOperationRequestParser {
 
         JsonObject args = requestTO.params() == null ? JsonObject.EMPTY_JSON_OBJECT : requestTO.params();
 
-        return new McpOperationRequest(method, partialReq.protocolVersion(), partialReq.id(), session, args);
+        ImplementationInfo clientInfo;
+        Map<String, Object> clientCapabilities;
+        if (partialReq.protocolVersion() != null && partialReq.protocolVersion().supportsRequestLevelClientInfo()) {
+            // The client sends its info and capabilities with each request, rather than once when initializing a session
+            JsonObject meta = args.get("_meta") instanceof JsonObject metaObject ? metaObject : JsonObject.EMPTY_JSON_OBJECT;
+            clientInfo = readClientInfoFromMeta(meta);
+            clientCapabilities = readClientCapabilitiesFromMeta(meta);
+        } else if (session != null) {
+            clientInfo = session.getClientInfo() != null ? session.getClientInfo() : ImplementationInfoImpl.UNKNOWN;
+            clientCapabilities = session.getClientCapabilities() != null ? session.getClientCapabilities() : Collections.emptyMap();
+        } else {
+            clientInfo = ImplementationInfoImpl.UNKNOWN;
+            clientCapabilities = Collections.emptyMap();
+        }
+
+        return new McpOperationRequest(method, partialReq.protocolVersion(), partialReq.id(), session, args, clientInfo, clientCapabilities);
+    }
+
+    /**
+     * Reads the client info from the request {@code _meta}.
+     * <p>
+     * Client info is optional and is self-reported by the client, so a missing or unusable value is treated as unknown.
+     * Only the reserved, prefixed key is read, other keys are application-defined metadata.
+     */
+    @FFDCIgnore(JsonException.class)
+    private ImplementationInfo readClientInfoFromMeta(JsonObject meta) {
+        JsonValue clientInfoJson = meta.get(META_CLIENT_INFO);
+        if (clientInfoJson == null) {
+            return ImplementationInfoImpl.UNKNOWN;
+        }
+        try {
+            ImplementationInfo info = jsonb.fromJson(clientInfoJson.toString(), ImplementationInfoImpl.class);
+            return info != null ? info : ImplementationInfoImpl.UNKNOWN;
+        } catch (JsonbException | JsonException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Unable to read client info from request _meta, using unknown client info", e);
+            }
+            return ImplementationInfoImpl.UNKNOWN;
+        }
+    }
+
+    /**
+     * Reads the client capabilities from the request {@code _meta}.
+     * <p>
+     * Only the reserved, prefixed key is read, other keys are application-defined metadata.
+     */
+    @FFDCIgnore(JsonException.class)
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> readClientCapabilitiesFromMeta(JsonObject meta) {
+        if (!(meta.get(META_CLIENT_CAPABILITIES) instanceof JsonObject capabilitiesJson)) {
+            return Collections.emptyMap();
+        }
+        try {
+            Map<String, Object> capabilities = jsonb.fromJson(capabilitiesJson.toString(), Map.class);
+            return capabilities != null ? Collections.unmodifiableMap(capabilities) : Collections.emptyMap();
+        } catch (JsonbException | JsonException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Unable to read client capabilities from request _meta, using empty capabilities", e);
+            }
+            return Collections.emptyMap();
+        }
     }
 
     /**

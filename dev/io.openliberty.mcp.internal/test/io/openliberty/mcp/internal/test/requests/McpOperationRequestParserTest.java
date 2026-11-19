@@ -12,6 +12,7 @@ package io.openliberty.mcp.internal.test.requests;
 import static io.openliberty.mcp.internal.McpProtocolVersion.V_2025_03_26;
 import static io.openliberty.mcp.internal.McpProtocolVersion.V_2025_06_18;
 import static io.openliberty.mcp.internal.McpProtocolVersion.V_2025_11_25;
+import static io.openliberty.mcp.internal.McpProtocolVersion.V_2026_07_28;
 import static io.openliberty.mcp.internal.RequestMethod.PING;
 import static io.openliberty.mcp.internal.RequestMethod.TOOLS_CALL;
 import static io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode.PARSE_ERROR;
@@ -36,11 +37,14 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import io.openliberty.mcp.internal.McpProtocolVersion;
 import io.openliberty.mcp.internal.McpRequestTracker;
 import io.openliberty.mcp.internal.RequestMethod;
 import io.openliberty.mcp.internal.config.McpConfig;
@@ -71,8 +75,24 @@ public class McpOperationRequestParserTest {
     private static final String ACCEPT = "Accept";
     private static final String ACCEPT_VALUE = "application/json,text/event-stream";
     private static final Jsonb jsonb = TestUtils.createJsonb();
+    private static final String BETA_PROPERTY = "com.ibm.ws.beta.edition";
     private McpOperationRequestParser parser;
     private McpSessionStore sessionStore;
+    private String originalBetaValue;
+
+    @Before
+    public void saveBetaProperty() {
+        originalBetaValue = System.getProperty(BETA_PROPERTY);
+    }
+
+    @After
+    public void restoreBetaProperty() {
+        if (originalBetaValue == null) {
+            System.clearProperty(BETA_PROPERTY);
+        } else {
+            System.setProperty(BETA_PROPERTY, originalBetaValue);
+        }
+    }
 
     @Before
     public void setup() {
@@ -1025,6 +1045,172 @@ public class McpOperationRequestParserTest {
         var req = new MockHttpServletRequest("");
         req.addHeader(MCP_PROTOCOL_VERSION_HEADER, V_2025_06_18.getVersion());
         parser.validateProtocolVersionHeaderForDelete(req);
+    }
+
+    private static MockHttpServletRequest validRequestFor(String json, McpProtocolVersion version) {
+        if (version == V_2026_07_28) {
+            // Beta protocol versions are only accepted on a beta runtime. The original value is restored by restoreBetaProperty
+            System.setProperty(BETA_PROPERTY, "true");
+        }
+        var request = new MockHttpServletRequest(json);
+        request.addHeader(ACCEPT, ACCEPT_VALUE);
+        request.addHeader(MCP_PROTOCOL_VERSION_HEADER, version.getVersion());
+        return request;
+    }
+
+    private static String toolCallWithMeta(String metaEntries) {
+        return """
+                        {
+                            "jsonrpc": "2.0",
+                            "id": "5",
+                            "method": "tools/call",
+                            "params": {
+                                "name": "echo",
+                                "_meta": {
+                                    %s
+                                }
+                            }
+                        }
+                        """.formatted(metaEntries);
+    }
+
+    @Test
+    public void testParseClientInfoFromMetaFor20260728() throws IOException {
+        String json = toolCallWithMeta("""
+                        "io.modelcontextprotocol/clientInfo": {
+                            "name": "meta-client",
+                            "title": "Meta Client Title",
+                            "version": "3.0.0",
+                            "description": "Description in meta",
+                            "websiteUrl": "https://example.org",
+                            "icons": [ { "src": "https://example.org/icon.png", "mimeType": "image/png", "sizes": ["48x48"], "theme": "light" } ]
+                        },
+                        "io.modelcontextprotocol/clientCapabilities": {
+                            "roots": { "listChanged": true }
+                        },
+                        "customProp": "customVal"
+                        """);
+        var request = parser.parse(parser.preParse(validRequestFor(json, V_2026_07_28)));
+
+        var info = request.clientInfo();
+        assertEquals("name", "meta-client", info.name());
+        assertEquals("title", "Meta Client Title", info.title());
+        assertEquals("version", "3.0.0", info.version());
+        assertEquals("description", Optional.of("Description in meta"), info.description());
+        assertEquals("websiteUrl", Optional.of("https://example.org"), info.websiteUrl());
+        assertEquals("icons", 1, info.icons().size());
+        assertEquals("icon src", "https://example.org/icon.png", info.icons().get(0).src());
+        assertEquals("capabilities", Map.of("roots", Map.of("listChanged", true)), request.clientCapabilities());
+    }
+
+    @Test
+    public void testParseUnprefixedMetaKeysIgnoredFor20260728() throws IOException {
+        String json = toolCallWithMeta("""
+                        "clientInfo": { "name": "app-defined", "version": "1.5" },
+                        "clientCapabilities": { "appCap": true },
+                        "capabilities": { "appCap2": true }
+                        """);
+        var request = parser.parse(parser.preParse(validRequestFor(json, V_2026_07_28)));
+
+        assertEquals("clientInfo", ImplementationInfoImpl.UNKNOWN, request.clientInfo());
+        assertEquals("capabilities", Map.of(), request.clientCapabilities());
+    }
+
+    @Test
+    public void testParseEmptyClientCapabilitiesFor20260728() throws IOException {
+        String json = toolCallWithMeta("""
+                        "io.modelcontextprotocol/clientCapabilities": {}
+                        """);
+        var request = parser.parse(parser.preParse(validRequestFor(json, V_2026_07_28)));
+
+        assertEquals("clientInfo", ImplementationInfoImpl.UNKNOWN, request.clientInfo());
+        assertEquals("capabilities", Map.of(), request.clientCapabilities());
+    }
+
+    @Test
+    public void testParseWithoutMetaFor20260728() throws IOException {
+        String json = """
+                        {
+                            "jsonrpc": "2.0",
+                            "id": "5",
+                            "method": "tools/call",
+                            "params": {
+                                "name": "echo"
+                            }
+                        }
+                        """;
+        var request = parser.parse(parser.preParse(validRequestFor(json, V_2026_07_28)));
+
+        assertEquals("clientInfo", ImplementationInfoImpl.UNKNOWN, request.clientInfo());
+        assertEquals("capabilities", Map.of(), request.clientCapabilities());
+    }
+
+    @Test
+    public void testParseWithoutParamsFor20260728() throws IOException {
+        String json = """
+                        {
+                            "jsonrpc": "2.0",
+                            "id": "5",
+                            "method": "ping"
+                        }
+                        """;
+        var request = parser.parse(parser.preParse(validRequestFor(json, V_2026_07_28)));
+
+        assertEquals("clientInfo", ImplementationInfoImpl.UNKNOWN, request.clientInfo());
+        assertEquals("capabilities", Map.of(), request.clientCapabilities());
+    }
+
+    @Test
+    public void testParseInvalidClientInfoAndCapabilitiesFor20260728() throws IOException {
+        String json = toolCallWithMeta("""
+                        "io.modelcontextprotocol/clientInfo": "not-an-object",
+                        "io.modelcontextprotocol/clientCapabilities": 12345
+                        """);
+        var request = parser.parse(parser.preParse(validRequestFor(json, V_2026_07_28)));
+
+        assertEquals("clientInfo", ImplementationInfoImpl.UNKNOWN, request.clientInfo());
+        assertEquals("capabilities", Map.of(), request.clientCapabilities());
+    }
+
+    @Test
+    public void testParseClientCapabilitiesAreUnmodifiableFor20260728() throws IOException {
+        String json = toolCallWithMeta("""
+                        "io.modelcontextprotocol/clientCapabilities": { "sampling": {} }
+                        """);
+        var request = parser.parse(parser.preParse(validRequestFor(json, V_2026_07_28)));
+
+        assertEquals("capabilities", Map.of("sampling", Map.of()), request.clientCapabilities());
+        assertThrows(() -> request.clientCapabilities().put("extra", true), exception().ofType(UnsupportedOperationException.class));
+    }
+
+    @Test
+    public void testParseClientInfoFromSessionForOlderProtocolVersion() throws IOException {
+        setupStateful();
+        Map<String, Object> sessionCaps = Map.of("sessionFeature", true);
+        McpSession testSession = sessionStore.createSession(null, new McpSessionMetrics(), TEST_CLIENT_INFO, sessionCaps);
+
+        // Even if the request carries _meta, an older protocol version must read from the session
+        String json = toolCallWithMeta("""
+                        "io.modelcontextprotocol/clientInfo": { "name": "ignored-request-client", "version": "9.9" },
+                        "io.modelcontextprotocol/clientCapabilities": { "ignoredCaps": false }
+                        """);
+        var req = validRequestFor(json, V_2025_11_25);
+        req.addHeader(MCP_SESSION_ID_HEADER, testSession.getSessionId().value());
+        var request = parser.parse(parser.preParse(req));
+
+        assertEquals("clientInfo", TEST_CLIENT_INFO, request.clientInfo());
+        assertEquals("capabilities", sessionCaps, request.clientCapabilities());
+    }
+
+    @Test
+    public void testParseClientInfoStatelessForOlderProtocolVersion() throws IOException {
+        String json = toolCallWithMeta("""
+                        "io.modelcontextprotocol/clientInfo": { "name": "ignored-request-client", "version": "9.9" }
+                        """);
+        var request = parser.parse(parser.preParse(validRequestFor(json, V_2025_11_25)));
+
+        assertEquals("clientInfo", ImplementationInfoImpl.UNKNOWN, request.clientInfo());
+        assertEquals("capabilities", Map.of(), request.clientCapabilities());
     }
 
 }
