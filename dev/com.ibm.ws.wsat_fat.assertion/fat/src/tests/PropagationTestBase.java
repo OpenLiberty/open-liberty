@@ -44,6 +44,10 @@ public abstract class PropagationTestBase extends WSATTest {
     protected static final String REQUIRED = "Required";
     protected static final String OPTIONAL = "Optional";
     protected static final String NONE = "None";
+    /** Optional endpoint called through a {@code Dispatch} client created without a WSDL. */
+    protected static final String DISPATCH = "Dispatch";
+    /** Required endpoint called through a {@code Dispatch} client created without a WSDL. */
+    protected static final String DISPATCH_REQUIRED = "DispatchRequired";
 
     protected static final String COMMIT = "GlobalCommit";
     protected static final String ROLLBACK = "GlobalRollback";
@@ -101,6 +105,53 @@ public abstract class PropagationTestBase extends WSATTest {
         // Non-enlisted endpoint: committed locally, so the row always persists.
         final int expectedRows = (propagated && !commit) ? 0 : 1;
         assertEquals(label + "unexpected number of persisted rows", expectedRows, count(targetBaseUrl, key));
+    }
+
+    /**
+     * Make the calls named by {@code seq} (underscore separated REQ | OPT | NONE) in one global transaction and
+     * assert, for each call, whether the endpoint saw a global transaction and whether its row survived.
+     *
+     * @param always  true if every call is propagated ({@code propagation="always"}); false for
+     *                {@code check_wsdl}, where only REQ and OPT calls are propagated
+     * @param commit  true if the client committed, false if it rolled back
+     */
+    protected void assertMixedOutcome(String clientBaseUrl, String targetBaseUrl, String seq, boolean always, boolean commit) {
+        final String key = newKey();
+        final String r = get(clientBaseUrl, "op=mixed&seq=" + seq + "&tran=" + (commit ? COMMIT : ROLLBACK)
+                                            + "&key=" + enc(key) + "&baseurl=" + enc(targetBaseUrl));
+        final String label = seq + (commit ? " commit" : " rollback") + ": ";
+        assertTrue(label + "expected OK but got: " + r, r.startsWith("OK:"));
+
+        final String[] steps = seq.split("_");
+        final String[] replies = r.substring("OK:".length()).split("\\|");
+        assertEquals(label + "unexpected number of replies in: " + r, steps.length, replies.length);
+
+        for (int i = 0; i < steps.length; i++) {
+            final boolean propagated = always || !"NONE".equals(steps[i]);
+            assertTrue(label + "call " + i + " (" + steps[i] + ") expected the endpoint to " + (propagated ? "" : "NOT ")
+                       + "see a global transaction but got: " + replies[i],
+                       replies[i].endsWith(propagated ? "tx=ACTIVE" : "tx=NONE"));
+            final int expectedRows = (propagated && !commit) ? 0 : 1;
+            assertEquals(label + "unexpected number of persisted rows for call " + i + " (" + steps[i] + ")",
+                         expectedRows, count(targetBaseUrl, key + "-" + i));
+        }
+    }
+
+    /** Run the fault isolation scenario; see {@code ConditionalPropagationServlet}. Returns the single result line. */
+    protected String callFaultIsolation(String clientBaseUrl, String targetBaseUrl, String key) {
+        return get(clientBaseUrl, "op=fault&key=" + enc(key) + "&baseurl=" + enc(targetBaseUrl));
+    }
+
+    /**
+     * Call {@code service} from an EJB or CDI bean (see {@code CmtDriver}) with the caller in {@code tran}.
+     *
+     * @param kind  EJB | BMT | CDI
+     * @param attr  transaction attribute of the bean method (ignored for BMT)
+     */
+    protected String callCmt(String clientBaseUrl, String targetBaseUrl, String kind, String attr, String service, String tran,
+                             boolean rollback, String key) {
+        return get(clientBaseUrl, "op=cmt&kind=" + kind + "&attr=" + attr + "&service=" + service + "&tran=" + tran
+                                  + "&rollback=" + rollback + "&key=" + enc(key) + "&baseurl=" + enc(targetBaseUrl));
     }
 
     protected static void assertException(String message, String result) {

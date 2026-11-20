@@ -21,6 +21,10 @@ public class HelloImplNoAssertion{
 	}
 	
 	public String sayHelloToOther(String username) throws Exception {
+		// A key starting with FAULT- asks for an application fault, to test fault isolation.
+		if (username != null && username.startsWith("FAULT-")) {
+			throw new Exception("Deliberate application fault for " + username);
+		}
 		return TxProbe.probe(username);
 	}
 }

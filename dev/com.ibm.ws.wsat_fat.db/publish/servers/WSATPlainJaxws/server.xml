@@ -1,0 +1,33 @@
+<server>
+	<!-- A plain JAX-WS server: no WS-AT feature of any kind (neither the public wsAtomicTransaction-1.2 nor an
+	     internal one). It stands in for a third-party or legacy service that knows nothing about WS-AT and so
+	     must not be sent a mustUnderstand="1" WS-AT coordination context header. -->
+	<featureManager>
+		<feature>localConnector-1.0</feature>
+		<feature>jndi-1.0</feature>
+		<feature>jdbc-4.1</feature>
+		<feature>servlet-3.1</feature>
+		<feature>txtest-1.0</feature>
+		<feature>jaxws-2.2</feature>
+	</featureManager>
+
+	<transaction recoverOnStartup="true" waitForRecovery="true"/>
+
+	<!-- fatTestCommon.xml enables timedexit-1.0, which the FAT framework requires. -->
+	<include location="../fatTestCommon.xml" />
+
+	<httpEndpoint httpPort="8092" httpsPort="9445" id="defaultHttpEndpoint"/>
+
+	<jdbcDriver id="derbyDriver">
+		<library name="derbyLib">
+			<file name="${shared.resource.dir}derby/derby.jar"/>
+		</library>
+	</jdbcDriver>
+
+	<dataSource id="derbyConnection0" jndiName="jdbc/wsatDataSource0" jdbcDriverRef="derbyDriver" type="javax.sql.XADataSource">
+		<properties.derby.embedded createDatabase="create" databaseName="memory:WsatPlainJaxwsDatabase"/>
+	</dataSource>
+
+	<javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${server.config.dir}/dropins/assertion.war" className="java.security.AllPermission"/>
+</server>
