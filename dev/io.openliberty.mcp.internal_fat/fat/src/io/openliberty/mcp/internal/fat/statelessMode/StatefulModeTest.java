@@ -10,13 +10,14 @@
 package io.openliberty.mcp.internal.fat.statelessMode;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.INVALID_PARAMS;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcResponseMatcher.jsonRpcResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
-import io.openliberty.mcp.internal.fat.utils.TestConstants;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -31,6 +32,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.TestConstants;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
@@ -116,19 +118,10 @@ public class StatefulModeTest extends FATServletClient {
                         }
                         """;
 
-        String expectedSecondResponse = """
-                        {
-                            "id":"2",
-                            "jsonrpc":"2.0",
-                            "error": {
-                                "code": -32602,
-                                "message": "Invalid params",
-                                "data": "A request with the 2 ID is in progress."
-                            }
-                        }
-                        """;
-        String secondResponse = client.callMCP(secondPayload);
-        JSONAssert.assertEquals(expectedSecondResponse, secondResponse, true);
+        assertThat(client.call(secondPayload),
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS)
+                                    .withErrorMessage("Invalid params")
+                                    .withErrorData("A request with the 2 ID is in progress."));
 
         toolStatus.signalShouldEnd(LATCH_NAME);
 

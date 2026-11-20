@@ -10,7 +10,11 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
+
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -19,7 +23,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import componenttest.custom.junit.runner.FATRunner;
 import io.openliberty.mcp.internal.fat.tool.nonRequiredArgsApp.NonRequiredArgsTools;
@@ -33,7 +36,7 @@ public class NonRequiredArgsToolsTest {
 
     @Rule
     public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
-    
+
     @BeforeClass
     public static void setup() throws Exception {
         serverLifecycle.getServer().setMarkToEndOfLog();
@@ -50,146 +53,43 @@ public class NonRequiredArgsToolsTest {
 
     @Test
     public void testNonRequiredArgFalseMissingArgs() throws Exception {
-        String request = """
-                          {
-                            "jsonrpc": "2.0",
-                            "id": "3",
-                            "method": "tools/call",
-                            "params": {
-                              "name": "toolArgRequiredFalse",
-                              "arguments": {}
-                            }
-                          }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"3","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello toolArgRequiredFalse"}],"isError":false}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("toolArgRequiredFalse", Map.of()),
+                   toolResponse().withTextContent("Hello toolArgRequiredFalse")
+                                 .withNoStructuredContent());
     }
 
     @Test
     public void testNonRequiredArgFalseProvidedArgs() throws Exception {
-        String request = """
-                          {
-                            "jsonrpc": "2.0",
-                            "id": "3",
-                            "method": "tools/call",
-                            "params": {
-                              "name": "toolArgRequiredFalse",
-                              "arguments": {
-                                "input" : "Awesome"
-                              }
-                            }
-                          }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"3","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello from: Awesome"}],"isError":false}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("toolArgRequiredFalse", Map.of("input", "Awesome")),
+                   toolResponse().withTextContent("Hello from: Awesome")
+                                 .withNoStructuredContent());
     }
 
     @Test
     public void testDefaultStringArgsProvided() throws Exception {
-        String request = """
-                          {
-                            "jsonrpc": "2.0",
-                            "id": "3",
-                            "method": "tools/call",
-                            "params": {
-                              "name": "toolArgDefaultValueSetString",
-                              "arguments": {
-                                "input" : "Awesome"
-                              }
-                            }
-                          }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"3","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello from: Awesome"}],"isError":false}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("toolArgDefaultValueSetString", Map.of("input", "Awesome")),
+                   toolResponse().withTextContent("Hello from: Awesome")
+                                 .withNoStructuredContent());
     }
 
     @Test
     public void testDefaultStringArgsNotProvided() throws Exception {
-        String request = """
-                          {
-                            "jsonrpc": "2.0",
-                            "id": "3",
-                            "method": "tools/call",
-                            "params": {
-                              "name": "toolArgDefaultValueSetString",
-                              "arguments": {}
-                            }
-                          }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"3","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello from: The Default Value"}],"isError":false}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("toolArgDefaultValueSetString", Map.of()),
+                   toolResponse().withTextContent("Hello from: The Default Value")
+                                 .withNoStructuredContent());
     }
 
     @Test
     public void testToolArgWithOptionalValue() throws Exception {
-        String request = """
-                          {
-                            "jsonrpc": "2.0",
-                            "id": "3",
-                            "method": "tools/call",
-                            "params": {
-                              "name": "toolArgWithOptionalValue",
-                              "arguments": {}
-                            }
-                          }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"3","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello World"}],"isError":false}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("toolArgWithOptionalValue", Map.of()),
+                   toolResponse().withTextContent("Hello World")
+                                 .withNoStructuredContent());
     }
 
     @Test
     public void testToolArgWithOptionalValueArgumentsPresent() throws Exception {
-        String request = """
-                          {
-                            "jsonrpc": "2.0",
-                            "id": "3",
-                            "method": "tools/call",
-                            "params": {
-                              "name": "toolArgWithOptionalValue",
-                              "arguments": {
-                              "input" : "Awesome"
-                              }
-                            }
-                          }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"3","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello from: Awesome"}],"isError":false}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(client.callTool("toolArgWithOptionalValue", Map.of("input", "Awesome")),
+                   toolResponse().withTextContent("Hello from: Awesome")
+                                 .withNoStructuredContent());
     }
-
 }

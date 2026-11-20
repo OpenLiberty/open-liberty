@@ -11,8 +11,11 @@ package io.openliberty.mcp.internal.fat.statelessMode;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -64,16 +67,16 @@ public class StatelessConfigChangeOnRestoreTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
 
         CheckpointInfo checkpointInfo = new CheckpointInfo(CheckpointPhase.AFTER_APP_START, true,
-                        server -> {
-                            assertNotNull("'CWWKZ0001I: ' message not found in log.",
-                                          server.waitForStringInLogUsingMark("CWWKZ0001I:.*statelessConfigChangeTest", 0));
-                            // Change config from stateless=true to stateless=false before restore
-                            try {
-                                server.setServerConfigurationFile("server_stateful.xml");
-                            } catch (Exception e) {
-                                throw new RuntimeException("Failed to update server configuration before restore", e);
-                            }
-                        });
+                                                           server -> {
+                                                               assertNotNull("'CWWKZ0001I: ' message not found in log.",
+                                                                             server.waitForStringInLogUsingMark("CWWKZ0001I:.*statelessConfigChangeTest", 0));
+                                                               // Change config from stateless=true to stateless=false before restore
+                                                               try {
+                                                                   server.setServerConfigurationFile("server_stateful.xml");
+                                                               } catch (Exception e) {
+                                                                   throw new RuntimeException("Failed to update server configuration before restore", e);
+                                                               }
+                                                           });
 
         // Decided NOT to make any changes to runtime. Maintain the current behavior of restarting the application when a change in the mcpServer configuration is detected.
         checkpointInfo.setAssertNoAppRestartOnRestore(false);
@@ -103,45 +106,13 @@ public class StatelessConfigChangeOnRestoreTest extends FATServletClient {
         try (McpClient client = McpClient.builder(server, "/statelessConfigChangeTest").build()) {
             client.initialize();
             // Test a tool call works in stateful mode
-            String toolRequest = """
-                            {
-                              "jsonrpc": "2.0",
-                              "id": "2",
-                              "method": "tools/call",
-                              "params": {
-                                "name": "textContentTool",
-                                "arguments": {
-                                  "input": "Testing stateful mode after restore"
-                                }
-                              }
-                            }
-                            """;
-
-            String toolResponse = client.callMCP(toolRequest);
-
-            // Verify the tool executed successfully
-            assertTrue("Tool response should contain the echoed input",
-                       toolResponse.contains("Testing stateful mode after restore"));
+            assertThat(client.callTool("textContentTool", Map.of("input", "Testing stateful mode after restore")),
+                       toolResponse().withTextContent("Echo: Testing stateful mode after restore"));
 
             // Test session management with multiple requests using the same session
-            for (int i = 0; i < 3; i++) {
-                String sessionRequest = """
-                                {
-                                  "jsonrpc": "2.0",
-                                  "id": "%d",
-                                  "method": "tools/call",
-                                  "params": {
-                                    "name": "textContentTool",
-                                    "arguments": {
-                                      "input": "Request %d"
-                                    }
-                                }
-                                }
-                                """.formatted(i + 3, i + 1);
-
-                String response = client.callMCP(sessionRequest);
-                assertTrue("Response should contain request number",
-                           response.contains("Request " + (i + 1)));
+            for (int i = 1; i <= 3; i++) {
+                assertThat(client.callTool("textContentTool", Map.of("input", "Request " + i)),
+                           toolResponse().withTextContent("Echo: Request " + i));
             }
         }
     }
