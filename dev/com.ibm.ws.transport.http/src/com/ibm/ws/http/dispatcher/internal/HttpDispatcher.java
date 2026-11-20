@@ -12,6 +12,7 @@ package com.ibm.ws.http.dispatcher.internal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -337,10 +338,18 @@ public class HttpDispatcher {
             origAllowedServerNames = null;
             return;
         }
-        for (AllowedServerNamesMatcher.RejectedEntry re : matcher.getRejectedEntries()) {
-            Tr.info(tc, "allowedServerNames: entry "
-                    + AllowedServerNamesMatcher.traceSafe(re.getEntry())
-                    + " rejected, reason: " + re.getReason());
+        List<AllowedServerNamesMatcher.RejectedEntry> rejected = matcher.getRejectedEntries();
+        if (!rejected.isEmpty()) {
+            StringBuilder sb = new StringBuilder("allowedServerNames: rejected entries: ");
+            for (int i = 0; i < rejected.size(); i++) {
+                AllowedServerNamesMatcher.RejectedEntry re = rejected.get(i);
+                if (i > 0) {
+                    sb.append("; ");
+                }
+                sb.append(AllowedServerNamesMatcher.traceSafe(re.getEntry()))
+                  .append(" (").append(re.getReason()).append(')');
+            }
+            Tr.info(tc, sb.toString());
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             for (String accepted : matcher.getAcceptedEntries()) {

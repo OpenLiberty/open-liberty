@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -199,12 +199,15 @@ public class ServletFilter implements Filter {
 	 * @return the routing server name; getServerName() when the request is not a web container request
 	 */
 	private static String getRoutingServerName(HttpServletRequest request) {
-		String routingHost = request.getServerName();
+		String routingHost = null;
 		if (request instanceof SRTServletRequest) {
 			IRequest iRequest = ((SRTServletRequest) request).getIRequest();
 			if (iRequest != null) {
 				routingHost = WebContainer.getRoutingHost(iRequest);
 			}
+		}
+		if (routingHost == null) {
+			routingHost = request.getServerName();
 		}
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			Tr.debug(tc, "ServletFilter.getRoutingServerName: routing name --> " + routingHost);
