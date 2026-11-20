@@ -112,6 +112,38 @@ public class HttpDispatcherAllowedServerNamesTest {
     }
 
     // -----------------------------------------------------------------------
+    // Default / unconfigured activation yields empty matcher
+    // -----------------------------------------------------------------------
+
+    @Test
+    public void defaultUnconfiguredActivationYieldsEmptyMatcher() throws Exception {
+        HttpDispatcher d = new HttpDispatcher();
+        d.activate(mapWithoutNames());
+
+        AllowedServerNamesMatcher m = HttpDispatcher.getAllowedServerNamesMatcher();
+        Assert.assertNotNull("Matcher must not be null", m);
+        Assert.assertTrue("Matcher must be empty by default when unconfigured", m.isEmpty());
+        Assert.assertTrue("Accepted entries must be empty", m.getAcceptedEntries().isEmpty());
+        Assert.assertFalse("Must not match 'none'", m.matches("none"));
+        Assert.assertFalse("Must not match 'NONE'", m.matches("NONE"));
+    }
+
+    @Test
+    public void nullAndEmptyArrayConfigYieldsEmptyMatcher() throws Exception {
+        HttpDispatcher d = new HttpDispatcher();
+        d.activate(mapWithNames(null));
+
+        AllowedServerNamesMatcher m = HttpDispatcher.getAllowedServerNamesMatcher();
+        Assert.assertTrue("Matcher must be empty for null config", m.isEmpty());
+        Assert.assertFalse("Must not match 'none'", m.matches("none"));
+
+        d.modified(mapWithNames(new String[0]));
+        m = HttpDispatcher.getAllowedServerNamesMatcher();
+        Assert.assertTrue("Matcher must be empty for empty array config", m.isEmpty());
+        Assert.assertFalse("Must not match 'none'", m.matches("none"));
+    }
+
+    // -----------------------------------------------------------------------
     // Parsing from a String
     // -----------------------------------------------------------------------
 
