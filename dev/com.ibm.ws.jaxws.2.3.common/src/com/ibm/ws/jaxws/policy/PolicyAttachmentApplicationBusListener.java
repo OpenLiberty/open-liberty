@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBus;
 import com.ibm.ws.jaxws.bus.LibertyApplicationBusListener;
+
+import com.ibm.ws.jaxws.metadata.JaxWsModuleMetaData;
+import com.ibm.wsspi.adaptable.module.Container;
+import com.ibm.wsspi.adaptable.module.Entry;
 
 /**
  * PolicyAttachmentApplicationBusListener will create and save a DynamicAttachmentProvider as a bus extension, which will be used
@@ -75,19 +79,45 @@ public class PolicyAttachmentApplicationBusListener implements LibertyApplicatio
 
         location = new String[] { "WEB-INF/" + finalName, "META-INF/" + finalName };
 
-        InputStream is = null;
-        ClassLoader classLoader = getThreadContextClassLoader();
+        // Obtain the module metadata and container tied directly to this Bus instance.
+        // In an EAR containing multiple modules (e.g. multiple EJB JARs or WARs), each module has its
+        // own Bus. Using the module's Container ensures we check only this specific module's archive
+        // rather than using the thread context classloader, which would search the shared EAR classpath
+        // and mistakenly pick up the first module's policy file.
+        JaxWsModuleMetaData moduleMetaData = bus.getExtension(JaxWsModuleMetaData.class);
+        Container moduleContainer = (moduleMetaData != null) ? moduleMetaData.getModuleContainer() : null;
+        ClassLoader moduleClassLoader = (moduleMetaData != null && moduleMetaData.getModuleInfo() != null)
+                                        ? moduleMetaData.getModuleInfo().getClassLoader()
+                                        : getThreadContextClassLoader();
+
         for (int i = 0; i <= 1; i++) {
-            if (classLoader.getResource(location[i]) != null) {
-                is = classLoader.getResourceAsStream(location[i]);
+            InputStream is = null;
+            
+            // 1. First attempt to load the policy attachment directly from the module's Container
+            if (moduleContainer != null) {
+                Entry entry = moduleContainer.getEntry(location[i]);
+                if (entry != null) {
+                    try {
+                        is = entry.adapt(InputStream.class);
+                    } catch (Exception e) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Unable to adapt entry to InputStream: " + location[i], e);
+                        }
+                    }
+                }
+            } 
+            // 2. Fallback: if no Container is available, use the module's ClassLoader
+            else if (moduleClassLoader != null && moduleClassLoader.getResource(location[i]) != null) {
+                is = moduleClassLoader.getResourceAsStream(location[i]);
             }
+
             if (is != null) {
                 registerBuilder(bus, location[i]);
-                //defect 216117, close the InputStream, otherwise the war file will be locked.
+                // Defect 216117: close the InputStream, otherwise the archive file will remain locked.
                 try {
                     is.close();
                 } catch (IOException e) {
-                    //Do nothing
+                    // Do nothing
                 }
                 break;
             }

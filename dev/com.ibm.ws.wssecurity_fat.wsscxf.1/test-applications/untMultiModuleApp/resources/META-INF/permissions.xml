@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    EAR-level permissions for untMultiModuleApp. In an EAR, the protection domain used by all
+    module class loaders is built from the EAR's META-INF/permissions.xml; the permissions.xml
+    files inside the individual WARs are not consulted.
+-->
+<permissions xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+        http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
+    version="7">
+
+    <!-- SAAJ (SOAPMessage / MessageFactory) system property reads -->
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>saaj.mime.soapBodyPartSizeLimit</name>
+        <actions>read</actions>
+    </permission>
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>saaj.lazy.contentlength</name>
+        <actions>read</actions>
+    </permission>
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>io.openliberty.saaj.disableDuplicateNS</name>
+        <actions>read</actions>
+    </permission>
+
+    <!-- javax.mail MimeUtility used by SAAJ ContentType handling -->
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>mail.mime.decodetext.strict</name>
+        <actions>read</actions>
+    </permission>
+
+    <!-- javax.mail MimeUtility (SAAJ) and activation/JAX-WS lookups, seen in later EE repeats -->
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>mail.mime.encodeeol.strict</name>
+        <actions>read</actions>
+    </permission>
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>javax.activation.addreverse</name>
+        <actions>read</actions>
+    </permission>
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>jakarta.activation.debug</name>
+        <actions>read</actions>
+    </permission>
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>jakarta.xml.ws.spi.Provider</name>
+        <actions>read</actions>
+    </permission>
+
+    <!-- Further static-initializer property reads (SAAJ MimeUtility, activation LogSupport/MailcapFile per EE level) -->
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>mail.mime.foldencodedwords</name>
+        <actions>read</actions>
+    </permission>
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>mail.mime.foldtext</name>
+        <actions>read</actions>
+    </permission>
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>mail.mime.charset</name>
+        <actions>read</actions>
+    </permission>
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>jakarta.activation.addreverse</name>
+        <actions>read</actions>
+    </permission>
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>angus.activation.addreverse</name>
+        <actions>read</actions>
+    </permission>
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>javax.activation.debug</name>
+        <actions>read</actions>
+    </permission>
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>angus.activation.debug</name>
+        <actions>read</actions>
+    </permission>
+
+    <!-- javax.activation MailcapCommandMap (CXF AttachmentUtil) -->
+    <permission>
+        <class-name>java.util.PropertyPermission</class-name>
+        <name>user.home</name>
+        <actions>read</actions>
+    </permission>
+
+    <!-- Santuario Transform.register via WSSConfig static init -->
+    <permission>
+        <class-name>java.lang.RuntimePermission</class-name>
+        <name>accessDeclaredMembers</name>
+    </permission>
+
+    <!-- Same permissions the existing untclient app declares -->
+    <permission>
+        <class-name>java.lang.RuntimePermission</class-name>
+        <name>getClassLoader</name>
+    </permission>
+    <permission>
+        <class-name>java.net.SocketPermission</class-name>
+        <name>*:*</name>
+        <actions>connect,resolve</actions>
+    </permission>
+
+</permissions>

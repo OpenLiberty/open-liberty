@@ -20,6 +20,10 @@ src: \
   test-applications/nowssec/src,\
   test-applications/untclient/src,\
   test-applications/untoken/src,\
+  test-applications/untBasicClient/src,\
+  test-applications/untBasicProvider/src,\
+  test-applications/untNonceClient/src,\
+  test-applications/untNonceProvider/src,\
   test-applications/derivekey/src,\
   test-applications/derivekeyclient/src,\
   test-applications/mustunderstand/src,\

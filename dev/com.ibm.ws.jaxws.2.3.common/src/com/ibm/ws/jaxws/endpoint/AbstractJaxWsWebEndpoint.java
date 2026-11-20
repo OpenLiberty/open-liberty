@@ -546,9 +546,12 @@ public abstract class AbstractJaxWsWebEndpoint implements JaxWsWebEndpoint {
                     request.setAttribute("org.apache.cxf.transport.endpoint.address",
                                          base + ad);
                 } else {
-                    // Only set the address if the Endpoint URL hasn't already been set
-                    if (destination.getEndpointInfo().getAddress() == null)
-                        BaseUrlHelper.setAddress(destination, base + ad);
+                    // The address is relative here (the enclosing check excludes "http..." addresses).
+                    // Always qualify it with the request base URL, even if EndpointInfo already holds the
+                    // relative address. Previously this was only done when the address was null, which never
+                    // happened, so policy attachments with a fully qualified EndpointReference address
+                    // were compared against "/Service" and never matched.
+                    BaseUrlHelper.setAddress(destination, base + ad);
                 }
             }
         }
