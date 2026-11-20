@@ -139,8 +139,8 @@ CWWKD1011.unknown.method.pattern=CWWKD1011E: The {0} method of the {1} repositor
  interface does not match any of the Jakarta Data defined patterns. \
  A repository method must either use annotations, be a resource accessor method, \
  or be named according to the Query by Method Name pattern. Annotations such as \
- {2} are used to define operations. A resource accessor method must contain \
- no parameters and any of the {3} return types. The Query by Method Name pattern \
+ {2} are used to define operations. A resource accessor method must have any of \
+ the {3} return types and contain no parameters. The Query by Method Name pattern \
  must begin with one of the {4} keywords, followed by 0 or more characters. \
  Method names can also include the By keyword and one or more delimited \
  conditions. Examples of valid repository method names are: {5}.
@@ -1268,3 +1268,60 @@ CWWKD1124.resource.unavailable.useraction=To prevent this warning, verify that \
  the configuration of the named resource is correct in the server.xml file. \
  Check that the resource is configured and that all required dependencies are \
  available.
+
+CWWKD1125.record.not.stateful=CWWKD1125E: The {0} Java record type that is used \
+ by the {1} method cannot be an entity class for the {2} stateful repository \
+ because Java records are immutable and cannot change state. Use a Java class \
+ annotated Entity as the entity class instead.
+CWWKD1125.record.not.stateful.explanation=Java records cannot be entities in \
+ a stateful repository.
+CWWKD1125.record.not.stateful.useraction=Convert the Java record into a \
+ Jakarta Persistence entity class.
+
+CWWKD1126.stateful.needs.scope=CWWKD1126E: The {0} method of the {1} stateful \
+ repository must be used within a transaction or request scope so that the \
+ persistence context can follow its life cycle.
+CWWKD1126.stateful.needs.scope.explanation=A transaction or request scope \
+ must be used to establish the boundary of the persistence context in which \
+ a stateful repository method runs.
+CWWKD1126.stateful.needs.scope.useraction=Invoke the repository method within \
+ a transaction or request scope.
+
+CWWKD1127.persist.context.err=CWWKD1127E: Changes made within the \
+ persistence context of a stateful repository were not written to the \
+ database at the end of the request scope because the {0} entity manager \
+ encountered an error attempting the {1} operation. The error is: {2}.
+CWWKD1127.persist.context.err.explanation=Methods of a stateful repository \
+ can run within a persistence context that is flushed to the database at \
+ the end of the request scope. An error prevents the changes from being \
+ written to the database.
+CWWKD1127.persist.context.err.useraction=Use the exception stack trace, \
+ if available, to investigate the cause of the error.
+
+CWWKD1128.graph.hint.conflict=CWWKD1128E: The {0} method of the \
+ {1} repository interface has a QueryOptions annotation that configures \
+ a {2} hint with a {3} value that conflicts with the {4} value of the \
+ {5} annotation member.
+CWWKD1128.graph.hint.conflict.explanation=The QueryOptions annotation \
+ offers multiple approaches to configure a graph for loading entities. When \
+ multiple approaches are used, they must be consistent.
+CWWKD1128.graph.hint.conflict.useraction=Remove the query hint that \
+ conflicts with the annotation member.
+
+CWWKD1129.unknown.constraint=CWWKD1129E: Parameter {0} of the {1} method \
+ of the {2} repository interface has a constraint type ({3}) that is not \
+ supported by Jakarta Data. Switch to a supported type such as {4}.
+CWWKD1129.unknown.constraint.explanation=Supported constraint types are \
+ defined by the Jakarta Data API.
+CWWKD1129.unknown.constraint.useraction=Use a supported constraint type \
+ from the jakarta.data.constraint package.
+
+CWWKD1130.incompat.with.collection=CWWKD1130E: The {0} method of the \
+ {1} repository interface has a {2} constraint parameter, which is \
+ incompatible with the {3} attribute of the {4} entity because the entity \
+ attribute has a collection type. The following constraints can be \
+ used with entity attributes that have a collection type: {5}.
+CWWKD1130.incompat.with.collection.explanation=Some constraints are not \
+ compatible with entity attributes that have a collection type.
+CWWKD1130.incompat.with.collection.useraction=Update the repository method \
+ to avoid using constraints that are not compatible with the collection type.

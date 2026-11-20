@@ -73,6 +73,7 @@ public class StatefulPersistenceContext {
                 // and then we could make this into an error path and
                 // discard insteading flushing unresolved changes.
 
+                boolean loggedError = false;
                 boolean startedTransaction = false;
                 LocalTransactionCoordinator suspendedLTC = null;
                 try {
@@ -94,19 +95,23 @@ public class StatefulPersistenceContext {
                     }
                     em.flush(); // must run in a transaction
                 } catch (Exception x) {
-                    // TODO better NLS message for error writing changes to database
-                    Tr.error(tc, "CWWKD1000.repo.general.err", "", "", x.toString());
-                    x.printStackTrace(System.err);
+                    Tr.error(tc, "CWWKD1127.persist.context.err",
+                             em, "flush", Util.toStackTrace(x));
+                    loggedError = true;
                 } finally {
                     try {
                         if (startedTransaction)
                             try {
                                 int status = provider.tranMgr.getStatus();
                                 if (status == Status.STATUS_MARKED_ROLLBACK) {
-                                    // TODO NLS message for rolled back changes
+                                    if (!loggedError)
+                                        Tr.error(tc, "CWWKD1127.persist.context.err",
+                                                 em,
+                                                 "commit",
+                                                 "STATUS_MARKED_ROLLBACK");
+                                    loggedError = true;
                                     if (trace && tc.isDebugEnabled())
-                                        Tr.debug(this, tc, "roll back global tran",
-                                                 Util.txStatusToString(status));
+                                        Tr.debug(this, tc, "roll back global tran");
                                     provider.tranMgr.rollback();
                                 } else if (status != Status.STATUS_NO_TRANSACTION) {
                                     if (trace && tc.isDebugEnabled())
@@ -122,9 +127,9 @@ public class StatefulPersistenceContext {
                                 }
                             }
                     } catch (Exception x) {
-                        // TODO better NLS message for error comitting changes to database
-                        Tr.error(tc, "CWWKD1000.repo.general.err", "", "", x.toString());
-                        x.printStackTrace(System.err);
+                        if (!loggedError)
+                            Tr.error(tc, "CWWKD1127.persist.context.err",
+                                     em, "commit", Util.toStackTrace(x));
                     } finally {
                         em.close();
                     }

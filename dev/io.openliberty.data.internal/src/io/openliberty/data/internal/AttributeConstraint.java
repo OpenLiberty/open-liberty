@@ -21,14 +21,14 @@ import com.ibm.websphere.ras.annotation.Trivial;
 @Trivial
 public enum AttributeConstraint {
     Between(" BETWEEN ", 2, false),
-    Contains(null, 1, Supports.COLLECTIONS),
-    Empty(" IS EMPTY", 0, Supports.COLLECTIONS),
+    Contains(null, 1, Supports.COLLECTIONS, Supports.KEYWORD_ONLY),
+    Empty(" IS EMPTY", 0, Supports.COLLECTIONS, Supports.KEYWORD_ONLY),
     EndsWith(null, 1, false),
     Equal("=", 1, Supports.COLLECTIONS, "EqualTo"),
     False("=FALSE", 0, false),
     GreaterThan(">", 1, false),
     GreaterThanEqual(">=", 1, false, "AtLeast"),
-    IgnoreCase(null, 1, false),
+    IgnoreCase(null, 1, false, Supports.KEYWORD_ONLY),
     In(" IN ", 1, false),
     LessThan("<", 1, false),
     LessThanEqual("<=", 1, false, "AtMost"),
@@ -36,8 +36,8 @@ public enum AttributeConstraint {
     LikeEscaped(" LIKE ", 2, false),
     Not("<>", 1, Supports.COLLECTIONS, "NotEqualTo"),
     NotBetween(" NOT BETWEEN ", 2, false),
-    NotContains(null, 1, Supports.COLLECTIONS),
-    NotEmpty(" IS NOT EMPTY", 0, Supports.COLLECTIONS),
+    NotContains(null, 1, Supports.COLLECTIONS, Supports.KEYWORD_ONLY),
+    NotEmpty(" IS NOT EMPTY", 0, Supports.COLLECTIONS, Supports.KEYWORD_ONLY),
     NotEndsWith(null, 1, false),
     NotIn(" NOT IN ", 1, false),
     NotLike(" NOT LIKE ", 1, false),
@@ -126,13 +126,25 @@ public enum AttributeConstraint {
     }
 
     /**
-     * Name of this constraint when used as a parameter type or Is annotation value
-     * in a parameter-based repository method rather than within a method name query.
+     * Name of this constraint when used in a constraint query
+     * rather than within a method name query.
      *
      * @return the constraint name.
      */
     public final String constraintName() {
+        if (constraintName.length() == 0) // should be unreachable
+            throw new UnsupportedOperationException(name() +
+                                                    " is not Constraint subtype");
         return constraintName;
+    }
+
+    /**
+     * Indicates if there is a Constraint subtype for the constraint.
+     *
+     * @return true if a Constraint subtype exists, otherwise false.
+     */
+    public final boolean hasConstraintClass() {
+        return constraintName.length() > 0;
     }
 
     /**
@@ -222,4 +234,5 @@ public enum AttributeConstraint {
 // Internal class that helps with readability of enumeration constructors
 class Supports {
     static final boolean COLLECTIONS = true;
+    static final String KEYWORD_ONLY = "";
 }

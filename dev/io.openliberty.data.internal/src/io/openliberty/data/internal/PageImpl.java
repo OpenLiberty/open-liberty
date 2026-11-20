@@ -225,7 +225,7 @@ public class PageImpl<T> implements Page<T> {
         try {
             boolean stateful = queryInfo.producer.stateful();
             entityHandlerSync = stateful || queryInfo.entityInfo.simulateStateless() //
-                            ? factory.getEntityManager(stateful) //
+                            ? factory.getEntityManager(queryInfo) //
                             : factory.getEntityAgent();
 
             AutoCloseable entityHandler = entityHandlerSync.entityHandler();
