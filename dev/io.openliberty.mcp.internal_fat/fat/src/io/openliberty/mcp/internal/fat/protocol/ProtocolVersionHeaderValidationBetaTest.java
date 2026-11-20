@@ -10,12 +10,10 @@
 package io.openliberty.mcp.internal.fat.protocol;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -92,6 +90,19 @@ public class ProtocolVersionHeaderValidationBetaTest {
                       }
                     }""";
 
+    /** The HeaderMismatch error response, with the id to be filled in */
+    private static final String HEADER_MISMATCH_RESPONSE = """
+                    {
+                      "jsonrpc": "2.0",
+                      "id": %s,
+                      "error": {
+                        "code": -32020,
+                        "message": "Header mismatch",
+                        "data": ["The MCP-Protocol-Version header must match the io.modelcontextprotocol/protocolVersion field in the request _meta object."]
+                      }
+                    }
+                    """;
+
     private static final String NOTIFICATION_WITH_META = """
                     {
                       "jsonrpc": "2.0",
@@ -136,7 +147,7 @@ public class ProtocolVersionHeaderValidationBetaTest {
                                                  .expectedStatus(400)
                                                  .run();
 
-        assertHeaderMismatch(response.body());
+        assertHeaderMismatch(response.body(), "1");
     }
 
     @Test
@@ -146,7 +157,7 @@ public class ProtocolVersionHeaderValidationBetaTest {
                                                  .expectedStatus(400)
                                                  .run();
 
-        assertHeaderMismatch(response.body());
+        assertHeaderMismatch(response.body(), "1");
     }
 
     @Test
@@ -156,15 +167,15 @@ public class ProtocolVersionHeaderValidationBetaTest {
                                                  .expectedStatus(400)
                                                  .run();
 
-        assertHeaderMismatch(response.body());
+        assertHeaderMismatch(response.body(), "1");
     }
 
     /**
-     * A notification must not receive a JSON-RPC response, but a header mismatch is still a validation failure
-     * which the spec requires to be rejected with HTTP 400. So the response is a 400 with no body.
+     * A header mismatch is a validation failure which the spec requires to be rejected with HTTP 400, even for a
+     * notification. The spec allows the body to be a JSON-RPC error response which has no id.
      */
     @Test
-    public void testHeaderMismatchOnNotificationIsRejectedWithEmptyBody() throws Exception {
+    public void testHeaderMismatchOnNotificationIsRejected() throws Exception {
         String notification = NOTIFICATION_WITH_META.formatted("{\"io.modelcontextprotocol/protocolVersion\": \"2025-11-25\"}");
 
         McpDetailedAuthResponse response = client.callMCPRaw(notification)
@@ -172,8 +183,8 @@ public class ProtocolVersionHeaderValidationBetaTest {
                                                  .expectedStatus(400)
                                                  .run();
 
-        assertTrue("Expected no response body for a notification but was: " + response.body(),
-                   response.body() == null || response.body().isEmpty());
+        // A notification has no id, so the error response carries a null id
+        assertHeaderMismatch(response.body(), "null");
     }
 
     /**
@@ -203,7 +214,7 @@ public class ProtocolVersionHeaderValidationBetaTest {
                                                      .expectedStatus(400)
                                                      .run();
 
-            assertHeaderMismatch(response.body());
+            assertHeaderMismatch(response.body(), "1");
         }
     }
 
@@ -224,12 +235,11 @@ public class ProtocolVersionHeaderValidationBetaTest {
 
     /**
      * Asserts that the response body is a JSON-RPC HeaderMismatch (-32020) error carrying the request id.
+     *
+     * @param body the response body
+     * @param idJson the expected id, as JSON. {@code 1} for the echo request, {@code null} for a notification
      */
-    private static void assertHeaderMismatch(String body) throws Exception {
-        JSONObject json = new JSONObject(body);
-        assertEquals(1, json.getInt("id"));
-        assertEquals(-32020, json.getJSONObject("error").getInt("code"));
-        assertTrue("Expected the error to describe the mismatch but was: " + body,
-                   json.getJSONObject("error").toString().contains("io.modelcontextprotocol/protocolVersion"));
+    private static void assertHeaderMismatch(String body, String idJson) throws Exception {
+        JSONAssert.assertEquals(HEADER_MISMATCH_RESPONSE.formatted(idJson), body, true);
     }
 }

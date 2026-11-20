@@ -83,7 +83,8 @@ public class HeaderProtocolVersionValidationTest {
 
         assertThrows(() -> HeaderValidation.validateProtocolVersionMatchesBody(header, request),
                      exception().ofType(JSONRPCException.class)
-                                .and(hasProperty("errorCode", equalTo(JSONRPCErrorCode.HEADER_MISMATCH))));
+                                .and(hasProperty("errorCode", equalTo(JSONRPCErrorCode.HEADER_MISMATCH)))
+                                .and(hasProperty("statusCode", equalTo(400))));
     }
 
     @Test
@@ -109,17 +110,6 @@ public class HeaderProtocolVersionValidationTest {
                                                              "{\"io.modelcontextprotocol/protocolVersion\": \"2025-11-25\"}");
 
         assertHeaderMismatch(McpProtocolVersion.V_2026_07_28, request);
-    }
-
-    @Test
-    public void testMismatchRejectedWithBadRequestStatus() {
-
-        McpOperationPartialRequest request = requestWithMeta(
-                                                             "{\"io.modelcontextprotocol/protocolVersion\": \"2025-11-25\"}");
-
-        assertThrows(() -> HeaderValidation.validateProtocolVersionMatchesBody(McpProtocolVersion.V_2026_07_28, request),
-                     exception().ofType(JSONRPCException.class)
-                                .and(hasProperty("statusCode", equalTo(400))));
     }
 
     @Test

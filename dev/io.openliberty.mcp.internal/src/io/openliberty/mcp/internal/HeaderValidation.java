@@ -19,7 +19,6 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.McpOperationPartialRequest;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
-import jakarta.json.JsonValue;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class HeaderValidation {
@@ -72,13 +71,10 @@ public class HeaderValidation {
     public static void validateProtocolVersionMatchesBody(McpProtocolVersion headerVersion, McpOperationPartialRequest request) throws JSONRPCException {
         String bodyVersion = null;
         JsonObject params = request.requestTo().params();
-        if (params != null && params.get("_meta") instanceof JsonObject meta) {
-            JsonValue value = meta.get(META_PROTOCOL_VERSION);
-            if (value instanceof JsonString str) {
-                bodyVersion = str.getString();
-            } else if (value != null) {
-                bodyVersion = value.toString();
-            }
+        if (params != null && params.get("_meta") instanceof JsonObject meta
+            && meta.get(META_PROTOCOL_VERSION) instanceof JsonString str) {
+            // A value which is not a string is not a valid protocol version, so it is treated as not provided
+            bodyVersion = str.getString();
         }
 
         boolean mismatch = bodyVersion == null

@@ -172,24 +172,22 @@ public class McpTransport {
      * responded to, including with error responses. If the current request is a notification,
      * no JSON-RPC error body is sent and the response is an empty 202 Accepted.
      * <p>
-     * If the exception specifies an HTTP status code (see {@link JSONRPCException#hasStatusCode()}), the response
-     * is sent with that status. For example a header mismatch means the server cannot accept the message, so the
-     * MCP Streamable HTTP specification requires it to be rejected with HTTP 400. For a notification that is a
-     * 400 with no body.
+     * If the exception specifies an HTTP status code (see {@link JSONRPCException#hasStatusCode()}), the message
+     * is being rejected at the HTTP level and the response is sent with that status and the JSON-RPC error body.
+     * For example a header mismatch means the server cannot accept the message, so the MCP Streamable HTTP
+     * specification requires it to be rejected with HTTP 400. When that message is a notification, the
+     * specification allows the body to be a JSON-RPC error response which has no id.
      *
      * @param e The JSONRPCException to be included in the error response.
      */
     public void sendJsonRpcException(JSONRPCException e) {
-        // JSON-RPC notifications must not receive a response.
-        if (requestId == null) {
+        // JSON-RPC notifications must not receive a response, unless the server is rejecting the
+        // notification with an HTTP error status.
+        if (requestId == null && !e.hasStatusCode()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Ignoring JSONRPCException for notification (no id): " + e.getMessage(), e);
             }
-            if (e.hasStatusCode()) {
-                res.setStatus(e.getStatusCode());
-            } else {
-                sendEmptyResponse();
-            }
+            sendEmptyResponse();
             return;
         }
         McpResponse mcpResponse = new McpErrorResponse(requestId, e);
