@@ -57,8 +57,10 @@ public class McpServletInitializer implements ServletContainerInitializer {
             McpServerConfigProps configProps = McpServerConfigProps.DEFAULT_CONFIG;
 
             if (appName != null) {
+                // The tracker is always present when the MCP feature is active, so its absence is an internal error
                 configProps = mcpAppTrackerService.run(tracker -> tracker.getConfigForModule(appName, moduleName))
-                                                  .orElse(McpServerConfigProps.DEFAULT_CONFIG);
+                                                  .orElseThrow(() -> new ServletException("Internal error: McpServerApplicationTracker service is not available while initializing the MCP endpoint for application "
+                                                                                          + appName + ", module " + moduleName));
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Looking up MCP config for application: " + appName + ", module: " + moduleName +
                                        ", found: " + configProps);
