@@ -15,10 +15,13 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import tests.AssertionTest;
+import tests.CmtPropagationTest;
 import tests.ConditionalPropagationTest;
 import tests.DBWithoutAssertionTest;
 import tests.EJBCDITest;
 import tests.InternalFeatureOnlyTest;
+import tests.PlainJaxwsTargetTest;
+import tests.PolicyPlacementTest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -26,10 +29,13 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
         AssertionTest.class,
+        CmtPropagationTest.class,
         ConditionalPropagationTest.class,
         DBWithoutAssertionTest.class,
         EJBCDITest.class,
         InternalFeatureOnlyTest.class,
+        PlainJaxwsTargetTest.class,
+        PolicyPlacementTest.class,
 })
 public class FATSuite {
     @ClassRule

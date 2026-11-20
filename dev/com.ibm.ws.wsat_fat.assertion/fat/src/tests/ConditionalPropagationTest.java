@@ -12,7 +12,9 @@
  *******************************************************************************/
 package tests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -109,6 +111,65 @@ public class ConditionalPropagationTest extends PropagationTestBase {
         setPropagation("always");
         initTable(baseUrl);
         assertOutcome(baseUrl, baseUrl, NONE, true, false);
+    }
+
+    /** 3.4 Explicit {@code always} with an asserted endpoint: propagated and enlisted, as with {@code check_wsdl}. */
+    @Test
+    public void test3_4_Always_Required_Commit() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, REQUIRED, true, true);
+    }
+
+    @Test
+    public void test3_4_Always_Required_Rollback() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, REQUIRED, true, false);
+    }
+
+    @Test
+    public void test3_4_Always_Optional_Commit() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, OPTIONAL, true, true);
+    }
+
+    @Test
+    public void test3_4_Always_Optional_Rollback() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, OPTIONAL, true, false);
+    }
+
+    /**
+     * 3.5 {@code always} with no active transaction: a Required assertion still fails fast ("Detected WS-AT
+     * policy, however there is no active transaction"), while Optional and no assertion send plain SOAP.
+     */
+    @Test
+    @AllowedFFDC({ "com.ibm.ws.wsat.service.WSATException", "javax.transaction.RollbackException",
+                   "javax.xml.ws.WebServiceException", "jakarta.xml.ws.WebServiceException",
+                   "org.apache.cxf.interceptor.Fault", "java.lang.Exception" })
+    public void test3_5_Always_NoTran_Required_FailsFast() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        final String key = newKey();
+        assertException("Required assertion without a transaction", call(baseUrl, baseUrl, REQUIRED, NO_TRAN, key));
+        assertEquals("The failed call must not have reached the endpoint", 0, count(baseUrl, key));
+    }
+
+    @Test
+    public void test3_5_Always_NoTran_Optional() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertNoTranOk(OPTIONAL);
+    }
+
+    @Test
+    public void test3_5_Always_NoTran_NoAssertion() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertNoTranOk(NONE);
     }
 
     /**
@@ -295,6 +356,171 @@ public class ConditionalPropagationTest extends PropagationTestBase {
         setPropagation("always");
         initTable(baseUrl);
         assertOutcome(baseUrl, baseUrl, DISPATCH, true, false);
+    }
+
+    /**
+     * 6.3 {@code check_wsdl} with a {@code Dispatch} client (no WSDL) to a <b>Required</b> endpoint. The client cannot
+     * see the assertion, so by design it sends plain SOAP and does not fail fast. The endpoint's own policy then
+     * rejects the request, which carries no coordination context. The endpoint is not invoked, so no row exists.
+     */
+    @Test
+    @AllowedFFDC({ "com.ibm.ws.wsat.service.WSATException", "javax.xml.ws.WebServiceException", "jakarta.xml.ws.WebServiceException",
+                   "org.apache.cxf.interceptor.Fault", "java.lang.Exception" })
+    public void test6_3_CheckWsdl_DispatchWithoutWsdl_Required_Commit() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        final String key = newKey();
+        assertException("Required endpoint reached by a client that cannot see its policy",
+                        call(baseUrl, baseUrl, DISPATCH_REQUIRED, COMMIT, key));
+        assertEquals("The rejected request must not have been executed", 0, count(baseUrl, key));
+    }
+
+    @Test
+    @AllowedFFDC({ "com.ibm.ws.wsat.service.WSATException", "javax.xml.ws.WebServiceException", "jakarta.xml.ws.WebServiceException",
+                   "org.apache.cxf.interceptor.Fault", "java.lang.Exception" })
+    public void test6_3_CheckWsdl_DispatchWithoutWsdl_Required_Rollback() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        final String key = newKey();
+        assertException("Required endpoint reached by a client that cannot see its policy",
+                        call(baseUrl, baseUrl, DISPATCH_REQUIRED, ROLLBACK, key));
+        assertEquals("The rejected request must not have been executed", 0, count(baseUrl, key));
+    }
+
+    /** 6.4 Control: with {@code always} the same {@code Dispatch} call is propagated, accepted and enlisted. */
+    @Test
+    public void test6_4_Always_DispatchWithoutWsdl_Required_Commit() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, DISPATCH_REQUIRED, true, true);
+    }
+
+    @Test
+    public void test6_4_Always_DispatchWithoutWsdl_Required_Rollback() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertOutcome(baseUrl, baseUrl, DISPATCH_REQUIRED, true, false);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // 7.x Several endpoints in one global transaction
+    //
+    // Calls with an assertion (REQ, OPT) are enlisted. Calls without one (NONE) are plain SOAP and commit
+    // locally, so their rows survive a client rollback. See PropagationTestBase.assertMixedOutcome.
+    // ---------------------------------------------------------------------------------------------
+
+    @Test
+    public void test7_1_CheckWsdl_Mixed_RequiredThenNone_Commit() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        assertMixedOutcome(baseUrl, baseUrl, "REQ_NONE", false, true);
+    }
+
+    @Test
+    public void test7_1_CheckWsdl_Mixed_RequiredThenNone_Rollback() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        assertMixedOutcome(baseUrl, baseUrl, "REQ_NONE", false, false);
+    }
+
+    @Test
+    public void test7_2_CheckWsdl_Mixed_NoneThenRequired_Commit() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        assertMixedOutcome(baseUrl, baseUrl, "NONE_REQ", false, true);
+    }
+
+    @Test
+    public void test7_2_CheckWsdl_Mixed_NoneThenRequired_Rollback() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        assertMixedOutcome(baseUrl, baseUrl, "NONE_REQ", false, false);
+    }
+
+    @Test
+    public void test7_3_CheckWsdl_Mixed_RequiredNoneRequired_Commit() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        assertMixedOutcome(baseUrl, baseUrl, "REQ_NONE_REQ", false, true);
+    }
+
+    @Test
+    public void test7_3_CheckWsdl_Mixed_RequiredNoneRequired_Rollback() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        assertMixedOutcome(baseUrl, baseUrl, "REQ_NONE_REQ", false, false);
+    }
+
+    @Test
+    public void test7_4_CheckWsdl_Mixed_OptionalNoneOptional_Commit() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        assertMixedOutcome(baseUrl, baseUrl, "OPT_NONE_OPT", false, true);
+    }
+
+    @Test
+    public void test7_4_CheckWsdl_Mixed_OptionalNoneOptional_Rollback() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        assertMixedOutcome(baseUrl, baseUrl, "OPT_NONE_OPT", false, false);
+    }
+
+    /** 7.5 Control: with {@code always} every endpoint is enlisted, so a rollback removes every row. */
+    @Test
+    public void test7_5_Always_Mixed_Commit() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertMixedOutcome(baseUrl, baseUrl, "REQ_NONE_REQ", true, true);
+    }
+
+    @Test
+    public void test7_5_Always_Mixed_Rollback() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        assertMixedOutcome(baseUrl, baseUrl, "REQ_NONE_REQ", true, false);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // 8.x Fault isolation
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * 8.1 With {@code check_wsdl}, an application fault from an endpoint with no assertion is plain SOAP and
+     * must not mark the client's global transaction rollback-only. The transaction commits and the
+     * Required endpoint's row, enlisted in it, persists.
+     */
+    @Test
+    public void test8_1_CheckWsdl_FaultFromNonAssertedEndpoint_TransactionStillCommits() throws Exception {
+        setPropagation("check_wsdl");
+        initTable(baseUrl);
+        final String key = newKey();
+        final String r = callFaultIsolation(baseUrl, baseUrl, key);
+
+        assertTrue("Expected OK but got: " + r, r.startsWith("OK:"));
+        assertTrue("The fault from the non-asserted endpoint should have reached the client: " + r, !r.contains("caught=none"));
+        assertTrue("Transaction must still be ACTIVE (not marked rollback-only) after the fault: " + r,
+                   r.endsWith("status=0")); // javax.transaction.Status.STATUS_ACTIVE; STATUS_MARKED_ROLLBACK is 1
+        assertEquals("Required endpoint's row should have been committed", 1, count(baseUrl, key + "-req"));
+    }
+
+    /**
+     * 8.2 Control: {@code always} behaves the same way. An application fault, as opposed to a WS-AT protocol
+     * failure, does not mark the client's transaction rollback-only even when the faulting endpoint was sent
+     * a coordination context. (The FTS gap review expected {@code always} to poison the transaction; running it
+     * shows it does not.) So 8.1 shows that a fault from a non-asserted endpoint is harmless under
+     * {@code check_wsdl}, not that it is harmful under {@code always}.
+     */
+    @Test
+    public void test8_2_Always_FaultFromNonAssertedEndpoint_TransactionStillCommits() throws Exception {
+        setPropagation("always");
+        initTable(baseUrl);
+        final String key = newKey();
+        final String r = callFaultIsolation(baseUrl, baseUrl, key);
+
+        assertTrue("Expected OK but got: " + r, r.startsWith("OK:"));
+        assertTrue("The application fault should have reached the client: " + r, !r.contains("caught=none"));
+        assertTrue("Transaction must still be ACTIVE after an application fault: " + r, r.endsWith("status=0"));
+        assertEquals("Required endpoint's row should have been committed", 1, count(baseUrl, key + "-req"));
     }
 
     // ---------------------------------------------------------------------------------------------

@@ -40,6 +40,7 @@ tested.features: \
 -buildpath: \
   com.ibm.tx.jta;version=latest,\
   com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+  com.ibm.websphere.javaee.cdi.1.2;version=latest,\
   com.ibm.websphere.javaee.ejb.3.2;version=latest,\
   com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
   com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
