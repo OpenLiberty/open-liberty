@@ -33,8 +33,7 @@ public class DatabaseNotices {
     private static final AtomicBoolean h2NoticeIssued = new AtomicBoolean();
 
     /**
-     * Issues the Derby warning and/or H2 informational message, each at most once per JVM,
-     * if running a beta build and the inputs identify a Derby or H2 data source.
+     * Issues the Derby warning and/or H2 informational message, each at most once per JVM.
      *
      * @param vendorPID        vendor properties PID, such as com.ibm.ws.jdbc.dataSource.properties.derby.embedded. Can be null.
      * @param classNames       configured or inferred data source/driver class names. Can be null.
