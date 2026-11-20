@@ -379,6 +379,29 @@ public class Fail {
     }
 
     /**
+     * Raises MappingException because a Constraint subtype is not compatible
+     * with a collection-typed entity attribute.
+     *
+     * @param info       query information for the repository method
+     * @param constraint represents the constraint type of the method
+     * @param attrName   name of the collection-typed entity attribute
+     * @throws the MappingException
+     */
+    public static MappingException //
+                    incompatibleWithCollection(QueryInfo info,
+                                               AttributeConstraint constraint,
+                                               String attrName) {
+        throw exc(MappingException.class,
+                  "CWWKD1130.incompat.with.collection",
+                  info.method.getName(),
+                  info.repositoryInterface.getName(),
+                  constraint.constraintName(),
+                  attrName,
+                  info.entityInfo.getType().getName(),
+                  Util.constraintsThatSupportCollections(true));
+    }
+
+    /**
      * Raises UnsupportedOperationException for a repository method that is not
      * valid as a life cycle method because it has no method parameters or more
      * than 1 method parameter.
@@ -884,16 +907,24 @@ public class Fail {
      * and the jakarta.persitence.loadgraph hints value cannot point to
      * different entity graph names on the same QueryOptions annotation.
      *
-     * @param info query information for the repository method.
+     * @param info             query information for the repository method
+     * @param entityGraphValue value of QueryOptions.entityGraph
+     * @param hintValue        value of the jakarta.persistence.loadgraph
+     *                             query hint of QueryOptions
      * @throws the UnsupportedOperationException.
      */
     public static UnsupportedOperationException //
-                    queryOptionsGraphConflict(QueryInfo info) {
-        throw new UnsupportedOperationException // TODO NLS
-        ("The " + info.method.getName() + " method of the " +
-         info.repositoryInterface.getName() + " repository has a" +
-         " QueryOptions annotation that configures a " + Util.LOADGRAPH +
-         " hint that conflicts with the " + "entityGraph" + " member.");
+                    queryOptionsGraphConflict(QueryInfo info,
+                                              String entityGraphValue,
+                                              String hintValue) {
+        throw exc(UnsupportedOperationException.class,
+                  "CWWKD1128.graph.hint.conflict",
+                  info.method.getName(),
+                  info.repositoryInterface.getName(),
+                  Util.LOADGRAPH,
+                  hintValue,
+                  entityGraphValue,
+                  "entityGraph");
     }
 
     /**
@@ -1141,8 +1172,8 @@ public class Fail {
      *                      the repository method.
      * @throws UnsupportedOperationException.
      */
-    static UnsupportedOperationException specialParamIncompatible(QueryInfo info,
-                                                                  Class<?> paramType) {
+    static UnsupportedOperationException //
+                    specialParamIncompatible(QueryInfo info, Class<?> paramType) {
         Fail.validateParameterPositions(info);
 
         throw exc(UnsupportedOperationException.class,
@@ -1211,6 +1242,34 @@ public class Fail {
                       info.repositoryInterface.getName(),
                       Util.operationAnnoNames(info.producer),
                       info.entityInfo.attributeTypes.keySet());
+    }
+
+    /**
+     * Raises UnsupportedOperationException because a Constraint subtype
+     * is not supported by Jakarta Data.
+     *
+     * @param info query information for the repository method
+     * @param p    position of the repository method parameter (0-based)
+     * @param type subtype of Constraint
+     * @throws the UnsupportedOperationException
+     */
+    public static UnsupportedOperationException //
+                    unsupportedConstraint(QueryInfo info, int p, Class<?> type) {
+        Parameter param = info.method.getParameters()[p];
+        Object paramName = param.isNamePresent() ? param.getName() : (p + 1);
+        String recommended = "jakarta.data.constraint.EqualTo";
+        for (Class<?> ifc : param.getType().getInterfaces())
+            if (ifc.getPackage().getName().equals("jakarta.data.constraint")) {
+                recommended = ifc.getName();
+                break;
+            }
+        throw exc(UnsupportedOperationException.class,
+                  "CWWKD1129.unknown.constraint",
+                  paramName,
+                  info.method.getName(),
+                  info.repositoryInterface.getName(),
+                  type.getName(),
+                  recommended);
     }
 
     /**
@@ -1293,7 +1352,7 @@ public class Fail {
      *                                          a query parameter.
      */
     private static void validateParameterPositions(QueryInfo info) {
-        DataVersionCompatibility compat = info.entityInfo.factory.provider.compat;
+        DataVersionCompatibility compat = info.producer.compat();
 
         Class<?>[] paramTypes = info.method.getParameterTypes();
         Set<Class<?>> specParamTypes = compat.specialParamTypes();

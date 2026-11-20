@@ -932,7 +932,7 @@ public abstract class QueryInfo {
                            Map<Object, Object> orderJPQLParams,
                            PageRequest pageReq,
                            List<Sort<Object>> sortsOverride) {
-        DataVersionCompatibility compat = entityInfo.factory.provider.compat;
+        DataVersionCompatibility compat = producer.compat();
 
         QueryInfo info = compat.createQueryInfo(producer, //
                                                 repositoryInterface, //
@@ -2126,7 +2126,7 @@ public abstract class QueryInfo {
                       ignoreCase ? IgnoreCase.name() : constraint.name(),
                       name,
                       entityInfo.getType().getName(),
-                      Util.constraintsThatSupportCollections());
+                      Util.constraintsThatSupportCollections(false));
 
         switch (constraint) {
             case Equal:
@@ -2588,7 +2588,7 @@ public abstract class QueryInfo {
 
         String o = entityVar;
         String o_ = entityVar_;
-        DataVersionCompatibility compat = entityInfo.factory.provider.compat;
+        DataVersionCompatibility compat = producer.compat();
 
         Boolean isNamePresent = null; // unknown
         Parameter[] params = null;
@@ -2826,7 +2826,7 @@ public abstract class QueryInfo {
         StringBuilder q = new StringBuilder(200);
         String o = entityVar;
 
-        String[] cols, selections = entityInfo.factory.provider.compat.getSelections(method);
+        String[] cols, selections = producer.compat().getSelections(method);
         if (selections.length == 0) {
             cols = null;
         } else if (type == FIND_AND_DELETE) {
@@ -2884,7 +2884,7 @@ public abstract class QueryInfo {
 
                     String[] names = new String[recordComponents.length];
                     for (int i = 0; i < recordComponents.length; i++) {
-                        String[] select = entityInfo.factory.provider.compat //
+                        String[] select = producer.compat() //
                                         .getSelections(recordComponents[i]);
                         if (select == null || select.length == 0)
                             names[i] = recordComponents[i].getName();
@@ -3784,15 +3784,9 @@ public abstract class QueryInfo {
             if (specialParamTypes.contains(paramType)) {
                 if (i < specialParamsStartAt)
                     specialParamsStartAt = i;
-                // Reject all special parameters on native queries until we
-                // TODO determine which, if any, can be supported
                 if (!Limit.class.equals(paramType) &&
                     !PageRequest.class.equals(paramType))
-                    throw new UnsupportedOperationException //
-                    ("The " + method.getName() + " method of the " +
-                     repositoryInterface.getName() + " repository cannot have a " +
-                     paramType.getSimpleName() + " parameter because the method is " +
-                     "annotated " + "@NativeQuery" + "."); // TODO NLS
+                    throw Fail.specialParamIncompatible(this, paramType);
             } else if (i > specialParamsStartAt) {
                 throw exc(UnsupportedOperationException.class,
                           "CWWKD1098.spec.param.position.err",
@@ -4540,7 +4534,7 @@ public abstract class QueryInfo {
      *         method parameters.
      */
     private int locateSpecialParameters(Class<?>[] paramTypes) {
-        DataVersionCompatibility compat = entityInfo.factory.provider.compat;
+        DataVersionCompatibility compat = producer.compat();
         Set<Class<?>> specialParamTypes = compat.specialParamTypes();
         int specialParamsStartAt = paramTypes.length; // not found yet
 

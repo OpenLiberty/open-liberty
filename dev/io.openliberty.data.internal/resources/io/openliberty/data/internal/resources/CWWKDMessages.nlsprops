@@ -1297,3 +1297,31 @@ CWWKD1127.persist.context.err.explanation=Methods of a stateful repository \
  written to the database.
 CWWKD1127.persist.context.err.useraction=Use the exception stack trace, \
  if available, to investigate the cause of the error.
+
+CWWKD1128.graph.hint.conflict=CWWKD1128E: The {0} method of the \
+ {1} repository interface has a QueryOptions annotation that configures \
+ a {2} hint with a {3} value that conflicts with the {4} value of the \
+ {5} annotation member.
+CWWKD1128.graph.hint.conflict.explanation=The QueryOptions annotation \
+ offers multiple approaches to configure a graph for loading entities. When \
+ multiple approaches are used, they must be consistent.
+CWWKD1128.graph.hint.conflict.useraction=Remove the query hint that \
+ conflicts with the annotation member.
+
+CWWKD1129.unknown.constraint=CWWKD1129E: Parameter {0} of the {1} method \
+ of the {2} repository interface has a constraint type ({3}) that is not \
+ supported by Jakarta Data. Switch to a supported type such as {4}.
+CWWKD1129.unknown.constraint.explanation=Supported constraint types are \
+ defined by the Jakarta Data API.
+CWWKD1129.unknown.constraint.useraction=Use a supported constraint type \
+ from the jakarta.data.constraint package.
+
+CWWKD1130.incompat.with.collection=CWWKD1130E: The {0} method of the \
+ {1} repository interface has a {2} constraint parameter, which is \
+ incompatible with the {3} attribute of the {4} entity because the entity \
+ attribute has a collection type. The following constraints can be \
+ used with entity attributes that have a collection type: {5}.
+CWWKD1130.incompat.with.collection.explanation=Some constraints are not \
+ compatible with entity attributes that have a collection type.
+CWWKD1130.incompat.with.collection.useraction=Update the repository method \
+ to avoid using constraints that are not compatible with the collection type.

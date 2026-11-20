@@ -290,20 +290,27 @@ public class Util {
     }
 
     /**
-     * Returns names of all Query by Method Name constraint keywords that are
-     * supported for collection attributes. This is used in error reporting
-     * to display which keywords are valid.
+     * Returns names of all constraints that are supported for collection
+     * attributes. This is used in error reporting to display which constraints
+     * are valid.
      *
-     * @return names of all constraints that are supported for collection attributes.
+     * @param asClassNames indicates whether to return the supported constraint list
+     *                         as Constraint subtype class names (true) versus
+     *                         Query by Method Name constraint keywords (false)
+     *
+     * @return names of all constraints that are supported for collection attributes
      */
     @Trivial
-    static Set<String> constraintsThatSupportCollections() {
+    static Set<String> constraintsThatSupportCollections(boolean asClassNames) {
         Set<String> supported = new TreeSet<>();
+
         for (AttributeConstraint c : AttributeConstraint.values())
-            if (c.supportsCollections() && c.lengthWithinMethodName() > 0) {
-                String name = c.name();
-                supported.add(name);
-            }
+            if (c.supportsCollections())
+                if (asClassNames && c.hasConstraintClass())
+                    supported.add(c.constraintName());
+                else if (!asClassNames && c.lengthWithinMethodName() > 0)
+                    supported.add(c.name());
+
         return supported;
     }
 
