@@ -20,8 +20,8 @@ public class Mcp extends ConfigElement {
     private String moduleName;
     private String path;
     private String asyncTimeout;
-    private String minimumProtocolVersion;
-    private String maximumProtocolVersion;
+    private String minProtocolVersion;
+    private String maxProtocolVersion;
 
     /**
      * @return whether the MCP server is stateless
@@ -74,25 +74,25 @@ public class Mcp extends ConfigElement {
     /**
      * @return the minimum accepted MCP protocol version
      */
-    public String getMinimumProtocolVersion() {
-        return minimumProtocolVersion;
+    public String getMinProtocolVersion() {
+        return minProtocolVersion;
     }
 
     @XmlAttribute
-    public void setMinimumProtocolVersion(String minimumProtocolVersion) {
-        this.minimumProtocolVersion = minimumProtocolVersion;
+    public void setMinProtocolVersion(String minProtocolVersion) {
+        this.minProtocolVersion = minProtocolVersion;
     }
 
     /**
      * @return the maximum accepted MCP protocol version
      */
-    public String getMaximumProtocolVersion() {
-        return maximumProtocolVersion;
+    public String getMaxProtocolVersion() {
+        return maxProtocolVersion;
     }
 
     @XmlAttribute
-    public void setMaximumProtocolVersion(String maximumProtocolVersion) {
-        this.maximumProtocolVersion = maximumProtocolVersion;
+    public void setMaxProtocolVersion(String maxProtocolVersion) {
+        this.maxProtocolVersion = maxProtocolVersion;
     }
 
     @Override
@@ -106,10 +106,10 @@ public class Mcp extends ConfigElement {
             builder.append("path=\"" + path + "\" ");
         if (asyncTimeout != null)
             builder.append("asyncTimeout=\"" + asyncTimeout + "\" ");
-        if (minimumProtocolVersion != null)
-            builder.append("minimumProtocolVersion=\"" + minimumProtocolVersion + "\" ");
-        if (maximumProtocolVersion != null)
-            builder.append("maximumProtocolVersion=\"" + maximumProtocolVersion + "\" ");
+        if (minProtocolVersion != null)
+            builder.append("minProtocolVersion=\"" + minProtocolVersion + "\" ");
+        if (maxProtocolVersion != null)
+            builder.append("maxProtocolVersion=\"" + maxProtocolVersion + "\" ");
         builder.append("}");
         return builder.toString();
     }

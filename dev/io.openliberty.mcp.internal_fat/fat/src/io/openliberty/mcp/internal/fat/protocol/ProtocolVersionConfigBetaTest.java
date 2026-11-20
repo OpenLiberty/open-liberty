@@ -50,7 +50,7 @@ import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.Initiali
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 
 /**
- * Tests the beta {@code minimumProtocolVersion} and {@code maximumProtocolVersion} attributes of the
+ * Tests the beta {@code minProtocolVersion} and {@code maxiProtocolVersion} attributes of the
  * {@code <mcp>} configuration element on a server which is running with the beta edition enabled.
  * <p>
  * The server is started with {@code -Dcom.ibm.ws.beta.edition=true} (see the server's {@code jvm.options}).
@@ -220,7 +220,7 @@ public class ProtocolVersionConfigBetaTest {
     public void testInvalidVersionIsReportedAndDefaultsUsed() throws Exception {
         // The message names the attribute and the value, and lists the valid values
         assertLogged("Expected CWMCM0045E for the invalid minimum protocol version",
-                     "CWMCM0045E.*2022-02-02.*minimumProtocolVersion.*Valid values: " + VALID_VALUES);
+                     "CWMCM0045E.*2022-02-02.*minProtocolVersion.*Valid values: " + VALID_VALUES);
         // The invalid value is ignored so every version is accepted
         assertAllVersionsAccepted(INVALID_VERSION_APP);
     }
@@ -242,7 +242,7 @@ public class ProtocolVersionConfigBetaTest {
     @Test
     public void testInvalidMaximumIsReportedAndValidMinimumIsKept() throws Exception {
         assertLogged("Expected CWMCM0045E for the invalid maximum protocol version",
-                     "CWMCM0045E.*2099-01-01.*maximumProtocolVersion.*Valid values: " + VALID_VALUES);
+                     "CWMCM0045E.*2099-01-01.*maxProtocolVersion.*Valid values: " + VALID_VALUES);
         // The message starts "The <value> value is not valid for the <attribute> attribute"
         assertTrue("The valid minimum protocol version should not be reported",
                    server.findStringsInLogs("CWMCM0045E: The 2025-06-18 value is not valid").isEmpty());
@@ -259,16 +259,16 @@ public class ProtocolVersionConfigBetaTest {
     @Test
     public void testBothInvalidAreReportedAndDefaultsUsed() throws Exception {
         assertLogged("Expected CWMCM0045E for the invalid minimum protocol version",
-                     "CWMCM0045E.*bogus-minimum.*minimumProtocolVersion");
+                     "CWMCM0045E.*bogus-minimum.*minProtocolVersion");
         assertLogged("Expected CWMCM0045E for the invalid maximum protocol version",
-                     "CWMCM0045E.*bogus-maximum.*maximumProtocolVersion");
+                     "CWMCM0045E.*bogus-maximum.*maxProtocolVersion");
         assertAllVersionsAccepted(INVALID_BOTH_APP);
     }
 
     @Test
     public void testLatestIsCaseSensitive() throws Exception {
         assertLogged("Expected CWMCM0045E for LATEST, which is not the same as latest",
-                     "CWMCM0045E.*LATEST.*minimumProtocolVersion");
+                     "CWMCM0045E.*LATEST.*minProtocolVersion");
         assertAllVersionsAccepted(UPPER_CASE_LATEST_APP);
     }
 
@@ -285,9 +285,9 @@ public class ProtocolVersionConfigBetaTest {
         // An invalid value would also fall back to the default range, so the absence of the error is what shows the
         // empty value was treated as not set. The message for an empty value has nothing between "The" and "value".
         assertTrue("An empty minimum protocol version should not be reported",
-                   server.findStringsInLogs("CWMCM0045E: The\\s+value is not valid for the minimumProtocolVersion").isEmpty());
+                   server.findStringsInLogs("CWMCM0045E: The\\s+value is not valid for the minProtocolVersion").isEmpty());
         assertTrue("An empty maximum protocol version should not be reported",
-                   server.findStringsInLogs("CWMCM0045E: The\\s+value is not valid for the maximumProtocolVersion").isEmpty());
+                   server.findStringsInLogs("CWMCM0045E: The\\s+value is not valid for the maxProtocolVersion").isEmpty());
         // Same range as an application with nothing configured
         assertAllVersionsAccepted(EMPTY_VALUES_APP);
         assertEchoRejected(server, EMPTY_VALUES_APP, "2022-02-02", ALL_VERSIONS);
@@ -423,8 +423,8 @@ public class ProtocolVersionConfigBetaTest {
         assertNotNull("Expected to find the application in the server configuration", app);
 
         Mcp mcp = app.getMcps().get(0);
-        mcp.setMinimumProtocolVersion(minimum);
-        mcp.setMaximumProtocolVersion(maximum);
+        mcp.setMinProtocolVersion(minimum);
+        mcp.setMaxProtocolVersion(maximum);
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(DYNAMIC_APP));
     }
