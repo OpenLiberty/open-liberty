@@ -33,7 +33,6 @@ instrument.disabled: true
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 -buildpath: \
     com.ibm.ws.jpa_testframework;version=latest,\
-    io.openliberty.jakarta.transaction.2.0;version=latest,\
     com.ibm.websphere.javaee.persistence.2.1;version=latest,\
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
     com.ibm.websphere.javaee.transaction.1.2;version=latest,\
