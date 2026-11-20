@@ -134,7 +134,9 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         }
 
         AtomicBoolean delivered = new AtomicBoolean();
-        AsyncReadDispatchState state = AsyncReadDispatchState.forChannel(context.channel());
+        AsyncReadDispatchState state = isc instanceof HttpInboundServiceContextImpl
+                        ? AsyncReadDispatchState.forRequest(context.channel(), ((HttpInboundServiceContextImpl) isc).getVC())
+                        : AsyncReadDispatchState.forChannel(context.channel());
         Runnable[] successRef = new Runnable[1];
         Runnable[] errorRef = new Runnable[1];
         successRef[0] = () -> {
@@ -146,7 +148,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 if (!isStreamingReadReady()){
                     rearmed = state.arm(successRef[0], errorRef[0]);
                     if (!isStreamingReadReady()) {
-                        ReadFlowHandler.setBodyReadWanted(context.channel(), true);
+                        requestBodyRead();
                         return;
                     }
                 }
@@ -187,11 +189,18 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 }
                 return false;
             }
-            ReadFlowHandler.setBodyReadWanted(context.channel(), true);
+            requestBodyRead();
             return false;
         } catch (IOException | RuntimeException | Error failure) {
             state.clear(registration);
             throw failure;
+        }
+    }
+
+    private void requestBodyRead() {
+        if (!(isc instanceof HttpInboundServiceContextImpl)
+                        || !((HttpInboundServiceContextImpl) isc).isNettyHttp2Request()) {
+            ReadFlowHandler.setBodyReadWanted(context.channel(), true);
         }
     }
 

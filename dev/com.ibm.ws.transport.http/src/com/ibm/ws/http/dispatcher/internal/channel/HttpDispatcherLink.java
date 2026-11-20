@@ -277,7 +277,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         final boolean expect100 = HttpUtil.is100ContinueExpected(headers);
         final boolean hasBody = chunked || cl > 0;
 
-        if (!(hasBody || expect100)) {
+        if (!(hasBody || expect100) && !requestMetadata.isHttp2()) {
             this.isc.setBodyComplete();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "initStreaming: request has no body; wait for LastHttpContent");

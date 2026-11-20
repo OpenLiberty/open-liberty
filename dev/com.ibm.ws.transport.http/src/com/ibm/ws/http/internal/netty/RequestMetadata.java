@@ -14,6 +14,7 @@ import java.util.List;
 import com.ibm.ws.http.internal.netty.exception.InvalidRequestMetadataException;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.HttpRequest;
@@ -26,10 +27,26 @@ public final class RequestMetadata {
 
     private final ProtocolName protocol;
     private final int streamId;
+    private final String[] forwardedFor;
+    private final String forwardedPort;
+    private final String forwardedHost;
+    private final String forwardedProto;
 
-    private RequestMetadata(ProtocolName protocol, int streamId) {
+    private RequestMetadata(ProtocolName protocol, int streamId, Channel channel) {
         this.protocol = protocol;
         this.streamId = streamId;
+        if (protocol == ProtocolName.HTTP2) {
+            String[] values = channel.attr(NettyHttpConstants.FORWARDED_FOR_KEY).get();
+            this.forwardedFor = values == null ? null : values.clone();
+            this.forwardedPort = channel.attr(NettyHttpConstants.FORWARDED_PORT_KEY).get();
+            this.forwardedHost = channel.attr(NettyHttpConstants.FORWARDED_HOST_KEY).get();
+            this.forwardedProto = channel.attr(NettyHttpConstants.FORWARDED_PROTO_KEY).get();
+        } else {
+            this.forwardedFor = null;
+            this.forwardedPort = null;
+            this.forwardedHost = null;
+            this.forwardedProto = null;
+        }
     }
     /**
      * Capture the request protocol and validate its HTTP/2 stream ID. This runs before
@@ -41,7 +58,7 @@ public final class RequestMetadata {
             request.headers().remove(STREAM_ID);
             ProtocolName requestProtocol = request.protocolVersion().equals(HttpVersion.HTTP_1_0)
                             ? ProtocolName.HTTP10 : ProtocolName.HTTP1;
-            return new RequestMetadata(requestProtocol, -1);
+            return new RequestMetadata(requestProtocol, -1, channel);
         }
         if (connectionProtocol != ProtocolName.HTTP2) {
             throw new InvalidRequestMetadataException("Request received before the connection protocol was established: " + connectionProtocol);
@@ -62,7 +79,7 @@ public final class RequestMetadata {
         if (streamId <= 0) {
             throw new InvalidRequestMetadataException("HTTP/2 request has a nonpositive stream ID: " + streamId);
         }
-        return new RequestMetadata(connectionProtocol, streamId);
+        return new RequestMetadata(connectionProtocol, streamId, channel);
     }
 
     public ProtocolName protocol() {
@@ -75,5 +92,21 @@ public final class RequestMetadata {
 
     public int streamId() {
         return streamId;
+    }
+
+    public String[] forwardedFor() {
+        return forwardedFor == null ? null : forwardedFor.clone();
+    }
+
+    public String forwardedPort() {
+        return forwardedPort;
+    }
+
+    public String forwardedHost() {
+        return forwardedHost;
+    }
+
+    public String forwardedProto() {
+        return forwardedProto;
     }
 }

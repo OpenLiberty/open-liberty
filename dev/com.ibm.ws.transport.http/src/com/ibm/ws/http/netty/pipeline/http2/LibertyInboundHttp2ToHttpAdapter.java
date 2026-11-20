@@ -10,8 +10,11 @@
 package com.ibm.ws.http.netty.pipeline.http2;
 
 import java.util.Objects;
+import java.util.Map;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 import com.ibm.websphere.ras.Tr;
@@ -19,16 +22,26 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.netty.message.BodyQueue;
+import com.ibm.ws.http2.GrpcServletServices;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.FullHttpMessage;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Error;
 import io.netty.handler.codec.http2.Http2Exception;
+import io.netty.handler.codec.http2.Http2Headers;
+import io.netty.handler.codec.http2.Http2LocalFlowController;
 import io.netty.handler.codec.http2.Http2Stream;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.InboundHttp2ToHttpAdapter;
 
 /**
@@ -43,6 +56,8 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
     private final Channel channel;
     private final int maxResetFrames;
     private final int resetFrameWindow;
+    private final long maxRequestContentLength;
+    private final Http2Connection.PropertyKey streamingKey;
     
     private volatile long startResetTime = System.nanoTime();
     private volatile int resetFrameCount = 0; //tracks both inbound and outbound resets
@@ -53,12 +68,229 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
             "too many reset frames processed");
 
 
-    protected LibertyInboundHttp2ToHttpAdapter(Http2Connection connection, int maxContentLength, boolean validateHttpHeaders, boolean propagateSettings, Channel channel, HttpChannelConfig httpConfig) {
-        super(connection, maxContentLength, validateHttpHeaders, propagateSettings);
+    protected LibertyInboundHttp2ToHttpAdapter(Http2Connection connection, long maxContentLength, boolean validateHttpHeaders, boolean propagateSettings, Channel channel, HttpChannelConfig httpConfig) {
+        super(connection, maxContentLength < 0 || maxContentLength > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) maxContentLength,
+                        validateHttpHeaders, propagateSettings);
         this.channel = channel;
         this.maxResetFrames = httpConfig.getH2MaxResetFrames();
         this.resetFrameWindow = httpConfig.getH2ResetFramesWindow();
+        this.maxRequestContentLength = maxContentLength;
+        this.streamingKey = connection.newKey();
     }
+
+    @Override
+    public int onDataRead(ChannelHandlerContext ctx, int streamId, ByteBuf data, int padding, boolean endOfStream) throws Http2Exception {
+        Http2Stream stream = connection.stream(streamId);
+        StreamingState state = stream == null ? null : stream.getProperty(streamingKey);
+        FullHttpMessage message = null;
+        if (state == null) {
+            message = stream == null ? null : getMessage(stream);
+            if (message == null || !isRegisteredGrpc((HttpRequest) message)) {
+                return super.onDataRead(ctx, streamId, data, padding, endOfStream);
+            }
+        }
+
+        int length = data.readableBytes();
+        long bytes = state == null ? 0 : state.bytes;
+        if (bytes > Long.MAX_VALUE - length
+                        || (maxRequestContentLength >= 0 && bytes > maxRequestContentLength - length)) {
+            throw Http2Exception.streamError(streamId, Http2Error.ENHANCE_YOUR_CALM,
+                            "Content length exceeded max of %d for stream id %d",
+                            maxRequestContentLength >= 0 ? maxRequestContentLength : Long.MAX_VALUE, streamId);
+        }
+
+        if (state == null) {
+            state = new StreamingState(ctx, stream);
+            stream.setProperty(streamingKey, state);
+            removeMessage(stream, false);
+            try {
+                ctx.fireChannelRead(new H2InboundRequest(streamId, (HttpRequest) message));
+            } finally {
+                message.release();
+            }
+        }
+
+        state.bytes += length;
+        StreamingDataCredit credit = length == 0 ? null : new StreamingDataCredit(state, length);
+        try {
+            ctx.fireChannelRead(new H2InboundContent(streamId, data.retainedDuplicate(), endOfStream, null,
+                            credit));
+        } catch (RuntimeException | Error failure) {
+            // The decoder consumes outstanding frame credit when onDataRead throws.
+            if (credit != null) {
+                credit.cancel();
+            }
+            throw failure;
+        }
+        return padding;
+    }
+
+    @Override
+    public void onHeadersRead(ChannelHandlerContext ctx, int streamId, Http2Headers headers, int padding,
+                              boolean endOfStream) throws Http2Exception {
+        if (!publishStreamingTrailers(ctx, streamId, headers, endOfStream)) {
+            super.onHeadersRead(ctx, streamId, headers, padding, endOfStream);
+        }
+    }
+
+    @Override
+    public void onHeadersRead(ChannelHandlerContext ctx, int streamId, Http2Headers headers, int streamDependency,
+                              short weight, boolean exclusive, int padding, boolean endOfStream) throws Http2Exception {
+        if (!publishStreamingTrailers(ctx, streamId, headers, endOfStream)) {
+            super.onHeadersRead(ctx, streamId, headers, streamDependency, weight, exclusive, padding, endOfStream);
+        }
+    }
+
+    private boolean publishStreamingTrailers(ChannelHandlerContext ctx, int streamId, Http2Headers headers,
+                                             boolean endOfStream) throws Http2Exception {
+        Http2Stream stream = connection.stream(streamId);
+        if (stream == null || stream.getProperty(streamingKey) == null) {
+            return false;
+        }
+        for (Map.Entry<CharSequence, CharSequence> header : headers) {
+            if (header.getKey().length() > 0 && header.getKey().charAt(0) == ':') {
+                throw Http2Exception.streamError(streamId, Http2Error.PROTOCOL_ERROR, "Invalid trailing pseudo-header");
+            }
+        }
+        HttpHeaders trailers = new DefaultHttpHeaders(false);
+        HttpConversionUtil.addHttp2ToHttpHeaders(streamId, headers, trailers,
+                        io.netty.handler.codec.http.HttpVersion.HTTP_1_1, true, true);
+        ctx.fireChannelRead(new H2InboundContent(streamId, Unpooled.EMPTY_BUFFER, endOfStream, trailers));
+        return true;
+    }
+
+    private static boolean isRegisteredGrpc(HttpRequest request) {
+        CharSequence mimeType = HttpUtil.getMimeType(request);
+        if (mimeType == null || !"application/grpc".equalsIgnoreCase(mimeType.toString())) {
+            return false;
+        }
+        String path = request.uri();
+        int lastSlash = path.lastIndexOf('/');
+        if (!path.startsWith("/") || lastSlash <= 1) {
+            return false;
+        }
+        synchronized (GrpcServletServices.class) {
+            Map<String, GrpcServletServices.ServiceInformation> services = GrpcServletServices.getServletGrpcServices();
+            return services != null && services.containsKey(path.substring(1, lastSlash));
+        }
+    }
+
+    private final class StreamingState {
+        long bytes;
+
+        private final ChannelHandlerContext ctx;
+        private final Http2Stream stream;
+        private final AtomicLong pendingCredit = new AtomicLong();
+        private final AtomicBoolean drainScheduled = new AtomicBoolean();
+
+        StreamingState(ChannelHandlerContext ctx, Http2Stream stream) {
+            this.ctx = ctx;
+            this.stream = stream;
+        }
+
+        void scheduleCreditDrain() {
+            if (pendingCredit.get() <= 0 || !drainScheduled.compareAndSet(false, true)) {
+                return;
+            }
+            // One event-loop task drains credit from any number of released chunks.
+            try {
+                ctx.executor().execute(() -> {
+                    try {
+                        long ready = pendingCredit.getAndSet(0);
+                        boolean flush = false;
+                        Http2LocalFlowController flow = connection.local().flowController();
+                        while (ready > 0) {
+                            int part = (int) Math.min(ready, Integer.MAX_VALUE);
+                            flush |= flow.consumeBytes(stream, part);
+                            ready -= part;
+                        }
+                        if (flush) {
+                            ctx.flush();
+                        }
+                    } catch (Http2Exception failure) {
+                        ctx.fireExceptionCaught(failure);
+                    } finally {
+                        drainScheduled.set(false);
+                        if (pendingCredit.get() > 0) {
+                            scheduleCreditDrain();
+                        }
+                    }
+                });
+            } catch (RejectedExecutionException ignored) {
+                drainScheduled.set(false);
+                // The connection's event loop has stopped; no WINDOW_UPDATE can be sent.
+            }
+        }
+    }
+
+    private final class StreamingDataCredit implements BodyQueue.AggregatingCompletion {
+        private final StreamingState state;
+        private final int length;
+        private StreamingDataCredit root = this;
+        private int aggregateLength;
+        private boolean released;
+        private boolean cancelled;
+
+        StreamingDataCredit(StreamingState state, int length) {
+            this.state = state;
+            this.length = length;
+            this.aggregateLength = length;
+        }
+
+        @Override
+        public void merge(BodyQueue.AggregatingCompletion next) {
+            if (!(next instanceof StreamingDataCredit)) {
+                throw new IllegalArgumentException("HTTP/2 DATA credit has a different owner");
+            }
+            StreamingDataCredit credit = (StreamingDataCredit) next;
+            synchronized (this) {
+                if (root != this || released || credit.root != credit || credit.state != state) {
+                    throw new IllegalArgumentException("HTTP/2 DATA credit crossed stream or chunk ownership");
+                }
+                if (aggregateLength > Integer.MAX_VALUE - credit.length) {
+                    throw new IllegalArgumentException("HTTP/2 chunk credit overflow");
+                }
+                aggregateLength += credit.length;
+                credit.root = this;
+            }
+        }
+
+        @Override
+        public void run() {
+            StreamingDataCredit owner = root;
+            int ready;
+            synchronized (owner) {
+                if (owner.released) {
+                    return;
+                }
+                owner.released = true;
+                ready = owner.aggregateLength;
+                if (ready > 0) {
+                    owner.state.pendingCredit.addAndGet(ready);
+                }
+            }
+            if (ready > 0) {
+                owner.state.scheduleCreditDrain();
+            }
+        }
+
+        void cancel() {
+            StreamingDataCredit owner = root;
+            synchronized (owner) {
+                if (cancelled) {
+                    return;
+                }
+                cancelled = true;
+                owner.aggregateLength -= length;
+                if (owner.released) {
+                    // Decoder failure is synchronous; its event loop has not run
+                    // the deferred drain task for this frame yet.
+                    owner.state.pendingCredit.addAndGet(-length);
+                }
+            }
+        }
+    }
+
 
     @Override
     @FFDCIgnore(NullPointerException.class)
@@ -66,6 +298,14 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
     protected io.netty.handler.codec.http.FullHttpMessage processHeadersBegin(ChannelHandlerContext ctx, io.netty.handler.codec.http2.Http2Stream stream,
                                                                               io.netty.handler.codec.http2.Http2Headers headers, boolean endOfStream, boolean allowAppend,
                                                                               boolean appendToTrailer) throws io.netty.handler.codec.http2.Http2Exception {
+        if (getMessage(stream) != null) {
+            for (Map.Entry<CharSequence, CharSequence> header : headers) {
+                if (header.getKey().length() > 0 && header.getKey().charAt(0) == ':') {
+                    throw Http2Exception.streamError(stream.id(), Http2Error.PROTOCOL_ERROR, "Invalid trailing pseudo-header");
+                }
+            }
+            return super.processHeadersBegin(ctx, stream, headers, endOfStream, allowAppend, appendToTrailer);
+        }
         try {
             boolean containsPath = Objects.nonNull(headers.path()) && !headers.path().toString().isEmpty();
             boolean containsScheme = Objects.nonNull(headers.scheme()) && !headers.scheme().toString().isEmpty();
@@ -98,6 +338,9 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
         if (isResetTrackingEnabled())
             incrementResetCount();
         Http2Stream stream = connection.stream(streamId);
+        if (stream != null) {
+            stream.removeProperty(streamingKey);
+        }
         FullHttpMessage msg = getMessage(stream);
         if (msg != null) {
             onRstStreamRead(stream, msg);
@@ -171,6 +414,12 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
         super.onStreamClosed(stream);
         // After stream was closed, check if we need to send a go away frame
         sendGoAwayIfClosing();
+    }
+
+    @Override
+    public void onStreamRemoved(Http2Stream stream) {
+        stream.removeProperty(streamingKey);
+        super.onStreamRemoved(stream);
     }
 
     private void sendGoAwayIfClosing() {
