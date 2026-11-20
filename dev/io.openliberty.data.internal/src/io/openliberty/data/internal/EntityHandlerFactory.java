@@ -483,14 +483,20 @@ public abstract class EntityHandlerFactory {
      * whether stateful. Otherwise create a new instance that must be closed
      * by the method invoker.
      *
-     * @param stateful indicates a stateful repository.
+     * @param queryInfo query information with access to whether the
+     *                      repository is stateful
      * @return the EntityManager and indicator of whether it automatically closes.
      * @throws Exception if an error occurs.
      */
     @FFDCIgnore({ ContextNotActiveException.class, // RequestScope not available on unmanaged thread
                   IllegalStateException.class }) // CDI not available on unmanaged thread
-    Sync<EntityManager> getEntityManager(boolean stateful) throws Exception {
+    @Trivial
+    Sync<EntityManager> getEntityManager(QueryInfo queryInfo) throws Exception {
         Sync<EntityManager> emSync = null;
+        boolean stateful = queryInfo.producer.stateful();
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getEntityManager", "stateful? " + stateful);
 
         if (stateful) {
             try {
@@ -521,15 +527,7 @@ public abstract class EntityHandlerFactory {
             Transaction tx = provider.tranMgr.getTransaction();
             if (tx == null) {
                 if (stateful)
-                    // TODO NLS message. Can mention using RequestContextController
-                    // .activate()/deactivate() around repository operations to
-                    // establish a request scope context.
-                    throw new IllegalStateException("The {0} method of the {1}" +
-                                                    " stateful repository must be" +
-                                                    " used within a request scope" +
-                                                    " or a transaction so that the" +
-                                                    " persistence context can" +
-                                                    " follow its life cycle.");
+                    throw Fail.statefulRequiresScope(queryInfo);
                 else
                     emSync = new Sync<>( //
                                     createEntityManager(), //
@@ -554,6 +552,8 @@ public abstract class EntityHandlerFactory {
             }
         }
 
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getEntityManager", emSync);
         return emSync;
     }
 

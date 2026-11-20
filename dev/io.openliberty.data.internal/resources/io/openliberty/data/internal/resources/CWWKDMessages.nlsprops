@@ -1268,3 +1268,32 @@ CWWKD1124.resource.unavailable.useraction=To prevent this warning, verify that \
  the configuration of the named resource is correct in the server.xml file. \
  Check that the resource is configured and that all required dependencies are \
  available.
+
+CWWKD1125.record.not.stateful=CWWKD1125E: The {0} Java record type that is used \
+ by the {1} method cannot be an entity class for the {2} stateful repository \
+ because Java records are immutable and cannot change state. Use a Java class \
+ annotated Entity as the entity class instead.
+CWWKD1125.record.not.stateful.explanation=Java records cannot be entities in \
+ a stateful repository.
+CWWKD1125.record.not.stateful.useraction=Convert the Java record into a \
+ Jakarta Persistence entity class.
+
+CWWKD1126.stateful.needs.scope=CWWKD1126E: The {0} method of the {1} stateful \
+ repository must be used within a transaction or request scope so that the \
+ persistence context can follow its life cycle.
+CWWKD1126.stateful.needs.scope.explanation=A transaction or request scope \
+ must be used to establish the boundary of the persistence context in which \
+ a stateful repository method runs.
+CWWKD1126.stateful.needs.scope.useraction=Invoke the repository method within \
+ a transaction or request scope.
+
+CWWKD1127.persist.context.err=CWWKD1127E: Changes made within the \
+ persistence context of a stateful repository were not written to the \
+ database at the end of the request scope because the {0} entity manager \
+ encountered an error attempting the {1} operation. The error is: {2}.
+CWWKD1127.persist.context.err.explanation=Methods of a stateful repository \
+ can run within a persistence context that is flushed to the database at \
+ the end of the request scope. An error prevents the changes from being \
+ written to the database.
+CWWKD1127.persist.context.err.useraction=Use the exception stack trace, \
+ if available, to investigate the cause of the error.

@@ -19,6 +19,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -896,6 +897,32 @@ public class Fail {
     }
 
     /**
+     * Raises UnsupportedOperationException because a Java record cannot
+     * be an entity for a stateful repository.
+     *
+     * @param recordClass      class of the Java record
+     * @param queriesPerEntity map of recordClass to query information for
+     *                             repository methods that declare it as a
+     *                             result type
+     * @throws the UnsupportedOperationException
+     */
+    public static UnsupportedOperationException recordsCannotBeStateful //
+    (Class<?> recordClass,
+     Map<Class<?>, List<QueryInfo>> queriesPerEntity) {
+
+        List<QueryInfo> infos = queriesPerEntity.get(recordClass);
+        QueryInfo info = infos == null || infos.isEmpty() ? null : infos.get(0);
+        String methodName = info == null ? "" : info.method.getName();
+        String repoName = info == null ? "" : info.repositoryInterface.getName();
+
+        throw exc(UnsupportedOperationException.class,
+                  "CWWKD1125.record.not.stateful",
+                  recordClass.getName(),
+                  methodName,
+                  repoName);
+    }
+
+    /**
      * Raises MappingException for a result that cannot be converted to the
      * return type of the repository method.
      *
@@ -1124,6 +1151,21 @@ public class Fail {
                   info.repositoryInterface.getName(),
                   paramType.getSimpleName(),
                   info.type.operationName);
+    }
+
+    /**
+     * Raises IllegalStateException because the stateful repository method
+     * was used outside a request scope or transaction.
+     *
+     * @param info query information for the repository method
+     * @throws IllegalStateException
+     */
+    static IllegalStateException statefulRequiresScope(QueryInfo info) {
+
+        throw exc(IllegalStateException.class,
+                  "CWWKD1126.stateful.needs.scope",
+                  info.method.getName(),
+                  info.repositoryInterface.getName());
     }
 
     /**

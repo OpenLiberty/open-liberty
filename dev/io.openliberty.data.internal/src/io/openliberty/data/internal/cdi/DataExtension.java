@@ -568,11 +568,8 @@ public class DataExtension implements Extension {
             producer.setStateful();
 
             for (Class<?> c : queriesPerEntity.keySet())
-                if (c.isRecord()) // TODO NLS
-                    throw new UnsupportedOperationException("The " + c.getName() +
-                                                            " Java record type cannot" +
-                                                            " be an entity class for a" +
-                                                            " stateful repository.");
+                if (c.isRecord())
+                    throw Fail.recordsCannotBeStateful(c, queriesPerEntity);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
