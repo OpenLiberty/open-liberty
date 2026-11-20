@@ -36,7 +36,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sip.resolver.DomainResolver;
 import com.ibm.websphere.sip.resolver.DomainResolverListener;
 import com.ibm.websphere.sip.resolver.exception.SipURIResolveException;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.sip.container.internal.SipContainerComponent;
 import com.ibm.ws.sip.container.properties.PropertiesStore;
 import com.ibm.ws.sip.container.util.SipUtil;
@@ -87,14 +86,10 @@ public class DomainResolverImpl implements DomainResolver, SipStackDomainResolve
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 			Tr.debug(tc, "DomainResolverImpl activated", properties);
 		PropertiesStore.getInstance().getProperties().updateProperties(properties);
-		useNetty = (!ProductInfo.getBetaEdition())?false:MetatypeUtils.parseBoolean(
+		useNetty = MetatypeUtils.parseBoolean(
 			"domainResolver", USE_NETTY, properties.get(USE_NETTY), true);
-		if (c_logger.isTraceDebugEnabled() && useNetty) {
-			c_logger.traceDebug("DomainResolverImpl activate: useNetty=true");
-		}
-		if (c_logger.isTraceDebugEnabled() && ProductInfo.getBetaEdition() && !useNetty) {
-			//log when beta=true but useNetty=false
-			c_logger.traceDebug("DomainResolverImpl activate: useNetty=false");
+		if (c_logger.isTraceDebugEnabled()) {
+			c_logger.traceDebug("DomainResolverImpl activate: useNetty=" + useNetty);
 		}
 		init();
 	}

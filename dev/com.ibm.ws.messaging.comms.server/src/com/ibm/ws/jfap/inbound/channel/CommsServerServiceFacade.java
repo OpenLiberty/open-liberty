@@ -55,7 +55,6 @@ import com.ibm.wsspi.channelfw.ChannelConfiguration;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * This is a messaging {@link Singleton}.
@@ -126,7 +125,7 @@ public class CommsServerServiceFacade implements Singleton {
         //Go ahead and Register JFAPChannel with Channel Framework by providing JFAPServerInboundChannelFactory
         chfw.getFramework().registerFactory("JFAPChannel", JFAPServerInboundChannelFactory.class);
 
-        useNettyTransport = ProductInfo.getBetaEdition() && parseBoolean(CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
+        useNettyTransport = parseBoolean(CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
         Object cid = properties.get(ComponentConstants.COMPONENT_ID);
         String endpointName = (String) properties.get("id");
         if (endpointName == null)
@@ -150,7 +149,7 @@ public class CommsServerServiceFacade implements Singleton {
     }
     private void modified0(Map<String, Object> properties, boolean fromActivate) {
         if (!fromActivate) {
-            boolean modifiedUseNetty = ProductInfo.getBetaEdition() && parseBoolean(CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
+            boolean modifiedUseNetty = parseBoolean(CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
             if (modifiedUseNetty != useNettyTransport) {
                 throw new IllegalStateException("Cannot change useNettyTransport.");
             }

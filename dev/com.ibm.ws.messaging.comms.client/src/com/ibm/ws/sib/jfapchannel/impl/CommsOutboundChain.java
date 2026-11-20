@@ -37,7 +37,6 @@ import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.messaging.lifecycle.SingletonsReady;
 import com.ibm.ws.sib.jfapchannel.ClientConnectionManager;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
@@ -116,7 +115,7 @@ public class CommsOutboundChain implements ApplicationPrereq {
 
         isSecureChain = MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useSSL", properties.get("useSSL"), false);
 
-        useNettyTransport = ProductInfo.getBetaEdition() && MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
+        useNettyTransport = MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
 
         String id = (String) properties.get("id");
         chainName = id;

@@ -55,7 +55,6 @@ import com.ibm.ws.http.logging.internal.DisabledLogger;
 import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.kernel.launch.service.PauseableComponent;
 import com.ibm.ws.kernel.launch.service.PauseableComponentException;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
@@ -304,8 +303,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         sslOptions.activate(ctx);
         eventService.activate(ctx);
 
-        useNetty = ProductInfo.getBetaEdition() &&
-                   MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
+        useNetty = MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
 
 
         initializeChains();
@@ -450,8 +448,7 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         // Store the configuration
         endpointConfig = config;
         
-        boolean newUseNetty = ProductInfo.getBetaEdition() &&
-                        MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
+        boolean newUseNetty = MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
         
         if(newUseNetty != useNetty) {
             switchChains(newUseNetty);

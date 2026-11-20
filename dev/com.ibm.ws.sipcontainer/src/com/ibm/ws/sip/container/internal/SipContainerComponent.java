@@ -31,7 +31,6 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.sip.container.SipContainer;
 import com.ibm.ws.sip.container.appqueue.MessageDispatchingHandler;
 import com.ibm.ws.sip.container.pmi.PerformanceMgr;
@@ -129,14 +128,10 @@ public class SipContainerComponent {
 			if (c_logger.isErrorEnabled())
 				c_logger.error("error.initialize.sip.container");
 		}
-		useNetty = (!ProductInfo.getBetaEdition())?false:MetatypeUtils.parseBoolean(
+		useNetty = MetatypeUtils.parseBoolean(
 			"sipContainer", USE_NETTY, properties.get(USE_NETTY), true);
-		if (c_logger.isTraceDebugEnabled() && useNetty) {
-			c_logger.traceDebug("SipContainerComponent activate: useNetty=true");
-		}
-		if (c_logger.isTraceDebugEnabled() && ProductInfo.getBetaEdition() && !useNetty) {
-			//log when beta=true but useNetty=false
-			c_logger.traceDebug("SipContainerComponent activate: useNetty=false");
+		if (c_logger.isTraceDebugEnabled()) {
+			c_logger.traceDebug("SipContainerComponent activate: useNetty=" + useNetty);
 		}
 		
 		genericEndpointRef.activate(context);
@@ -181,14 +176,10 @@ public class SipContainerComponent {
 		if (c_logger.isTraceDebugEnabled())
 			c_logger.traceDebug("SipContainerComponent modified", properties);
 		PropertiesStore.getInstance().getProperties().updateProperties(properties);
-		useNetty = (!ProductInfo.getBetaEdition())?false:MetatypeUtils.parseBoolean(
+		useNetty = MetatypeUtils.parseBoolean(
 			"sipContainer", USE_NETTY, properties.get(USE_NETTY), true);
-		if (c_logger.isTraceDebugEnabled() && useNetty) {
-			c_logger.traceDebug("SipContainerComponent modified: useNetty=true");
-		}
-		if (c_logger.isTraceDebugEnabled() && ProductInfo.getBetaEdition() && !useNetty) {
-			//log when beta=true but useNetty=false
-			c_logger.traceDebug("SipContainerComponent activate: useNetty=false");
+		if (c_logger.isTraceDebugEnabled()) {
+			c_logger.traceDebug("SipContainerComponent modified: useNetty=" + useNetty);
 		}
 	}
 	
