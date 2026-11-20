@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -78,6 +78,8 @@ public class VirtualHostMap {
         String getRequestedHost();
 
         int getRequestedPort();
+
+        String getRequestedRoutingHost();
     }
 
     /**
@@ -244,7 +246,7 @@ public class VirtualHostMap {
 
         // Now that we know we have virtual hosts to choose from, do the evaluation of http headers
         // to figure out what the requested host/port were..
-        return selector.findVirtualHost(endpointPid, helper.getRequestedHost(), helper.getRequestedPort());
+        return selector.findVirtualHost(endpointPid, helper.getRequestedRoutingHost(), helper.getRequestedPort());
     }
 
     private static class AlternateHostSelector {

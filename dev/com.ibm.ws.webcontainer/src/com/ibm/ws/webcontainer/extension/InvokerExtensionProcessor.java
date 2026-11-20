@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.servlet.CacheServletWrapper;
 import com.ibm.ws.webcontainer.servlet.ServletConfig;
@@ -165,14 +166,18 @@ public class InvokerExtensionProcessor extends WebExtensionProcessor
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
 
-        WebAppDispatcherContext dispatchContext = (WebAppDispatcherContext)((IExtendedRequest)ServletUtil.unwrapRequest(request)).getWebAppDispatcherContext();
+        IExtendedRequest extendedRequest = (IExtendedRequest) ServletUtil.unwrapRequest(request);
+        WebAppDispatcherContext dispatchContext = (WebAppDispatcherContext) extendedRequest.getWebAppDispatcherContext();
         String errorString = null;
         String invokePath = null;
         String servletName = null;
         IServletWrapper s = null;
         String reqURI = null;
         boolean failedAddMappingTarget=false;//PK16467
-        StringBuffer cacheKey = new StringBuffer(req.getServerName());
+        // Key from the routing host, as WebContainer.handleRequest does, not the API server name
+        IRequest iRequest = extendedRequest.getIRequest();
+        String routingServerName = (iRequest != null) ? WebContainer.getRoutingHost(iRequest) : req.getServerName();
+        StringBuffer cacheKey = new StringBuffer(routingServerName);
         String pathInfo;
         cacheKey.append(':');
         cacheKey.append(req.getServerPort());
