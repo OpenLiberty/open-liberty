@@ -9,23 +9,28 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.utils;
 
+import static io.openliberty.mcp.internal.fat.utils.JsonUtil.get;
+
 import org.json.JSONObject;
 
 /**
- * A JSON-RPC response to any MCP request, as returned by {@link McpClient#send(McpRequest)} and
+ * A JSON-RPC response to any MCP request, as returned by {@link McpClient#call(McpRequest)} and
  * {@link McpClient#call(String)}.
  *
  * <p>Wraps the raw JSON-RPC response together with the {@code id} and the protocol version of
  * the request it answers, so that {@link JsonRpcResponseMatcher} can validate the response
  * against its request. Use the matchers to assert on a response.
+ *
+ * <p>Subclasses, such as {@link ToolResponse}, add the getters for the parts of the result of one
+ * kind of request.
  */
-public class McpResponse {
+public class JsonRpcResponse {
 
     private final JSONObject json;
     private final Object requestId;
     private final String protocolVersion;
 
-    McpResponse(JSONObject json, Object requestId, String protocolVersion) {
+    JsonRpcResponse(JSONObject json, Object requestId, String protocolVersion) {
         this.json = json;
         this.requestId = requestId;
         this.protocolVersion = protocolVersion;
@@ -53,30 +58,27 @@ public class McpResponse {
 
     /** Returns the JSON-RPC {@code result} object, or {@code null} if the response has none (e.g. a JSON-RPC error). */
     public JSONObject getResult() {
-        return json.optJSONObject("result");
+        return get(json, JSONObject.class, "result");
     }
 
     /** Returns the JSON-RPC {@code error} object, or {@code null} if the response is not a JSON-RPC error. */
     public JSONObject getError() {
-        return json.optJSONObject("error");
+        return get(json, JSONObject.class, "error");
     }
 
     /** Returns the JSON-RPC error {@code code}, or {@code null} if the response is not a JSON-RPC error or has no integer code. */
     public Integer getErrorCode() {
-        JSONObject error = getError();
-        return error != null && error.opt("code") instanceof Integer code ? code : null;
+        return get(json, Integer.class, "error", "code");
     }
 
     /** Returns the JSON-RPC error {@code message}, or {@code null} if there is none. */
     public String getErrorMessage() {
-        JSONObject error = getError();
-        return error == null ? null : error.optString("message", null);
+        return get(json, String.class, "error", "message");
     }
 
     /** Returns the JSON-RPC error {@code data} (a {@code JSONArray}, a string, ...), or {@code null} if there is none. */
     public Object getErrorData() {
-        JSONObject error = getError();
-        return error == null ? null : error.opt("data");
+        return get(json, Object.class, "error", "data");
     }
 
     @Override

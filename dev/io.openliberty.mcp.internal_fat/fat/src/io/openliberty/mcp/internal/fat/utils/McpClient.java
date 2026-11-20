@@ -74,9 +74,11 @@ import componenttest.topology.impl.LibertyServer;
  * {@link #callTool(McpRequest)} — build a request separately from sending it, e.g. to
  * know its id before the response arrives. {@code request} is the one place that fills
  * in the JSON-RPC envelope and allocates request ids, for every method.</li>
- * <li>{@link #send(McpRequest)} / {@link #call(String)} — send any request and return a
- * {@link McpResponse} to assert on with {@link JsonRpcResponseMatcher}.
- * {@code call} accepts a malformed body.</li>
+ * <li>{@link #call(McpRequest)} / {@link #call(String)} — send any request and return a
+ * {@link JsonRpcResponse} to assert on with {@link JsonRpcResponseMatcher}.
+ * {@code call(String)} accepts a malformed body.</li>
+ * <li>{@link #call(McpRequest, Class)} — like {@link #call(McpRequest)}, but returns the given
+ * kind of response, e.g. {@link ToolResponse}. {@code callTool} uses it.</li>
  * <li>{@link #callMCPNotification(String)} — sends a notification, expects HTTP 202 with
  * no response body.</li>
  * <li>{@link #listAllTools()} — convenience method that follows pagination to return all tools.</li>
@@ -523,7 +525,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * @throws Exception if the request fails or the response status is not 200
      */
     public ToolResponse callTool(McpRequest request) throws Exception {
-        return new ToolResponse(new JSONObject(callMCP(request.toString())), request.getId(), VALUE_MCP_PROTOCOL_VERSION);
+        return call(request, ToolResponse.class);
     }
 
     /**
@@ -536,7 +538,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
 
     /**
      * Builds, without sending it, a {@code tools/call} request, filling in the JSON-RPC envelope
-     * with a fresh request id. Send it with {@link #send(McpRequest)}, or with
+     * with a fresh request id. Send it with {@link #call(McpRequest)}, or with
      * {@link #callMCPRaw(String)} when the test needs control over the HTTP exchange (e.g. to
      * expect a 403).
      *
@@ -576,7 +578,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * where the JSON-RPC envelope ({@code jsonrpc}, {@code id}, {@code method}, {@code params})
      * is filled in for requests built by this client, and where request ids are allocated: each
      * call takes the next id from a per-client counter, as a string ({@code "1"}, {@code "2"}, ...),
-     * so ids never repeat within one client. Send the request with {@link #send(McpRequest)}.
+     * so ids never repeat within one client. Send the request with {@link #call(McpRequest)}.
      *
      * @param method the JSON-RPC method, e.g. {@code ping} or {@code tools/list}
      * @param params the request params, or {@code null} to send no {@code params} field
@@ -584,7 +586,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      */
     public McpRequest request(String method, JSONObject params) {
         String requestId = String.valueOf(nextRequestId.getAndIncrement());
-        return new McpRequest(requestId, method, envelope(requestId, method, params));
+        return new McpRequest(envelope(requestId, method, params));
     }
 
     /**
@@ -619,8 +621,21 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * @return the parsed response
      * @throws Exception if the request fails or the response status is not 200
      */
-    public McpResponse send(McpRequest request) throws Exception {
-        return new McpResponse(new JSONObject(callMCP(request.toString())), request.getId(), VALUE_MCP_PROTOCOL_VERSION);
+    public JsonRpcResponse call(McpRequest request) throws Exception {
+        return call(request, JsonRpcResponse.class);
+    }
+
+    /**
+     * Sends a request built by this client and parses the response as the given type, e.g.
+     * {@link ToolResponse} for a {@code tools/call} request. Expects HTTP 200.
+     *
+     * @param request the request to send
+     * @param responseType the type of response to create
+     * @return the parsed response
+     * @throws Exception if the request fails or the response status is not 200
+     */
+    public <T extends JsonRpcResponse> T call(McpRequest request, Class<T> responseType) throws Exception {
+        return createResponse(callMCP(request.toString()), request.getId(), responseType);
     }
 
     /**
@@ -636,7 +651,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * @return the parsed response
      * @throws Exception if the request fails or the response status is not 200
      */
-    public McpResponse call(String jsonRequestBody) throws Exception {
+    public JsonRpcResponse call(String jsonRequestBody) throws Exception {
         Object requestId = JSONObject.NULL;
         try {
             Object id = new JSONObject(jsonRequestBody).opt("id");
@@ -646,7 +661,17 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         } catch (JSONException e) {
             // malformed body: the server can't know an id, so none is expected
         }
-        return new McpResponse(new JSONObject(callMCP(jsonRequestBody)), requestId, VALUE_MCP_PROTOCOL_VERSION);
+        return createResponse(callMCP(jsonRequestBody), requestId, JsonRpcResponse.class);
+    }
+
+    /**
+     * The one place where the JSON of a response is turned into a response object, for every
+     * kind of response. The response types share the constructor
+     * {@code (JSONObject json, Object requestId, String protocolVersion)}.
+     */
+    private <T extends JsonRpcResponse> T createResponse(String json, Object requestId, Class<T> responseType) throws Exception {
+        return responseType.getDeclaredConstructor(JSONObject.class, Object.class, String.class)
+                           .newInstance(new JSONObject(json), requestId, VALUE_MCP_PROTOCOL_VERSION);
     }
 
     /**

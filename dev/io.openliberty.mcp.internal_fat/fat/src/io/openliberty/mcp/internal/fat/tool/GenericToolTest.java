@@ -148,6 +148,6 @@ public class GenericToolTest extends FATServletClient {
 
         String expectedReturnList = "{\"returnList\":[[\"Hello\",\"World\"],[\"IBM\",\"Liberty\"]]}";
         assertThat(response, toolResponse().withTextContent(expectedReturnList)
-                                           .withStructureContent(new JSONObject(expectedReturnList)));
+                                           .withStructuredContent(new JSONObject(expectedReturnList)));
     }
 }

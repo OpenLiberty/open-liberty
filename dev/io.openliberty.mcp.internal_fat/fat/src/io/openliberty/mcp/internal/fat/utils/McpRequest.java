@@ -9,41 +9,30 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.utils;
 
+import static io.openliberty.mcp.internal.fat.utils.JsonUtil.get;
+
 import org.json.JSONObject;
 
 /**
  * A JSON-RPC request built by {@link McpClient} but not yet sent.
  *
  * <p>Building a request is separate from sending it so that the same request can be sent
- * through {@link McpClient#send(McpRequest)} (and parsed into a response) or through
+ * through {@link McpClient#call(McpRequest)} (and parsed into a response) or through
  * {@link McpClient#callMCPRaw(String)} when a test needs control over the HTTP exchange, e.g.
  * to expect a 403 response. {@link #toString()} returns the JSON body.
  */
 public final class McpRequest {
 
-    private final Object id;
-    private final String method;
     private final JSONObject json;
 
-    McpRequest(Object id, String method, JSONObject json) {
-        this.id = id;
-        this.method = method;
+    /** @param json the complete JSON-RPC request body, including its {@code id} */
+    McpRequest(JSONObject json) {
         this.json = json;
     }
 
-    /** Returns the JSON-RPC {@code id} of the request. */
+    /** Returns the JSON-RPC {@code id} of the request, which is the id the response must have. */
     public Object getId() {
-        return id;
-    }
-
-    /** Returns the JSON-RPC {@code method} of the request. */
-    public String getMethod() {
-        return method;
-    }
-
-    /** Returns the JSON-RPC request body. */
-    public JSONObject getJson() {
-        return json;
+        return get(json, Object.class, "id");
     }
 
     @Override

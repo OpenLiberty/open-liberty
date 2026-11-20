@@ -128,7 +128,7 @@ public class AsyncToolsTest extends FATServletClient {
 
         assertThat(client.callTool("asyncObjectTool", Map.of("name", "Manchester")),
                    toolResponse().withTextContent("{\"country\":\"England\",\"isCapital\":false,\"name\":\"Manchester\",\"population\":8000}")
-                                 .withStructureContent(expectedJson));
+                                 .withStructuredContent(expectedJson));
     }
 
     @Test(expected = Exception.class)

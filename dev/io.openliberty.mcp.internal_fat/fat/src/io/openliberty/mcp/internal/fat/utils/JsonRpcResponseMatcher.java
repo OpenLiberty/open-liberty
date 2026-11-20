@@ -21,7 +21,7 @@ import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.json.JSONArray;
 
 /**
- * Hamcrest matcher for asserting that a {@link McpResponse} to any request is a JSON-RPC error.
+ * Hamcrest matcher for asserting that a {@link JsonRpcResponse} to any request is a JSON-RPC error.
  * It also validates that the JSON-RPC envelope of the response is valid.
  *
  * <p>Start with {@link #jsonRpcResponse()} and chain the conditions the error must meet:
@@ -38,11 +38,11 @@ import org.json.JSONArray;
  *
  * <p>To assert on the result of a tool call use {@link ToolResponseMatcher#toolResponse()}.
  */
-public class JsonRpcResponseMatcher extends TypeSafeDiagnosingMatcher<McpResponse> {
+public class JsonRpcResponseMatcher extends TypeSafeDiagnosingMatcher<JsonRpcResponse> {
 
-    private Integer expectedErrorCode;
-    private String expectedErrorMessage;
-    private Matcher<?> expectedErrorData;
+    private Integer expectedCode;
+    private String expectedMessage;
+    private Matcher<?> errorDataMatcher;
 
     private JsonRpcResponseMatcher() {}
 
@@ -53,13 +53,13 @@ public class JsonRpcResponseMatcher extends TypeSafeDiagnosingMatcher<McpRespons
 
     /** Requires the error's {@code code} to equal the given code. See {@link JsonRpcErrorCode}. */
     public JsonRpcResponseMatcher withErrorCode(int code) {
-        this.expectedErrorCode = code;
+        this.expectedCode = code;
         return this;
     }
 
     /** Requires the error's {@code message} to equal the given message. */
     public JsonRpcResponseMatcher withErrorMessage(String message) {
-        this.expectedErrorMessage = message;
+        this.expectedMessage = message;
         return this;
     }
 
@@ -83,7 +83,7 @@ public class JsonRpcResponseMatcher extends TypeSafeDiagnosingMatcher<McpRespons
      * to the matcher as a {@code List}, any other value as it is parsed (a {@code String}, ...).
      */
     public JsonRpcResponseMatcher withErrorData(Matcher<?> dataMatcher) {
-        this.expectedErrorData = dataMatcher;
+        this.errorDataMatcher = dataMatcher;
         return this;
     }
 
@@ -91,22 +91,22 @@ public class JsonRpcResponseMatcher extends TypeSafeDiagnosingMatcher<McpRespons
     public void describeTo(Description description) {
         description.appendText("a valid JSON-RPC error response");
         String joiner = " with ";
-        if (expectedErrorCode != null) {
-            description.appendText(joiner).appendText("code ").appendValue(expectedErrorCode);
+        if (expectedCode != null) {
+            description.appendText(joiner).appendText("code ").appendValue(expectedCode);
             joiner = " and ";
         }
-        if (expectedErrorMessage != null) {
-            description.appendText(joiner).appendText("message ").appendValue(expectedErrorMessage);
+        if (expectedMessage != null) {
+            description.appendText(joiner).appendText("message ").appendValue(expectedMessage);
             joiner = " and ";
         }
-        if (expectedErrorData != null) {
-            description.appendText(joiner).appendText("data ").appendDescriptionOf(expectedErrorData);
+        if (errorDataMatcher != null) {
+            description.appendText(joiner).appendText("data ").appendDescriptionOf(errorDataMatcher);
         }
     }
 
     @Override
-    protected boolean matchesSafely(McpResponse response, Description mismatch) {
-        String envelopeProblem = JsonRpcEnvelope.validate(response);
+    protected boolean matchesSafely(JsonRpcResponse response, Description mismatch) {
+        String envelopeProblem = JsonRpcEnvelopeValidation.validate(response);
         if (envelopeProblem != null) {
             mismatch.appendText("had an invalid JSON-RPC envelope, it ").appendText(envelopeProblem)
                     .appendText(": ").appendText(response.toString());
@@ -116,19 +116,19 @@ public class JsonRpcResponseMatcher extends TypeSafeDiagnosingMatcher<McpRespons
             mismatch.appendText("was not a JSON-RPC error: ").appendText(response.toString());
             return false;
         }
-        if (expectedErrorCode != null && !expectedErrorCode.equals(response.getErrorCode())) {
+        if (expectedCode != null && !expectedCode.equals(response.getErrorCode())) {
             mismatch.appendText("error code was ").appendValue(response.getErrorCode()).appendText(": ").appendText(response.toString());
             return false;
         }
-        if (expectedErrorMessage != null && !expectedErrorMessage.equals(response.getErrorMessage())) {
+        if (expectedMessage != null && !expectedMessage.equals(response.getErrorMessage())) {
             mismatch.appendText("error message was ").appendValue(response.getErrorMessage()).appendText(": ").appendText(response.toString());
             return false;
         }
-        if (expectedErrorData != null) {
+        if (errorDataMatcher != null) {
             Object actualData = toMatchable(response.getErrorData());
-            if (!expectedErrorData.matches(actualData)) {
+            if (!errorDataMatcher.matches(actualData)) {
                 mismatch.appendText("error data ");
-                expectedErrorData.describeMismatch(actualData, mismatch);
+                errorDataMatcher.describeMismatch(actualData, mismatch);
                 return false;
             }
         }

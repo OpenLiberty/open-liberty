@@ -115,7 +115,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
     }
 
     private static void assertToolNotFound(McpClient client, String toolName) throws Exception {
-        assertThat(client.send(client.toolCallRequest(toolName)),
+        assertThat(client.call(client.toolCallRequest(toolName)),
                    jsonRpcResponse().withErrorCode(INVALID_PARAMS)
                                     .withErrorMessage("Invalid params")
                                     .withErrorDataItems("Method " + toolName + " not found"));

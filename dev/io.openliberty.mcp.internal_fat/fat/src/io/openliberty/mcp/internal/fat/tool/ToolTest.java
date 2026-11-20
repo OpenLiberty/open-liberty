@@ -657,7 +657,7 @@ public class ToolTest extends FATServletClient {
         // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
         assertThat(client.callTool("testObjectResponse", Map.of("name", "Manchester")),
                    toolResponse().withTextContent("{\"country\":\"England\",\"isCapital\":false,\"name\":\"Manchester\",\"population\":8000}")
-                                 .withStructureContent(new JSONObject("""
+                                 .withStructuredContent(new JSONObject("""
                                                  {
                                                    "country": "England",
                                                    "isCapital": false,
@@ -1204,7 +1204,7 @@ public class ToolTest extends FATServletClient {
 //        Person person = new Person("John Smith", personAddress, company);
         assertThat(callToolWithJson("addPersonToList", new JSONObject(ADD_PERSON_ARGUMENTS), null),
                    toolResponse().withTextContent(PERSON_LIST_TEXT)
-                                 .withStructureContent(new JSONObject(PERSON_LIST_STRUCTURED_CONTENT)));
+                                 .withStructuredContent(new JSONObject(PERSON_LIST_STRUCTURED_CONTENT)));
     }
 
     @Test
@@ -1221,8 +1221,8 @@ public class ToolTest extends FATServletClient {
 //        Person person = new Person("John Smith", personAddress, company);
         assertThat(callToolWithJson("addPersonToListToolResponse", new JSONObject(ADD_PERSON_ARGUMENTS), null),
                    toolResponse().withTextContent(PERSON_LIST_TEXT)
-                                 .withStructureContent(new JSONObject(PERSON_LIST_STRUCTURED_CONTENT))
-                                 .withMeta(new JSONObject(PERSON_META)));
+                                 .withStructuredContent(new JSONObject(PERSON_LIST_STRUCTURED_CONTENT))
+                                 .withCustomMeta(new JSONObject(PERSON_META)));
     }
 
     @Test
@@ -1239,8 +1239,8 @@ public class ToolTest extends FATServletClient {
 //        Person person = new Person("John Smith", personAddress, company);
         assertThat(callToolWithJson("addPersonToListToolResponseWithMetaRequest", new JSONObject(ADD_PERSON_ARGUMENTS), new JSONObject(PERSON_META)),
                    toolResponse().withTextContent(PERSON_LIST_TEXT)
-                                 .withStructureContent(new JSONObject(PERSON_LIST_STRUCTURED_CONTENT))
-                                 .withMeta(new JSONObject(PERSON_META)));
+                                 .withStructuredContent(new JSONObject(PERSON_LIST_STRUCTURED_CONTENT))
+                                 .withCustomMeta(new JSONObject(PERSON_META)));
     }
 
     @Test
@@ -1345,7 +1345,7 @@ public class ToolTest extends FATServletClient {
     public void testStructuredContentResponseWithNonLatinCharacters() throws Exception {
         assertThat(client.callTool("testNonLatinStringStructuredContent", Map.of()),
                    toolResponse().withTextContent("{\"country\":\"日本\",\"isCapital\":true,\"name\":\"東京\",\"population\":14000000}")
-                                 .withStructureContent(new JSONObject("""
+                                 .withStructuredContent(new JSONObject("""
                                                  {
                                                    "country": "日本",
                                                    "isCapital": true,

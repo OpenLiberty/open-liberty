@@ -37,7 +37,7 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.observability.telemetry.PullExporterAutoConfigurationCustomizerProvider;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
-import io.openliberty.mcp.internal.fat.utils.McpResponse;
+import io.openliberty.mcp.internal.fat.utils.JsonRpcResponse;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 
 @RunWith(FATRunner.class)
@@ -150,7 +150,7 @@ public class TelemetryOperationsTest extends FATServletClient {
     @Test
     public void testToolsListMetrics() throws Exception {
         captureMetrics();
-        McpResponse response = client.call(TOOLS_LIST_REQUEST);
+        JsonRpcResponse response = client.call(TOOLS_LIST_REQUEST);
         JSONObject result = response.getResult();
         assertNotNull("Tools list should return a result: " + response, result);
         assertTrue("Tools list result should contain tools: " + response, result.has("tools"));

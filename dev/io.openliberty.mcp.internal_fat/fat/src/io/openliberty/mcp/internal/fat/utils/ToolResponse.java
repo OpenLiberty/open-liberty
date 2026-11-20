@@ -9,7 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.utils;
 
-import java.util.ArrayList;
+import static io.openliberty.mcp.internal.fat.utils.JsonUtil.get;
+import static io.openliberty.mcp.internal.fat.utils.JsonUtil.toListOf;
+
 import java.util.List;
 
 import org.json.JSONArray;
@@ -19,10 +21,10 @@ import org.json.JSONObject;
  * The response to a {@code tools/call} request, as returned by {@link McpClient#callTool(String)}.
  *
  * <p>Adds the parts of a tool result that tests commonly assert on to the generic
- * {@link McpResponse}. Use {@link ToolResponseMatcher} to assert on a tool result and
+ * {@link JsonRpcResponse}. Use {@link ToolResponseMatcher} to assert on a tool result and
  * {@link JsonRpcResponseMatcher} to assert on a JSON-RPC error.
  */
-public class ToolResponse extends McpResponse {
+public class ToolResponse extends JsonRpcResponse {
 
     ToolResponse(JSONObject json, Object requestId, String protocolVersion) {
         super(json, requestId, protocolVersion);
@@ -30,26 +32,23 @@ public class ToolResponse extends McpResponse {
 
     /** Returns the {@code isError} flag of the tool result, or {@code false} if there is no result. */
     public boolean isError() {
-        JSONObject result = getResult();
-        return result != null && result.optBoolean("isError", false);
+        Boolean isError = get(getJson(), Boolean.class, "result", "isError");
+        return isError != null && isError;
     }
 
     /** Returns the tool result's {@code structuredContent} object, or {@code null} if there is none. */
     public JSONObject getStructuredContent() {
-        JSONObject result = getResult();
-        return result == null ? null : result.optJSONObject("structuredContent");
+        return get(getJson(), JSONObject.class, "result", "structuredContent");
+    }
+
+    /** Returns the tool result's {@code _meta} object, or {@code null} if there is none. */
+    public JSONObject getMeta() {
+        return get(getJson(), JSONObject.class, "result", "_meta");
     }
 
     /** Returns the items of the tool result's {@code content} array, or an empty list if there are none. */
     public List<JSONObject> getContent() {
-        List<JSONObject> items = new ArrayList<>();
-        JSONObject result = getResult();
-        JSONArray content = result == null ? null : result.optJSONArray("content");
-        if (content != null) {
-            for (int i = 0; i < content.length(); i++) {
-                items.add(content.optJSONObject(i));
-            }
-        }
-        return items;
+        JSONArray content = get(getJson(), JSONArray.class, "result", "content");
+        return toListOf(content, JSONObject.class);
     }
 }

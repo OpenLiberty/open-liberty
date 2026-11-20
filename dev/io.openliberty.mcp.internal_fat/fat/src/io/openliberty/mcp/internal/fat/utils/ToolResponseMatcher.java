@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.utils;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hamcrest.Description;
@@ -31,33 +32,42 @@ import org.skyscreamer.jsonassert.JSONCompareResult;
  * ToolResponse response = client.callTool("myTool");
  * assertThat(response, toolResponse().withTextContent("expected text"));
  * assertThat(response, toolResponse().withError("expected error text"));
- * assertThat(response, toolResponse().withTextContent(json.toString()).withStructureContent(json));
+ * assertThat(response, toolResponse().withTextContent(json.toString()).withStructuredContent(json));
  *
  * // Content that is not plain text (i.e. image, audio, annotations, resource links)
  * assertThat(response, toolResponse().withContent(new JSONObject("""
  *                 {"type": "image", "data": "aGkJ", "mimeType": "image/png"}
  *                 """)));
  *
- * // The _meta object of the tool result
- * assertThat(response, toolResponse().withTextContent("done").withMeta(new JSONObject("{\"key\": \"value\"}")));
+ * // The custom entries of the _meta object of the tool result
+ * assertThat(response, toolResponse().withTextContent("done").withCustomMeta(new JSONObject("{\"key\": \"value\"}")));
  *
  * // Only check the fields that the test mentions
- * assertThat(response, toolResponse().withContent(new JSONObject("""
+ * assertThat(response, toolResponse().withContent(JSONCompareMode.STRICT_ORDER, new JSONObject("""
  *                 {"type": "text", "text": "Echo: hello"}
- *                 """)).lenient());
+ *                 """)));
  * }</pre>
  *
  * <p>To assert on a JSON-RPC error use {@link JsonRpcResponseMatcher#jsonRpcResponse()}.
  */
 public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse> {
 
+    /**
+     * The key prefix reserved by the MCP specification for protocol defined {@code _meta} entries.
+     * Which of these the server includes depends on the protocol version, so they are ignored when
+     * matching {@code _meta}.
+     */
+    private static final String RESERVED_META_PREFIX = "io.modelcontextprotocol";
+
+    /** Expected JSON (a {@link JSONObject} or a {@link JSONArray}) together with how strictly to compare it. */
+    private record JsonExpectation(Object json, JSONCompareMode compareMode) {}
+
     private Boolean expectedIsError;
     private List<String> expectedTexts;
-    private List<JSONObject> expectedContent;
-    private JSONObject expectedStructureContent;
+    private JsonExpectation expectedContent;
+    private JsonExpectation expectedStructuredContent;
     private boolean expectNoStructuredContent;
-    private JSONObject expectedMeta;
-    private boolean lenient;
+    private JsonExpectation expectedCustomMeta;
 
     private ToolResponseMatcher() {}
 
@@ -99,15 +109,29 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
      * ({@code text}, {@code image}, {@code audio}, {@code resource_link}, {@code resource}) and on
      * fields such as {@code annotations} and {@code _meta}.
      *
-     * <p>The comparison is strict: an item of the response may not have a field that the expected
-     * item does not have. Call {@link #lenient()} to allow that. The number and the order of the
-     * items must always match.
+     * <p>The comparison is {@link JSONCompareMode#STRICT}: an item of the response may not have a
+     * field that the expected item does not have, and the number and the order of the items must
+     * match. Use {@link #withContent(JSONCompareMode, JSONObject...)} to compare differently.
      *
      * <p>To assert on a tool error use {@link #withError(String)}.
      */
     public ToolResponseMatcher withContent(JSONObject... expectedItems) {
+        return withContent(JSONCompareMode.STRICT, expectedItems);
+    }
+
+    /**
+     * Like {@link #withContent(JSONObject...)}, but compares the {@code content} array with the
+     * given mode. For example {@link JSONCompareMode#STRICT_ORDER} allows the response items to
+     * have fields that the expected items do not mention, at any depth, but still requires the
+     * items to match one to one and in order.
+     */
+    public ToolResponseMatcher withContent(JSONCompareMode compareMode, JSONObject... expectedItems) {
+        JSONArray expected = new JSONArray();
+        for (JSONObject item : expectedItems) {
+            expected.put(item);
+        }
         this.expectedIsError = false;
-        this.expectedContent = Arrays.asList(expectedItems);
+        this.expectedContent = new JsonExpectation(expected, compareMode);
         return this;
     }
 
@@ -125,20 +149,40 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
     }
 
     /**
-     * Requires the tool result's {@code structuredContent} to equal the given object. The
-     * comparison is strict unless {@link #lenient()} is called.
+     * Requires the tool result's {@code structuredContent} to equal the given object, comparing
+     * with {@link JSONCompareMode#STRICT}. Use {@link #withStructuredContent(JSONObject, JSONCompareMode)}
+     * to compare differently.
      */
-    public ToolResponseMatcher withStructureContent(JSONObject expectedStructureContent) {
-        this.expectedStructureContent = expectedStructureContent;
+    public ToolResponseMatcher withStructuredContent(JSONObject expectedStructuredContent) {
+        return withStructuredContent(expectedStructuredContent, JSONCompareMode.STRICT);
+    }
+
+    /**
+     * Requires the tool result's {@code structuredContent} to match the given object, comparing
+     * with the given mode.
+     */
+    public ToolResponseMatcher withStructuredContent(JSONObject expectedStructuredContent, JSONCompareMode compareMode) {
+        this.expectedStructuredContent = new JsonExpectation(expectedStructuredContent, compareMode);
         return this;
     }
 
     /**
-     * Requires the {@code _meta} object of the tool result (not of a content item) to equal the
-     * given object. The comparison is strict unless {@link #lenient()} is called.
+     * Requires the custom entries of the {@code _meta} object of the tool result (not of a content
+     * item) to equal the given object, comparing with {@link JSONCompareMode#STRICT}.
+     *
+     * <p>Entries whose key starts with {@code io.modelcontextprotocol} are reserved by the MCP
+     * specification and depend on the protocol version, so they are ignored: the expected object
+     * should only contain the custom entries the tool is expected to return.
      */
-    public ToolResponseMatcher withMeta(JSONObject expectedMeta) {
-        this.expectedMeta = expectedMeta;
+    public ToolResponseMatcher withCustomMeta(JSONObject expectedCustomMeta) {
+        return withCustomMeta(expectedCustomMeta, JSONCompareMode.STRICT);
+    }
+
+    /**
+     * Like {@link #withCustomMeta(JSONObject)}, but compares with the given mode.
+     */
+    public ToolResponseMatcher withCustomMeta(JSONObject expectedCustomMeta, JSONCompareMode compareMode) {
+        this.expectedCustomMeta = new JsonExpectation(expectedCustomMeta, compareMode);
         return this;
     }
 
@@ -148,23 +192,6 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
      */
     public ToolResponseMatcher withNoStructuredContent() {
         this.expectNoStructuredContent = true;
-        return this;
-    }
-
-    /**
-     * Makes the comparison of {@link #withContent(JSONObject...)},
-     * {@link #withStructureContent(JSONObject)} and {@link #withMeta(JSONObject)} lenient, so that a test only has to spell out the
-     * fields it is interested in: the response may contain fields that the expected JSON does not
-     * mention, at any depth.
-     *
-     * <p>Arrays are still compared in order and must have the same number of items, so the
-     * content items must still match one to one. The checks made by
-     * {@link #withTextContent(String)}, {@link #withTextContents(String...)} and
-     * {@link #withError(String)} are not affected, as they only look at the type and text of the
-     * items anyway.
-     */
-    public ToolResponseMatcher lenient() {
-        this.lenient = true;
         return this;
     }
 
@@ -181,16 +208,15 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
             joiner = " and ";
         }
         if (expectedContent != null) {
-            description.appendText(joiner).appendText(lenient ? "content containing " : "content of ").appendText(expectedContent.toString());
+            describeExpectation(description.appendText(joiner), "content", expectedContent);
             joiner = " and ";
         }
-        if (expectedStructureContent != null) {
-            description.appendText(joiner).appendText(lenient ? "structured content containing " : "structured content of ")
-                       .appendText(expectedStructureContent.toString());
+        if (expectedStructuredContent != null) {
+            describeExpectation(description.appendText(joiner), "structured content", expectedStructuredContent);
             joiner = " and ";
         }
-        if (expectedMeta != null) {
-            description.appendText(joiner).appendText(lenient ? "_meta containing " : "_meta of ").appendText(expectedMeta.toString());
+        if (expectedCustomMeta != null) {
+            describeExpectation(description.appendText(joiner), "custom _meta", expectedCustomMeta);
             joiner = " and ";
         }
         if (expectNoStructuredContent) {
@@ -198,9 +224,14 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
         }
     }
 
+    private static void describeExpectation(Description description, String name, JsonExpectation expectation) {
+        description.appendText(name).appendText(" of ").appendText(expectation.json().toString())
+                   .appendText(" (").appendText(expectation.compareMode().name()).appendText(")");
+    }
+
     @Override
     protected boolean matchesSafely(ToolResponse response, Description mismatch) {
-        String envelopeProblem = JsonRpcEnvelope.validate(response);
+        String envelopeProblem = JsonRpcEnvelopeValidation.validate(response);
         if (envelopeProblem != null) {
             mismatch.appendText("had an invalid JSON-RPC envelope, it ").appendText(envelopeProblem)
                     .appendText(": ").appendText(response.toString());
@@ -224,10 +255,10 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
         if (expectedContent != null && !matchesContent(response, mismatch)) {
             return false;
         }
-        if (expectedStructureContent != null && !matchesStructureContent(response, mismatch)) {
+        if (expectedStructuredContent != null && !matchesStructuredContent(response, mismatch)) {
             return false;
         }
-        if (expectedMeta != null && !matchesMeta(response, mismatch)) {
+        if (expectedCustomMeta != null && !matchesCustomMeta(response, mismatch)) {
             return false;
         }
         if (expectNoStructuredContent && response.getResult().has("structuredContent")) {
@@ -235,11 +266,6 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
             return false;
         }
         return true;
-    }
-
-    /** The mode used to compare JSON: strict, or lenient about extra fields but not about array order. */
-    private JSONCompareMode compareMode() {
-        return lenient ? JSONCompareMode.STRICT_ORDER : JSONCompareMode.STRICT;
     }
 
     private boolean matchesTexts(ToolResponse response, Description mismatch) {
@@ -264,61 +290,48 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
     }
 
     private boolean matchesContent(ToolResponse response, Description mismatch) {
-        JSONArray actual = response.getResult().optJSONArray("content");
-        if (actual == null) {
-            mismatch.appendText("had no content array: ").appendText(response.toString());
-            return false;
-        }
-        JSONArray expected = new JSONArray();
-        for (JSONObject item : expectedContent) {
-            expected.put(item);
-        }
-        try {
-            JSONCompareResult comparison = JSONCompare.compareJSON(expected.toString(), actual.toString(), compareMode());
-            if (comparison.failed()) {
-                mismatch.appendText("content differed: ").appendText(comparison.getMessage());
-                return false;
-            }
-        } catch (Exception e) {
-            mismatch.appendText("content could not be compared: ").appendText(e.toString());
-            return false;
-        }
-        return true;
+        JSONArray actual = JsonUtil.get(response.getJson(), JSONArray.class, "result", "content");
+        return matchesJson("content", expectedContent, actual, response, mismatch);
     }
 
-    private boolean matchesStructureContent(ToolResponse response, Description mismatch) {
-        JSONObject actual = response.getStructuredContent();
-        if (actual == null) {
-            mismatch.appendText("had no structuredContent: ").appendText(response.toString());
-            return false;
-        }
-        try {
-            JSONCompareResult comparison = JSONCompare.compareJSON(expectedStructureContent.toString(), actual.toString(), compareMode());
-            if (comparison.failed()) {
-                mismatch.appendText("structuredContent differed: ").appendText(comparison.getMessage());
-                return false;
-            }
-        } catch (Exception e) {
-            mismatch.appendText("structuredContent could not be compared: ").appendText(e.toString());
-            return false;
-        }
-        return true;
+    private boolean matchesStructuredContent(ToolResponse response, Description mismatch) {
+        return matchesJson("structuredContent", expectedStructuredContent, response.getStructuredContent(), response, mismatch);
     }
 
-    private boolean matchesMeta(ToolResponse response, Description mismatch) {
-        JSONObject actual = response.getResult().optJSONObject("_meta");
+    private boolean matchesCustomMeta(ToolResponse response, Description mismatch) {
+        JSONObject meta = response.getMeta();
+        JSONObject actual = null;
+        if (meta != null) {
+            try {
+                actual = new JSONObject();
+                Iterator<?> keys = meta.keys();
+                while (keys.hasNext()) {
+                    String key = (String) keys.next();
+                    if (!key.startsWith(RESERVED_META_PREFIX)) {
+                        actual.put(key, meta.opt(key));
+                    }
+                }
+            } catch (Exception e) {
+                mismatch.appendText("_meta could not be read: ").appendText(e.toString());
+                return false;
+            }
+        }
+        return matchesJson("_meta", expectedCustomMeta, actual, response, mismatch);
+    }
+
+    private static boolean matchesJson(String name, JsonExpectation expected, Object actual, ToolResponse response, Description mismatch) {
         if (actual == null) {
-            mismatch.appendText("had no _meta: ").appendText(response.toString());
+            mismatch.appendText("had no ").appendText(name).appendText(": ").appendText(response.toString());
             return false;
         }
         try {
-            JSONCompareResult comparison = JSONCompare.compareJSON(expectedMeta.toString(), actual.toString(), compareMode());
+            JSONCompareResult comparison = JSONCompare.compareJSON(expected.json().toString(), actual.toString(), expected.compareMode());
             if (comparison.failed()) {
-                mismatch.appendText("_meta differed: ").appendText(comparison.getMessage());
+                mismatch.appendText(name).appendText(" differed: ").appendText(comparison.getMessage());
                 return false;
             }
         } catch (Exception e) {
-            mismatch.appendText("_meta could not be compared: ").appendText(e.toString());
+            mismatch.appendText(name).appendText(" could not be compared: ").appendText(e.toString());
             return false;
         }
         return true;
