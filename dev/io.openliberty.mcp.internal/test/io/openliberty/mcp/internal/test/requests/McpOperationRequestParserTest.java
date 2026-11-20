@@ -821,7 +821,7 @@ public class McpOperationRequestParserTest {
 
     @Test
     public void testParseStatefulInitializeWith20250326Disallowed() throws IOException {
-        setupWithConfig(MockMcpConfig.createStateful().setMinimumProtocolVersion(V_2025_11_25));
+        setupWithConfig(MockMcpConfig.createStateful().setMinProtocolVersion(V_2025_11_25));
         String json = """
                         {
                             "jsonrpc": "2.0",
@@ -847,7 +847,7 @@ public class McpOperationRequestParserTest {
 
     @Test
     public void testParseToolCallWithoutProtocolHeaderWith20250326Disallowed() throws IOException {
-        setupWithConfig(MockMcpConfig.createStateless().setMinimumProtocolVersion(V_2025_11_25));
+        setupWithConfig(MockMcpConfig.createStateless().setMinProtocolVersion(V_2025_11_25));
 
         String json = """
                         {
@@ -872,7 +872,7 @@ public class McpOperationRequestParserTest {
 
     @Test
     public void testParsePingWithoutProtocolHeaderWith20250326Disallowed() throws IOException {
-        setupWithConfig(MockMcpConfig.createStateless().setMinimumProtocolVersion(V_2025_11_25));
+        setupWithConfig(MockMcpConfig.createStateless().setMinProtocolVersion(V_2025_11_25));
 
         String json = """
                         {
@@ -893,7 +893,7 @@ public class McpOperationRequestParserTest {
 
     @Test
     public void testParseInvalidJsonWithoutProtocolHeaderWith20250326Disallowed() throws IOException {
-        setupWithConfig(MockMcpConfig.createStateless().setMinimumProtocolVersion(V_2025_11_25));
+        setupWithConfig(MockMcpConfig.createStateless().setMinProtocolVersion(V_2025_11_25));
 
         String json = """
                         {
@@ -916,7 +916,7 @@ public class McpOperationRequestParserTest {
 
     @Test
     public void testParseInvalidMethodWithoutProtocolHeaderWith20250326Disallowed() throws IOException {
-        setupWithConfig(MockMcpConfig.createStateless().setMinimumProtocolVersion(V_2025_11_25));
+        setupWithConfig(MockMcpConfig.createStateless().setMinProtocolVersion(V_2025_11_25));
 
         String json = """
                         {
@@ -993,7 +993,7 @@ public class McpOperationRequestParserTest {
 
     @Test
     public void testValidateProtocolVersionHeaderForDeleteBelowMinimum() {
-        setupWithConfig(MockMcpConfig.createStateful().setMinimumProtocolVersion(V_2025_11_25));
+        setupWithConfig(MockMcpConfig.createStateful().setMinProtocolVersion(V_2025_11_25));
         var req = new MockHttpServletRequest("");
         req.addHeader(MCP_PROTOCOL_VERSION_HEADER, V_2025_06_18.getVersion());
         assertThrows(() -> parser.validateProtocolVersionHeaderForDelete(req),
@@ -1003,7 +1003,7 @@ public class McpOperationRequestParserTest {
 
     @Test
     public void testValidateProtocolVersionHeaderForDeleteAtMinimum() {
-        setupWithConfig(MockMcpConfig.createStateful().setMinimumProtocolVersion(V_2025_11_25));
+        setupWithConfig(MockMcpConfig.createStateful().setMinProtocolVersion(V_2025_11_25));
         var req = new MockHttpServletRequest("");
         req.addHeader(MCP_PROTOCOL_VERSION_HEADER, V_2025_11_25.getVersion());
         parser.validateProtocolVersionHeaderForDelete(req);
@@ -1011,7 +1011,7 @@ public class McpOperationRequestParserTest {
 
     @Test
     public void testValidateProtocolVersionHeaderForDeleteAboveMaximum() {
-        setupWithConfig(MockMcpConfig.createStateful().setMaximumProtocolVersion(V_2025_06_18));
+        setupWithConfig(MockMcpConfig.createStateful().setMaxProtocolVersion(V_2025_06_18));
         var req = new MockHttpServletRequest("");
         req.addHeader(MCP_PROTOCOL_VERSION_HEADER, V_2025_11_25.getVersion());
         assertThrows(() -> parser.validateProtocolVersionHeaderForDelete(req),
@@ -1021,7 +1021,7 @@ public class McpOperationRequestParserTest {
 
     @Test
     public void testValidateProtocolVersionHeaderForDeleteAtMaximum() {
-        setupWithConfig(MockMcpConfig.createStateful().setMaximumProtocolVersion(V_2025_06_18));
+        setupWithConfig(MockMcpConfig.createStateful().setMaxProtocolVersion(V_2025_06_18));
         var req = new MockHttpServletRequest("");
         req.addHeader(MCP_PROTOCOL_VERSION_HEADER, V_2025_06_18.getVersion());
         parser.validateProtocolVersionHeaderForDelete(req);

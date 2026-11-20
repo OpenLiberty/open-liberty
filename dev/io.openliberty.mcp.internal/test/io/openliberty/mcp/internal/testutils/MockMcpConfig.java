@@ -34,8 +34,8 @@ public class MockMcpConfig implements McpConfig {
     private Duration sessionTimeout = Duration.of(30, SECONDS);
     private ServerInfo serverInfo = UNIT_TEST_SERVER_INFO;
     private long asyncTimeoutMs = 30_000;
-    private McpProtocolVersion minimumProtocolVersion = V_2025_03_26;
-    private McpProtocolVersion maximumProtocolVersion = V_2026_07_28;
+    private McpProtocolVersion minProtocolVersion = V_2025_03_26;
+    private McpProtocolVersion maxProtocolVersion = V_2026_07_28;
     private EnableEndpoint enableEndpoint = EnableEndpoint.AUTO;
 
     public static MockMcpConfig createStateless() {
@@ -117,22 +117,22 @@ public class MockMcpConfig implements McpConfig {
     }
 
     @Override
-    public McpProtocolVersion minimumProtocolVersion() {
-        return minimumProtocolVersion;
+    public McpProtocolVersion minProtocolVersion() {
+        return minProtocolVersion;
     }
 
-    public MockMcpConfig setMinimumProtocolVersion(McpProtocolVersion minimumProtocolVersion) {
-        this.minimumProtocolVersion = minimumProtocolVersion;
+    public MockMcpConfig setMinProtocolVersion(McpProtocolVersion minProtocolVersion) {
+        this.minProtocolVersion = minProtocolVersion;
         return this;
     }
 
     @Override
-    public McpProtocolVersion maximumProtocolVersion() {
-        return maximumProtocolVersion;
+    public McpProtocolVersion maxProtocolVersion() {
+        return maxProtocolVersion;
     }
 
-    public MockMcpConfig setMaximumProtocolVersion(McpProtocolVersion maximumProtocolVersion) {
-        this.maximumProtocolVersion = maximumProtocolVersion;
+    public MockMcpConfig setMaxProtocolVersion(McpProtocolVersion maxProtocolVersion) {
+        this.maxProtocolVersion = maxProtocolVersion;
         return this;
     }
 
@@ -155,8 +155,8 @@ public class MockMcpConfig implements McpConfig {
                + ", sessionTimeout=" + sessionTimeout
                + ", serverInfo=" + serverInfo
                + ", asyncTimeoutMs=" + asyncTimeoutMs
-               + ", minimumProtocolVersion=" + minimumProtocolVersion
-               + ", maximumProtocolVersion=" + maximumProtocolVersion
+               + ", minProtocolVersion=" + minProtocolVersion
+               + ", maxProtocolVersion=" + maxProtocolVersion
                + ", enableEndpoint=" + enableEndpoint
                + "]";
     }

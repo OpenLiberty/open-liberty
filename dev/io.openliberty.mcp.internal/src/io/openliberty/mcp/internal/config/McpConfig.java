@@ -47,14 +47,14 @@ public interface McpConfig {
      *
      * @return the minimum protocol version
      */
-    McpProtocolVersion minimumProtocolVersion();
+    McpProtocolVersion minProtocolVersion();
 
     /**
      * Returns the newest MCP protocol version which requests may use (inclusive)
      *
      * @return the maximum protocol version
      */
-    McpProtocolVersion maximumProtocolVersion();
+    McpProtocolVersion maxProtocolVersion();
 
     /**
      * Returns whether requests may use the given protocol version. A version is accepted if it is available
@@ -64,7 +64,7 @@ public interface McpConfig {
      * @return true if requests may use the version
      */
     default boolean isAccepted(McpProtocolVersion version) {
-        return version.isAvailable() && version.isBetween(minimumProtocolVersion(), maximumProtocolVersion());
+        return version.isAvailable() && version.isBetween(minProtocolVersion(), maxProtocolVersion());
     }
 
     /**

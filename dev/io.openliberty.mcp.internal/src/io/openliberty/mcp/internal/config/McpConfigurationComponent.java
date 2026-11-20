@@ -45,8 +45,8 @@ public class McpConfigurationComponent {
     private volatile String servicePid;
 
     private static final String CFG_ENABLE_ENDPOINT = "enableEndpoint";
-    private static final String CFG_MINIMUM_PROTOCOL_VERSION = "minimumProtocolVersion";
-    private static final String CFG_MAXIMUM_PROTOCOL_VERSION = "maximumProtocolVersion";
+    private static final String CFG_MINIMUM_PROTOCOL_VERSION = "minProtocolVersion";
+    private static final String CFG_MAXIMUM_PROTOCOL_VERSION = "maxProtocolVersion";
 
     @Activate
     protected void activate(Map<String, Object> properties) {
@@ -76,26 +76,26 @@ public class McpConfigurationComponent {
         // Parse flattened serverInfo properties (ibm:flat="true" in metatype.xml)
         ServerInfo serverInfo = parseServerInfo(properties);
 
-        // minimumProtocolVersion and maximumProtocolVersion are beta. Because the metatype provides
+        // minProtocolVersion and maxProtocolVersion are beta. Because the metatype provides
         // defaults, the properties are always present, so they are only read when running a beta runtime.
         // Otherwise the defaults are used (minimum 2025-03-26, maximum 2025-11-25).
-        McpProtocolVersion minimumProtocolVersion = null;
-        McpProtocolVersion maximumProtocolVersion = null;
+        McpProtocolVersion minProtocolVersion = null;
+        McpProtocolVersion maxProtocolVersion = null;
         if (ProductInfo.getBetaEdition()) {
-            minimumProtocolVersion = parseProtocolVersion(properties, CFG_MINIMUM_PROTOCOL_VERSION);
-            maximumProtocolVersion = parseProtocolVersion(properties, CFG_MAXIMUM_PROTOCOL_VERSION);
+            minProtocolVersion = parseProtocolVersion(properties, CFG_MINIMUM_PROTOCOL_VERSION);
+            maxProtocolVersion = parseProtocolVersion(properties, CFG_MAXIMUM_PROTOCOL_VERSION);
 
-            McpProtocolVersion effectiveMinimum = minimumProtocolVersion != null ? minimumProtocolVersion : McpServerConfigProps.defaultMinimum();
-            McpProtocolVersion effectiveMaximum = maximumProtocolVersion != null ? maximumProtocolVersion : McpServerConfigProps.defaultMaximum();
+            McpProtocolVersion effectiveMinimum = minProtocolVersion != null ? minProtocolVersion : McpServerConfigProps.defaultMinimum();
+            McpProtocolVersion effectiveMaximum = maxProtocolVersion != null ? maxProtocolVersion : McpServerConfigProps.defaultMaximum();
             if (!effectiveMinimum.isBetween(McpServerConfigProps.defaultMinimum(), effectiveMaximum)) {
                 Tr.error(tc, "CWMCM0046E.protocol.version.range.invalid", effectiveMinimum.getVersion(), effectiveMaximum.getVersion());
-                minimumProtocolVersion = null;
-                maximumProtocolVersion = null;
+                minProtocolVersion = null;
+                maxProtocolVersion = null;
             }
         }
 
         this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid, sessionTimeout, serverInfo, asyncTimeout,
-                                               minimumProtocolVersion, maximumProtocolVersion, enableEndpoint);
+                                               minProtocolVersion, maxProtocolVersion, enableEndpoint);
     }
 
     /**

@@ -26,7 +26,7 @@ import io.openliberty.mcp.internal.testutils.BetaPropertyRule;
 
 /**
  * Unit tests for the protocol version handling of {@link McpServerConfigProps}, which implements the beta
- * {@code minimumProtocolVersion} and {@code maximumProtocolVersion} configuration:
+ * {@code minProtocolVersion} and {@code maxProtocolVersion} configuration:
  * <ul>
  * <li>the default range, which is the whole range on a beta runtime and 2025-03-26 to 2025-11-25 otherwise</li>
  * <li>parsing a configured value, including the {@code latest} keyword</li>
@@ -102,8 +102,8 @@ public class McpServerConfigPropsTest {
     }
 
     /**
-     * Creates a configuration which sets other attributes but leaves {@code minimumProtocolVersion} and
-     * {@code maximumProtocolVersion} unset, as when a user configures an {@code <mcp>} element in server.xml
+     * Creates a configuration which sets other attributes but leaves {@code minProtocolVersion} and
+     * {@code maxProtocolVersion} unset, as when a user configures an {@code <mcp>} element in server.xml
      * without a protocol version range. The unset bounds are replaced by their defaults, which depend on the
      * beta setting at the time of the call.
      */
@@ -149,8 +149,8 @@ public class McpServerConfigPropsTest {
         assertEquals(McpProtocolVersion.V_2025_03_26, McpServerConfigProps.defaultMinimum());
         assertEquals(McpProtocolVersion.V_2025_11_25, McpServerConfigProps.defaultMaximum());
         McpServerConfigProps config = configWithOtherSettingsOnly();
-        assertEquals(McpProtocolVersion.V_2025_03_26, config.minimumProtocolVersion());
-        assertEquals(McpProtocolVersion.V_2025_11_25, config.maximumProtocolVersion());
+        assertEquals(McpProtocolVersion.V_2025_03_26, config.minProtocolVersion());
+        assertEquals(McpProtocolVersion.V_2025_11_25, config.maxProtocolVersion());
         assertEquals(List.of(McpProtocolVersion.V_2025_11_25, McpProtocolVersion.V_2025_06_18, McpProtocolVersion.V_2025_03_26),
                      config.acceptedProtocolVersions());
         assertFalse(config.isAccepted(McpProtocolVersion.V_2026_07_28));

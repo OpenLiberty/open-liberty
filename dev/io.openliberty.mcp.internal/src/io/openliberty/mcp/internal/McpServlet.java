@@ -619,11 +619,11 @@ public class McpServlet extends HttpServlet {
         if (version == null) {
             // Client requested version not recognized
             // Respond with our preferred version
-            version = mcpConfig.maximumProtocolVersion();
+            version = mcpConfig.maxProtocolVersion();
         } else if (!mcpConfig.isAccepted(version)) {
             // Client requested version is not permitted by configuration
             // Respond with our preferred version
-            version = mcpConfig.maximumProtocolVersion();
+            version = mcpConfig.maxProtocolVersion();
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
