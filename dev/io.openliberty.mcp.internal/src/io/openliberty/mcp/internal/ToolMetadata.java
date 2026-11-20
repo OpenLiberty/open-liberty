@@ -32,6 +32,8 @@ import org.mcpjava.server.tools.Tool;
 import org.mcpjava.server.tools.ToolArg;
 import org.mcpjava.server.tools.ToolResponse;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.WrapBusinessError;
 import io.openliberty.mcp.internal.ToolRegistry.ToolArgumentImpl;
@@ -485,6 +487,12 @@ public record ToolMetadata(String name,
     @Override
     public boolean isMethod() {
         return methodMetadata.isPresent();
+    }
+
+    // Needs to be trivial because it's used by #compareTo and is called a lot when we sort the list of tools
+    @Trivial
+    public Instant createdAt() {
+        return createdAt;
     }
 
 }
