@@ -139,8 +139,8 @@ CWWKD1011.unknown.method.pattern=CWWKD1011E: The {0} method of the {1} repositor
  interface does not match any of the Jakarta Data defined patterns. \
  A repository method must either use annotations, be a resource accessor method, \
  or be named according to the Query by Method Name pattern. Annotations such as \
- {2} are used to define operations. A resource accessor method must contain \
- no parameters and any of the {3} return types. The Query by Method Name pattern \
+ {2} are used to define operations. A resource accessor method must have any of \
+ the {3} return types and contain no parameters. The Query by Method Name pattern \
  must begin with one of the {4} keywords, followed by 0 or more characters. \
  Method names can also include the By keyword and one or more delimited \
  conditions. Examples of valid repository method names are: {5}.
