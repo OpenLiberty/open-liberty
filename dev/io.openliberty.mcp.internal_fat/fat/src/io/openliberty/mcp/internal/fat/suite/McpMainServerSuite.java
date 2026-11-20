@@ -28,6 +28,7 @@ import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatefulModeTest;
 import io.openliberty.mcp.internal.fat.tool.CancellationTest;
 import io.openliberty.mcp.internal.fat.tool.DefaultValueTest;
+import io.openliberty.mcp.internal.fat.tool.EnableEndpointConfigTest;
 import io.openliberty.mcp.internal.fat.tool.EncoderTest;
 import io.openliberty.mcp.internal.fat.tool.ExceptionLoggingTest;
 import io.openliberty.mcp.internal.fat.tool.GenericToolTest;
@@ -79,6 +80,7 @@ import io.openliberty.mcp.internal.fat.tool.UnsupportedAnnotationWarningTest;
                 BeanLifecycleTest.class,
                 CancellationTest.class,
                 DefaultValueTest.class,
+                EnableEndpointConfigTest.class,
                 EncoderTest.class,
                 ExceptionLoggingTest.class,
                 GenericToolTest.class,

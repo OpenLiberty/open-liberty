@@ -12,6 +12,8 @@ package io.openliberty.mcp.internal.test.exception;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,13 +43,15 @@ public class ExceptionAssertions {
      * @param matcher the matcher to use to evaluate the exception thrown
      */
     public static void assertThrows(ThrowingRunnable code, Matcher<? super Throwable> matcher) {
+        boolean exceptionThrown = true;
         try {
             code.run();
-            fail("No exception thrown");
+            exceptionThrown = false;
         } catch (Throwable t) {
-            System.out.println("Exception thrown: ");
-            t.printStackTrace();
             assertThat(t, matcher);
+        }
+        if (!exceptionThrown) {
+            fail("No exception thrown");
         }
     }
 
@@ -73,6 +77,7 @@ public class ExceptionAssertions {
         protected Class<? extends Throwable> type;
         protected final List<String> messageIncludes = new ArrayList<>();
         protected Matcher<Throwable> causeMatcher;
+        protected final List<Matcher<? super Throwable>> chainedMatchers = new ArrayList<>();
 
         private ExceptionMatcher() {
             super(Throwable.class);
@@ -111,6 +116,17 @@ public class ExceptionAssertions {
             return this;
         }
 
+        /**
+         * Chain additional matchers to run against the exception
+         *
+         * @param matcher the matcher
+         * @return {@code this}
+         */
+        public ExceptionMatcher and(Matcher<? super Throwable> matcher) {
+            this.chainedMatchers.add(matcher);
+            return this;
+        }
+
         /** {@inheritDoc} */
         @Override
         public void describeTo(Description desc) {
@@ -123,6 +139,9 @@ public class ExceptionAssertions {
             }
             if (causeMatcher != null) {
                 desc.appendText(" with cause ").appendDescriptionOf(causeMatcher);
+            }
+            for (Matcher<?> m : chainedMatchers) {
+                desc.appendText(" and ").appendDescriptionOf(m);
             }
         }
 
@@ -138,9 +157,9 @@ public class ExceptionAssertions {
             }
 
             for (String messagePart : messageIncludes) {
-                if (!t.getMessage().contains(messagePart)) {
+                if (t.getMessage() == null || !t.getMessage().contains(messagePart)) {
                     result = false;
-                    desc.appendText("message was").appendValue(t.getMessage()).appendText("\n");
+                    desc.appendText("message was ").appendValue(t.getMessage()).appendText("\n");
                     break;
                 }
             }
@@ -153,6 +172,24 @@ public class ExceptionAssertions {
                     desc.appendText("\n");
                 }
             }
+
+            for (Matcher<?> m : chainedMatchers) {
+                if (!m.matches(t)) {
+                    result = false;
+                    m.describeMismatch(t, desc);
+                    desc.appendText("\n");
+                }
+            }
+
+            if (result == false) {
+                StringWriter stack = new StringWriter();
+                try (PrintWriter pw = new PrintWriter(stack)) {
+                    t.printStackTrace(pw);
+                }
+                desc.appendText("Full exception: ");
+                desc.appendText(stack.toString());
+            }
+
             return result;
         }
     }
