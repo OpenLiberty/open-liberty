@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,8 @@ public class JDBCDerbyTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKE0701E", //expected by testTransactionalSetting
+        server.stopServer("DSRA8071W", //Derby no longer maintained by community, issued in beta builds
+                          "CWWKE0701E", //expected by testTransactionalSetting
                           "DSRA4011E", //expected by testTNConfigIsoLvlReverse
                           "SRVE0319E"); //expected by testTNConfigTnsl
     }

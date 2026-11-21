@@ -16,6 +16,7 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/jdbcapp/src,\
+	test-applications/noticeapp/src,\
 	test-applications/trandriver/src
 
 fat.project: true

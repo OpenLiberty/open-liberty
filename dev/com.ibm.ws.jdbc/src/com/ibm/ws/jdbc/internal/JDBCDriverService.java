@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -859,6 +859,49 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         } finally {
             lock.readLock().unlock();
         }
+    }
+
+    /**
+     * Returns the data source and driver class names that this JDBC driver will use for the data source.
+     * Mirrors the precedence of data source class selection: class names that are explicitly configured
+     * on the JDBC driver, otherwise names that are known for the vendor properties PID, otherwise names
+     * that are inferred from the library file names.
+     * This does not initialize the JDBC driver or load any classes.
+     *
+     * @param vendorPropertiesPID factory pid of the JDBC vendor properties. Can be null.
+     * @return class names. Empty if none.
+     */
+    public Collection<String> getConfiguredAndInferredClassNames(String vendorPropertiesPID) {
+        Collection<String> classNames = new LinkedHashSet<String>();
+        lock.readLock().lock();
+        try {
+            if (properties != null)
+                for (String ifc : Arrays.asList(ConnectionPoolDataSource.class.getName(), DataSource.class.getName(),
+                                                XADataSource.class.getName(), Driver.class.getName())) {
+                    Object value = properties.get(ifc);
+                    if (value instanceof String)
+                        classNames.add((String) value);
+                }
+
+            if (classNames.isEmpty() && vendorPropertiesPID != null)
+                for (String className : Arrays.asList(JDBCDrivers.getConnectionPoolDataSourceClassName(vendorPropertiesPID),
+                                                      JDBCDrivers.getDataSourceClassName(vendorPropertiesPID),
+                                                      JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID)))
+                    if (className != null)
+                        classNames.add(className);
+
+            if (classNames.isEmpty()) {
+                Collection<String> fileNames = getFileNames(sharedLib);
+                for (String className : Arrays.asList(JDBCDrivers.getConnectionPoolDataSourceClassName(fileNames),
+                                                      JDBCDrivers.getDataSourceClassName(fileNames),
+                                                      JDBCDrivers.getXADataSourceClassName(fileNames)))
+                    if (className != null)
+                        classNames.add(className);
+            }
+        } finally {
+            lock.readLock().unlock();
+        }
+        return classNames;
     }
 
     /**

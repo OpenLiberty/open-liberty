@@ -368,9 +368,20 @@ PROP_SET_ERROR.useraction=Verify that the value that is specified is valid for t
 8069_HELPER_INIT_ERR.useraction=Inspect the chained exception to determine the cause.
 
 # {0}        The DataSource id
+# Do not translate: H2
 8070_H2_URL_PASSWORD=DSRA8070E: The H2 database URL for DataSource {0} contains a PASSWORD parameter. For security, use the password attribute on the properties.h2 element or configure containerAuthData instead.
 8070_H2_URL_PASSWORD.explanation=Embedding passwords in database URLs is a security risk because the password might be exposed in logs, traces, or configuration dumps. The H2 database driver supports secure alternatives for password configuration.
 8070_H2_URL_PASSWORD.useraction=Remove the PASSWORD parameter from the H2 URL and instead specify the password using the password attribute on the properties.h2 element or the containerAuthData configuration.
+
+# Do not translate: Apache Derby, Derby Embedded, Derby Network Client
+8071_DERBY_NOT_MAINTAINED=DSRA8071W: Apache Derby is no longer maintained by its community and will not receive fixes or security updates.
+8071_DERBY_NOT_MAINTAINED.explanation=A data source that uses Apache Derby (Derby Embedded or Derby Network Client) is configured. The Apache Derby community no longer maintains the Derby database, so it will not receive fixes or security updates.
+8071_DERBY_NOT_MAINTAINED.useraction=Migrate the data to a supported database and update the data source configuration to use the JDBC driver for that database.
+
+# Do not translate: H2
+8072_H2_DEVELOPMENT_ONLY=DSRA8072I: H2 is intended for development use and is not recommended for production use.
+8072_H2_DEVELOPMENT_ONLY.explanation=A data source that uses the H2 database is configured. H2 interoperability is provided for development and testing purposes.
+8072_H2_DEVELOPMENT_ONLY.useraction=Use a different database for production environments. No action is required for development use.
 
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: Unable to get a {0} from the DataSource.
