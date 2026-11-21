@@ -826,8 +826,6 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             lock.writeLock().unlock();
         }
 
-        issueDatabaseNotices(context, newProperties);
-
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "modified");
     }
