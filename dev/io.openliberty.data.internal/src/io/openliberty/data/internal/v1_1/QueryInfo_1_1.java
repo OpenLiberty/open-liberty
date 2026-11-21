@@ -426,7 +426,8 @@ public class QueryInfo_1_1 extends QueryInfo {
 
     @Override
     protected jakarta.persistence.Query //
-                    ehCreateNativeStatement(AutoCloseable entityHandler) {
+                    ehCreateNativeStatementOrQuery(AutoCloseable entityHandler,
+                                                   boolean[] isStatement) {
         jakarta.persistence.Query query;
 
         Annotation options = QUERY_OPTIONS_CLASS == null //
@@ -436,21 +437,59 @@ public class QueryInfo_1_1 extends QueryInfo {
         // TODO use Persistence 4.0 API directly once the requirement for
         // data-1.1 to be able to run with persistence-3.2 during betas is removed
         //if (entityHandler instanceof EntityHandler handler) ...
-        //    handler.createNativeStatement(ql)
+        //    handler.createNativeQuery(ql)
 
         try {
-            if (entityHandler instanceof EntityManager em) {
-                query = (jakarta.persistence.Query) em.getClass() //
-                                .getMethod("createNativeQuery", String.class) //
-                                .invoke(em, ql);
-            } else {
-                query = (jakarta.persistence.Query) entityHandler.getClass() //
-                                .getMethod("createNativeStatement", String.class) //
-                                .invoke(entityHandler, ql);
-            }
+            query = (jakarta.persistence.Query) entityHandler.getClass() //
+                            .getMethod("createNativeQuery", String.class) //
+                            .invoke(entityHandler, ql);
 
-            if (options != null)
-                setWriteOptions(options, query);
+            isStatement[0] = false;
+            if (QUERY_OPTIONS_CLASS != null)
+                // TODO bug on Hibernate 8.0.0 beta 3 allowing asStatement for SELECT
+                //    try {
+                //        query.getClass() //
+                //                        .getMethod("asStatement") //
+                //                        .invoke(query);
+                //        isStatement[0] = true;
+                //        System.out.println("Is a statement: " + ql);
+                //    } catch (IllegalStateException x) {
+                //        System.out.println("Not a statement: " + ql);
+                //        isStatement[0] = false;
+                //    }
+                if (multiType == null &&
+                    Util.RETURN_TYPES_FOR_UPDATE_COUNT.contains(singleType)) {
+                    String upper = ql.toUpperCase().trim();
+                    isStatement[0] = upper.startsWith("UPDATE ") ||
+                                     upper.startsWith("DELETE ") ||
+                                     upper.startsWith("INSERT ");
+                }
+
+            if (isStatement[0]) {
+                if (options != null)
+                    setWriteOptions(options, query);
+            } else { // query
+                Class<?> resultClass = singleType != null && entityInfo //
+                                .entityClass.isAssignableFrom(singleType) //
+                                                ? entityInfo.entityClass //
+                                                : Object.class;
+                //TypedQuery<?> typedQuery = (TypedQuery<?>) query.getClass() //
+                //                .getMethod("ofType", Class.class) //
+                //                .invoke(query, resultClass);
+                // TODO Hibernate is not honoring the type specified by ofType
+                TypedQuery<?> typedQuery = (TypedQuery<?>) entityHandler.getClass() //
+                                .getMethod("createNativeQuery", //
+                                           String.class, Class.class) //
+                                .invoke(entityHandler, ql, resultClass);
+
+                if (options != null)
+                    setReadOptions(options, typedQuery, true, entityHandler);
+
+                if (eagerlyFetch != null)
+                    typedQuery.setHint(LOADGRAPH, eagerlyFetch);
+
+                query = typedQuery;
+            }
         } catch (IllegalAccessException | NoSuchMethodException x) {
             throw new RuntimeException(x); // should be impossible
         } catch (InvocationTargetException x) {

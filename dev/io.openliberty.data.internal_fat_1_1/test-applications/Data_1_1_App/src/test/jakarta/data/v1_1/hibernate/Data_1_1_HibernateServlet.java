@@ -20,9 +20,13 @@ import java.util.Map.Entry;
 import jakarta.annotation.Resource;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityAgent;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.StatementOrTypedQuery;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
+
+import javax.naming.InitialContext;
 
 import org.junit.Test;
 
@@ -42,6 +46,37 @@ public class Data_1_1_HibernateServlet extends FATServlet {
 
     @Resource
     UserTransaction tx;
+
+    /**
+     * Reproduces HHH-21187 where asStatement on a SELECT query neglects to
+     * raise IllegalStateException.
+     */
+    @Test
+    public void testAsStatement() throws Exception {
+        String name = "java:module/persistence/MyDataStore/EntityManagerFactory";
+
+        EntityManagerFactory emf = InitialContext.doLookup(name);
+        try (EntityAgent agent = emf.createEntityAgent()) {
+            tx.begin();
+            ExampleEntity e = new ExampleEntity();
+            e.setId(5);
+            e.setLabel("five");
+            agent.insert(e);
+            tx.commit();
+
+            String SELECT = "SELECT * FROM ExampleEntity WHERE id=5";
+
+            StatementOrTypedQuery query = agent.createNativeQuery(SELECT);
+            try {
+                query.asStatement();
+                // TODO enable once Hibernate bug HHH-21187 is fixed
+                // fail("asStatement on a SELECT query did not" +
+                //      " raise IllegalStateException");
+            } catch (IllegalStateException x) {
+                // pass
+            }
+        }
+    }
 
     /**
      * Use a resource accessor method to obtain an EntityAgent from a stateless
@@ -121,4 +156,43 @@ public class Data_1_1_HibernateServlet extends FATServlet {
                                      .toList());
     }
 
+    /**
+     * Reproduces an inconsistenty between createNativeQuery(sql, returnType)
+     * and createNativeQuery(SQL).ofType(returnType).
+     */
+    @Test
+    public void testOfType() throws Exception {
+        String name = "java:module/persistence/MyDataStore/EntityManagerFactory";
+
+        EntityManagerFactory emf = InitialContext.doLookup(name);
+        try (EntityAgent agent = emf.createEntityAgent()) {
+            tx.begin();
+            ExampleEntity e = new ExampleEntity();
+            e.setId(10);
+            e.setLabel("ten");
+            agent.insert(e);
+            tx.commit();
+
+            String SELECT = "SELECT * FROM ExampleEntity WHERE id=10";
+
+            // Works fine when using createNativeQuery(sql, resultClass)
+            TypedQuery<ExampleEntity> typedQuery1 = agent
+                            .createNativeQuery(SELECT,
+                                               ExampleEntity.class);
+            List<ExampleEntity> list1 = typedQuery1.getResultList();
+            for (ExampleEntity entity : list1)
+                System.out.println("Result from first query: " + entity.getId());
+
+            // The following has the same quey and result class, so it ought
+            // to be equivalent, but fails because it produces Object[] results
+            // instead of results of the given class
+            // TODO enable once Hibernate bug HHH-21190 is fixed
+            //TypedQuery<ExampleEntity> typedQuery2 = agent
+            //                .createNativeQuery(SELECT)
+            //                .ofType(ExampleEntity.class);
+            //List<ExampleEntity> list2 = typedQuery2.getResultList();
+            //for (ExampleEntity entity : list2)
+            //    System.out.println("Result from second query: " + entity.getId());
+        }
+    }
 }
