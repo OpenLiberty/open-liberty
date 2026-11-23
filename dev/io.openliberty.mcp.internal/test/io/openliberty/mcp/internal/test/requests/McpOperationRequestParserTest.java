@@ -12,8 +12,13 @@ package io.openliberty.mcp.internal.test.requests;
 import static io.openliberty.mcp.internal.McpProtocolVersion.V_2025_03_26;
 import static io.openliberty.mcp.internal.McpProtocolVersion.V_2025_06_18;
 import static io.openliberty.mcp.internal.McpProtocolVersion.V_2025_11_25;
+import static io.openliberty.mcp.internal.McpProtocolVersion.V_2026_07_28;
+import static io.openliberty.mcp.internal.RequestMethod.CANCELLED;
+import static io.openliberty.mcp.internal.RequestMethod.INITIALIZE;
+import static io.openliberty.mcp.internal.RequestMethod.INITIALIZED;
 import static io.openliberty.mcp.internal.RequestMethod.PING;
 import static io.openliberty.mcp.internal.RequestMethod.TOOLS_CALL;
+import static io.openliberty.mcp.internal.RequestMethod.TOOLS_LIST;
 import static io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode.PARSE_ERROR;
 import static io.openliberty.mcp.internal.requests.parsing.McpOperationRequestParser.MCP_PROTOCOL_VERSION_HEADER;
 import static io.openliberty.mcp.internal.requests.parsing.McpOperationRequestParser.MCP_SESSION_ID_HEADER;
@@ -38,10 +43,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import io.openliberty.mcp.internal.McpRequestTracker;
+import io.openliberty.mcp.internal.testutils.BetaPropertyRule;
 import io.openliberty.mcp.internal.RequestMethod;
 import io.openliberty.mcp.internal.config.McpConfig;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
@@ -71,6 +78,10 @@ public class McpOperationRequestParserTest {
     private static final String ACCEPT = "Accept";
     private static final String ACCEPT_VALUE = "application/json,text/event-stream";
     private static final Jsonb jsonb = TestUtils.createJsonb();
+
+    @Rule
+    public BetaPropertyRule betaProperty = new BetaPropertyRule();
+
     private McpOperationRequestParser parser;
     private McpSessionStore sessionStore;
 
@@ -519,7 +530,26 @@ public class McpOperationRequestParserTest {
                         """;
         var partialRequest = parser.preParse(validRequestFor(json));
         assertThrows(() -> parser.parse(partialRequest), exception().ofType(JSONRPCException.class)
-                                                                    .and(hasProperty("errorCode", equalTo(JSONRPCErrorCode.METHOD_NOT_FOUND))));
+                                                                    .and(hasProperty("errorCode", equalTo(JSONRPCErrorCode.METHOD_NOT_FOUND)))
+                                                                    .and(hasProperty("data", equalTo(List.of("not/a/method not found")))));
+    }
+
+    @Test
+    public void testParseUnknownMethodWithInvalidSessionReportsInvalidSession() throws IOException {
+        setupStateful();
+        String json = """
+                        {
+                            "jsonrpc": "2.0",
+                            "id": "5",
+                            "method": "not/a/method"
+                        }
+                        """;
+        // An invalid session id is reported before the method is checked
+        var req = validRequestFor(json);
+        req.addHeader(MCP_SESSION_ID_HEADER, "nonExistentSession");
+        var partialRequest = parser.preParse(req);
+        assertThrows(() -> parser.parse(partialRequest), exception().ofType(HttpResponseException.class)
+                                                                    .and(hasProperty("statusCode", equalTo(SC_NOT_FOUND))));
     }
 
     @Test
@@ -950,6 +980,110 @@ public class McpOperationRequestParserTest {
         var partialRequest = parser.preParse(req);
         assertThrows(() -> parser.parse(partialRequest), exception().ofType(HttpResponseException.class)
                                                                     .and(hasProperty("statusCode", equalTo(SC_NOT_FOUND))));
+    }
+
+    private static MockHttpServletRequest requestFor(String method, String protocolVersion) {
+        String json = """
+                        {
+                            "jsonrpc": "2.0",
+                            "id": "5",
+                            "method": "%s"
+                        }
+                        """.formatted(method);
+        var req = new MockHttpServletRequest(json);
+        req.addHeader(ACCEPT, ACCEPT_VALUE);
+        req.addHeader(MCP_PROTOCOL_VERSION_HEADER, protocolVersion);
+        return req;
+    }
+
+    @Test
+    public void testParseMethodsRemovedIn20260728AreNotFound() throws Exception {
+        betaProperty.set(true);
+        for (String method : List.of("initialize", "notifications/initialized", "ping")) {
+            var partialRequest = parser.preParse(requestFor(method, V_2026_07_28.getVersion()));
+            assertThrows(() -> parser.parse(partialRequest), exception().ofType(JSONRPCException.class)
+                                                                        .and(hasProperty("errorCode", equalTo(JSONRPCErrorCode.METHOD_NOT_FOUND)))
+                                                                        .and(hasProperty("data", equalTo(List.of(method + " not found")))));
+        }
+    }
+
+    @Test
+    public void testParseMethodsRemovedIn20260728AreNotFoundWhenStateful() throws Exception {
+        setupStateful();
+        betaProperty.set(true);
+        // The method must be reported as not found, not as a missing session
+        for (String method : List.of("initialize", "notifications/initialized", "ping")) {
+            var partialRequest = parser.preParse(requestFor(method, V_2026_07_28.getVersion()));
+            assertThrows(() -> parser.parse(partialRequest), exception().ofType(JSONRPCException.class)
+                                                                        .and(hasProperty("errorCode", equalTo(JSONRPCErrorCode.METHOD_NOT_FOUND))));
+        }
+    }
+
+    @Test
+    public void testParseRemovedMethodWithInvalidSessionReportsInvalidSession() throws Exception {
+        setupStateful();
+        betaProperty.set(true);
+        // An invalid session id is reported before the method is checked, as for any other method
+        var req = requestFor("ping", V_2026_07_28.getVersion());
+        req.addHeader(MCP_SESSION_ID_HEADER, "nonExistentSession");
+        var partialRequest = parser.preParse(req);
+        assertThrows(() -> parser.parse(partialRequest), exception().ofType(HttpResponseException.class)
+                                                                    .and(hasProperty("statusCode", equalTo(SC_NOT_FOUND))));
+    }
+
+    @Test
+    public void testParseMethodsRemovedIn20260728StillExistInEarlierVersions() throws Exception {
+        betaProperty.set(true);
+        for (var version : List.of(V_2025_03_26, V_2025_06_18, V_2025_11_25)) {
+            for (var method : List.of(INITIALIZE, INITIALIZED, PING)) {
+                var partialRequest = parser.preParse(requestFor(method.getMethodName(), version.getVersion()));
+                assertEquals("method for " + version, method, parser.parse(partialRequest).method());
+            }
+        }
+    }
+
+    @Test
+    public void testParseOtherMethodsStillExistIn20260728() throws Exception {
+        betaProperty.set(true);
+        for (var method : List.of(TOOLS_CALL, TOOLS_LIST, CANCELLED)) {
+            var partialRequest = parser.preParse(requestFor(method.getMethodName(), V_2026_07_28.getVersion()));
+            assertEquals("method", method, parser.parse(partialRequest).method());
+        }
+    }
+
+    @Test
+    public void testMethodsRemovedIn20260728AreNotRestrictedWithoutProtocolVersion() {
+        // A null protocol version means the header was not accepted, which is reported separately, so no method is hidden
+        for (var method : List.of(INITIALIZE, INITIALIZED, PING)) {
+            assertTrue(method + " should not be restricted for a null protocol version", method.isSupportedIn(null));
+            assertFalse(method + " should be unsupported in 2026-07-28", method.isSupportedIn(V_2026_07_28));
+        }
+    }
+
+    @Test
+    public void testParseInitializeWithoutProtocolHeaderOnBetaStillAllowed() throws Exception {
+        betaProperty.set(true);
+        // initialize does not send the header, so it is interpreted as 2025-03-26 and is not rejected
+        // (negotiating 2026-07-28 from the body is covered by the FAT)
+        var req = new MockHttpServletRequest("""
+                        {
+                            "jsonrpc": "2.0",
+                            "id": "5",
+                            "method": "initialize",
+                            "params": {
+                                "protocolVersion": "2026-07-28",
+                                "capabilities": {},
+                                "clientInfo": {
+                                    "name": "testClient",
+                                    "version": "0.1"
+                                }
+                            }
+                        }
+                        """);
+        req.addHeader(ACCEPT, ACCEPT_VALUE);
+        var request = parser.parse(parser.preParse(req));
+        assertEquals("method", INITIALIZE, request.method());
+        assertEquals("protocolVersion", V_2025_03_26, request.protocolVersion());
     }
 
     @Test

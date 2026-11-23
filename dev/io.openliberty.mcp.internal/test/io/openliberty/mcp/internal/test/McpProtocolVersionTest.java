@@ -142,4 +142,14 @@ public class McpProtocolVersionTest {
         assertEquals(McpProtocolVersion.V_2025_11_25, McpProtocolVersion.latest());
         assertTrue(McpProtocolVersion.latest().isAvailable());
     }
+
+    @Test
+    public void testIsOlderThan() {
+        assertTrue(McpProtocolVersion.V_2025_03_26.isOlderThan(McpProtocolVersion.V_2025_06_18));
+        assertTrue(McpProtocolVersion.V_2025_06_18.isOlderThan(McpProtocolVersion.V_2025_11_25));
+        assertTrue(McpProtocolVersion.V_2025_11_25.isOlderThan(McpProtocolVersion.V_2026_07_28));
+
+        assertFalse(McpProtocolVersion.V_2026_07_28.isOlderThan(McpProtocolVersion.V_2025_11_25));
+        assertFalse(McpProtocolVersion.V_2025_11_25.isOlderThan(McpProtocolVersion.V_2025_11_25));
+    }
 }

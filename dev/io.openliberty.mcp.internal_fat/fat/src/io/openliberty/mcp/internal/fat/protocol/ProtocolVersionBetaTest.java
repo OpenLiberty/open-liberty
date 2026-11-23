@@ -11,6 +11,7 @@ package io.openliberty.mcp.internal.fat.protocol;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
@@ -119,6 +120,148 @@ public class ProtocolVersionBetaTest {
                                 .body();
 
         JSONAssert.assertEquals(ECHO_RESPONSE, response, true);
+    }
+
+    /**
+     * {@code initialize} and {@code ping} do not exist in 2026-07-28, so they must fail as if they were unknown methods.
+     */
+    @Test
+    public void testRemovedRequestMethodsAreNotFoundInBetaProtocolVersion() throws Exception {
+        for (String method : new String[] { "initialize", "ping" }) {
+            String request = """
+                            {
+                              "jsonrpc": "2.0",
+                              "id": 1,
+                              "method": "%s"
+                            }
+                            """.formatted(method);
+
+            String response = client.callMCPRaw(request)
+                                    .protocolVersion("2026-07-28")
+                                    .run()
+                                    .body();
+
+            String expected = """
+                            {
+                              "jsonrpc": "2.0",
+                              "id": 1,
+                              "error": {
+                                "code": -32601,
+                                "message": "Method not found",
+                                "data": ["%s not found"]
+                              }
+                            }
+                            """.formatted(method);
+            JSONAssert.assertEquals("Unexpected response for " + method, expected, response, true);
+        }
+    }
+
+    /**
+     * {@code notifications/initialized} does not exist in 2026-07-28, so it is treated as an unknown notification,
+     * which gets no response body.
+     */
+    @Test
+    public void testRemovedNotificationIsIgnoredInBetaProtocolVersion() throws Exception {
+        String notification = """
+                        {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/initialized"
+                        }
+                        """;
+
+        var response = client.callMCPRaw(notification)
+                             .protocolVersion("2026-07-28")
+                             .expectedStatus(202)
+                             .run();
+
+        assertTrue("Expected no response body but was: " + response.body(), response.body() == null || response.body().isBlank());
+    }
+
+    /**
+     * This application is stateful, but the methods removed in 2026-07-28 must be rejected as unknown methods
+     * before the missing-session check. Otherwise a request without a session would fail with HTTP 400 for the
+     * missing session instead of being treated as an unknown method.
+     */
+    @Test
+    public void testRemovedMethodsAreRejectedBeforeMissingSessionCheckInBetaProtocolVersion() throws Exception {
+        String ping = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "ping"
+                        }
+                        """;
+        String pingResponse = client.callMCPRaw(ping)
+                                    .protocolVersion("2026-07-28")
+                                    .run()
+                                    .body();
+        JSONAssert.assertEquals("""
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "error": {
+                            "code": -32601,
+                            "message": "Method not found",
+                            "data": ["ping not found"]
+                          }
+                        }
+                        """, pingResponse, true);
+
+        String notification = """
+                        {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/initialized"
+                        }
+                        """;
+        var notificationResponse = client.callMCPRaw(notification)
+                                         .protocolVersion("2026-07-28")
+                                         .expectedStatus(202)
+                                         .run();
+        assertTrue("Expected no response body but was: " + notificationResponse.body(),
+                   notificationResponse.body() == null || notificationResponse.body().isBlank());
+    }
+
+    /**
+     * An invalid session id is reported before the method is checked, as for any other method,
+     * so a removed method with an invalid session id returns HTTP 404.
+     */
+    @Test
+    public void testRemovedMethodWithInvalidSessionReturns404InBetaProtocolVersion() throws Exception {
+        String ping = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "ping"
+                        }
+                        """;
+        client.callMCPRaw(ping)
+              .sessionId("nonExistentSession")
+              .protocolVersion("2026-07-28")
+              .expectedStatus(404)
+              .run();
+    }
+
+    /**
+     * The methods removed in 2026-07-28 must still work in every earlier version on a beta runtime.
+     */
+    @Test
+    public void testRemovedMethodsStillWorkInGaProtocolVersionsOnBeta() throws Exception {
+        String ping = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "ping"
+                        }
+                        """;
+        for (String version : GA_VERSIONS) {
+            String response = client.callMCPRaw(ping)
+                                    .protocolVersion(version)
+                                    .run()
+                                    .body();
+
+            JSONAssert.assertEquals("Unexpected ping response for MCP-Protocol-Version " + version,
+                                    "{\"jsonrpc\": \"2.0\", \"id\": 1, \"result\": {}}", response, true);
+        }
     }
 
     @Test

@@ -159,6 +159,26 @@ public class LifecycleTest {
     }
 
     /**
+     * Verifies that an invalid session id is reported (HTTP 404) before the method is checked,
+     * so a request for an unknown method with an invalid session id does not return method not found.
+     */
+    @Test
+    public void testUnknownMethodWithInvalidSessionReturns404() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "neg-3",
+                          "method": "nonexistent/method"
+                        }
+                        """;
+
+        client.callMCPRaw(request)
+              .sessionId("nonExistentSession")
+              .expectedStatus(404)
+              .run();
+    }
+
+    /**
      * Verifies that a {@code ping} request with unrecognised fields in {@code params}
      * still succeeds — unknown parameters must be silently ignored.
      */
