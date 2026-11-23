@@ -10,14 +10,16 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,8 +29,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -37,6 +37,8 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.asyncToolErrorHandlingApp.AsyncErrorHandlingTools;
 import io.openliberty.mcp.internal.fat.tool.asyncToolErrorHandlingApp.NonBusinessException;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
 
 /**
  *
@@ -72,26 +74,26 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
 
     @Test
     public void testAsyncToolThrowsExceptionWrapped() throws Exception {
-        String response = callTool("BusinessException", "THROWN");
+        ToolResponse response = callTool("BusinessException", "THROWN");
         assertUserError(response, "BusinessException");
     }
 
     @Test
     public void testAsyncToolThrowsExceptionWrappedBySuperclass() throws Exception {
-        String response = callTool("SpecificBusinessException", "THROWN");
+        ToolResponse response = callTool("SpecificBusinessException", "THROWN");
         assertUserError(response, "SpecificBusinessException");
     }
 
     @Test
     public void testAsyncToolThrowsExceptionNotWrapped() throws Exception {
-        String response = callTool("NonBusinessException", "THROWN");
+        ToolResponse response = callTool("NonBusinessException", "THROWN");
         assertInternalError(response);
         assertErrorLogged(NonBusinessException.class, "NonBusinessException");
     }
 
     @Test
     public void testAsyncToolThrowsToolCallException() throws Exception {
-        String response = callTool("ToolCallException", "THROWN");
+        ToolResponse response = callTool("ToolCallException", "THROWN");
         assertUserError(response, "ToolCallException");
     }
 
@@ -117,77 +119,77 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
 
     @Test
     public void testAsyncToolFailsWithExceptionWrapped() throws Exception {
-        String response = callTool("BusinessException", "FAILED");
+        ToolResponse response = callTool("BusinessException", "FAILED");
         assertUserError(response, "BusinessException");
     }
 
     @Test
     public void testAsyncToolFailsWithExceptionWrappedBySuperclass() throws Exception {
-        String response = callTool("SpecificBusinessException", "FAILED");
+        ToolResponse response = callTool("SpecificBusinessException", "FAILED");
         assertUserError(response, "SpecificBusinessException");
     }
 
     @Test
     public void testAsyncToolFailsWithExceptionNotWrapped() throws Exception {
-        String response = callTool("NonBusinessException", "FAILED");
+        ToolResponse response = callTool("NonBusinessException", "FAILED");
         assertInternalError(response);
         assertErrorLogged(NonBusinessException.class, "NonBusinessException");
     }
 
     @Test
     public void testAsyncToolFailsWithToolCallException() throws Exception {
-        String response = callTool("ToolCallException", "FAILED");
+        ToolResponse response = callTool("ToolCallException", "FAILED");
         assertUserError(response, "ToolCallException");
     }
 
     @Test
     public void testAsyncToolFailsWithDelayedExceptionWrapped() throws Exception {
-        String response = callTool("BusinessException", "FAILED_DELAY");
+        ToolResponse response = callTool("BusinessException", "FAILED_DELAY");
         assertUserError(response, "BusinessException");
     }
 
     @Test
     public void testAsyncToolFailsWithDelayedExceptionWrappedBySuperclass() throws Exception {
-        String response = callTool("SpecificBusinessException", "FAILED_DELAY");
+        ToolResponse response = callTool("SpecificBusinessException", "FAILED_DELAY");
         assertUserError(response, "SpecificBusinessException");
     }
 
     @Test
     public void testAsyncToolFailsWithDelayedExceptionNotWrapped() throws Exception {
-        String response = callTool("NonBusinessException", "FAILED_DELAY");
+        ToolResponse response = callTool("NonBusinessException", "FAILED_DELAY");
         assertInternalError(response);
         assertErrorLogged(NonBusinessException.class, "NonBusinessException");
     }
 
     @Test
     public void testAsyncToolFailsWithDelayedToolCallException() throws Exception {
-        String response = callTool("NonBusinessException", "FAILED_DELAY");
+        ToolResponse response = callTool("NonBusinessException", "FAILED_DELAY");
         assertInternalError(response);
         assertErrorLogged(NonBusinessException.class, "NonBusinessException");
     }
 
     @Test
     public void testAsyncToolMultistageFailsWithExceptionWrapped() throws Exception {
-        String response = callTool("BusinessException", "FAILED_MULTISTAGE");
+        ToolResponse response = callTool("BusinessException", "FAILED_MULTISTAGE");
         assertUserError(response, "BusinessException");
     }
 
     @Test
     public void testAsyncToolMultistageFailsWithExceptionWrappedBySuperclass() throws Exception {
-        String response = callTool("SpecificBusinessException", "FAILED_MULTISTAGE");
+        ToolResponse response = callTool("SpecificBusinessException", "FAILED_MULTISTAGE");
         assertUserError(response, "SpecificBusinessException");
     }
 
     @Test
     public void testAsyncToolMultistageFailsWithExceptionNotWrapped() throws Exception {
-        String response = callTool("NonBusinessException", "FAILED_MULTISTAGE");
+        ToolResponse response = callTool("NonBusinessException", "FAILED_MULTISTAGE");
         assertInternalError(response);
         assertErrorLogged(NonBusinessException.class, "NonBusinessException");
     }
 
     @Test
     public void testAsyncToolMultistageFailsWithToolCallException() throws Exception {
-        String response = callTool("ToolCallException", "FAILED_MULTISTAGE");
+        ToolResponse response = callTool("ToolCallException", "FAILED_MULTISTAGE");
         assertUserError(response, "ToolCallException");
     }
 
@@ -203,23 +205,10 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
     private void doTest(Class<?> exceptionToThrow, FailureMechanism failureMechanism) {}
 
     private void callToolExpect403(String exceptionToThrow, String failureMechanism) throws Exception {
-        String request = String.format("""
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 3,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "asyncErrorTool",
-                            "arguments": {
-                              "exception": "%s",
-                              "failureMechanism": "%s"
-                            }
-                          }
-                        }
-                        """,
-                                       exceptionToThrow,
-                                       failureMechanism);
-        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).expectedStatus(403).run();
+        McpRequest request = client.toolCallRequest("asyncErrorTool",
+                                                    Map.of("exception", exceptionToThrow,
+                                                           "failureMechanism", failureMechanism));
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request.toString()).expectedStatus(403).run();
         Log.info(AsyncToolsErrorHandlingTest.class, "callToolExpect403", response.toString());
 
         assertEquals(403, response.statusCode());
@@ -229,41 +218,12 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
         assertFalse("Response must not be a JSON-RPC envelope", response.body().contains("jsonrpc"));
     }
 
-    private void assertUserError(String response, String errorMessage) {
-        String expected = String.format("""
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 3,
-                          "result": {
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "%s"
-                              }
-                            ],
-                            "isError": true
-                          }
-                        }""",
-                                        errorMessage);
-        JSONAssert.assertEquals(expected, response, JSONCompareMode.STRICT);
+    private void assertUserError(ToolResponse response, String errorMessage) {
+        assertThat(response, toolResponse().withError(errorMessage).withNoStructuredContent());
     }
 
-    private void assertInternalError(String response) {
-        String expected = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 3,
-                          "result": {
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "An internal server error occurred while running the tool."
-                              }
-                            ],
-                            "isError": true
-                          }
-                        }""";
-        JSONAssert.assertEquals(expected, response, JSONCompareMode.STRICT);
+    private void assertInternalError(ToolResponse response) {
+        assertThat(response, toolResponse().withError("An internal server error occurred while running the tool.").withNoStructuredContent());
     }
 
     private void assertErrorLogged(Class<?> exceptionClass, String error) {
@@ -272,26 +232,11 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
                    containsString("CWMCM0010E: The asyncErrorTool tool method threw an unexpected exception. The exception is " + exceptionClass.getName() + ": " + error));
     }
 
-    private String callTool(String exceptionToThrow, String failureMechanism) throws Exception {
-        String request = String.format("""
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 3,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "asyncErrorTool",
-                            "arguments": {
-                              "exception": "%s",
-                              "failureMechanism": "%s"
-                            }
-                          }
-                        }
-                        """,
-                                       exceptionToThrow,
-                                       failureMechanism);
-
-        String response = client.callMCP(request);
-        Log.info(AsyncToolsErrorHandlingTest.class, "callTool", response);
+    private ToolResponse callTool(String exceptionToThrow, String failureMechanism) throws Exception {
+        ToolResponse response = client.callTool("asyncErrorTool",
+                                                Map.of("exception", exceptionToThrow,
+                                                       "failureMechanism", failureMechanism));
+        Log.info(AsyncToolsErrorHandlingTest.class, "callTool", response.toString());
         return response;
     }
 

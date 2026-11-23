@@ -10,6 +10,8 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Map;
@@ -21,7 +23,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -31,6 +32,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
 
 @RunWith(FATRunner.class)
 public class LocaleTest extends FATServletClient {
@@ -67,28 +69,10 @@ public class LocaleTest extends FATServletClient {
     public void testMethodCallErrorJpI18n() throws Exception {
         server.setMarkToEndOfLog();
 
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "echo",
-                            "arguments": {
-                              "input": "throw error"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
+        ToolResponse response = client.callTool("echo", Map.of("input", "throw error"));
 
         // Expect error response to use message from Japanese nlsprops file.
-        String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"ツールの実行中に内部サーバーエラーが発生しました。"}], "isError": true}}
-                        """;
-        JSONAssert.assertEquals("The response should have the correct Japanese error message with UTF-8 encoding",
-                                expectedResponseString, response, true);
+        assertThat(response, toolResponse().withError("ツールの実行中に内部サーバーエラーが発生しました。"));
         assertNotNull(server.waitForStringInLogUsingMark("Method call caused runtime exception", server.getDefaultLogFile()));
     }
 
