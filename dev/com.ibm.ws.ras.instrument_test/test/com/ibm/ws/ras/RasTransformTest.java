@@ -79,6 +79,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
         majorCodeMap.put("25", 69);
         majorCodeMap.put("26", 70);
 		majorCodeMap.put("27", 71);
+		majorCodeMap.put("28", 72);
 	}
 	
 	/**
