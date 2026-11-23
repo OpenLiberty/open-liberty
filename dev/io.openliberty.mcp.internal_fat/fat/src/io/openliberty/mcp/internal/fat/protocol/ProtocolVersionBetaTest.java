@@ -51,6 +51,7 @@ public class ProtocolVersionBetaTest {
 
     private static final String[] GA_VERSIONS = { "2025-11-25", "2025-06-18", "2025-03-26" };
     private static final String[] INVALID_VERSIONS = { "2026-07-29", "2026-7-28", "not-a-version" };
+    private static final String META_2026_07_28 = "{\"io.modelcontextprotocol/protocolVersion\": \"2026-07-28\"}";
 
     private static final String ECHO_REQUEST = """
                     {
@@ -62,6 +63,21 @@ public class ProtocolVersionBetaTest {
                         "arguments": {
                           "input": "Hello"
                         }
+                      }
+                    }
+                    """;
+
+    private static final String ECHO_REQUEST_WITH_META = """
+                    {
+                      "jsonrpc": "2.0",
+                      "id": 1,
+                      "method": "tools/call",
+                      "params": {
+                        "name": "echo",
+                        "arguments": {
+                          "input": "Hello"
+                        },
+                        "_meta": %s
                       }
                     }
                     """;
@@ -113,7 +129,7 @@ public class ProtocolVersionBetaTest {
 
     @Test
     public void testAcceptsBetaProtocolVersionHeaderOnBeta() throws Exception {
-        String response = client.callMCPRaw(ECHO_REQUEST)
+        String response = client.callMCPRaw(ECHO_REQUEST_WITH_META.formatted(META_2026_07_28))
                                 .protocolVersion("2026-07-28")
                                 .run()
                                 .body();

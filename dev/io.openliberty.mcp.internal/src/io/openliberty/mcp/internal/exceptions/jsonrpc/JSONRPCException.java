@@ -16,10 +16,21 @@ public sealed class JSONRPCException extends McpResponseException permits MCPReq
     private static final long serialVersionUID = 1L;
     private JSONRPCErrorCode errorCode;
     private Object data;
+    private int statusCode;
 
     public JSONRPCException(JSONRPCErrorCode errorCode, Object data) {
+        this(errorCode, data, 0);
+    }
+
+    /**
+     * @param errorCode the JSON-RPC error code
+     * @param data the error data
+     * @param statusCode the HTTP status code the response should be sent with, or 0 to use the default status
+     */
+    public JSONRPCException(JSONRPCErrorCode errorCode, Object data, int statusCode) {
         this.errorCode = errorCode;
         this.data = data;
+        this.statusCode = statusCode;
     }
 
     /**
@@ -34,6 +45,21 @@ public sealed class JSONRPCException extends McpResponseException permits MCPReq
      */
     public Object getData() {
         return data;
+    }
+
+    /**
+     * @return the HTTP status code the response should be sent with. Only meaningful if {@link #hasStatusCode()}
+     *         is true.
+     */
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    /**
+     * @return true if this error should be sent with a specific HTTP status code, rather than the default
+     */
+    public boolean hasStatusCode() {
+        return statusCode != 0;
     }
 
 }
