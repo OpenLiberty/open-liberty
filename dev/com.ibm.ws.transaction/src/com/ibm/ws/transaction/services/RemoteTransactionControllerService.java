@@ -36,6 +36,7 @@ import com.ibm.tx.jta.embeddable.impl.EmbeddableTransactionImpl;
 import com.ibm.tx.jta.embeddable.impl.WSATRecoveryCoordinator;
 import com.ibm.tx.jta.impl.LocalTIDTable;
 import com.ibm.tx.jta.impl.TransactionImpl;
+import com.ibm.tx.jta.util.TxTMHelper;
 import com.ibm.tx.ltc.impl.LocalTranCurrentSet;
 import com.ibm.tx.remote.DistributableTransaction;
 import com.ibm.tx.remote.RemoteTransactionController;
@@ -418,6 +419,11 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
 
         return false;
 
+    }
+
+    @Override
+    public void waitForReplayCompletion(String recoveryId) {
+        TxTMHelper.waitForReplayCompletion(recoveryId);
     }
 
     @Override

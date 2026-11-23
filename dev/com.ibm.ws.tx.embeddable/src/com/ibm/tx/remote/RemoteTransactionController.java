@@ -49,6 +49,12 @@ public interface RemoteTransactionController {
 
     public boolean replayCompletion(String globalId);
 
+    /**
+     * Block until replay of the recovery logs of the server with the given recovery identity has
+     * completed. Returns immediately if that server's logs are not being replayed.
+     */
+    public void waitForReplayCompletion(String recoveryId);
+
     public String getGlobalId() throws SystemException;
 
     public Object getResource(String globalId);
