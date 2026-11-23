@@ -10,6 +10,7 @@
 package io.openliberty.data.internal;
 
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -289,20 +290,27 @@ public class Util {
     }
 
     /**
-     * Returns names of all Query by Method Name constraint keywords that are
-     * supported for collection attributes. This is used in error reporting
-     * to display which keywords are valid.
+     * Returns names of all constraints that are supported for collection
+     * attributes. This is used in error reporting to display which constraints
+     * are valid.
      *
-     * @return names of all constraints that are supported for collection attributes.
+     * @param asClassNames indicates whether to return the supported constraint list
+     *                         as Constraint subtype class names (true) versus
+     *                         Query by Method Name constraint keywords (false)
+     *
+     * @return names of all constraints that are supported for collection attributes
      */
     @Trivial
-    static Set<String> constraintsThatSupportCollections() {
+    static Set<String> constraintsThatSupportCollections(boolean asClassNames) {
         Set<String> supported = new TreeSet<>();
+
         for (AttributeConstraint c : AttributeConstraint.values())
-            if (c.supportsCollections() && c.lengthWithinMethodName() > 0) {
-                String name = c.name();
-                supported.add(name);
-            }
+            if (c.supportsCollections())
+                if (asClassNames && c.hasConstraintClass())
+                    supported.add(c.constraintName());
+                else if (!asClassNames && c.lengthWithinMethodName() > 0)
+                    supported.add(c.name());
+
         return supported;
     }
 
@@ -539,7 +547,7 @@ public class Util {
                 for (StackTraceElement e : cause.getStackTrace())
                     writer.println(indent + "  at " + e.toString());
 
-                for (Throwable suppressed : x.getSuppressed())
+                for (Throwable suppressed : cause.getSuppressed())
                     printStackTrace(suppressed, writer, indent + "  ", alreadyPrinted);
             } else {
                 writer.println(indent + "[CIRCULAR REFERENCE: " +
@@ -581,6 +589,20 @@ public class Util {
         return ASYNC_STAGE_RETURN_TYPES.contains(method.getReturnType()) &&
                (ASYNCHRONOUS_ANNO_CLASS == null ||
                 !method.isAnnotationPresent(ASYNCHRONOUS_ANNO_CLASS));
+    }
+
+    /**
+     * Write the exception, its stack, and causes to a String value.
+     *
+     * @param x the exception or error
+     */
+    @Trivial
+    public static String toStackTrace(Throwable x) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        printStackTrace(x, pw, "", null);
+        pw.flush();
+        return sw.toString();
     }
 
     /**

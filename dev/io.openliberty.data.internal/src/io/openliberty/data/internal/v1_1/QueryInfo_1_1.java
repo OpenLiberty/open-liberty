@@ -269,12 +269,10 @@ public class QueryInfo_1_1 extends QueryInfo {
         }
 
         if (isCollection)
-            if (ignoreCase ||
-                baseConstraint != AttributeConstraint.Equal) // TODO also have an operation for collection containing?
-                throw new UnsupportedOperationException("The " + constraint.constraintName() +
-                                                        " constraint that is applied to entity attribute " +
-                                                        attrName +
-                                                        " is not supported for collection attributes."); // TODO NLS (future)
+            if (baseConstraint != AttributeConstraint.Equal) // TODO also have an operation for collection containing?
+                throw Fail.incompatibleWithCollection(this, constraint, attrName);
+            else if (ignoreCase) // TODO future - IgnoreCase is not in the spec yet
+                throw new UnsupportedOperationException();
 
         switch (baseConstraint) {
             case Equal:
@@ -1182,7 +1180,9 @@ public class QueryInfo_1_1 extends QueryInfo {
                                 graphName = hint.value();
                                 break;
                             } else if (!graphName.equals(hint.value())) {
-                                throw Fail.queryOptionsGraphConflict(this);
+                                throw Fail.queryOptionsGraphConflict(this,
+                                                                     graphName,
+                                                                     hint.value());
                             }
 
                 } catch (IllegalAccessException | NoSuchMethodException x) {
@@ -1291,7 +1291,7 @@ public class QueryInfo_1_1 extends QueryInfo {
 
         for (Annotation anno : paramAnnos)
             if (anno instanceof Is) {
-                constraints[p] = toAttributeConstraint(((Is) anno).value(), paramType);
+                constraints[p] = toAttributeConstraint(p, ((Is) anno).value(), paramType);
             } else if (anno instanceof Assign) {
                 attrNames[p] = ((Assign) anno).value();
                 updateOps[p] = '=';
@@ -1315,7 +1315,7 @@ public class QueryInfo_1_1 extends QueryInfo {
             }
 
         if (constraints[p] == null && Constraint.class.isAssignableFrom(paramType)) {
-            constraints[p] = toAttributeConstraint(null, paramType);
+            constraints[p] = toAttributeConstraint(p, null, paramType);
         }
 
         if (qlParamCount == prevNumJPQLParams) {
@@ -1542,13 +1542,16 @@ public class QueryInfo_1_1 extends QueryInfo {
     /**
      * Convert a constraint subtype to its AttributeConstraint representation.
      *
+     * @param p                    position of the repository method parameter
+     *                                 (0-based)
      * @param isAnnoConstraintType subtype of Constraint indicated by Is anno.
-     *                                 Otherwise null.
-     * @param methodParamType      repository method parameter type.
-     * @return AttributeConstraint representation.
+     *                                 Otherwise null
+     * @param methodParamType      repository method parameter type
+     * @return AttributeConstraint information about the constraint
      */
-    private static AttributeConstraint toAttributeConstraint(Class<?> isAnnoConstraintType,
-                                                             Class<?> methodParamType) {
+    private AttributeConstraint toAttributeConstraint(int p,
+                                                      Class<?> isAnnoConstraintType,
+                                                      Class<?> methodParamType) {
         Class<?> type = isAnnoConstraintType == null ||
                         Constraint.class.isAssignableFrom(methodParamType) //
                                         ? methodParamType //
@@ -1592,7 +1595,7 @@ public class QueryInfo_1_1 extends QueryInfo {
             constraint = AttributeConstraint.Null;
         else
             // TODO 1.1 if isAnnoConstraintType == null handle generic Constraint else
-            throw new UnsupportedOperationException("Constraint: " + type.getName()); // TODO NLS
+            throw Fail.unsupportedConstraint(this, p, type);
 
         // TODO 1.1: errors for types the Is annotation cannot support
 

@@ -420,12 +420,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private <T> T getResource(QueryInfo info) throws Exception {
         Object resource = null;
         boolean resourceAutoCloses = false;
-        boolean stateful = info.producer.stateful();
         Class<?> type = info.method.getReturnType();
 
         if (EntityManager.class.equals(type)) {
             EntityHandlerFactory.Sync<EntityManager> emSync = //
-                            factory.getEntityManager(stateful);
+                            factory.getEntityManager(info);
             resource = emSync.entityHandler();
             resourceAutoCloses = emSync.automaticallyCloses();
         } else if (DataSource.class.equals(type)) {
@@ -450,7 +449,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                       info.method.getName(),
                       repositoryInterface.getName(),
                       type.getName(),
-                      Util.names(provider.compat.resourceAccessorTypes(stateful)));
+                      Util.names(provider.compat.resourceAccessorTypes(info.producer.stateful())));
 
         if (!resourceAutoCloses &&
             resource instanceof AutoCloseable closeable) {
@@ -612,7 +611,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     eh = null;
                 } else {
                     ehSync = stateful || queryInfo.entityInfo.simulateStateless() //
-                                    ? factory.getEntityManager(stateful) //
+                                    ? factory.getEntityManager(queryInfo) //
                                     : factory.getEntityAgent();
                     eh = ehSync.entityHandler();
                 }
