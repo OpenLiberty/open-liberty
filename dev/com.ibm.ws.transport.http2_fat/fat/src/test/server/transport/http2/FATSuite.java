@@ -49,6 +49,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 Http2WindowUpdateTests.class, //FULL
                 Http2CompressionTests.class, //FULL
                 Http2RequestSocketTests.class, // FULL
+                Http2DuplicateEndStreamTest.class, //FULL
 //MultiSessionTests.class // FULL; disabled for now
 })
 
