@@ -7,11 +7,11 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.ow2.asm:asm;9.10}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.ow2.asm:asm-analysis;9.10}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.ow2.asm:asm-commons;9.10}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.ow2.asm:asm-tree;9.10}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.ow2.asm:asm-util;9.10}}!/META-INF/MANIFEST.MF,\
+-include= jar:${fileuri;${repo;org.ow2.asm:asm;9.11}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;org.ow2.asm:asm-analysis;9.11}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;org.ow2.asm:asm-commons;9.11}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;org.ow2.asm:asm-tree;9.11}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;org.ow2.asm:asm-util;9.11}}!/META-INF/MANIFEST.MF,\
           bnd.overrides
 
 -includeresource: \
@@ -19,7 +19,7 @@
 
 instrument.disabled: true
 
-asmVersion=9.10
+asmVersion=9.11
 
 -buildpath: \
 	org.ow2.asm:asm;version=${asmVersion},\
