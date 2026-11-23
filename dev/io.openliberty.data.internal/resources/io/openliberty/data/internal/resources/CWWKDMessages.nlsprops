@@ -1293,14 +1293,14 @@ CWWKD1126.stateful.needs.scope.useraction=Invoke the repository method within \
 
 CWWKD1127.persist.context.err=CWWKD1127E: The {0} entity manager did not write \
  the changes in the persistence context of a stateful repository to the database \
- at the end of the request scope because the {1} operation failed. The error is \
+ at the end of the request scope because the {1} operation failed. The error is: \
  {2}.
 CWWKD1127.persist.context.err.explanation=Methods of a stateful repository \
  can run within a persistence context that is flushed to the database at \
  the end of the request scope. An error prevents the changes from being \
  written to the database.
 CWWKD1127.persist.context.err.useraction=Use the exception stack trace, if \
- available and the messages.log file to determine the cause of the failure. \
+ available, and the messages.log file to determine the cause of the failure. \
  Correct the problem, and then run the request again.
 
 CWWKD1128.graph.hint.conflict=CWWKD1128E: The {0} method of the {1} repository \
