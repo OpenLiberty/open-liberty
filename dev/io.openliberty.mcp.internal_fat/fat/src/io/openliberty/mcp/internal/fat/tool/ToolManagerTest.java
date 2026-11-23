@@ -11,6 +11,9 @@ package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.tool.toolManagerApp.ToolEditorServlet.DYNAMIC_REPEATER;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.INVALID_PARAMS;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcResponseMatcher.jsonRpcResponse;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
 import static java.util.function.Function.identity;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.not;
@@ -48,6 +51,7 @@ import io.openliberty.mcp.internal.fat.tool.toolManagerApp.ToolEditorServlet;
 import io.openliberty.mcp.internal.fat.tool.toolManagerApp.ToolManagerStartupTestBean;
 import io.openliberty.mcp.internal.fat.tool.toolManagerApp.ToolManagerTestServlet;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
 
 /**
  * Test use of the ToolManager bean
@@ -104,35 +108,8 @@ public class ToolManagerTest extends FATServletClient {
             assertEquals("repeat string 5 times", description);
 
             // Test calling the tool
-            String request = """
-                            {
-                              "jsonrpc": "2.0",
-                              "id": 1,
-                              "method": "tools/call",
-                              "params": {
-                                "name": "dynamicRepeater",
-                                "arguments": {
-                                  "inputString": "bork"
-                                }
-                              }
-                            }
-                            """;
-            String expectedResponse = """
-                            {
-                              "jsonrpc": "2.0",
-                              "id": 1,
-                              "result": {
-                                "content": [
-                                  {
-                                    "type": "text",
-                                    "text": "borkborkborkborkbork"
-                                  }
-                                ],
-                                "isError": false
-                              }
-                            }
-                            """;
-            JSONAssert.assertEquals(expectedResponse, client.callMCP(request), STRICT);
+            assertThat(client.callTool("dynamicRepeater", Map.of("inputString", "bork")),
+                       toolResponse().withTextContent("borkborkborkborkbork"));
 
             // Remove the tool
             toolEditorClient.removeDynamicRepeaterTool();
@@ -141,31 +118,9 @@ public class ToolManagerTest extends FATServletClient {
             assertThat(getTools(), not(hasKey(DYNAMIC_REPEATER)));
 
             // Calling the tool after removal must return an error — removal is immediate
-            String removedRequest = """
-                            {
-                              "jsonrpc": "2.0",
-                              "id": 2,
-                              "method": "tools/call",
-                              "params": {
-                                "name": "dynamicRepeater",
-                                "arguments": {
-                                  "inputString": "hello"
-                                }
-                              }
-                            }
-                            """;
-            String expectedRemovedResponse = """
-                            {
-                              "jsonrpc": "2.0",
-                              "id": 2,
-                              "error": {
-                                "code": -32602,
-                                "data": ["Method dynamicRepeater not found"],
-                                "message": "Invalid params"
-                              }
-                            }
-                            """;
-            JSONAssert.assertEquals(expectedRemovedResponse, client.callMCP(removedRequest), STRICT);
+            assertThat(client.callTool("dynamicRepeater", Map.of("inputString", "hello")),
+                       jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorMessage("Invalid params")
+                                        .withErrorDataItems("Method dynamicRepeater not found"));
         } finally {
             // Ensure we remove the tool if the test fails to not interfere with other tests
             toolEditorClient.removeDynamicRepeaterTool();
@@ -301,125 +256,13 @@ public class ToolManagerTest extends FATServletClient {
      */
     @Test
     public void testCallSyncTool() throws Exception {
-        String successRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 3,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "sync-test-tool",
-                            "arguments": {
-                              "action": "success"
-                            }
-                          }
-                        }
-                        """;
-        String expectedSuccessResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 3,
-                          "result": {
-                            "content": [{
-                              "type": "text",
-                              "text": "OK"
-                            }],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        String successResponse = client.callMCP(successRequest);
-        JSONAssert.assertEquals(expectedSuccessResponse, successResponse, STRICT);
-
-        String errorRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 4,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "sync-test-tool",
-                            "arguments": {
-                              "action": "error"
-                            }
-                          }
-                        }
-                        """;
-        String expectedErrorResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 4,
-                          "result": {
-                            "content": [{
-                              "type": "text",
-                              "text": "Error"
-                            }],
-                            "isError": true
-                          }
-                        }
-                        """;
-
-        String errorResponse = client.callMCP(errorRequest);
-        JSONAssert.assertEquals(expectedErrorResponse, errorResponse, STRICT);
-
-        String exceptionRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 5,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "sync-test-tool",
-                            "arguments": {
-                              "action": "exception"
-                            }
-                          }
-                        }
-                        """;
-        String exceptionErrorResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 5,
-                          "result": {
-                            "content": [{
-                              "type": "text",
-                              "text": "An internal server error occurred while running the tool."
-                            }],
-                            "isError": true
-                          }
-                        }
-                        """;
-
-        String successDefaultValueRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 6,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "tool-with-defaultvalue",
-                            "arguments": {
-                            }
-                          }
-                        }
-                        """;
-        String expectedSuccessDefaultValueResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 6,
-                          "result": {
-                            "content": [{
-                              "type": "text",
-                              "text": "2025"
-                            }],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        String successDefaultValueResponse = client.callMCP(successDefaultValueRequest);
-        JSONAssert.assertEquals(expectedSuccessDefaultValueResponse, successDefaultValueResponse, STRICT);
+        assertThat(client.callTool("sync-test-tool", Map.of("action", "success")), toolResponse().withTextContent("OK"));
+        assertThat(client.callTool("sync-test-tool", Map.of("action", "error")), toolResponse().withError("Error"));
+        assertThat(client.callTool("tool-with-defaultvalue", Map.of()), toolResponse().withTextContent("2025"));
 
         serverLifecycle.getServer().setMarkToEndOfLog();
-        String exceptionResponse = client.callMCP(exceptionRequest);
-        JSONAssert.assertEquals(exceptionErrorResponse, exceptionResponse, STRICT);
+        assertThat(client.callTool("sync-test-tool", Map.of("action", "exception")),
+                   toolResponse().withError("An internal server error occurred while running the tool."));
         assertNotNull(serverLifecycle.getServer()
                                      .waitForStringInLogUsingMark("CWMCM0010E: The sync-test-tool tool method threw an unexpected exception. The exception is .*Test Exception"));
     }
@@ -434,159 +277,19 @@ public class ToolManagerTest extends FATServletClient {
      */
     @Test
     public void testCallAsyncTool() throws Exception {
-        String successRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 3,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "async-test-tool",
-                            "arguments": {
-                              "action": "success"
-                            }
-                          }
-                        }
-                        """;
-        String expectedSuccessResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 3,
-                          "result": {
-                            "content": [{
-                              "type": "text",
-                              "text": "OK"
-                            }],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        String successResponse = client.callMCP(successRequest);
-        JSONAssert.assertEquals(expectedSuccessResponse, successResponse, STRICT);
-
-        String errorRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 4,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "async-test-tool",
-                            "arguments": {
-                              "action": "error"
-                            }
-                          }
-                        }
-                        """;
-        String expectedErrorResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 4,
-                          "result": {
-                            "content": [{
-                              "type": "text",
-                              "text": "Error"
-                            }],
-                            "isError": true
-                          }
-                        }
-                        """;
-
-        String errorResponse = client.callMCP(errorRequest);
-        JSONAssert.assertEquals(expectedErrorResponse, errorResponse, STRICT);
-
-        String asyncErrorRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 4,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "async-test-tool",
-                            "arguments": {
-                              "action": "async-error"
-                            }
-                          }
-                        }
-                        """;
-        String expectedAsyncErrorResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 4,
-                          "result": {
-                            "content": [{
-                              "type": "text",
-                              "text": "Error"
-                            }],
-                            "isError": true
-                          }
-                        }
-                        """;
-
-        String asyncErrorResponse = client.callMCP(asyncErrorRequest);
-        JSONAssert.assertEquals(expectedAsyncErrorResponse, asyncErrorResponse, STRICT);
-
-        String exceptionRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 5,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "async-test-tool",
-                            "arguments": {
-                              "action": "exception"
-                            }
-                          }
-                        }
-                        """;
-        String expectedExceptionResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 5,
-                          "result": {
-                            "content": [{
-                              "type": "text",
-                              "text": "An internal server error occurred while running the tool."
-                            }],
-                            "isError": true
-                          }
-                        }
-                        """;
+        assertThat(client.callTool("async-test-tool", Map.of("action", "success")), toolResponse().withTextContent("OK"));
+        assertThat(client.callTool("async-test-tool", Map.of("action", "error")), toolResponse().withError("Error"));
+        assertThat(client.callTool("async-test-tool", Map.of("action", "async-error")), toolResponse().withError("Error"));
 
         serverLifecycle.getServer().setMarkToEndOfLog();
-        String exceptionResponse = client.callMCP(exceptionRequest);
-        JSONAssert.assertEquals(expectedExceptionResponse, exceptionResponse, STRICT);
+        assertThat(client.callTool("async-test-tool", Map.of("action", "exception")),
+                   toolResponse().withError("An internal server error occurred while running the tool."));
         assertNotNull(serverLifecycle.getServer()
                                      .waitForStringInLogUsingMark("CWMCM0010E: The async-test-tool tool method threw an unexpected exception. The exception is .*Test Exception"));
 
-        String asyncExceptionRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 5,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "async-test-tool",
-                            "arguments": {
-                              "action": "async-exception"
-                            }
-                          }
-                        }
-                        """;
-        String expectedAsyncExceptionResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 5,
-                          "result": {
-                            "content": [{
-                              "type": "text",
-                              "text": "An internal server error occurred while running the tool."
-                            }],
-                            "isError": true
-                          }
-                        }
-                        """;
-
         serverLifecycle.getServer().setMarkToEndOfLog();
-        String asyncExceptionResponse = client.callMCP(asyncExceptionRequest);
-        JSONAssert.assertEquals(expectedAsyncExceptionResponse, asyncExceptionResponse, STRICT);
+        assertThat(client.callTool("async-test-tool", Map.of("action", "async-exception")),
+                   toolResponse().withError("An internal server error occurred while running the tool."));
         assertNotNull(serverLifecycle.getServer()
                                      .waitForStringInLogUsingMark("CWMCM0010E: The async-test-tool tool method threw an unexpected exception. The exception is .*Test Async Exception"));
     }
@@ -601,21 +304,9 @@ public class ToolManagerTest extends FATServletClient {
      */
     @Test
     public void testCallSyncToolThrowsToolCallUnauthorizedException() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 10,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "sync-unauthorized-tool",
-                            "arguments": {
-                              "message": "not allowed"
-                            }
-                          }
-                        }
-                        """;
+        McpRequest request = client.toolCallRequest("sync-unauthorized-tool", Map.of("message", "not allowed"));
 
-        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).expectedStatus(403).run();
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request.toString()).expectedStatus(403).run();
 
         assertEquals(403, response.statusCode());
         assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
@@ -633,21 +324,9 @@ public class ToolManagerTest extends FATServletClient {
      */
     @Test
     public void testCallAsyncToolThrowsToolCallUnauthorizedException() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 11,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "async-unauthorized-tool",
-                            "arguments": {
-                              "message": "not allowed"
-                            }
-                          }
-                        }
-                        """;
+        McpRequest request = client.toolCallRequest("async-unauthorized-tool", Map.of("message", "not allowed"));
 
-        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).expectedStatus(403).run();
+        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request.toString()).expectedStatus(403).run();
 
         assertEquals(403, response.statusCode());
         assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));
@@ -666,28 +345,7 @@ public class ToolManagerTest extends FATServletClient {
      */
     @Test
     public void testCallToolWithNullDefaultArgOmitted() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 20,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "tool-with-null-default",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-        String expected = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 20,
-                          "result": {
-                            "content": [{"type": "text", "text": "null"}],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expected, client.callMCP(request), STRICT);
+        assertThat(client.callTool("tool-with-null-default", Map.of()), toolResponse().withTextContent("null"));
     }
 
     /**
@@ -728,30 +386,9 @@ public class ToolManagerTest extends FATServletClient {
      */
     @Test
     public void testCallNonExistentToolReturnsError() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 50,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "toolThatWasNeverRegistered",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String expectedResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 50,
-                          "error": {
-                            "code": -32602,
-                            "data": ["Method toolThatWasNeverRegistered not found"],
-                            "message": "Invalid params"
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponse, client.callMCP(request), STRICT);
+        assertThat(client.callTool("toolThatWasNeverRegistered", Map.of()),
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorMessage("Invalid params")
+                                    .withErrorDataItems("Method toolThatWasNeverRegistered not found"));
     }
 
     /**
@@ -762,29 +399,8 @@ public class ToolManagerTest extends FATServletClient {
      */
     @Test
     public void testCallRemovedToolReturnsError() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 51,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "methodToolToBeRemoved",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String expectedResponse = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 51,
-                          "error": {
-                            "code": -32602,
-                            "data": ["Method methodToolToBeRemoved not found"],
-                            "message": "Invalid params"
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponse, client.callMCP(request), STRICT);
+        assertThat(client.callTool("methodToolToBeRemoved", Map.of()),
+                   jsonRpcResponse().withErrorCode(INVALID_PARAMS).withErrorMessage("Invalid params")
+                                    .withErrorDataItems("Method methodToolToBeRemoved not found"));
     }
 }

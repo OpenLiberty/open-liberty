@@ -10,15 +10,17 @@
 package io.openliberty.mcp.internal.fat.lifecycle.tests;
 
 import static io.openliberty.mcp.internal.fat.suite.McpAsyncServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,11 +29,11 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import componenttest.custom.junit.runner.FATRunner;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncLifecycleTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
@@ -74,37 +76,9 @@ public class AsyncToolLifecycleTest {
     @Test
     public void testAsyncDependentBeanLifecycleForCompleteCompletionStage() throws Exception {
         serverLifecycle.getServer().setMarkToEndOfLog();
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "beanClass": "io.openliberty.mcp.internal_fat.tool.asyncToolApp.AsyncLifecycleTools",
-                            "name": "asyncLifecycleCompleteCompletionStage",
-                            "arguments": {
-                              "input": "Hello, World"
-                            }
-                          }
-                        }
-                        """;
+        ToolResponse response = client.callTool("asyncLifecycleCompleteCompletionStage", Map.of("input", "Hello, World"));
 
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {
-                          "id": "2",
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              { "type": "text", "text": "Hello, World: (async)" }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(response, toolResponse().withTextContent("Hello, World: (async)").withNoStructuredContent());
 
         assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
@@ -122,37 +96,9 @@ public class AsyncToolLifecycleTest {
     @Test
     public void testAsyncDependentBeanLifecycleForAsyncStage() throws Exception {
         serverLifecycle.getServer().setMarkToEndOfLog();
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "beanClass": "io.openliberty.mcp.internal_fat.tool.asyncToolApp.AsyncLifecycleTools",
-                            "name": "asyncLifecycleAsyncStage",
-                            "arguments": {
-                              "input": "Hello, World"
-                            }
-                          }
-                        }
-                        """;
+        ToolResponse response = client.callTool("asyncLifecycleAsyncStage", Map.of("input", "Hello, World"));
 
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {
-                          "id": "2",
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              { "type": "text", "text": "Hello, World: (async)" }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(response, toolResponse().withTextContent("Hello, World: (async)").withNoStructuredContent());
 
         assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
@@ -171,28 +117,9 @@ public class AsyncToolLifecycleTest {
     @Test
     public void testAsyncDependentBeanLifecycleWhenToolThrowsException() throws Exception {
         serverLifecycle.getServer().setMarkToEndOfLog();
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "beanClass": "io.openliberty.mcp.internal_fat.tool.asyncToolApp.AsyncLifecycleTools",
-                            "name": "asyncLifecycleCompleteCompletionStage",
-                            "arguments": {
-                              "input": "throw error"
-                            }
-                          }
-                        }
-                        """;
+        ToolResponse response = client.callTool("asyncLifecycleCompleteCompletionStage", Map.of("input", "throw error"));
 
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(response, toolResponse().withError("An internal server error occurred while running the tool."));
 
         assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
@@ -209,27 +136,9 @@ public class AsyncToolLifecycleTest {
         // asyncLifecycleAsyncStage - exception thrown synchronously before returning a stage;
         // @PreDestroy must still fire (CDI-dependent lifecycle must be honoured on the error path)
         serverLifecycle.getServer().setMarkToEndOfLog();
-        String request2 = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "beanClass": "io.openliberty.mcp.internal_fat.tool.asyncToolApp.AsyncLifecycleTools",
-                            "name": "asyncLifecycleAsyncStage",
-                            "arguments": {
-                              "input": "throw error"
-                            }
-                          }
-                        }
-                        """;
+        ToolResponse response2 = client.callTool("asyncLifecycleAsyncStage", Map.of("input", "throw error"));
 
-        String response2 = client.callMCP(request2);
-
-        String expectedResponseString2 = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString2, response2, true);
+        assertThat(response2, toolResponse().withError("An internal server error occurred while running the tool."));
 
         assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy AsyncLifecycleTools"));
 
@@ -255,37 +164,8 @@ public class AsyncToolLifecycleTest {
     public void testAsyncDependentBeanIsNotReusedAcrossSuccessiveCalls() throws Exception {
         serverLifecycle.getServer().setMarkToEndOfLog();
 
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "neg-1",
-                          "method": "tools/call",
-                          "params": {
-                            "beanClass": "io.openliberty.mcp.internal_fat.tool.asyncToolApp.AsyncLifecycleTools",
-                            "name": "asyncLifecycleCompleteCompletionStage",
-                            "arguments": {
-                              "input": "First"
-                            }
-                          }
-                        }
-                        """;
-        client.callMCP(request);
-
-        String request2 = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "neg-2",
-                          "method": "tools/call",
-                          "params": {
-                            "beanClass": "io.openliberty.mcp.internal_fat.tool.asyncToolApp.AsyncLifecycleTools",
-                            "name": "asyncLifecycleCompleteCompletionStage",
-                            "arguments": {
-                              "input": "Second"
-                            }
-                          }
-                        }
-                        """;
-        client.callMCP(request2);
+        client.callTool("asyncLifecycleCompleteCompletionStage", Map.of("input", "First"));
+        client.callTool("asyncLifecycleCompleteCompletionStage", Map.of("input", "Second"));
 
         // Wait for both @PreDestroy events - each call must destroy its own instance
         long startTime = System.nanoTime();

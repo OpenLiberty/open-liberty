@@ -11,9 +11,12 @@ package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static io.openliberty.mcp.internal.fat.suite.McpAsyncAuthServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,7 +30,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -35,8 +37,9 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
-import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
@@ -73,105 +76,67 @@ public class AsyncToolCancellationTest extends FATServletClient {
         executor.shutdown();
     }
 
+    /** Builds the {@code notifications/cancelled} notification for a request that is in flight. */
+    private static String cancellationNotification(McpRequest request) {
+        return """
+                        {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/cancelled",
+                          "params": {
+                            "requestId": "%s",
+                            "reason": "no longer needed"
+                          }
+                        }
+                        """.formatted(request.getId());
+    }
+
     @Test
     public void testCancellationToolAsync() throws Exception {
         final String latchName = "testCancellationToolAsync";
 
-        Callable<String> threadCallingTool = () -> {
-            try {
-                String request = """
-                                  {
-                                  "jsonrpc": "2.0",
-                                  "id": "2",
-                                  "method": "tools/call",
-                                  "params": {
-                                    "name": "asyncCancellationTool",
-                                    "arguments": {
-                                      "latchName": "testCancellationToolAsync"
-                                    }
-                                  }
-                                }
-                                """;
+        McpRequest request = client.toolCallRequest("asyncCancellationTool", Map.of("latchName", latchName));
 
-                return client.callMCP(request);
+        Callable<ToolResponse> threadCallingTool = () -> {
+            try {
+                return client.callTool(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         };
 
-        Future<String> future = executor.submit(threadCallingTool);
-
-        String cancellationRequestNotification = """
-                          {
-                          "jsonrpc": "2.0",
-                          "method": "notifications/cancelled",
-                          "params": {
-                            "requestId": "2",
-                            "reason": "no longer needed"
-                          }
-                        }
-                        """;
+        Future<ToolResponse> future = executor.submit(threadCallingTool);
 
         toolStatus.awaitStarted(latchName);
-        client.callMCPNotification(cancellationRequestNotification);
+        client.callMCPNotification(cancellationNotification(request));
 
-        String response = future.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        ToolResponse response = future.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"Operation was cancelled", "type":"text"}],"isError":true}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(response, toolResponse().withError("Operation was cancelled"));
     }
 
     @Test
     public void testOperationCancelledExceptionNotLoggedAsError() throws Exception {
         final String latchName = "testOperationCancelledExceptionNotLoggedAsError";
 
-        Callable<String> threadCallingTool = () -> {
-            try {
-                String request = """
-                                  {
-                                  "jsonrpc": "2.0",
-                                  "id": "3",
-                                  "method": "tools/call",
-                                  "params": {
-                                    "name": "asyncCancellationTool",
-                                    "arguments": {
-                                      "latchName": "testOperationCancelledExceptionNotLoggedAsError"
-                                    }
-                                  }
-                                }
-                                """;
+        McpRequest request = client.toolCallRequest("asyncCancellationTool", Map.of("latchName", latchName));
 
-                return client.callMCP(request);
+        Callable<ToolResponse> threadCallingTool = () -> {
+            try {
+                return client.callTool(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         };
 
-        Future<String> future = executor.submit(threadCallingTool);
-
-        String cancellationRequestNotification = """
-                          {
-                          "jsonrpc": "2.0",
-                          "method": "notifications/cancelled",
-                          "params": {
-                            "requestId": "3",
-                            "reason": "no longer needed"
-                          }
-                        }
-                        """;
+        Future<ToolResponse> future = executor.submit(threadCallingTool);
 
         toolStatus.awaitStarted(latchName);
-        client.callMCPNotification(cancellationRequestNotification);
+        client.callMCPNotification(cancellationNotification(request));
 
-        String response = future.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+        ToolResponse response = future.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
         // Verify the response indicates cancellation
-        String expectedResponseString = """
-                        {"id":"3","jsonrpc":"2.0","result":{"content":[{"text":"Operation was cancelled", "type":"text"}],"isError":true}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertThat(response, toolResponse().withError("Operation was cancelled"));
 
         // Verify that the internal server error message (CWMCM0010E) was NOT logged
         // This error message is only logged for non-business exceptions, and OperationCancelledException
