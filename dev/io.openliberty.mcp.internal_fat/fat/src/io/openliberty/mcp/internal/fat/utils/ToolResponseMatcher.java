@@ -17,9 +17,7 @@ import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.skyscreamer.jsonassert.JSONCompare;
 import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.skyscreamer.jsonassert.JSONCompareResult;
 
 /**
  * Hamcrest matcher for asserting on the tool result of a {@link ToolResponse} without spelling
@@ -58,9 +56,6 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
      * matching {@code _meta}.
      */
     private static final String RESERVED_META_PREFIX = "io.modelcontextprotocol";
-
-    /** Expected JSON (a {@link JSONObject} or a {@link JSONArray}) together with how strictly to compare it. */
-    private record JsonExpectation(Object json, JSONCompareMode compareMode) {}
 
     private Boolean expectedIsError;
     private List<String> expectedTexts;
@@ -210,25 +205,20 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
             joiner = " and ";
         }
         if (expectedContent != null) {
-            describeExpectation(description.appendText(joiner), "content", expectedContent);
+            expectedContent.describeTo(description.appendText(joiner), "content");
             joiner = " and ";
         }
         if (expectedStructuredContent != null) {
-            describeExpectation(description.appendText(joiner), "structured content", expectedStructuredContent);
+            expectedStructuredContent.describeTo(description.appendText(joiner), "structured content");
             joiner = " and ";
         }
         if (expectedCustomMeta != null) {
-            describeExpectation(description.appendText(joiner), "custom _meta", expectedCustomMeta);
+            expectedCustomMeta.describeTo(description.appendText(joiner), "custom _meta");
             joiner = " and ";
         }
         if (expectNoStructuredContent) {
             description.appendText(joiner).appendText("no structured content");
         }
-    }
-
-    private static void describeExpectation(Description description, String name, JsonExpectation expectation) {
-        description.appendText(name).appendText(" of ").appendText(expectation.json().toString())
-                   .appendText(" (").appendText(expectation.compareMode().name()).appendText(")");
     }
 
     @Override
@@ -326,14 +316,9 @@ public class ToolResponseMatcher extends TypeSafeDiagnosingMatcher<ToolResponse>
             mismatch.appendText("had no ").appendText(name).appendText(": ").appendText(response.toString());
             return false;
         }
-        try {
-            JSONCompareResult comparison = JSONCompare.compareJSON(expected.json().toString(), actual.toString(), expected.compareMode());
-            if (comparison.failed()) {
-                mismatch.appendText(name).appendText(" differed: ").appendText(comparison.getMessage());
-                return false;
-            }
-        } catch (Exception e) {
-            mismatch.appendText(name).appendText(" could not be compared: ").appendText(e.toString());
+        String difference = expected.difference(actual);
+        if (difference != null) {
+            mismatch.appendText(name).appendText(" ").appendText(difference);
             return false;
         }
         return true;
