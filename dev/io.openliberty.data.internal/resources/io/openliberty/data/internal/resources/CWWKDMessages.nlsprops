@@ -1271,8 +1271,8 @@ CWWKD1124.resource.unavailable.useraction=To prevent this warning, verify that \
 
 CWWKD1125.record.not.stateful=CWWKD1125E: The {0} Java record type that the {1} \
  method uses cannot be an entity class for the {2} stateful repository because \
- Java records are immutable and cannot change state. Use a Java class that is \
- annotated with the jakarta.persistence.Entity annotation as the entity class.
+ Java records are immutable and cannot change state. The entity class must \
+ be a Java class that is annotated with the jakarta.persistence.Entity annotation.
 CWWKD1125.record.not.stateful.explanation=A stateful repository tracks changes \
  to its entity instances and saves those changes to the database. Java records \
  are immutable, so their state cannot change, and a stateful repository cannot \
@@ -1317,7 +1317,7 @@ CWWKD1128.graph.hint.conflict.useraction=Use only one way to configure the graph
  member.
 
 CWWKD1129.unknown.constraint=CWWKD1129E: Parameter {0} of the {1} method \
- of the {2} repository interface has a constraint type ({3}) which the Jakarta \
+ of the {2} repository interface has a constraint type ({3}) that the Jakarta \
  Data API does not support. Use a supported constraint type, such as {4}.
 CWWKD1129.unknown.constraint.explanation=The Jakarta Data API defines the \
  constraint types that you can use for the parameters of a repository method. \
@@ -1331,10 +1331,10 @@ CWWKD1130.incompat.with.collection=CWWKD1130E: The {0} method of the {1} \
  constraint type cannot be used with the {3} attribute of the {4} entity because \
  the attribute is a collection. You can use these constraint types with a \
  collection attribute: {5}.
-CWWKD1130.incompat.with.collection.explanation=A repository method compares an \
- entity attribute to a value by using a constraint. Only some constraint types \
- can compare a collection attribute. The runtime cannot process a constraint \
- type that does not support collections, so the method cannot run.
+CWWKD1130.incompat.with.collection.explanation=Repository method constraints \
+ are applied to entity attribute value. Only some constraint types apply to \
+ a collection attribute. The repository cannot process a constraint \
+ type that is not applicable to collections, so the method cannot run.
 CWWKD1130.incompat.with.collection.useraction=Change the constraint type of the \
  method parameter to one of the constraint types that the message text lists for \
  collection attributes.
