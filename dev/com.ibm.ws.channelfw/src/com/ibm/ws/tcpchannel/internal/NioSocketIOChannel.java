@@ -102,11 +102,7 @@ public class NioSocketIOChannel extends SocketIOChannel {
 
                     dataRead = read(wsBuffImpl.oWsBBDirect);
 
-                    // EOF (-1): nothing was read, so there is nothing to copy back. Skipping the
-                    // copy avoids touching shared buffer state when the connection is being torn down.
-                    if (dataRead >= 0) {
-                        wsBuffImpl.copyFromDirectBuffer((int) dataRead);
-                    }
+                    wsBuffImpl.copyFromDirectBuffer((int) dataRead);
                 } catch (ClassCastException cce) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                         Tr.event(this, tc, "Reading with a non-WsByteBufferImpl, may hurt performance");

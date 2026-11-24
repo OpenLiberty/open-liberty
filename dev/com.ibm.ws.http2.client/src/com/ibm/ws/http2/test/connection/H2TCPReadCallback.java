@@ -44,6 +44,7 @@ public class H2TCPReadCallback implements TCPReadCompletedCallback {
      */
     @Override
     public void complete(VirtualConnection arg0, TCPReadRequestContext tcpReadRequestContext) {
+        h2connection.asyncReadCallbackStarted();
         if (h2connection.isClosedCalled()) {
             if (LOGGER.isLoggable(Level.FINEST))
                 LOGGER.logp(Level.FINEST, CLASS_NAME, "complete", "H2TCPReadCallback.complete: Received callback after connection was closed. Will ignore callback");
@@ -62,6 +63,7 @@ public class H2TCPReadCallback implements TCPReadCompletedCallback {
      */
     @Override
     public void error(VirtualConnection arg0, TCPReadRequestContext arg1, IOException arg2) {
+        h2connection.asyncReadCallbackStarted();
         if (arg2 instanceof SocketException) {
             // Ignore connection resets
             SocketException exception = (SocketException) arg2;

@@ -108,6 +108,8 @@ public class H2Connection {
     private final FrameSettings ackSettingsFrame;
 
     private final AtomicBoolean closeCalled = new AtomicBoolean(false);
+    // true from the moment an async read is issued until its callback (complete/error) starts running
+    private final AtomicBoolean asyncReadPending = new AtomicBoolean(false);
     private final AtomicBoolean connectionErrorOccurred = new AtomicBoolean(false);
 
     private static String sendBackPriority1 = "SEND.BACK.PRIORITY.1";
@@ -339,7 +341,7 @@ public class H2Connection {
         return processRead(utils.IO_DEFAULT_TIMEOUT);
     }
 
-    public void startAsyncRead() {
+    public synchronized void startAsyncRead() {
 
         if (this.closeCalled.get())
             return;
@@ -352,6 +354,7 @@ public class H2Connection {
 
             readConn.setBuffer(readBuffer);
 
+            asyncReadPending.set(true);
             readConn.read(1, h2TcpReadCallback, true, utils.IO_DEFAULT_TIMEOUT);
         } else {
             if (LOGGER.isLoggable(Level.FINEST)) {
@@ -778,12 +781,29 @@ public class H2Connection {
         return frameToConvert;
     }
 
+    // called by H2TCPReadCallback as the first thing in complete()/error()
+    void asyncReadCallbackStarted() {
+        asyncReadPending.set(false);
+    }
+
     public synchronized void close() {
         this.closeCalled.set(true);
         if (LOGGER.isLoggable(Level.FINEST))
             LOGGER.logp(Level.FINEST, CLASS_NAME, "processFrame", "Connection close() called in connection " + this + ".");
         //Channel wants to be one to close the connection.
         reportedExceptions.addAll(streamResultManager.compareAllStreamResults());
+
+        // Do not reuse readConn (setBuffer + sync read) while an async read is still queued or
+        // running on it: they share one request context and one buffer.
+        long waitUntil = System.currentTimeMillis() + 3000;
+        while (asyncReadPending.get() && System.currentTimeMillis() < waitUntil) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
 
         if (processRead(1000) >= 0) {
             if (LOGGER.isLoggable(Level.FINEST))
