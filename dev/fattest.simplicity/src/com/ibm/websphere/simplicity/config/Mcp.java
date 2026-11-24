@@ -22,6 +22,7 @@ public class Mcp extends ConfigElement {
     private String asyncTimeout;
     private String minimumProtocolVersion;
     private String maximumProtocolVersion;
+    private String enableEndpoint;
 
     /**
      * @return whether the MCP server is stateless
@@ -95,6 +96,18 @@ public class Mcp extends ConfigElement {
         this.maximumProtocolVersion = maximumProtocolVersion;
     }
 
+    /**
+     * @return whether the MCP endpoint is enabled ({@code true}, {@code auto} or {@code false})
+     */
+    public String getEnableEndpoint() {
+        return enableEndpoint;
+    }
+
+    @XmlAttribute
+    public void setEnableEndpoint(String enableEndpoint) {
+        this.enableEndpoint = enableEndpoint;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder("Mcp {");
@@ -110,6 +123,8 @@ public class Mcp extends ConfigElement {
             builder.append("minimumProtocolVersion=\"" + minimumProtocolVersion + "\" ");
         if (maximumProtocolVersion != null)
             builder.append("maximumProtocolVersion=\"" + maximumProtocolVersion + "\" ");
+        if (enableEndpoint != null)
+            builder.append("enableEndpoint=\"" + enableEndpoint + "\" ");
         builder.append("}");
         return builder.toString();
     }

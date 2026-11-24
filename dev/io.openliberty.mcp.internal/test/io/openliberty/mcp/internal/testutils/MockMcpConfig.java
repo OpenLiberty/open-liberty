@@ -36,6 +36,7 @@ public class MockMcpConfig implements McpConfig {
     private long asyncTimeoutMs = 30_000;
     private McpProtocolVersion minimumProtocolVersion = V_2025_03_26;
     private McpProtocolVersion maximumProtocolVersion = V_2026_07_28;
+    private EnableEndpoint enableEndpoint = EnableEndpoint.AUTO;
 
     public static MockMcpConfig createStateless() {
         return new MockMcpConfig().setStateless(true);
@@ -136,6 +137,16 @@ public class MockMcpConfig implements McpConfig {
     }
 
     @Override
+    public EnableEndpoint enableEndpoint() {
+        return enableEndpoint;
+    }
+
+    public MockMcpConfig setEnableEndpoint(EnableEndpoint enableEndpoint) {
+        this.enableEndpoint = enableEndpoint;
+        return this;
+    }
+
+    @Override
     public String toString() {
         return "MockMcpConfig[stateless=" + stateless
                + ", moduleName=" + moduleName
@@ -146,6 +157,7 @@ public class MockMcpConfig implements McpConfig {
                + ", asyncTimeoutMs=" + asyncTimeoutMs
                + ", minimumProtocolVersion=" + minimumProtocolVersion
                + ", maximumProtocolVersion=" + maximumProtocolVersion
+               + ", enableEndpoint=" + enableEndpoint
                + "]";
     }
 }

@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runner.manipulation.Filter;
@@ -214,13 +213,13 @@ public class ServerLifecycleRule implements TestRule {
      * matching {@code <application>} element to server.xml, letting the caller
      * configure it via {@code configurator}.
      *
-     * @param war the archive to deploy; its name is used as the file name
+     * @param war the {@code .war} or {@code .ear} to deploy; its name is used as the file name
      * @param configurator callback that receives the new {@link Application} element
      *     so the caller can set properties (e.g. {@code <mcp stateless="true"/>})
      * @throws RuntimeException if the app does not start
-     * @see McpDeployHelper#deployWithConfiguration(LibertyServer, WebArchive, Consumer)
+     * @see McpDeployHelper#deployWithConfiguration(LibertyServer, Archive, Consumer)
      */
-    public void deployWithConfiguration(WebArchive war,
+    public void deployWithConfiguration(Archive<?> war,
                                         Consumer<Application> configurator)
                     throws Exception {
         assertRunning();
@@ -232,7 +231,7 @@ public class ServerLifecycleRule implements TestRule {
      * waits for the app to stop, then deletes the application file.
      *
      * @param appName the application name that was previously deployed via
-     *     {@link #deployWithConfiguration(WebArchive, Consumer)}. May include a
+     *     {@link #deployWithConfiguration(Archive, Consumer)}. May include a
      *     {@code .war} or {@code .ear} extension; {@code .war} is assumed if there is none.
      * @throws RuntimeException if the app does not stop
      * @see McpDeployHelper#undeployWithConfiguration(LibertyServer, String)

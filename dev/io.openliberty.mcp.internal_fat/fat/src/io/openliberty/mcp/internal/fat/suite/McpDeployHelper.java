@@ -14,7 +14,7 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 
 import java.util.function.Consumer;
 
-import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.api.Archive;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
@@ -53,26 +53,26 @@ public final class McpDeployHelper {
     }
 
     /**
-     * Deploys {@code war} to the server's {@code apps/} directory and adds a
+     * Deploys {@code archive} (a WAR or an EAR) to the server's {@code apps/} directory and adds a
      * matching {@code <application>} element to server.xml, letting the caller
      * configure it via {@code configurator}.
      *
-     * <p>The WAR is written to disk <em>before</em> the server configuration is
+     * <p>The archive is written to disk <em>before</em> the server configuration is
      * updated, and the method waits for the app to start before returning.
      *
      * @param server the Liberty server to deploy to
-     * @param war the archive to deploy; its name is used as the file name
+     * @param war the {@code .war} or {@code .ear} to deploy; its name is used as the file name
      * @param configurator callback that receives the new {@link Application} element
      *     so the caller can set properties (e.g. {@code <mcp stateless="true"/>})
      * @throws Exception if the app does not start
      */
     public static void deployWithConfiguration(LibertyServer server,
-                                               WebArchive war,
+                                               Archive<?> war,
                                                Consumer<Application> configurator)
                     throws Exception {
-        String appName = war.getName().replace(".war", "");
+        String appName = baseName(war.getName());
 
-        // 1. Write WAR to disk first — file must exist before config references it.
+        // 1. Write archive to disk first — file must exist before config references it.
         //    DISABLE_VALIDATION skips ShrinkHelper's internal addInstalledAppForValidation
         //    call (and its app-started wait). The <application> entry does not exist yet,
         //    so Liberty won't start the app until step 2.
