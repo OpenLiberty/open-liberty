@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -26,6 +27,7 @@ import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 
 import io.netty.buffer.ByteBuf;
+import com.ibm.ws.http.channel.internal.h2spool.H2SpoolResources.IngressGrant;
 
 /**
  * Bounded, per-stream storage for an ordinary HTTP/2 request before END_STREAM.
@@ -33,6 +35,7 @@ import io.netty.buffer.ByteBuf;
  */
 public final class H2BodySpool {
     private static final int MAX_CHUNK_BYTES = 16 * 1024;
+    private static final int MAX_DRAIN_CHUNKS = 64;
 
     private final Path directory;
     private final long maxStoredBytes;
@@ -89,7 +92,36 @@ public final class H2BodySpool {
      * callback reports each settled chunk so the adapter can release deferred
      * H2 credit; bounded early credit may already have been granted on admission.
      */
+    /** Reserve worst-case chunk allocation for one complete DATA frame. */
+    public IngressGrant tryIngressGrant(int maxPayloadBytes, Runnable wake) {
+        if (wake == null || maxPayloadBytes < 0 || maxPayloadBytes > maxDataFrameBytes) {
+            throw new IllegalArgumentException("Invalid HTTP/2 ingress grant request");
+        }
+        synchronized (lock) {
+            if (aborted || endRequested || transferred) {
+                throw new IllegalStateException("HTTP/2 body spool is terminal");
+            }
+            long worstAllocation = ((long) maxPayloadBytes + chunkBytes - 1L) / chunkBytes * chunkBytes;
+            if (worstAllocation > maxPendingBytes) {
+                throw new IllegalArgumentException("One DATA frame cannot fit HTTP/2 stream pending budget");
+            }
+            if (maxPayloadBytes > maxPendingBytes - pendingBytes
+                            || worstAllocation > maxPendingBytes - allocatedBytes) {
+                // Registration is under the spool lock. The writer cannot
+                // settle local pending state between the check and the wait.
+                lease.registerIngressWaiter(wake);
+                return null;
+            }
+            return lease.tryIngressGrantOrWait((int) worstAllocation, wake);
+        }
+    }
+
     public void offer(ByteBuf data) throws CapacityException {
+        offer(data, null);
+    }
+
+    /** Copies DATA; the grant's exact newAllocation becomes lease-owned. */
+    public void offer(ByteBuf data, IngressGrant grant) throws CapacityException {
         if (data == null) {
             throw new NullPointerException("data");
         }
@@ -116,7 +148,7 @@ public final class H2BodySpool {
             }
             int newAllocation = (int) (newChunks * chunkBytes);
             int created = 0;
-            if (!lease.reserve(length, newAllocation)) {
+            if (!lease.reserve(length, newAllocation, grant)) {
                 throw new CapacityException("HTTP/2 connection spool quota exceeded");
             }
 
@@ -248,8 +280,10 @@ public final class H2BodySpool {
                     return;
                 }
             }
+            int drained = 0;
             while (true) {
                 Chunk next;
+                boolean idle = false;
                 synchronized (lock) {
                     if (aborted) {
                         break;
@@ -257,17 +291,50 @@ public final class H2BodySpool {
                     next = pending.pollFirst();
                     if (next == null && !endRequested) {
                         workerScheduled = false;
-                        return;
+                        idle = true;
                     }
                     if (next == tail) {
                         tail = null;
                     }
+                }
+                if (idle) {
+                    try {
+                        closeWriterChannel();
+                    } catch (Throwable failure) {
+                        fail(failure);
+                        cleanupAborted();
+                    }
+                    return;
                 }
                 if (next == null) {
                     finish();
                     return;
                 }
                 write(next);
+                if (++drained == MAX_DRAIN_CHUNKS) {
+                    boolean more;
+                    synchronized (lock) {
+                        more = !aborted && !pending.isEmpty();
+                    }
+                    if (more) {
+                        try {
+                            closeWriterChannel();
+                        } catch (Throwable failure) {
+                            fail(failure);
+                            cleanupAborted();
+                            return;
+                        }
+                        // Keep workerScheduled set while the next bounded batch is queued.
+                        try {
+                            writer.execute(this::drain);
+                        } catch (RuntimeException rejected) {
+                            fail(rejected);
+                            cleanupAborted();
+                        }
+                        return;
+                    }
+                    drained = 0;
+                }
             }
             cleanupAborted();
         }
@@ -314,6 +381,7 @@ public final class H2BodySpool {
         try {
             ensureFile();
             channel.force(false);
+            closeWriterChannel();
             H2SealedBody body;
             synchronized (lock) {
                 if (aborted) {
@@ -322,9 +390,8 @@ public final class H2BodySpool {
                     if (writtenBytes != acceptedBytes || pendingBytes != 0 || allocatedBytes != 0) {
                         throw new IOException("Incomplete HTTP/2 body spool");
                     }
-                    body = new H2SealedBody(path, channel, writtenBytes, cleanupExecutor, lease);
+                    body = new H2SealedBody(path, writtenBytes, cleanupExecutor, lease);
                     path = null;
-                    channel = null;
                     transferred = true;
                     workerScheduled = false;
                 }
@@ -357,6 +424,11 @@ public final class H2BodySpool {
         if (channel != null) {
             return;
         }
+        if (path != null) {
+            channel = FileChannel.open(path, StandardOpenOption.READ, StandardOpenOption.WRITE, LinkOption.NOFOLLOW_LINKS);
+            channel.position(writtenBytes);
+            return;
+        }
         Path created;
         try {
             created = Files.createTempFile(directory, "h2-body-", ".tmp",
@@ -366,7 +438,7 @@ public final class H2BodySpool {
         }
         path = created;
         try {
-            channel = FileChannel.open(created, StandardOpenOption.READ, StandardOpenOption.WRITE);
+            channel = FileChannel.open(created, StandardOpenOption.READ, StandardOpenOption.WRITE, LinkOption.NOFOLLOW_LINKS);
         } catch (IOException | RuntimeException e) {
             try {
                 Files.deleteIfExists(created);
@@ -375,6 +447,13 @@ public final class H2BodySpool {
                 e.addSuppressed(cleanupFailure); // keep path for the abort cleanup retry
             }
             throw e;
+        }
+    }
+
+    private void closeWriterChannel() throws IOException {
+        if (channel != null) {
+            channel.close();
+            channel = null;
         }
     }
 

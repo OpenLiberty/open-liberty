@@ -46,11 +46,12 @@ import com.ibm.ws.ffdc.FFDCFilter;
  * no directory or executor creation is allowed on a channel event loop.
  */
 public final class H2SpoolProvider {
-    // Independent of MessageSizeLimit. The stored-byte cap is captured once
-    // for this owner's lifetime; pending RAM and body slots stay fixed.
-    public static final long DEFAULT_MAX_STORED_BYTES = 8L * 1024 * 1024 * 1024;
+    // Ordinary requests are published after END_STREAM, so a finite aggregate
+    // stored-byte limit can reject a request that MessageSizeLimit permits.
+    // Keep the finite constructor budget for callers that explicitly need it.
+    public static final long DEFAULT_MAX_STORED_BYTES = Long.MAX_VALUE;
     public static final long MAX_PENDING_BYTES = 64L * 1024 * 1024;
-    public static final int MAX_OPEN_BODIES = 256;
+    public static final int MAX_OPEN_BODIES = Integer.MAX_VALUE;
     private static final int MAX_CLOSE_ATTEMPTS = 4;
     private static final long CLOSE_RETRY_MILLIS = 250;
     private static final String DIRECTORY_PREFIX = "liberty-h2-body-v1-";

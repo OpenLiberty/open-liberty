@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -35,6 +36,7 @@ public final class H2SpoolResources {
     private final Executor writer;
     private final Executor cleanupExecutor;
     private final Set<Lease> active = new HashSet<>();
+    private final Set<Runnable> ingressWaiters = new LinkedHashSet<>();
 
     private long reservedStoredBytes;
     private long reservedPendingBytes;
@@ -65,6 +67,75 @@ public final class H2SpoolResources {
             throw new IllegalStateException("HTTP/2 spool resources are closed");
         }
         return new ConnectionScope();
+    }
+
+    /** A pending-byte reservation not yet transferred to a stream lease. */
+    public final class IngressGrant implements AutoCloseable {
+        private final H2SpoolResources grantOwner = H2SpoolResources.this;
+        private long unclaimedBytes;
+        private boolean grantClosed;
+
+        private IngressGrant(long bytes) {
+            unclaimedBytes = bytes;
+        }
+
+        @Override
+        public void close() {
+            boolean released;
+            synchronized (H2SpoolResources.this) {
+                released = !grantClosed && unclaimedBytes != 0;
+                if (!grantClosed) {
+                    reservedPendingBytes -= unclaimedBytes;
+                    unclaimedBytes = 0;
+                    grantClosed = true;
+                }
+            }
+            if (released) {
+                wakeIngressWaiters();
+            }
+        }
+    }
+
+    /** Null means wait; the failed check and wake registration share one lock. */
+    private IngressGrant tryIngressGrantOrWait(int bytes, Runnable wake) {
+        synchronized (this) {
+            if (closed) {
+                throw new IllegalStateException("HTTP/2 spool resources are closed");
+            }
+            if (bytes < 0 || bytes > maxPendingBytes) {
+                throw new IllegalArgumentException("DATA cannot fit HTTP/2 pending budget");
+            }
+            if (bytes > maxPendingBytes - reservedPendingBytes) {
+                ingressWaiters.add(wake);
+                return null;
+            }
+            reservedPendingBytes += bytes;
+            return new IngressGrant(bytes);
+        }
+    }
+
+    private void registerIngressWaiter(Runnable wake) {
+        synchronized (this) {
+            if (closed) {
+                throw new IllegalStateException("HTTP/2 spool resources are closed");
+            }
+            ingressWaiters.add(wake);
+        }
+    }
+
+    public synchronized void removeIngressWaiter(Runnable wake) {
+        ingressWaiters.remove(wake);
+    }
+
+    private void wakeIngressWaiters() {
+        List<Runnable> waiters;
+        synchronized (this) {
+            waiters = new ArrayList<>(ingressWaiters);
+            ingressWaiters.clear();
+        }
+        for (Runnable wake : waiters) {
+            wake.run(); // Each transport callback schedules its own event loop.
+        }
     }
 
     public final class ConnectionScope {
@@ -98,6 +169,18 @@ public final class H2SpoolResources {
                 leases.add(lease);
                 return spool;
             }
+        }
+
+        IngressGrant tryIngressGrantOrWait(int bytes, Runnable wake) {
+            return H2SpoolResources.this.tryIngressGrantOrWait(bytes, wake);
+        }
+
+        void registerIngressWaiter(Runnable wake) {
+            H2SpoolResources.this.registerIngressWaiter(wake);
+        }
+
+        public void removeIngressWaiter(Runnable wake) {
+            H2SpoolResources.this.removeIngressWaiter(wake);
         }
 
         /** Reports this cleanup attempt; a later call retries retained leases after failure. */
@@ -138,6 +221,7 @@ public final class H2SpoolResources {
             closed = true;
             snapshot = new ArrayList<>(active);
         }
+        wakeIngressWaiters();
         return terminate(snapshot);
     }
 
@@ -162,17 +246,39 @@ public final class H2SpoolResources {
         }
 
         boolean reserve(long storage, int pending) {
+            return reserve(storage, pending, null);
+        }
+
+        boolean reserve(long storage, int pending, IngressGrant grant) {
             synchronized (H2SpoolResources.this) {
                 if (closed || scope.connectionClosed || released || fileRetired || storage < 0 || pending < 0 ||
-                    storage > maxStoredBytes - reservedStoredBytes || pending > maxPendingBytes - reservedPendingBytes) {
+                    storage > maxStoredBytes - reservedStoredBytes) {
                     return false;
                 }
+                if (grant == null) {
+                    if (pending > maxPendingBytes - reservedPendingBytes) {
+                        return false;
+                    }
+                    reservedPendingBytes += pending;
+                } else {
+                    if (grant.grantOwner != H2SpoolResources.this || grant.grantClosed || grant.unclaimedBytes < pending) {
+                        return false;
+                    }
+                    grant.unclaimedBytes -= pending;
+                }
                 reservedStoredBytes += storage;
-                reservedPendingBytes += pending;
                 storedBytes += storage;
                 pendingBytes += pending;
                 return true;
             }
+        }
+
+        IngressGrant tryIngressGrantOrWait(int bytes, Runnable wake) {
+            return scope.tryIngressGrantOrWait(bytes, wake);
+        }
+
+        void registerIngressWaiter(Runnable wake) {
+            scope.registerIngressWaiter(wake);
         }
 
         void releasePending(long count) {
@@ -183,6 +289,7 @@ public final class H2SpoolResources {
                 pendingBytes -= count;
                 reservedPendingBytes -= count;
             }
+            wakeIngressWaiters();
         }
 
         void releaseOffer(long storage, long pending) {
@@ -194,6 +301,9 @@ public final class H2SpoolResources {
                 reservedStoredBytes -= storage;
                 pendingBytes -= pending;
                 reservedPendingBytes -= pending;
+            }
+            if (pending != 0) {
+                wakeIngressWaiters();
             }
         }
 

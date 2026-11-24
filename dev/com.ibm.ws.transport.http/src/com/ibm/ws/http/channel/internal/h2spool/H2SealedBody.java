@@ -14,7 +14,9 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
@@ -25,20 +27,17 @@ public final class H2SealedBody implements AutoCloseable {
     private static final int MAX_READ_CHUNK_BYTES = 64 * 1024;
 
     private final Path path;
-    private final FileChannel channel;
     private final long length;
     private final Executor cleanupExecutor;
     private final H2SpoolResources.Lease lease;
     private final AtomicBoolean closed = new AtomicBoolean();
     private final Object ioLock = new Object();
     private volatile boolean opened;
-    private boolean channelClosed;
     private boolean deleted;
     private CompletableFuture<Void> asynchronousClose;
 
-    H2SealedBody(Path path, FileChannel channel, long length, Executor cleanupExecutor, H2SpoolResources.Lease lease) {
+    H2SealedBody(Path path, long length, Executor cleanupExecutor, H2SpoolResources.Lease lease) {
         this.path = path;
-        this.channel = channel;
         this.length = length;
         this.cleanupExecutor = cleanupExecutor;
         this.lease = lease;
@@ -80,14 +79,16 @@ public final class H2SealedBody implements AutoCloseable {
      * Opens the only reader. The caller must read on an application worker, not
      * on the Netty event loop, and close the reader even after a partial read.
      */
-    public synchronized InputStream openInputStream() throws IOException {
-        if (closed.get()) {
-            throw new IOException("HTTP/2 body is closed");
+    public InputStream openInputStream() throws IOException {
+        synchronized (ioLock) {
+            if (closed.get()) {
+                throw new IOException("HTTP/2 body is closed");
+            }
+            if (opened) {
+                throw new IOException("HTTP/2 body reader was already opened");
+            }
+            opened = true;
         }
-        if (opened) {
-            throw new IOException("HTTP/2 body reader was already opened");
-        }
-        opened = true;
         return new InputStream() {
             private final byte[] singleByte = new byte[1];
             private long position;
@@ -107,30 +108,40 @@ public final class H2SealedBody implements AutoCloseable {
                 if (offset < 0 || count < 0 || offset > bytes.length - count) {
                     throw new IndexOutOfBoundsException();
                 }
-                if (readerClosed || closed.get()) {
-                    throw new IOException("HTTP/2 body reader is closed");
+                synchronized (ioLock) {
+                    if (readerClosed || closed.get()) {
+                        throw new IOException("HTTP/2 body reader is closed");
+                    }
+                    if (count == 0) {
+                        return 0;
+                    }
+                    if (position != length) {
+                        int boundedCount = (int) Math.min(Math.min((long) count, MAX_READ_CHUNK_BYTES), length - position);
+                        int read;
+                        try (FileChannel input = FileChannel.open(path, StandardOpenOption.READ, LinkOption.NOFOLLOW_LINKS)) {
+                            read = input.read(ByteBuffer.wrap(bytes, offset, boundedCount), position);
+                        }
+                        if (read <= 0) {
+                            throw new IOException("Incomplete HTTP/2 body spool");
+                        }
+                        position += read;
+                        return read;
+                    }
                 }
-                if (count == 0) {
-                    return 0;
-                }
-                if (position == length) {
-                    close();
-                    return -1;
-                }
-
-                int boundedCount = (int) Math.min(Math.min((long) count, MAX_READ_CHUNK_BYTES), length - position);
-                int read = channel.read(ByteBuffer.wrap(bytes, offset, boundedCount), position);
-                if (read <= 0) {
-                    throw new IOException("Incomplete HTTP/2 body spool");
-                }
-                position += read;
-                return read;
+                close();
+                return -1;
             }
 
             @Override
             public void close() throws IOException {
-                if (!readerClosed) {
-                    readerClosed = true;
+                boolean closeBody = false;
+                synchronized (ioLock) {
+                    if (!readerClosed) {
+                        readerClosed = true;
+                        closeBody = true;
+                    }
+                }
+                if (closeBody) {
                     H2SealedBody.this.close();
                 }
             }
@@ -159,7 +170,10 @@ public final class H2SealedBody implements AutoCloseable {
                 return -1;
             }
             int boundedCount = (int) Math.min(Math.min((long) count, MAX_READ_CHUNK_BYTES), length - position);
-            int read = channel.read(ByteBuffer.wrap(bytes, offset, boundedCount), position);
+            int read;
+            try (FileChannel input = FileChannel.open(path, StandardOpenOption.READ, LinkOption.NOFOLLOW_LINKS)) {
+                read = input.read(ByteBuffer.wrap(bytes, offset, boundedCount), position);
+            }
             if (read <= 0) {
                 throw new IOException("Incomplete HTTP/2 body spool");
             }
@@ -200,34 +214,12 @@ public final class H2SealedBody implements AutoCloseable {
         closed.set(true);
         try {
             synchronized (ioLock) {
-                IOException failure = null;
-                if (!channelClosed) {
-                    try {
-                        channel.close();
-                        channelClosed = true;
-                    } catch (IOException e) {
-                        failure = e;
-                    }
-                }
-                if (channelClosed && !deleted) {
-                    try {
-                        Files.deleteIfExists(path);
-                        deleted = true;
-                    } catch (IOException e) {
-                        if (failure == null) {
-                            failure = e;
-                        } else {
-                            failure.addSuppressed(e);
-                        }
-                    }
-                }
-                if (failure != null) {
-                    throw failure;
-                }
-                if (channelClosed && deleted) {
-                    lease.releaseAfterDelete();
+                if (!deleted) {
+                    Files.deleteIfExists(path);
+                    deleted = true;
                 }
             }
+            lease.releaseAfterDelete();
         } finally {
             lease.onCloseRequested();
         }
