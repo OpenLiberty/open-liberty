@@ -58,6 +58,7 @@ import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
+import com.ibm.ws.http.channel.internal.h2spool.H2CompletedSpoolRequest;
 import com.ibm.ws.http.netty.pipeline.RemoteIpHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ExchangeLifecycle;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
@@ -270,7 +271,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         this.request = new HttpRequestImpl(HttpDispatcher.useEE7Streams());
         this.response = new HttpResponseImpl(this);
-        this.request.init(isc);
+        this.request.init(isc, requestMetadata.isHttp2() && headers instanceof H2CompletedSpoolRequest);
 
         final boolean chunked = HttpUtil.isTransferEncodingChunked(headers);
         final long cl = HttpUtil.getContentLength(headers, -1);

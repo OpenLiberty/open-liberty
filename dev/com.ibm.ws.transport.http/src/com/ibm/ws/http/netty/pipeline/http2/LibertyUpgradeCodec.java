@@ -9,11 +9,15 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.http2;
 
+import com.ibm.ws.http.channel.internal.h2spool.H2SpoolResources;
+import com.ibm.ws.http.channel.internal.h2spool.H2SpoolChannelState;
+
 import java.util.Collection;
 import java.util.Collections;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
@@ -70,22 +74,36 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
 
     private final HttpChannelConfig httpConfig;
     private final Channel channel;
+    private final H2SpoolResources.ConnectionScope ordinaryResources;
+    private boolean scopeCloseListenerRegistered;
 
     /**
      * Helper method for creating H2C Upgrade handler
      */
     public static CleartextHttp2ServerUpgradeHandler createCleartextUpgradeHandler(HttpChannelConfig httpConfig, Channel channel) {
+        return createCleartextUpgradeHandler(httpConfig, channel,
+                        channel.attr(H2SpoolChannelState.ORDINARY_SCOPE).getAndSet(null));
+    }
+
+    static CleartextHttp2ServerUpgradeHandler createCleartextUpgradeHandler(HttpChannelConfig httpConfig, Channel channel,
+                                                                                   H2SpoolResources.ConnectionScope ordinaryResources) {
         HttpServerCodec sourceCodec = HttpPipelineInitializer.newHttpServerCodec(httpConfig);
-        LibertyUpgradeCodec codec = new LibertyUpgradeCodec(httpConfig, channel);
+        LibertyUpgradeCodec codec = new LibertyUpgradeCodec(httpConfig, channel, ordinaryResources);
         int maxContentlength = (httpConfig.getMessageSizeLimit() >= Integer.MAX_VALUE || httpConfig.getMessageSizeLimit() < 0) ? Integer.MAX_VALUE : (int) httpConfig.getMessageSizeLimit();
         final HttpServerUpgradeHandler upgradeHandler = new Http11OnlyUpgradeHandler(sourceCodec, codec, maxContentlength);
         return new CleartextHttp2ServerUpgradeHandler(sourceCodec, upgradeHandler, codec.buildHttp2ConnectionHandler(httpConfig, channel));
     }
 
     public LibertyUpgradeCodec(HttpChannelConfig httpConfig, Channel channel) {
+        this(httpConfig, channel, null);
+    }
+
+    LibertyUpgradeCodec(HttpChannelConfig httpConfig, Channel channel, H2SpoolResources.ConnectionScope ordinaryResources) {
         super();
         this.httpConfig = httpConfig;
         this.channel = channel;
+        // Only this connection's scope closes with the channel; the aggregate owner spans channels.
+        this.ordinaryResources = ordinaryResources;
     }
 
     @Override
@@ -163,15 +181,23 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
 
     HttpToHttp2ConnectionHandler buildHttp2ConnectionHandler(HttpChannelConfig httpConfig, Channel channel) {
         DefaultHttp2Connection connection = new DefaultHttp2Connection(true);
-        // Netty's ordinary FullHttpMessage path remains int-bounded; registered
-        // streams receive the configured long limit through the Liberty listener.
-        long configuredMaxContentLength = httpConfig.getMessageSizeLimit();
-        int maxContentlength = configuredMaxContentLength >= Integer.MAX_VALUE || configuredMaxContentLength < 0
-                        ? Integer.MAX_VALUE : (int) configuredMaxContentLength;
+        // Netty's inherited FullHttpMessage path remains int-bounded. An injected
+        // resource owner enables the ordinary long-body spool in the listener.
+        long maxContentLength = httpConfig.getMessageSizeLimit();
         Http2Settings initialSettings = new Http2Settings().maxConcurrentStreams(httpConfig.getH2MaxConcurrentStreams()).maxFrameSize(httpConfig.getH2MaxFrameSize());
         if (httpConfig.getH2SettingsInitialWindowSize() != Constants.SPEC_INITIAL_WINDOW_SIZE)
             initialSettings.initialWindowSize(httpConfig.getH2SettingsInitialWindowSize());
-        LibertyInboundHttp2ToHttpAdapter listener = new LibertyInboundHttp2ToHttpAdapter(connection, configuredMaxContentLength, false, false, channel, httpConfig);
+        LibertyInboundHttp2ToHttpAdapter listener = new LibertyInboundHttp2ToHttpAdapter(connection, maxContentLength,
+                        false, false, channel, httpConfig, ordinaryResources);
+        // h2c can build one handler for prior knowledge and another on Upgrade.
+        if (ordinaryResources != null && !scopeCloseListenerRegistered) {
+            scopeCloseListenerRegistered = true;
+            channel.closeFuture().addListener(future -> ordinaryResources.close().whenComplete((ignored, failure) -> {
+                if (failure != null) {
+                    FFDCFilter.processException(failure, LibertyUpgradeCodec.class.getName() + ".closeH2SpoolConnection", "1");
+                }
+            }));
+        }
 
         // A stalled request must not use up the shared connection window. Netty
         // refills connection credit on receipt while each stream retains its own

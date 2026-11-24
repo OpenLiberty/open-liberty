@@ -28,6 +28,7 @@ import com.ibm.ws.http.channel.internal.AsyncReadDispatchState;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
+import com.ibm.ws.http.channel.internal.inbound.H2SealedBodyInput;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpRequestImpl;
@@ -38,8 +39,10 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.message.BodyQueue;
+import com.ibm.ws.http.channel.internal.h2spool.H2CompletedSpoolRequest;
 import com.ibm.ws.http.netty.pipeline.http2.H2InboundContent;
 import com.ibm.ws.http.netty.pipeline.http2.H2InboundRequest;
+import com.ibm.ws.http.channel.internal.h2spool.H2SealedBody;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.FlowState;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
@@ -133,6 +136,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     private final Map<String, HttpInputStream> streamMap = new ConcurrentHashMap<>();
     private final Map<Integer, H2InboundStream> h2Streams = new HashMap<>();
+    private final Map<Integer, H2SealedBodyInput> h2SealedBodies = new ConcurrentHashMap<>();
 
     public HttpDispatcherHandler(NettyHttpChannelConfig config) {
         super(false);
@@ -247,6 +251,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                     Tr.debug(tc, "Failed decode request on closed channel: " + context.channel());
                 }
             }
+            return;
+        }
+        if (msg instanceof H2CompletedSpoolRequest) {
+            beginH2SpoolRequest(ctx, (H2CompletedSpoolRequest) msg);
             return;
         }
         if (msg instanceof H2InboundRequest) {
@@ -409,6 +417,63 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         HttpDispatcher.getExecutorService().execute(requestLink::ready);
     }
 
+    private void beginH2SpoolRequest(ChannelHandlerContext ctx, H2CompletedSpoolRequest request) {
+        H2SealedBody transferred = null;
+        HttpInputStreamImpl body = null;
+        boolean configured = false;
+        boolean published = false;
+        try {
+            RequestMetadata metadata = RequestMetadata.capture(ctx.channel(), request);
+            HttpToHttp2ConnectionHandler handler = ctx.pipeline().get(HttpToHttp2ConnectionHandler.class);
+            // END_STREAM may already have removed the decoder's stream object.
+            if (!metadata.isHttp2() || metadata.streamId() != request.streamId() || handler == null
+                            || h2Streams.containsKey(request.streamId()) || h2SealedBodies.containsKey(request.streamId())) {
+                throw new InvalidRequestMetadataException("HTTP/2 completed body does not match the request owner");
+            }
+            if (QuiesceState.isQuiesceInProgress()
+                            || Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.QUIESCING).get())) {
+                DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.SERVICE_UNAVAILABLE);
+                response.headers().setInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), request.streamId());
+                HttpUtil.setContentLength(response, 0);
+                ctx.writeAndFlush(response);
+                return;
+            }
+
+            HttpDispatcherLink requestLink = new HttpDispatcherLink();
+            requestLink.initStreaming(ctx, request, config, false, metadata);
+            HttpRequestImpl appRequest = (HttpRequestImpl) requestLink.getRequest();
+            body = appRequest.getBody();
+            VirtualConnection vc = requestLink.getVirtualConnection();
+            vc.getStateMap().put(NettyHttpConstants.VC_HTTP_INPUT_STREAM, body);
+            vc.getStateMap().put(NettyHttpConstants.VC_HTTP2_STREAM_ID, Integer.toString(request.streamId()));
+            AsyncReadDispatchState.forRequest(ctx.channel(), vc);
+
+            transferred = request.takeBody();
+            final H2SealedBodyInput sealedInput = (H2SealedBodyInput) body;
+            sealedInput.nettyConfigureSealedBody(transferred, ctx, request.headers().get(HttpHeaderNames.CONTENT_ENCODING),
+                            () -> h2SealedBodies.remove(request.streamId(), sealedInput));
+            configured = true;
+            if (request.trailers() != null && !request.trailers().isEmpty()) {
+                appRequest.setTrailers(request.trailers());
+            }
+            h2SealedBodies.put(request.streamId(), sealedInput);
+            requestLink.setBodyComplete();
+            int count = ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
+            ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(count + 1);
+            HttpDispatcher.getExecutorService().execute(requestLink::ready);
+            published = true;
+        } finally {
+            if (!published && transferred != null) {
+                if (configured) {
+                    ((H2SealedBodyInput) body).closeSealedBodyAsync();
+                } else {
+                    transferred.closeAsync();
+                }
+            }
+            request.closeAsync();
+        }
+    }
+
     private void acceptH2Content(ChannelHandlerContext ctx, H2InboundContent content) throws Http2Exception {
         H2InboundStream stream = h2Streams.get(content.streamId());
         Runnable completion = content.takeCompletion();
@@ -492,7 +557,14 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "beginStreamingRequest: server quiescing, rejecting request with 503");
             }
-            sendErrorMessage(StatusCodes.UNAVAILABLE, null);
+            if (requestMetadata.isHttp2()) {
+                DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.SERVICE_UNAVAILABLE);
+                response.headers().setInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), requestMetadata.streamId());
+                HttpUtil.setContentLength(response, 0);
+                ctx.writeAndFlush(response);
+            } else {
+                sendErrorMessage(StatusCodes.UNAVAILABLE, null);
+            }
             return;
         }
 

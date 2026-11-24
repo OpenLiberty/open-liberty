@@ -17,6 +17,8 @@ import java.util.Set;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
+import com.ibm.ws.http.channel.internal.inbound.H2SealedInputStreamEE7;
+import com.ibm.ws.http.channel.internal.inbound.H2SealedInputStreamImpl;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.HttpCookie;
@@ -61,8 +63,14 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      * @param context
      */
     public void init(HttpInboundServiceContext context) {
+        init(context, false);
+    }
+
+    void init(HttpInboundServiceContext context, boolean h2CompletedSpool) {
         this.message = context.getRequest();
-        if (this.useEE7Streams) {
+        if (h2CompletedSpool) {
+            this.body = this.useEE7Streams ? new H2SealedInputStreamEE7(context) : new H2SealedInputStreamImpl(context);
+        } else if (this.useEE7Streams) {
             this.body = new HttpInputStreamEE7(context);
         } else {
             this.body = new HttpInputStreamImpl(context);

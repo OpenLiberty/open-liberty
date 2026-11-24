@@ -9,8 +9,13 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.http2;
 
+import com.ibm.ws.http.channel.internal.h2spool.H2SpoolProvider;
+import com.ibm.ws.http.channel.internal.h2spool.H2SpoolResources;
+import com.ibm.ws.http.channel.internal.h2spool.H2SpoolChannelState;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
@@ -56,10 +61,25 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Configuring pipeline with HTTP 2 for incoming connection " + ctx.channel());
             }
-            LibertyUpgradeCodec codec = new LibertyUpgradeCodec(httpConfig, ctx.channel());
-            HttpToHttp2ConnectionHandler handler = codec.buildHttp2ConnectionHandler(httpConfig, ctx.channel());
-            // HTTP2 to HTTP 1.1 and back pipeline
-            ctx.pipeline().addAfter(LibertyNettyALPNHandler.NAME, null, handler);
+            H2SpoolProvider provider = Boolean.TRUE.equals(ctx.channel().attr(H2SpoolChannelState.ORDINARY_ENABLED).get())
+                            ? HttpDispatcher.currentH2SpoolProvider() : null;
+            H2SpoolResources.ConnectionScope ordinaryScope;
+            try {
+                ordinaryScope = provider == null ? null : provider.openConnection();
+            } catch (IllegalStateException closed) {
+                ordinaryScope = null;
+            }
+            // Release the connection scope if H2 handler setup fails.
+            try {
+                LibertyUpgradeCodec codec = new LibertyUpgradeCodec(httpConfig, ctx.channel(), ordinaryScope);
+                HttpToHttp2ConnectionHandler handler = codec.buildHttp2ConnectionHandler(httpConfig, ctx.channel());
+                ctx.pipeline().addAfter(LibertyNettyALPNHandler.NAME, null, handler);
+            } catch (Exception | Error failure) {
+                if (ordinaryScope != null) {
+                    ordinaryScope.close();
+                }
+                throw failure;
+            }
 
             if (ctx.pipeline().get(TimeoutHandler.class) == null) {
                 TimeoutHandler h = new TimeoutHandler(httpConfig);
