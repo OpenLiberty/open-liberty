@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -32,6 +35,7 @@ import io.openliberty.mcp.internal.config.McpConfig;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
+import io.openliberty.mcp.internal.exceptions.jsonrpc.McpResponseException;
 import io.openliberty.mcp.internal.requests.McpRequest;
 import io.openliberty.mcp.internal.requests.RequestId;
 import io.openliberty.mcp.internal.responses.McpErrorResponse;
@@ -89,21 +93,24 @@ public class McpTransport {
             throw new HttpResponseException(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }
 
-        boolean headerPresent = req.getHeader(MCP_HEADER) != null;
+        String headerValue = req.getHeader(MCP_HEADER);
+        boolean headerPresent = headerValue != null;
+        // A missing header is interpreted as 2025-03-26
+        String requestedVersion = headerPresent ? headerValue : McpProtocolVersion.V_2025_03_26.getVersion();
         try {
             version = readProtocolVersionHeader();
         } catch (NoSuchElementException e) {
-            throw unsupportedProtocolVersion(mcpConfig);
+            throw unsupportedProtocolVersionForRequest(mcpConfig, requestedVersion);
         }
         // A header which names a version outside the configured range is always rejected
         if (headerPresent && !mcpConfig.isAccepted(version)) {
-            throw unsupportedProtocolVersion(mcpConfig);
+            throw unsupportedProtocolVersionForRequest(mcpConfig, requestedVersion);
         }
         this.mcpRequest = toRequest();
         // A missing header is interpreted as 2025-03-26, which may be outside the configured range.
         // The initialize request is exempt because it negotiates the version and does not need the header.
         if (!headerPresent && mcpRequest.getRequestMethod() != RequestMethod.INITIALIZE && !mcpConfig.isAccepted(version)) {
-            throw unsupportedProtocolVersion(mcpConfig);
+            throw unsupportedProtocolVersionForRequest(mcpConfig, requestedVersion);
         }
 
         this.appName = extractAppName();
@@ -143,6 +150,41 @@ public class McpTransport {
         } catch (NoSuchElementException e) {
             throw unsupportedProtocolVersion(mcpConfig);
         }
+    }
+
+    /**
+     * Creates the exception for a POST request whose protocol version is not accepted.
+     * <p>
+     * The 2026-07-28 specification requires an {@code UnsupportedProtocolVersionError} (-32022) with HTTP status 400,
+     * which lists the supported versions and the requested version. That response is only sent on a beta runtime
+     * until the feature is complete. Otherwise the plain text 400 which has always been sent is used.
+     *
+     * @param mcpConfig the configuration, which determines the protocol versions that are accepted
+     * @param requestedVersion the protocol version which the request asked for
+     * @return the exception to throw
+     */
+    @FFDCIgnore(IOException.class)
+    private McpResponseException unsupportedProtocolVersionForRequest(McpConfig mcpConfig, String requestedVersion) {
+        if (!ProductInfo.getBetaEdition()) {
+            return unsupportedProtocolVersion(mcpConfig);
+        }
+
+        // The response should carry the request id, so read the request if that hasn't been done yet.
+        // If the body can't be read, the response has a null id.
+        if (mcpRequest == null) {
+            try {
+                mcpRequest = toRequest();
+            } catch (JSONRPCException | IOException e) {
+                // The request is being rejected anyway, so leave mcpRequest as null
+            }
+        }
+
+        Map<String, Object> data = new LinkedHashMap<>();
+        data.put("supported", mcpConfig.acceptedProtocolVersions().stream()
+                                       .map(McpProtocolVersion::getVersion)
+                                       .toList());
+        data.put("requested", requestedVersion);
+        return new JSONRPCException(JSONRPCErrorCode.UNSUPPORTED_PROTOCOL_VERSION, data, HttpServletResponse.SC_BAD_REQUEST);
     }
 
     private static HttpResponseException unsupportedProtocolVersion(McpConfig mcpConfig) {
@@ -314,12 +356,17 @@ public class McpTransport {
      * Per the JSON-RPC 2.0 specification, notifications (requests with no id) must not be
      * responded to, including with error responses. If the current request is a notification,
      * this method returns without sending anything.
+     * <p>
+     * If the exception specifies an HTTP status code (see {@link JSONRPCException#hasStatusCode()}), the message
+     * is being rejected at the HTTP level, so the response is sent with that status and the JSON-RPC error body
+     * even for a notification. The body of that response has a null id.
      *
      * @param e The JSONRPCException to be included in the error response.
      */
     public void sendJsonRpcException(JSONRPCException e) {
-        // JSON-RPC notifications must not receive a response.
-        if (mcpRequest != null && mcpRequest.id() == null) {
+        // JSON-RPC notifications must not receive a response, unless the server is rejecting the
+        // notification with an HTTP error status.
+        if (mcpRequest != null && mcpRequest.id() == null && !e.hasStatusCode()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Ignoring JSONRPCException for notification (no id): " + e.getMessage(), e);
             }
@@ -329,6 +376,9 @@ public class McpTransport {
         RequestId id = (mcpRequest != null) ? mcpRequest.id() : null;
         McpResponse mcpResponse = new McpErrorResponse(id, e);
 
+        if (e.hasStatusCode()) {
+            res.setStatus(e.getStatusCode());
+        }
         res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }

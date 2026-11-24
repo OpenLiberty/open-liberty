@@ -9,13 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.protocol;
 
+import static io.openliberty.mcp.internal.fat.protocol.ProtocolVersionRequests.assertUnsupportedProtocolVersionError;
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
-import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -51,6 +49,8 @@ public class ProtocolVersionBetaTest {
 
     private static final String[] GA_VERSIONS = { "2025-11-25", "2025-06-18", "2025-03-26" };
     private static final String[] INVALID_VERSIONS = { "2026-07-29", "2026-7-28", "not-a-version" };
+    /** The versions a beta runtime reports as supported: the beta version followed by the GA versions */
+    private static final String ALL_VERSIONS = "2026-07-28, 2025-11-25, 2025-06-18, 2025-03-26";
 
     private static final String ECHO_REQUEST = """
                     {
@@ -157,9 +157,7 @@ public class ProtocolVersionBetaTest {
                                 .run()
                                 .body();
 
-        assertThat("Expected error message about invalid protocol version",
-                   response, containsString("An unsupported MCP-Protocol-Version header was provided."));
-        assertSupportedValuesAreBetaAndGa(response);
+        assertUnsupportedProtocolVersionError("2022-02-02", response, ALL_VERSIONS);
     }
 
     /**
@@ -175,9 +173,7 @@ public class ProtocolVersionBetaTest {
                                     .run()
                                     .body();
 
-            assertThat("Expected error message about invalid protocol version for " + version,
-                       response, containsString("An unsupported MCP-Protocol-Version header was provided."));
-            assertSupportedValuesAreBetaAndGa(response);
+            assertUnsupportedProtocolVersionError(version, response, ALL_VERSIONS);
         }
     }
 
@@ -217,17 +213,4 @@ public class ProtocolVersionBetaTest {
         }
     }
 
-    /**
-     * Asserts that the supported values listed in an unsupported-version error response are exactly the beta
-     * version followed by the GA versions, in order.
-     */
-    private static void assertSupportedValuesAreBetaAndGa(String response) {
-        String marker = "Supported values: ";
-        int start = response.indexOf(marker);
-        assertTrue("Expected the response to list the supported values but was: " + response, start >= 0);
-
-        String supportedValues = response.substring(start + marker.length()).trim();
-        assertEquals("Expected the supported values to be exactly the beta and GA versions",
-                     "2026-07-28, 2025-11-25, 2025-06-18, 2025-03-26", supportedValues);
-    }
 }

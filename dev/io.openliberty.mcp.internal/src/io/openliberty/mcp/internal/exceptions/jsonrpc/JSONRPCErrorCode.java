@@ -21,7 +21,9 @@ public enum JSONRPCErrorCode {
     INVALID_REQUEST(-32600, "Invalid request"),
     METHOD_NOT_FOUND(-32601, "Method not found"),
     INVALID_PARAMS(-32602, "Invalid params"),
-    INTERNAL_ERROR(-32603, "Internal error");
+    INTERNAL_ERROR(-32603, "Internal error"),
+    // error code from the MCP specification (2026-07-28), Versioning, Protocol Version Negotiation
+    UNSUPPORTED_PROTOCOL_VERSION(-32022, "Unsupported protocol version");
 
     private int code;
     private String message;
