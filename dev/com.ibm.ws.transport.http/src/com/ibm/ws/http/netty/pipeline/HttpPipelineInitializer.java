@@ -20,8 +20,10 @@ import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.ConfigElement;
@@ -29,6 +31,9 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.ProtocolState;
 import com.ibm.ws.http.netty.ProtocolState.ProtocolSource;
+import com.ibm.ws.http.channel.internal.h2spool.H2SpoolProvider;
+import com.ibm.ws.http.channel.internal.h2spool.H2SpoolResources;
+import com.ibm.ws.http.channel.internal.h2spool.H2SpoolChannelState;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
@@ -68,6 +73,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     private final NettyChain chain;
     private final NettyHttpChannelConfig httpConfig;
     private final Map<ConfigElement, Map<String, Object>> configOptions;
+    private final boolean longH2BodySpool;
 
     public static final String NO_UPGRADE_OCURRED_HANDLER_NAME = "upgradeCheckHandler";
     public static final String NETTY_HTTP_SERVER_CODEC = "httpServerCodec";
@@ -86,7 +92,20 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         this.chain = chain;
         this.httpConfig = httpConfig;
         this.configOptions = configOptions;
-
+        long messageSizeLimit = httpConfig.getMessageSizeLimit();
+        // The Servlet protocol service can bind after this initializer is built.
+        // An explicit HTTP/2 endpoint is still a possible H2 route at this point.
+        this.longH2BodySpool = (chain.isHttp2Enabled()
+                        || HttpConfigConstants.PROTOCOL_VERSION_2.equalsIgnoreCase(chain.getOwner().getProtocolVersion()))
+                        && (messageSizeLimit > Integer.MAX_VALUE || messageSizeLimit < 0);
+        if (longH2BodySpool) {
+            try {
+                HttpDispatcher.requireH2SpoolProvider();
+            } catch (RuntimeException unavailable) {
+                // Keep H1 and int-bounded H2 available; long ordinary bodies fail per stream.
+                FFDCFilter.processException(unavailable, HttpPipelineInitializer.class.getName() + ".initializeH2Spool", "1");
+            }
+        }
         httpConfig.registerAccessLog(chain.getOwner().getName());
     }
 
@@ -142,6 +161,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         pipeline.addFirst(HTTP_SSL_HANDLER_NAME, handler);
         addPreHttpCodecHandlers(pipeline);
+        pipeline.channel().attr(H2SpoolChannelState.ORDINARY_ENABLED).set(longH2BodySpool);
         pipeline.addLast(LibertyNettyALPNHandler.NAME, new LibertyNettyALPNHandler(httpConfig));
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));
         addPreDispatcherHandlers(pipeline, true);
@@ -248,9 +268,27 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
      * @param pipeline ChannelPipeline to update as necessary
      */
     private void addH2CCodecHandlers(ChannelPipeline pipeline) {
-        final CleartextHttp2ServerUpgradeHandler cleartextHttp2ServerUpgradeHandler = LibertyUpgradeCodec.createCleartextUpgradeHandler(httpConfig, pipeline.channel());
-
-        pipeline.addBefore(HttpDispatcherHandler.NAME, HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME, cleartextHttp2ServerUpgradeHandler);
+        H2SpoolProvider provider = longH2BodySpool ? HttpDispatcher.currentH2SpoolProvider() : null;
+        H2SpoolResources.ConnectionScope openedScope;
+        try {
+            openedScope = provider == null ? null : provider.openConnection();
+        } catch (IllegalStateException closed) {
+            // The current provider can close while a new channel is initializing.
+            openedScope = null;
+        }
+        final H2SpoolResources.ConnectionScope ordinaryScope = openedScope;
+        try {
+            pipeline.channel().attr(H2SpoolChannelState.ORDINARY_SCOPE).set(ordinaryScope);
+            CleartextHttp2ServerUpgradeHandler cleartextHttp2ServerUpgradeHandler =
+                            LibertyUpgradeCodec.createCleartextUpgradeHandler(httpConfig, pipeline.channel());
+            pipeline.addBefore(HttpDispatcherHandler.NAME, HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME, cleartextHttp2ServerUpgradeHandler);
+        } catch (RuntimeException | Error failure) {
+            pipeline.channel().attr(H2SpoolChannelState.ORDINARY_SCOPE).set(null);
+            if (ordinaryScope != null) {
+                ordinaryScope.close();
+            }
+            throw failure;
+        }
 
         // Handler to decide if an upgrade occurred or not and to add HTTP1 handlers on top
         pipeline.addBefore(HttpDispatcherHandler.NAME, NO_UPGRADE_OCURRED_HANDLER_NAME, new SimpleChannelInboundHandler<HttpMessage>() {
@@ -276,6 +314,10 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 }
 
                 ProtocolState.establish(ctx.channel(), ProtocolName.HTTP1, ProtocolSource.CLEARTEXT_HTTP1);
+                if (ordinaryScope != null) {
+                    // After fallback this channel has no H2 topology or spool leases.
+                    ordinaryScope.close();
+                }
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Pipeline before H1 fallback after no H2C: "+ ctx.pipeline());

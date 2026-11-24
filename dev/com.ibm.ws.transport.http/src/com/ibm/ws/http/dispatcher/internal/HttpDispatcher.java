@@ -9,10 +9,12 @@
  *******************************************************************************/
 package com.ibm.ws.http.dispatcher.internal;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,9 +35,11 @@ import com.ibm.websphere.event.EventEngine;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.internal.EncodingUtilsImpl;
 import com.ibm.ws.http.internal.HttpDateFormatImpl;
+import com.ibm.ws.http.channel.internal.h2spool.H2SpoolProvider;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
@@ -121,6 +125,13 @@ public class HttpDispatcher {
      */
     private static final AtomicReference<HttpDispatcher> instance = new AtomicReference<HttpDispatcher>();
 
+    /** One budget across endpoints and overlapping dispatcher component instances. */
+    private static final Object h2SpoolLock = new Object();
+    private static volatile H2SpoolProvider h2SpoolProvider;
+    private static H2SpoolProvider h2SpoolClosingProvider;
+    private static CompletableFuture<Void> h2SpoolClosing = CompletableFuture.completedFuture(null);
+    private static HttpDispatcher h2SpoolWaitingDispatcher;
+
     /** appOrContextRootMissingMessage custom property */
     private volatile String appOrContextRootNotFound = null;
 
@@ -181,7 +192,92 @@ public class HttpDispatcher {
         }
 
         // Clear this as the active HttpDispatcher instance (unless another has already replaced)
-        instance.compareAndSet(this, null);
+        if (instance.compareAndSet(this, null)) {
+            synchronized (h2SpoolLock) {
+                if (h2SpoolWaitingDispatcher == this) {
+                    h2SpoolWaitingDispatcher = null;
+                }
+                // A replacement activated before this deactivation reuses the same budget.
+                if (instance.get() == null && h2SpoolProvider != null) {
+                    h2SpoolClosingProvider = h2SpoolProvider;
+                    h2SpoolProvider = null;
+                    h2SpoolClosing = closeH2SpoolProvider(h2SpoolClosingProvider);
+                }
+            }
+        }
+    }
+
+    private static CompletableFuture<Void> closeH2SpoolProvider(H2SpoolProvider provider) {
+        CompletableFuture<Void> closed = provider.closeAsync().toCompletableFuture();
+        closed.whenComplete((ignored, failure) -> {
+            if (failure != null) {
+                FFDCFilter.processException(failure, HttpDispatcher.class.getName() + ".closeH2SpoolProvider", "1");
+            } else {
+                reopenH2SpoolProviderAfterClose(provider);
+            }
+        });
+        return closed;
+    }
+
+    /** Runs after the old owner's off-loop cleanup, only if an endpoint requested a replacement. */
+    private static void reopenH2SpoolProviderAfterClose(H2SpoolProvider closedProvider) {
+        synchronized (h2SpoolLock) {
+            HttpDispatcher dispatcher = instance.get();
+            if (dispatcher == null || dispatcher != h2SpoolWaitingDispatcher || h2SpoolProvider != null
+                            || h2SpoolClosingProvider != closedProvider) {
+                return;
+            }
+            try {
+                h2SpoolProvider = new H2SpoolProvider(H2SpoolProvider.DEFAULT_MAX_STORED_BYTES);
+                h2SpoolClosingProvider = null;
+                h2SpoolWaitingDispatcher = null;
+            } catch (IOException | RuntimeException failure) {
+                // Keep the completed old owner for a later endpoint-build retry.
+                FFDCFilter.processException(failure, HttpDispatcher.class.getName() + ".reopenH2SpoolProviderAfterClose", "1");
+            }
+        }
+    }
+
+    /** No I/O or provider construction: safe when a new H2C or ALPN channel is initialized. */
+    public static H2SpoolProvider currentH2SpoolProvider() {
+        return instance.get() == null ? null : h2SpoolProvider;
+    }
+
+    /** Called while building the endpoint pipeline, before any channel event loop runs. */
+    public static H2SpoolProvider requireH2SpoolProvider() {
+        HttpDispatcher dispatcher = instance.get();
+        if (dispatcher == null) {
+            throw new IllegalStateException("HTTP dispatcher is unavailable for HTTP/2 body spool");
+        }
+        synchronized (h2SpoolLock) {
+            if (instance.get() != dispatcher) {
+                throw new IllegalStateException("HTTP dispatcher is closing");
+            }
+            if (h2SpoolProvider == null) {
+                if (h2SpoolClosingProvider != null && h2SpoolClosing.isCompletedExceptionally()) {
+                    h2SpoolClosing = closeH2SpoolProvider(h2SpoolClosingProvider);
+                }
+                if (h2SpoolProvider != null) {
+                    return h2SpoolProvider;
+                }
+                if (!h2SpoolClosing.isDone() || h2SpoolClosing.isCompletedExceptionally()) {
+                    // Never start an independent budget while the previous owner may hold leases.
+                    h2SpoolWaitingDispatcher = dispatcher;
+                    IllegalStateException failure = new IllegalStateException("Previous HTTP/2 body spool cleanup is incomplete");
+                    FFDCFilter.processException(failure, HttpDispatcher.class.getName() + ".requireH2SpoolProvider", "1");
+                    throw failure;
+                }
+                h2SpoolClosingProvider = null;
+                try {
+                    h2SpoolProvider = new H2SpoolProvider(H2SpoolProvider.DEFAULT_MAX_STORED_BYTES);
+                    h2SpoolWaitingDispatcher = null;
+                } catch (IOException | RuntimeException failure) {
+                    FFDCFilter.processException(failure, HttpDispatcher.class.getName() + ".requireH2SpoolProvider", "1");
+                    throw new IllegalStateException("Cannot initialize private HTTP/2 body spool", failure);
+                }
+            }
+            return h2SpoolProvider;
+        }
     }
 
     /**
