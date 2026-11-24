@@ -14,8 +14,13 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_V
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import componenttest.topology.impl.LibertyServer;
@@ -127,7 +132,7 @@ public final class ProtocolVersionRequests {
                                                    String expectedSupportedValues)
                     throws Exception {
         String response = post(server, appName, protocolVersion, sessionId, ECHO_REQUEST, 400);
-        assertRejectedResponse(protocolVersion, response, expectedSupportedValues);
+        assertPostRejectedResponse(server, protocolVersion, response, expectedSupportedValues);
     }
 
     /**
@@ -166,7 +171,7 @@ public final class ProtocolVersionRequests {
                                                 String expectedSupportedValues)
                     throws Exception {
         String response = newRequest(server, appName, headerVersion, null, String.format(INITIALIZE_REQUEST, clientProtocolVersion), 400).run(String.class);
-        assertRejectedResponse(headerVersion, response, expectedSupportedValues);
+        assertPostRejectedResponse(server, headerVersion, response, expectedSupportedValues);
     }
 
     /**
@@ -200,6 +205,52 @@ public final class ProtocolVersionRequests {
                                             String expectedSupportedValues)
                     throws Exception {
         assertRejectedResponse(protocolVersion, delete(server, appName, protocolVersion, sessionId, 400), expectedSupportedValues);
+    }
+
+    /**
+     * Asserts that the response to a rejected POST is the right one for the runtime.
+     * <p>
+     * On a beta runtime it is the JSON-RPC UnsupportedProtocolVersionError (-32022) from the 2026-07-28 specification.
+     * Otherwise it is the plain text message, so the response does not change until the feature is complete.
+     */
+    private static void assertPostRejectedResponse(LibertyServer server, String protocolVersion, String response, String expectedSupportedValues) throws Exception {
+        if (isBeta(server)) {
+            assertUnsupportedProtocolVersionError(protocolVersion, response, expectedSupportedValues);
+        } else {
+            assertRejectedResponse(protocolVersion, response, expectedSupportedValues);
+        }
+    }
+
+    /**
+     * Asserts that a response body is the JSON-RPC UnsupportedProtocolVersionError (-32022).
+     *
+     * @param protocolVersion the MCP-Protocol-Version header which was sent, or {@code null} if it was omitted, in
+     *            which case 2025-03-26 is expected as the requested version
+     * @param response the response body
+     * @param expectedSupportedValues the exact list the server should report as supported, e.g. "2025-11-25, 2025-06-18"
+     */
+    public static void assertUnsupportedProtocolVersionError(String protocolVersion, String response, String expectedSupportedValues) throws Exception {
+        JSONObject error = new JSONObject(response).getJSONObject("error");
+        assertEquals("Unexpected error code in " + response, -32022, error.getInt("code"));
+        assertEquals("Unexpected error message in " + response, "Unsupported protocol version", error.getString("message"));
+
+        JSONObject data = error.getJSONObject("data");
+        assertEquals("Unexpected requested version in " + response, protocolVersion != null ? protocolVersion : V_2025_03_26, data.getString("requested"));
+
+        JSONArray supported = data.getJSONArray("supported");
+        List<String> actual = new ArrayList<>();
+        for (int i = 0; i < supported.length(); i++) {
+            actual.add(supported.getString(i));
+        }
+        assertEquals("Unexpected supported versions in " + response, List.of(expectedSupportedValues.split(", ")), actual);
+    }
+
+    /**
+     * Returns whether the server is running as a beta runtime, which is how the server was configured (see
+     * {@code BetaRepeatAction} and the beta server's {@code jvm.options}).
+     */
+    private static boolean isBeta(LibertyServer server) throws Exception {
+        return "true".equals(server.getJvmOptionsAsMap().get("-Dcom.ibm.ws.beta.edition"));
     }
 
     private static void assertRejectedResponse(String protocolVersion, String response, String expectedSupportedValues) {
