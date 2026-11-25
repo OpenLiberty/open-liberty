@@ -270,7 +270,7 @@ public class PackageRunnableTest {
     }
 
     /**
-     * Checks that the /logs and optionally the /templates folder exist within the /wlp folder structure.
+     * Checks that the /logs and /templates folder exist within the /wlp folder structure.
      *
      * @param extractDir
      * @param shouldBinFolderExist
@@ -291,14 +291,14 @@ public class PackageRunnableTest {
         File templateDir = getTemplateDir(extractDir);
 
         // Logs should always exist regardless
-        assertTrue(File.separator + "logs folder at " + logDir.getAbsolutePath() + " does not exist, but should. " + sb.toString(), logDir.exists());
+        Log.info(c, method, "logs folder is at " + logDir.getAbsolutePath());
+        assertTrue(File.separator + "logs folder at " + logDir.getAbsolutePath() + " does not exist, but should.  Contents are:\n" + sb.toString(), logDir.exists());
 
         if (shouldFolderExist) {
-            assertTrue(File.separator + "templates folder at " + templateDir.getAbsolutePath() + " does not exist, but should. Contents =" + sb.toString(),
-                       templateDir.exists());
+            assertTrue(File.separator + "templates folder at " + templateDir.getAbsolutePath() + " does not exist, but should. Contents are:\n" + sb.toString(), templateDir.exists());
         } else {
             Log.info(c, method, "Contents at " + extractDir.getAbsolutePath() + " are :\n" + sb.toString());
-            assertFalse(File.separator + "templates folder at " + templateDir.getAbsolutePath() + " exists, but should not. Contents =" + sb.toString(), templateDir.exists());
+            assertFalse(File.separator + "templates folder at " + templateDir.getAbsolutePath() + " exists, but should not. Contents are:\n" + sb.toString(), templateDir.exists());
         }
 
     }
