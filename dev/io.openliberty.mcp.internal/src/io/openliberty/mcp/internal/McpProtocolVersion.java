@@ -108,6 +108,17 @@ public enum McpProtocolVersion {
     }
 
     /**
+     * Returns whether this protocol version is older than the given cutoff version.
+     *
+     * @param cutOff the cutoff version to compare with
+     * @return true if this version is older than {@code cutOff}
+     */
+    public boolean isOlderThan(McpProtocolVersion cutOff) {
+        // Versions are declared newest first, so an older version has a higher ordinal
+        return ordinal() > cutOff.ordinal();
+    }
+
+    /**
      * Return true if this protocol version supports structured content in tool responses and outputSchema
      * in tool descriptions. Structured content and outputSchema are only supported in protocol version
      * 2025-06-18 and later

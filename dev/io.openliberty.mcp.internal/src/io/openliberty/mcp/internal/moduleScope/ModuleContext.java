@@ -14,6 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -31,7 +34,9 @@ import jakarta.enterprise.context.spi.CreationalContext;
  * Always uses the {@link InstanceStore} for the current module according to {@link ComponentMetaDataAccessorImpl}.
  */
 public class ModuleContext implements AlterableContext {
+    private static final TraceComponent tc = Tr.register(ModuleContext.class);
 
+    @Trivial
     private record ModuleData(ComponentMetaData metadata, InstanceStore store) {};
 
     private final ConcurrentMap<J2EEName, ModuleData> moduleData;
@@ -62,8 +67,21 @@ public class ModuleContext implements AlterableContext {
 
     @Override
     public boolean isActive() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "isActive");
+        }
+
         ComponentMetaData component = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        return component != null;
+        boolean result = component != null;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (component != null) {
+                Tr.exit(this, tc, "isActive", "" + result + " (" + component.getJ2EEName() + ")");
+            } else {
+                Tr.exit(this, tc, "isActive", "" + result);
+            }
+        }
+        return result;
     }
 
     public void shutdown() {
@@ -78,12 +96,20 @@ public class ModuleContext implements AlterableContext {
         }
     }
 
+    @Trivial
     private InstanceStore getInstanceStore() {
         ComponentMetaData component = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         if (component == null) {
-            throw new ContextNotActiveException();
+            ContextNotActiveException ex = new ContextNotActiveException();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "ModuleContext not active", ex);
+            }
+            throw ex;
         }
         ModuleMetaData module = component.getModuleMetaData();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Using module context of " + module.getJ2EEName());
+        }
         return moduleData.computeIfAbsent(module.getJ2EEName(), m -> new ModuleData(component, new InstanceStore())).store();
     }
 
