@@ -45,6 +45,7 @@ public class MockBundleContext implements BundleContext {
     private Filter f;
 
     public void addService(ServiceReference<?> ref, Object serviceObject) {
+        System.out.println("");
         _services.put(ref, serviceObject);
         if (sl != null && f.match(ref)) {
             sl.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, ref));
