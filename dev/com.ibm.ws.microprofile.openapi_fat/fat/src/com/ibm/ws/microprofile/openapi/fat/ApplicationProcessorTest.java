@@ -83,6 +83,8 @@ public class ApplicationProcessorTest extends FATServletClient {
 
     @BeforeClass
     public static void setUpTest() throws Exception {
+        String changes = "";
+        
         HttpUtils.trustAllCertificates();
 
         DeployOptions[] opts = {

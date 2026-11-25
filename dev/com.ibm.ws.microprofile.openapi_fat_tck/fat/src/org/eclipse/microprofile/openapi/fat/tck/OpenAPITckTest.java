@@ -52,6 +52,7 @@ public class OpenAPITckTest {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testOpenAPI10Tck() throws Exception {
+        String strToCauseFileChange = "";
         String protocol = "http";
         String host = server.getHostname();
         String port = Integer.toString(server.getPort(PortType.WC_defaulthost));
