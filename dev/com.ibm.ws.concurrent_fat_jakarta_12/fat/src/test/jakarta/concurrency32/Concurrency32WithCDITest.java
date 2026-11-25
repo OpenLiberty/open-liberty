@@ -90,7 +90,21 @@ public class Concurrency32WithCDITest extends FATServletClient {
                               // @Schedule on EJB method
                               "CNTR4006E",
                               // Scheduled method with args
-                              "CWWKC1413E.*neverDueToMethodParameter");
+                              "CWWKC1413E.*neverDueToMethodParameter",
+                              // Exception used to stop schedule method
+                              "CWWKC1414E.*every5Seconds3Times",
+                              // CancellationException used to stop scheduled method
+                              "CWWKC1414E.*lockEvery3Seconds4Times",
+                              // NoMoreExecutionsException used to stop scheduled method
+                              "CWWKC1414E.*lockEveryThreeSeconds4Times",
+                              // AbortedException used to stop scheduled method
+                              "CWWKC1414E.*lookUp3Times",
+                              // Schedule and Asynchronous on same method
+                              "CWWKC1417E:.*alsoAsynchronous",
+                              // Schedule and Asynchronous on same method
+                              "CWWKC1417E:.*runOnAugust12th",
+                              // Schedule and Asynchronous on same method
+                              "CWWKC1417E.*testRejectAsynchronousAndScheduleOnSameMethod");
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,9 @@ public class ScheduledAsyncMethodsTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive SchedAsyncWeb = ShrinkHelper.buildDefaultApp("SchedAsyncWeb", "test.concurrency.schedasync.web");
+        WebArchive SchedAsyncWeb = ShrinkHelper //
+                        .buildDefaultApp("SchedAsyncWeb",
+                                         "test.concurrency.schedasync.web");
         ShrinkHelper.exportAppToServer(server, SchedAsyncWeb);
 
         server.startServer();
@@ -47,8 +49,13 @@ public class ScheduledAsyncMethodsTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        runTest(server, APP_NAME + '/' + SchedAsyncTestServlet.class.getSimpleName(), "testScheduledAsynchronousMethodsStopRunning");
+        runTest(server,
+                APP_NAME + '/' + SchedAsyncTestServlet.class.getSimpleName(),
+                "testScheduledAsynchronousMethodsStopRunning");
 
-        server.stopServer();
+        server.stopServer(// raises Error to prevent reschedule
+                          "CWWKC1414E:.*everySevenSecondsUntilThrowsError",
+                          // raises ArrayIndexOutOfBoundException to stop
+                          "CWWKC1414E:.*everySevenSecondsUntilThrowsException");
     }
 }

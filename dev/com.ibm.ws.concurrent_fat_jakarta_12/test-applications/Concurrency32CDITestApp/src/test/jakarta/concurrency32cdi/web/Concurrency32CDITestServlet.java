@@ -425,10 +425,10 @@ public class Concurrency32CDITestServlet extends FATServlet {
                  "annotated both @Asynchronous and @Schedule.");
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-            // TODO NLS message prefix can be asserted once added
+                !x.getMessage().contains("CWWKC1417E") ||
                 !x.getMessage().contains("alsoAsynchronous") ||
-                !x.getMessage().contains("@Asynchronous") ||
-                !x.getMessage().contains("@Schedule"))
+                !x.getMessage().contains("Asynchronous") ||
+                !x.getMessage().contains("Schedule"))
                 throw x;
             // else expected error
         }
@@ -447,10 +447,10 @@ public class Concurrency32CDITestServlet extends FATServlet {
                  "@Schedule on a bean annotated @Asynchronous.");
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-            // TODO NLS message prefix can be asserted once added
+                !x.getMessage().contains("CWWKC1417E") ||
                 !x.getMessage().contains("runOnAugust12th") ||
-                !x.getMessage().contains("@Asynchronous") ||
-                !x.getMessage().contains("@Schedule"))
+                !x.getMessage().contains("Asynchronous") ||
+                !x.getMessage().contains("Schedule"))
                 throw x;
             // else expected error
         }
