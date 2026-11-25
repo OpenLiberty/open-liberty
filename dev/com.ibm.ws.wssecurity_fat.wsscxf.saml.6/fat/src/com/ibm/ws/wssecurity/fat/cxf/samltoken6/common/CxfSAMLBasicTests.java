@@ -52,6 +52,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * 2.0 token in the HTTP POST request.
  */
 
+//issue24990: added dummy comment to recreate build break
 @LibertyServerWrapper
 @RunWith(FATRunner.class)
 public class CxfSAMLBasicTests extends SAMLCommonTest {
