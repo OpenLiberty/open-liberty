@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                BellFatTest.class,
                BellSpiVisibilityTest.class,
-               BellPropertiesTest.class
+               BellPropertiesTest.class,
+               BellRestEndpointTest.class
 })
 public class FATSuite {}
