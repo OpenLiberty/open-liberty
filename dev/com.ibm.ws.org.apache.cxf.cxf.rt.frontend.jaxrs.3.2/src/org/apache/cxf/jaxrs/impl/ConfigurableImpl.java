@@ -47,6 +47,9 @@ import javax.ws.rs.core.Feature;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.jaxrs.utils.AnnotationUtils;
 
+import com.ibm.websphere.ras.ProtectedString;
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class ConfigurableImpl<C extends Configurable<C>> implements Configurable<C>, AutoCloseable {
     private static final Logger LOG = LogUtils.getL7dLogger(ConfigurableImpl.class);
     
@@ -152,8 +155,15 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
     }
 
     @Override
-    public C property(String name, Object value) {
-        config.setProperty(name, value);
+    public C property(String name, @Sensitive Object value) {
+        // Liberty Change Start - need to convert proxy password to ProtectedString
+        if ("com.ibm.ws.jaxrs.client.proxy.password".equals(name) && value != null &&
+            !(value instanceof ProtectedString)) {
+            config.setProperty(name, new ProtectedString(value.toString().toCharArray()));
+        } else {
+            config.setProperty(name, value);
+        }
+        // Liberty Change End
         return configurable;
     }
 
@@ -232,7 +242,7 @@ public class ConfigurableImpl<C extends Configurable<C>> implements Configurable
                     return loader != null ? loader : ClassLoader.getSystemClassLoader();
                 }
             });
-        } 
+        }
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         return loader != null ? loader : ClassLoader.getSystemClassLoader();
     }
