@@ -654,10 +654,10 @@ public class SipSessionImplementation extends ReplicatableImpl implements IBMSip
     	if (!this.isValid()) throw new IllegalStateException("Can not be called on invalidated SipSession");
     	
 		//remove synchronized as it has caused deadlocks
-    	//synchronized (getInternalTuWrapper().getSynchronizer()) {
+    	synchronized (getInternalTuWrapper().getSynchronizer()) {
     		checkIsSessionValid();
 	     	getInternalTuWrapper().invalidateTU(true, true);    	
-    	//}
+    	}
     }
     
     /** 
@@ -673,7 +673,7 @@ public class SipSessionImplementation extends ReplicatableImpl implements IBMSip
      */
      //remove synchronized as it can cause deadlock
      //see open-liberty issue #27282
-    public void invalidateSipSession() {
+    public synchronized void invalidateSipSession() {
     	if (c_logger.isTraceEntryExitEnabled()) {
     		c_logger.traceEntry(this, "invalidateSipSession", getId());
     	}
@@ -683,7 +683,7 @@ public class SipSessionImplementation extends ReplicatableImpl implements IBMSip
     	//this call is linking the 2 sessions and saving local references that does not exist
     	//after failover.
     	getLinkedSession();
-    	
+
     	if (_isDuringInvalidation) {
     		return;
     	}
