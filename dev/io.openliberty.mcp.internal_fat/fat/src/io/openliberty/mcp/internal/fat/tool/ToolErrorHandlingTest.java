@@ -11,6 +11,7 @@ package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static io.openliberty.mcp.internal.fat.utils.ToolsListResponseMatcher.toolsList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -22,14 +23,12 @@ import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.json.JSONObject;
+import org.json.JSONArray;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -137,21 +136,8 @@ public class ToolErrorHandlingTest extends FATServletClient {
 
     @Test
     public void testToolList() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/list"
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        JSONObject jsonResponse = new JSONObject(response);
-
-        String expectedString = """
-                        {
-                            "result": {
-                                "tools": [
+        JSONArray expectedTools = new JSONArray("""
+                        [
                                         {
                                             "inputSchema": {
                                                "type": "object",
@@ -323,14 +309,10 @@ public class ToolErrorHandlingTest extends FATServletClient {
                                           "title": "Unauthorized Tool"
                                         }
                                      ]
-                                    },
-                                    "id":1,
-                                    "jsonrpc":"2.0"
-                                 }
-                                 """;
+                        """);
 
-        // Lenient mode test (false boolean in 3rd parameter
-        JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
+        assertThat(client.call(client.request("tools/list", null)),
+                   toolsList().withTools(expectedTools));
     }
 
     @Test
@@ -349,8 +331,8 @@ public class ToolErrorHandlingTest extends FATServletClient {
                         }
                         """;
 
-        McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).anyStatus().run();
-        Log.info(ToolErrorHandlingTest.class, "testToolThrowsToolCallUnauthorizedException", response.toString());
+       McpClient.McpDetailedAuthResponse response = client.callMCPRaw(request).anyStatus().run();
+       Log.info(ToolErrorHandlingTest.class, "testToolThrowsToolCallUnauthorizedException", response.toString());
 
         assertEquals(403, response.statusCode());
         assertTrue("Content-Type must be text/plain", response.contentType().contains("text/plain"));

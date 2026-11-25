@@ -22,7 +22,8 @@ import org.json.JSONObject;
  * against its request. Use the matchers to assert on a response.
  *
  * <p>Subclasses, such as {@link ToolResponse}, add the getters for the parts of the result of one
- * kind of request.
+ * kind of request. They are created by {@link McpClient#call(McpRequest, Class)}, so they must
+ * have the same package-private constructor as this class.
  */
 public class JsonRpcResponse {
 
