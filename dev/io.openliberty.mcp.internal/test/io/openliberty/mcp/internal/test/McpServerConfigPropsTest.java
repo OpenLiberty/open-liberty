@@ -16,51 +16,37 @@ import static org.junit.Assert.assertTrue;
 import java.time.Duration;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import io.openliberty.mcp.internal.McpProtocolVersion;
+import io.openliberty.mcp.internal.config.McpConfig;
 import io.openliberty.mcp.internal.config.McpServerConfigProps;
+import io.openliberty.mcp.internal.testutils.BetaPropertyRule;
 
 /**
  * Unit tests for the protocol version handling of {@link McpServerConfigProps}, which implements the beta
- * {@code minimumProtocolVersion} and {@code maximumProtocolVersion} configuration:
+ * {@code minProtocolVersion} and {@code maxProtocolVersion} configuration:
  * <ul>
  * <li>the default range, which is the whole range on a beta runtime and 2025-03-26 to 2025-11-25 otherwise</li>
  * <li>parsing a configured value, including the {@code latest} keyword</li>
  * <li>deciding which versions a request may use</li>
  * </ul>
  * Reading the attributes from server.xml, ignoring them on a non-beta runtime, and rejecting requests are
- * covered by the FAT. The beta setting is read when the defaults are calculated, so each test sets
- * {@code com.ibm.ws.beta.edition} first and the original value is restored afterwards.
+ * covered by the FAT. The beta setting is read when the defaults are calculated, so each test sets it first
+ * using the {@link BetaPropertyRule}, which restores the original value afterwards.
  */
 public class McpServerConfigPropsTest {
 
-    private static final String BETA_PROPERTY = "com.ibm.ws.beta.edition";
-
-    private String originalBetaValue;
-
-    @Before
-    public void saveBetaProperty() {
-        originalBetaValue = System.getProperty(BETA_PROPERTY);
-    }
-
-    @After
-    public void restoreBetaProperty() {
-        if (originalBetaValue == null) {
-            System.clearProperty(BETA_PROPERTY);
-        } else {
-            System.setProperty(BETA_PROPERTY, originalBetaValue);
-        }
-    }
+    @Rule
+    public BetaPropertyRule betaProperty = new BetaPropertyRule();
 
     /**
      * On a beta runtime the default maximum is the latest version, so the default range accepts every version.
      */
     @Test
     public void testDefaultsOnBeta() {
-        System.setProperty(BETA_PROPERTY, "true");
+        betaProperty.set(true);
         assertEquals(McpProtocolVersion.V_2025_03_26, McpServerConfigProps.defaultMinimum());
         assertEquals(McpProtocolVersion.latest(), McpServerConfigProps.defaultMaximum());
         McpServerConfigProps config = configWithOtherSettingsOnly();
@@ -112,17 +98,17 @@ public class McpServerConfigPropsTest {
      */
     private static McpServerConfigProps configWithRange(McpProtocolVersion min, McpProtocolVersion max) {
         return new McpServerConfigProps(false, null, McpServerConfigProps.FALLBACK_PATH, null, Duration.ofMinutes(10), null,
-                                        McpServerConfigProps.DEFAULT_ASYNC_TIMEOUT_MS, min, max);
+                                        McpServerConfigProps.DEFAULT_ASYNC_TIMEOUT_MS, min, max, McpConfig.EnableEndpoint.AUTO);
     }
 
     /**
-     * Creates a configuration which sets other attributes but leaves {@code minimumProtocolVersion} and
-     * {@code maximumProtocolVersion} unset, as when a user configures an {@code <mcp>} element in server.xml
+     * Creates a configuration which sets other attributes but leaves {@code minProtocolVersion} and
+     * {@code maxProtocolVersion} unset, as when a user configures an {@code <mcp>} element in server.xml
      * without a protocol version range. The unset bounds are replaced by their defaults, which depend on the
      * beta setting at the time of the call.
      */
     private static McpServerConfigProps configWithOtherSettingsOnly() {
-        return new McpServerConfigProps(true, "app", "/custom", null, Duration.ofMinutes(5), null, 1_000, null, null);
+        return new McpServerConfigProps(true, "app", "/custom", null, Duration.ofMinutes(5), null, 1_000, null, null, McpConfig.EnableEndpoint.AUTO);
     }
 
     /**
@@ -131,7 +117,7 @@ public class McpServerConfigPropsTest {
      */
     @Test
     public void testIsAcceptedUsesConfiguredRange() {
-        System.setProperty(BETA_PROPERTY, "true");
+        betaProperty.set(true);
         McpServerConfigProps config = configWithRange(McpProtocolVersion.V_2025_06_18, McpProtocolVersion.V_2025_11_25);
         assertFalse(config.isAccepted(McpProtocolVersion.V_2025_03_26));
         assertTrue(config.isAccepted(McpProtocolVersion.V_2025_06_18));
@@ -146,7 +132,7 @@ public class McpServerConfigPropsTest {
      */
     @Test
     public void testIsAcceptedRejectsBetaVersionOnNonBeta() {
-        System.setProperty(BETA_PROPERTY, "false");
+        betaProperty.set(false);
         McpServerConfigProps config = configWithRange(McpProtocolVersion.V_2025_03_26, McpProtocolVersion.V_2026_07_28);
         assertFalse(config.isAccepted(McpProtocolVersion.V_2026_07_28));
         assertEquals(List.of(McpProtocolVersion.V_2025_11_25, McpProtocolVersion.V_2025_06_18, McpProtocolVersion.V_2025_03_26),
@@ -159,12 +145,12 @@ public class McpServerConfigPropsTest {
      */
     @Test
     public void testDefaultsOnNonBeta() {
-        System.setProperty(BETA_PROPERTY, "false");
+        betaProperty.set(false);
         assertEquals(McpProtocolVersion.V_2025_03_26, McpServerConfigProps.defaultMinimum());
         assertEquals(McpProtocolVersion.V_2025_11_25, McpServerConfigProps.defaultMaximum());
         McpServerConfigProps config = configWithOtherSettingsOnly();
-        assertEquals(McpProtocolVersion.V_2025_03_26, config.minimumProtocolVersion());
-        assertEquals(McpProtocolVersion.V_2025_11_25, config.maximumProtocolVersion());
+        assertEquals(McpProtocolVersion.V_2025_03_26, config.minProtocolVersion());
+        assertEquals(McpProtocolVersion.V_2025_11_25, config.maxProtocolVersion());
         assertEquals(List.of(McpProtocolVersion.V_2025_11_25, McpProtocolVersion.V_2025_06_18, McpProtocolVersion.V_2025_03_26),
                      config.acceptedProtocolVersions());
         assertFalse(config.isAccepted(McpProtocolVersion.V_2026_07_28));
@@ -176,7 +162,7 @@ public class McpServerConfigPropsTest {
      */
     @Test
     public void testParseProtocolVersion() {
-        System.setProperty(BETA_PROPERTY, "true");
+        betaProperty.set(true);
         assertEquals(McpProtocolVersion.latest(), McpServerConfigProps.parseProtocolVersion("latest"));
         assertEquals(McpProtocolVersion.V_2025_06_18, McpServerConfigProps.parseProtocolVersion("2025-06-18"));
     }

@@ -11,6 +11,8 @@ package io.openliberty.mcp.internal.fat.monitor;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static io.openliberty.mcp.internal.fat.suite.McpMonitorServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -18,6 +20,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.management.MBeanServerConnection;
@@ -37,6 +40,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
 
 /**
  * FAT test for MCP Monitor feature
@@ -502,20 +506,8 @@ public class McpMonitorTest {
      */
     @Test
     public void testBusinessErrorMetrics() throws Exception {
-        String businessErrorRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 10,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "businessErrorTool",
-                            "arguments": {"input": "bad-value"}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(businessErrorRequest);
-        assertTrue("Response should contain error", response.contains("isError"));
+        ToolResponse response = client.callTool("businessErrorTool", Map.of("input", "bad-value"));
+        assertThat(response, toolResponse().withError("Invalid business input: bad-value"));
 
         // Verify error metrics with proper error type
         verifyOperationMBeanAttributes("tools/call", "businessErrorTool", "tool_error", "error");
@@ -527,20 +519,8 @@ public class McpMonitorTest {
      */
     @Test
     public void testNonBusinessErrorMetrics() throws Exception {
-        String nonBusinessErrorRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 11,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "nonBusinessErrorTool",
-                            "arguments": {"input": "trigger-error"}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(nonBusinessErrorRequest);
-        assertTrue("Response should contain error", response.contains("isError"));
+        ToolResponse response = client.callTool("nonBusinessErrorTool", Map.of("input", "trigger-error"));
+        assertThat(response, toolResponse().withError("An internal server error occurred while running the tool."));
 
         // Verify error metrics with proper error type (need to verify actual RuntimeException error type)
         verifyOperationMBeanAttributes("tools/call", "nonBusinessErrorTool", "tool_error", "error");
@@ -552,20 +532,8 @@ public class McpMonitorTest {
      */
     @Test
     public void testAsyncBusinessErrorMetrics() throws Exception {
-        String asyncBusinessErrorRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 12,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "asyncBusinessErrorTool",
-                            "arguments": {"input": "bad-value"}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(asyncBusinessErrorRequest);
-        assertTrue("Response should contain error", response.contains("isError"));
+        ToolResponse response = client.callTool("asyncBusinessErrorTool", Map.of("input", "bad-value"));
+        assertThat(response, toolResponse().withError("Async invalid business input: bad-value"));
 
         // Verify async error metrics with proper error type
         verifyOperationMBeanAttributes("tools/call", "asyncBusinessErrorTool", "tool_error", "error");
@@ -577,20 +545,8 @@ public class McpMonitorTest {
      */
     @Test
     public void testAsyncNonBusinessErrorMetrics() throws Exception {
-        String asyncNonBusinessErrorRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 13,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "asyncNonBusinessErrorTool",
-                            "arguments": {"input": "trigger-error"}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(asyncNonBusinessErrorRequest);
-        assertTrue("Response should contain error", response.contains("isError"));
+        ToolResponse response = client.callTool("asyncNonBusinessErrorTool", Map.of("input", "trigger-error"));
+        assertThat(response, toolResponse().withError("An internal server error occurred while running the tool."));
 
         // Verify async error metrics with proper error type
         verifyOperationMBeanAttributes("tools/call", "asyncNonBusinessErrorTool", "tool_error", "error");
@@ -602,20 +558,8 @@ public class McpMonitorTest {
      */
     @Test
     public void testAsyncFailedStageErrorMetrics() throws Exception {
-        String asyncFailedStageRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 14,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "asyncFailedStageTool",
-                            "arguments": {"input": "trigger-error"}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(asyncFailedStageRequest);
-        assertTrue("Response should contain error", response.contains("isError"));
+        ToolResponse response = client.callTool("asyncFailedStageTool", Map.of("input", "trigger-error"));
+        assertThat(response, toolResponse().withError("Async failed stage error"));
 
         // Verify async failed stage error metrics with proper error type
         verifyOperationMBeanAttributes("tools/call", "asyncFailedStageTool", "tool_error", "error");

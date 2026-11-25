@@ -36,7 +36,7 @@ import io.openliberty.mcp.internal.fat.suite.BetaRepeatAction;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 
 /**
- * Tests that the beta {@code minimumProtocolVersion} and {@code maximumProtocolVersion} attributes are ignored
+ * Tests that the beta {@code minProtocolVersion} and {@code maxProtocolVersion} attributes are ignored
  * when the runtime is not beta. The server behaves as if the minimum is 2025-03-26 and the maximum is 2025-11-25,
  * so the beta version 2026-07-28 is never accepted. Valid, invalid and {@code latest} values are all ignored,
  * and no configuration error is reported for them.
@@ -70,8 +70,8 @@ public class ProtocolVersionConfigNonBetaTest {
         serverLifecycle.deployWithConfiguration(restrictedWar, app -> {
             Mcp mcp = new Mcp();
             mcp.setStateless("true");
-            mcp.setMinimumProtocolVersion("2025-11-25");
-            mcp.setMaximumProtocolVersion("2025-11-25");
+            mcp.setMinProtocolVersion("2025-11-25");
+            mcp.setMaxProtocolVersion("2025-11-25");
             app.getMcps().add(mcp);
         });
 
@@ -79,8 +79,8 @@ public class ProtocolVersionConfigNonBetaTest {
         serverLifecycle.deployWithConfiguration(invalidWar, app -> {
             Mcp mcp = new Mcp();
             mcp.setStateless("true");
-            mcp.setMinimumProtocolVersion("not-a-version");
-            mcp.setMaximumProtocolVersion("2022-02-02");
+            mcp.setMinProtocolVersion("not-a-version");
+            mcp.setMaxProtocolVersion("2022-02-02");
             app.getMcps().add(mcp);
         });
 
@@ -88,8 +88,8 @@ public class ProtocolVersionConfigNonBetaTest {
         serverLifecycle.deployWithConfiguration(latestWar, app -> {
             Mcp mcp = new Mcp();
             mcp.setStateless("true");
-            mcp.setMinimumProtocolVersion("latest");
-            mcp.setMaximumProtocolVersion("latest");
+            mcp.setMinProtocolVersion("latest");
+            mcp.setMaxProtocolVersion("latest");
             app.getMcps().add(mcp);
         });
     }

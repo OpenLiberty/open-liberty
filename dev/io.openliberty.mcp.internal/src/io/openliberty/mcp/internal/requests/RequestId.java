@@ -17,6 +17,12 @@ package io.openliberty.mcp.internal.requests;
  *     (string or number). Used to uniquely identify each request.
  */
 public record RequestId(Object value) {
+
+    /**
+     * Special value to indicate an ID which could not be parsed. Serializes as JSON null.
+     */
+    public static final RequestId UNPARSABLE = new RequestId("");
+
     public RequestId {
         if (value == null) {
             throw new IllegalArgumentException("value must not be null");

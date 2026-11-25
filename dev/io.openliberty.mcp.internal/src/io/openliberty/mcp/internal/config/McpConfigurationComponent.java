@@ -44,8 +44,9 @@ public class McpConfigurationComponent {
     private volatile McpServerConfigProps config;
     private volatile String servicePid;
 
-    private static final String CFG_MINIMUM_PROTOCOL_VERSION = "minimumProtocolVersion";
-    private static final String CFG_MAXIMUM_PROTOCOL_VERSION = "maximumProtocolVersion";
+    private static final String CFG_ENABLE_ENDPOINT = "enableEndpoint";
+    private static final String CFG_MINIMUM_PROTOCOL_VERSION = "minProtocolVersion";
+    private static final String CFG_MAXIMUM_PROTOCOL_VERSION = "maxProtocolVersion";
 
     @Activate
     protected void activate(Map<String, Object> properties) {
@@ -70,30 +71,56 @@ public class McpConfigurationComponent {
         boolean stateless = (boolean) properties.get("stateless");
         long asyncTimeout = (long) properties.get("asyncTimeout");
         Duration sessionTimeout = Duration.ofSeconds((Long) properties.get("sessionTimeout"));
+        McpConfig.EnableEndpoint enableEndpoint = parseEnableEndpoint(properties);
 
         // Parse flattened serverInfo properties (ibm:flat="true" in metatype.xml)
         ServerInfo serverInfo = parseServerInfo(properties);
 
-        // minimumProtocolVersion and maximumProtocolVersion are beta. Because the metatype provides
+        // minProtocolVersion and maxProtocolVersion are beta. Because the metatype provides
         // defaults, the properties are always present, so they are only read when running a beta runtime.
         // Otherwise the defaults are used (minimum 2025-03-26, maximum 2025-11-25).
-        McpProtocolVersion minimumProtocolVersion = null;
-        McpProtocolVersion maximumProtocolVersion = null;
+        McpProtocolVersion minProtocolVersion = null;
+        McpProtocolVersion maxProtocolVersion = null;
         if (ProductInfo.getBetaEdition()) {
-            minimumProtocolVersion = parseProtocolVersion(properties, CFG_MINIMUM_PROTOCOL_VERSION);
-            maximumProtocolVersion = parseProtocolVersion(properties, CFG_MAXIMUM_PROTOCOL_VERSION);
+            minProtocolVersion = parseProtocolVersion(properties, CFG_MINIMUM_PROTOCOL_VERSION);
+            maxProtocolVersion = parseProtocolVersion(properties, CFG_MAXIMUM_PROTOCOL_VERSION);
 
-            McpProtocolVersion effectiveMinimum = minimumProtocolVersion != null ? minimumProtocolVersion : McpServerConfigProps.defaultMinimum();
-            McpProtocolVersion effectiveMaximum = maximumProtocolVersion != null ? maximumProtocolVersion : McpServerConfigProps.defaultMaximum();
+            McpProtocolVersion effectiveMinimum = minProtocolVersion != null ? minProtocolVersion : McpServerConfigProps.defaultMinimum();
+            McpProtocolVersion effectiveMaximum = maxProtocolVersion != null ? maxProtocolVersion : McpServerConfigProps.defaultMaximum();
             if (!effectiveMinimum.isBetween(McpServerConfigProps.defaultMinimum(), effectiveMaximum)) {
                 Tr.error(tc, "CWMCM0046E.protocol.version.range.invalid", effectiveMinimum.getVersion(), effectiveMaximum.getVersion());
-                minimumProtocolVersion = null;
-                maximumProtocolVersion = null;
+                minProtocolVersion = null;
+                maxProtocolVersion = null;
             }
         }
 
         this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid, sessionTimeout, serverInfo, asyncTimeout,
-                                               minimumProtocolVersion, maximumProtocolVersion);
+                                               minProtocolVersion, maxProtocolVersion, enableEndpoint);
+    }
+
+    /**
+     * Parse the enableEndpoint attribute, which is one of "true", "auto" or "false".
+     * An attribute which is missing, empty or only whitespace is treated as not set.
+     * Logs a warning and returns {@code auto} if the value is not valid.
+     *
+     * @param properties the configuration properties
+     * @return the configured value, or {@code auto} if the attribute is not set or not valid
+     */
+    @FFDCIgnore(NoSuchElementException.class)
+    private McpConfig.EnableEndpoint parseEnableEndpoint(Map<String, Object> properties) {
+        String value = (String) properties.get(CFG_ENABLE_ENDPOINT);
+        if (value == null || value.isBlank()) {
+            return McpConfig.EnableEndpoint.AUTO;
+        }
+        try {
+            return McpConfig.EnableEndpoint.fromString(value);
+        } catch (NoSuchElementException e) {
+            String validValues = Arrays.stream(McpConfig.EnableEndpoint.values())
+                                       .map(v -> v.name().toLowerCase())
+                                       .collect(Collectors.joining(", "));
+            Tr.warning(tc, "CWMCM0047W.enable.endpoint.invalid", value, validValues);
+            return McpConfig.EnableEndpoint.AUTO;
+        }
     }
 
     /**

@@ -10,7 +10,9 @@
 package io.openliberty.mcp.internal.fat.lifecycle.tests;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
-import static org.junit.Assert.assertNotNull;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcErrorCode.METHOD_NOT_FOUND;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcResponseMatcher.jsonRpcResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -150,21 +152,10 @@ public class LifecycleTest {
                         }
                         """;
 
-        String response = client.callMCP(request);
-        assertNotNull("Response must not be null for an unknown method", response);
-
-        String expectedError = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "neg-2",
-                          "error": {
-                            "code": -32601,
-                            "message": "Method not found",
-                            "data": ["nonexistent/method not found"]
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedError, response, JSONCompareMode.STRICT);
+        assertThat(client.call(request),
+                   jsonRpcResponse().withErrorCode(METHOD_NOT_FOUND)
+                                    .withErrorMessage("Method not found")
+                                    .withErrorDataItems("nonexistent/method not found"));
     }
 
     /**

@@ -25,8 +25,8 @@ import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
  * @param sessionTimeout The session timeout duration
  * @param serverInfo The server info configuration
  * @param asyncTimeout The timeout in seconds for asynchronous tool calls
- * @param minimumProtocolVersion The oldest accepted protocol version (optional, can be null)
- * @param maximumProtocolVersion The newest accepted protocol version (optional, can be null)
+ * @param minProtocolVersion The oldest accepted protocol version (optional, can be null)
+ * @param maxProtocolVersion The newest accepted protocol version (optional, can be null)
  */
 public record McpServerConfigProps(boolean stateless,
                                    String moduleName,
@@ -35,8 +35,9 @@ public record McpServerConfigProps(boolean stateless,
                                    Duration sessionTimeout,
                                    ServerInfo serverInfo,
                                    long asyncTimeoutMs,
-                                   McpProtocolVersion minimumProtocolVersion,
-                                   McpProtocolVersion maximumProtocolVersion) implements McpConfig {
+                                   McpProtocolVersion minProtocolVersion,
+                                   McpProtocolVersion maxProtocolVersion,
+                                   McpConfig.EnableEndpoint enableEndpoint) implements McpConfig {
     /** Config value which selects the latest protocol version available on this runtime */
     public static final String LATEST = "latest";
 
@@ -51,7 +52,7 @@ public record McpServerConfigProps(boolean stateless,
     public static final ServerInfo DEFAULT_SERVER_INFO = new ServerInfo(DEFAULT_SERVER_NAME, null, DEFAULT_SERVER_VERSION, null);
 
     public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, Duration.ofMinutes(10), null, DEFAULT_ASYNC_TIMEOUT_MS,
-                                                                                       null, null);
+                                                                                       null, null, McpConfig.EnableEndpoint.AUTO);
 
     /**
      * Compact constructor that validates and applies defaults for required fields.
@@ -61,11 +62,11 @@ public record McpServerConfigProps(boolean stateless,
      * If a protocol version is null, the default for that bound is used.
      */
     public McpServerConfigProps {
-        if (minimumProtocolVersion == null) {
-            minimumProtocolVersion = defaultMinimum();
+        if (minProtocolVersion == null) {
+            minProtocolVersion = defaultMinimum();
         }
-        if (maximumProtocolVersion == null) {
-            maximumProtocolVersion = defaultMaximum();
+        if (maxProtocolVersion == null) {
+            maxProtocolVersion = defaultMaximum();
         }
 
         // If serverInfo is null, use DEFAULT_SERVER_INFO
