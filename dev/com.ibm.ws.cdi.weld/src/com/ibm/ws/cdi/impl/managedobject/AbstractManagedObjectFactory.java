@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,7 +43,8 @@ import com.ibm.wsspi.injectionengine.ReferenceContext;
 public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFactory<T> {
     private static final TraceComponent tc = Tr.register(AbstractManagedObjectFactory.class);
 
-    private final CDIRuntime cdiRuntime;
+    //package protected
+    final CDIRuntime cdiRuntime;
     private final Class<T> managedClass;
 
     private Bean<T> bean;
@@ -226,10 +227,9 @@ public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFa
 
         //In order to avoid creating a second proxy object with a broken internal state we simply wrap any weld proxy we are given in a DummyManagedObject.
         if (CDIUtils.isWeldProxy(getManagedObjectClass())) {
-            if(instance != null) {
+            if (instance != null) {
                 return new DummyManagedObject<T>(instance);
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("when calling createManagedObject on a Managed Object Factory for a weld subclass; please provide an instance of the class");
             }
         }
@@ -259,7 +259,8 @@ public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFa
         return mo;
     }
 
-    private ManagedObject<T> createManagedObject(T instance, WeldCreationalContext<T> creationalContext, InjectionTarget<T> injectionTarget, boolean nonContextual) throws ManagedObjectException {
+    private ManagedObject<T> createManagedObject(T instance, WeldCreationalContext<T> creationalContext, InjectionTarget<T> injectionTarget,
+                                                 boolean nonContextual) throws ManagedObjectException {
         CDIRuntime cdiRuntime = getCDIRuntime();
         WebSphereCDIDeployment deployment = cdiRuntime.getCurrentDeployment();
         WebSphereInjectionServices webSphereInjectionServices = deployment.getInjectionServices();
@@ -282,7 +283,7 @@ public abstract class AbstractManagedObjectFactory<T> implements ManagedObjectFa
 
     private String getBeanScope(boolean nonContextual) throws ManagedObjectException {
         String beanScope = null;
-        if (! nonContextual) { //if nonContextual==true then there is no bean and no beanScope
+        if (!nonContextual) { //if nonContextual==true then there is no bean and no beanScope
             Bean<T> bean = getBean();
             if (bean != null) {
                 beanScope = bean.getScope().getCanonicalName();

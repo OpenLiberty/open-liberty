@@ -89,6 +89,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     private final Map<String, Boolean> cdiStatusMap = new HashMap<String, Boolean>();
 
     private final ConcurrentMap<Class<?>, WebSphereBeanDeploymentArchive> classBDAMap = new ConcurrentHashMap<Class<?>, WebSphereBeanDeploymentArchive>();
+    private final ConcurrentMap<Class<?>, WebSphereBeanDeploymentArchive> classBDAMapFavouringEjb = new ConcurrentHashMap<Class<?>, WebSphereBeanDeploymentArchive>();
 
     private Application application;
     private final SimpleServiceRegistry serviceRegistry;
@@ -566,36 +567,90 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
     @Override
     @Trivial
-    //This method is called a lot
     public WebSphereBeanDeploymentArchive getBeanDeploymentArchiveFromClass(Class<?> clazz) {
-        // Note this method looks for a BDA which has the given class in it, **whether the class is a bean or not**
-        // We needed this so that we can find the correct bean manager for non-beans like servlets
-        WebSphereBeanDeploymentArchive wbda = classBDAMap.get(clazz);
+
+        WebSphereBeanDeploymentArchive wbda = classBDAMapFavouringEjb.get(clazz);
 
         if (wbda == null) {
-            for (WebSphereBeanDeploymentArchive bda : orderedBDAs) {
-                if (bda.getAllClazzes().contains(clazz.getName())) {
 
-                    Class<?> bdaClazz = null;
-                    try {
-                        bdaClazz = CDIUtils.loadClass(bda.getClassLoader(), clazz.getName());
-                    } catch (CDIException e) {
-                        // TODO Auto-generated catch block
-                        // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                        // https://websphere.pok.ibm.com/~liberty/secure/docs/dev/API/com.ibm.ws.ras/com/ibm/ws/ffdc/annotation/FFDCIgnore.html
-                        e.printStackTrace();
-                    }
-                    if (bdaClazz == clazz) {
+            for (WebSphereBeanDeploymentArchive searchBDA : orderedBDAs) {
+                if (doesBDAContainClazz(searchBDA, clazz)) {
+                    wbda = searchBDA;
+                    break;
+                }
+            }
 
-                        wbda = bda;
-                        classBDAMap.put(clazz, bda);
-                        break;
+            if (wbda != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "mapping class: " + clazz.getName() + " " + System.identityHashCode(clazz) + " to bda: " + wbda.toString());
+                }
+
+                classBDAMap.putIfAbsent(clazz, wbda);
+
+                //Performance optimization, since most of the time a class will be in one BDA, it makes sense to check
+                //if its an EJB module here and record that now.
+                if (wbda.getType() == ArchiveType.EJB_MODULE) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "mapping class: " + clazz.getName() + " " + System.identityHashCode(clazz) + " to EJB_MODULE bda: " + wbda.toString());
                     }
+                    classBDAMapFavouringEjb.putIfAbsent(clazz, wbda);
                 }
             }
         }
 
         return wbda;
+    }
+
+    @Trivial
+    @Override
+    public WebSphereBeanDeploymentArchive getBeanDeploymentArchiveFromClassFavouringEJB(Class<?> clazz) {
+
+        WebSphereBeanDeploymentArchive wbda = classBDAMapFavouringEjb.get(clazz);
+
+        if (wbda == null) {
+            for (WebSphereBeanDeploymentArchive searchBDA : orderedBDAs) {
+                if (searchBDA.getType() == ArchiveType.EJB_MODULE && doesBDAContainClazz(searchBDA, clazz)) {
+                    wbda = searchBDA;
+                    break;
+                }
+            }
+
+            //if we didn't find an ejb_module check for a regular module.
+            if (wbda == null) {
+                wbda = getBeanDeploymentArchiveFromClass(clazz);
+            }
+
+            //If we found something, cache it
+            if (wbda != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "mapping class: " + clazz.getName() + " " + System.identityHashCode(clazz) + " to EJB_MODULE bda: " + wbda.toString());
+                }
+                classBDAMapFavouringEjb.putIfAbsent(clazz, wbda);
+            }
+        }
+
+        return wbda;
+    }
+
+    @Trivial
+    private boolean doesBDAContainClazz(WebSphereBeanDeploymentArchive bda, Class<?> clazz) {
+        if (bda.getAllClazzes().contains(clazz.getName())) {
+
+            try {
+                Class<?> bdaClazz = CDIUtils.loadClass(bda.getClassLoader(), clazz.getName());
+
+                if (bdaClazz == clazz) {
+                    return true;
+                }
+
+            } catch (CDIException e) {
+                // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                // https://websphere.pok.ibm.com/~liberty/secure/docs/dev/API/com.ibm.ws.ras/com/ibm/ws/ffdc/annotation/FFDCIgnore.html
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
     /**
