@@ -1,0 +1,179 @@
+###############################################################################
+# Copyright (c) 2011, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.core/resources/com/ibm/ws/zos/core/internal/resources/CoreMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Core
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: Command processing (com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops)
+#0051-0100: Native code (com.ibm.zos.native/resources/com/ibm/ws/zos/native/native_messages.nlsprops)
+#0101-0150: core (here)
+# -------------------------------------------------------------------------------------------------
+
+#{0} is an integer reason code.
+ANGEL_NOT_AVAILABLE=CWWKB0101I: Az angel folyamat nem \u00e9rhet\u0151 el.  Nem lesznek bet\u00f6ltve jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok.  Az okk\u00f3d: {0}.
+ANGEL_NOT_AVAILABLE.explanation=Vagy nem l\u00e9tezik angel folyamat, vagy l\u00e9tezik, de a kiszolg\u00e1l\u00f3 egy hiba miatt nem tudott csatlakozni az angel folyamathoz.
+ANGEL_NOT_AVAILABLE.useraction=Ha a kiszolg\u00e1l\u00f3 nem k\u00f6veteli meg a jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sokat, akkor nincs teend\u0151. Ha a kiszolg\u00e1l\u00f3hoz jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok sz\u00fcks\u00e9gesek, akkor ind\u00edtson el egy angel folyamatot a rendszeren, hogy a kiszolg\u00e1l\u00f3 bet\u00f6lthesse a jogosults\u00e1got biztos\u00edt\u00f3 k\u00f3dot \u00e9s a jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sokat el\u00e9rhet\u0151v\u00e9 tehesse.  Az \u00fczenet sz\u00f6vege tartalmaz egy bels\u0151 okk\u00f3dot a term\u00e9kt\u00e1mogat\u00e1s sz\u00e1m\u00e1ra.  Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support.
+
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL=CWWKB0102I: A kiszolg\u00e1l\u00f3nak nincs jogosults\u00e1ga csatlakozni az angel folyamathoz.  Nem lesznek bet\u00f6ltve jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL.explanation=A kiszolg\u00e1l\u00f3t elind\u00edt\u00f3 felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3nak nincs hozz\u00e1f\u00e9r\u00e9se az SAF kiszolg\u00e1l\u00f3oszt\u00e1ly BBG.ANGEL profilj\u00e1hoz. Az angel folyamathoz csak akkor lehet csatlakozni, ha olvas\u00e1si enged\u00e9llyel rendelkezik ehhez a profilhoz.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL.useraction=Ha a kiszolg\u00e1l\u00f3hoz nem sz\u00fcks\u00e9gesek jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok, akkor nincs teend\u0151. Ha a kiszolg\u00e1l\u00f3nak jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sokat kell haszn\u00e1lnia, akkor adjon a kiszolg\u00e1l\u00f3t ind\u00edt\u00f3 felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3nak olvas\u00e1si hozz\u00e1f\u00e9r\u00e9st a SAF kiszolg\u00e1l\u00f3oszt\u00e1ly BBG.ANGEL profilj\u00e1hoz. 
+
+#{0} is the name of a service group (a text string between 1-8 characters)
+AUTHORIZED_SERVICE_AVAILABLE=CWWKB0103I: A(z) {0} jogosult szolg\u00e1ltat\u00e1scsoport el\u00e9rhet\u0151.
+AUTHORIZED_SERVICE_AVAILABLE.explanation=Az \u00fczenetben megnevezett jogosult szolg\u00e1ltat\u00e1scsoport bet\u00f6lt\u00e9se siker\u00fclt.
+AUTHORIZED_SERVICE_AVAILABLE.useraction=Semmit sem kell tennie.
+
+#{0} is the name of a service group (a text string between 1-8 characters)
+AUTHORIZED_SERVICE_NOT_AVAILABLE=CWWKB0104I: A(z) {0} jogosult szolg\u00e1ltat\u00e1scsoport nem \u00e9rhet\u0151 el.
+AUTHORIZED_SERVICE_NOT_AVAILABLE.explanation=A kiszolg\u00e1l\u00f3t ind\u00edt\u00f3 felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3nak nincs hozz\u00e1f\u00e9r\u00e9se a SAF kiszolg\u00e1l\u00f3 oszt\u00e1ly megfelel\u0151 profilj\u00e1hoz.  A profil neve BBG.BBGZSAFM.<n\u00e9v>, ahol <n\u00e9v> az \u00fczenetben szerepl\u0151 szolg\u00e1ltat\u00e1scsoport neve.
+AUTHORIZED_SERVICE_NOT_AVAILABLE.useraction=Ha a kiszolg\u00e1l\u00f3hoz nem sz\u00fcks\u00e9ges a fenti jogosult szolg\u00e1ltat\u00e1scsoport, akkor nincs teend\u0151. Ha a kiszolg\u00e1l\u00f3nak a jogosult szolg\u00e1ltat\u00e1scsoport \u00e1ltal biztos\u00edtott szolg\u00e1ltat\u00e1sokat kell haszn\u00e1lnia, adjon a kiszolg\u00e1l\u00f3t ind\u00edt\u00f3 felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3nak olvas\u00e1si hozz\u00e1f\u00e9r\u00e9st SAF kiszolg\u00e1l\u00f3oszt\u00e1ly megfelel\u0151 profiljaihoz.
+
+#{0} is the name of the unauthorized function module
+#{1} is the return value from BPX4LOD
+#{2} is the return code from BPX4LOD
+#{3} is the reason code from BPX4LOD
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD=CWWKB0105E: Nem siker\u00fclt bet\u00f6lteni a(z) {0} z/OS nat\u00edv k\u00f3d f\u00fcggv\u00e9nyt\u00e1rat.  A BPX4LOD sikertelen, rv = {1} rc = {2} rsn = {3}
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 z/OS nat\u00edv f\u00fcggv\u00e9nyt\u00e1rainak egy r\u00e9sze nem t\u00f6lthet\u0151 be.  A BPX4LOD Unix rendszerszolg\u00e1ltat\u00e1s meghi\u00fasult, mik\u00f6zben megpr\u00f3b\u00e1lta bet\u00f6lteni az \u00fczenetben megjel\u00f6lt f\u00fcggv\u00e9nyt\u00e1rat.  Az \u00fczenet tartalmazza a BPX4LOD szolg\u00e1ltat\u00e1s \u00e1ltal visszaadott visszat\u00e9r\u00e9si \u00e9rt\u00e9ket (rv), a visszat\u00e9r\u00e9si k\u00f3dot (rc) \u00e9s az okk\u00f3dot (rsn) is.  A visszat\u00e9r\u00e9si \u00e9s okk\u00f3dok hexadecim\u00e1lis eg\u00e9sz sz\u00e1mk\u00e9nt vannak ki\u00edrva.
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD.useraction=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 rendszeren v\u00e9gzett telep\u00edt\u00e9sekor ellen\u0151rizze, hogy minden telep\u00edt\u00e9si l\u00e9p\u00e9s befejez\u0151d\u00f6tt-e.  A visszat\u00e9r\u00e9si \u00e9rt\u00e9k, a visszat\u00e9r\u00e9si k\u00f3d \u00e9s az okk\u00f3d kikereshet\u0151 a "z/OS UNIX rendszerszolg\u00e1ltat\u00e1sok \u00fczenetei \u00e9s k\u00f3djai" kiadv\u00e1nyban (kiadv\u00e1ny sz\u00e1ma: SA22-7807-xx).  Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll,  l\u00e9pjen kapcsolatba a k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si szinttel.
+
+#{0} is the name of the library
+LIBRARY_DOES_NOT_EXIST=CWWKB0106E: A(z) {0} z/OS nat\u00edv f\u00fcggv\u00e9nyt\u00e1r nem l\u00e9tezik a f\u00e1jlrendszeren.
+LIBRARY_DOES_NOT_EXIST.explanation=Egy z/OS nat\u00edv k\u00f3d f\u00fcggv\u00e9nyt\u00e1r nem tal\u00e1lhat\u00f3 a f\u00e1jlrendszeren.  A f\u00fcggv\u00e9nyt\u00e1r neve szerepel az \u00fczenetben.
+LIBRARY_DOES_NOT_EXIST.useraction=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3 rendszeren v\u00e9gzett telep\u00edt\u00e9sekor ellen\u0151rizze, hogy minden telep\u00edt\u00e9si l\u00e9p\u00e9s befejez\u0151d\u00f6tt-e.  Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll,  l\u00e9pjen kapcsolatba a k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si szinttel.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_REGISTRATION_FAILED_BAD_PARM=CWWKB0107E: {0} {1} tem\u00e9k\u00e9nek {2} v\u00e1ltozat\u00e1t nem siker\u00fclt bejegyezni a z/OS rendszerben, mert probl\u00e9m\u00e1k mer\u00fcltek fel a karaktersorozatok EBCDIC k\u00f3dol\u00e1sra ford\u00edt\u00e1sakor.
+PRODUCT_REGISTRATION_FAILED_BAD_PARM.explanation=A term\u00e9kazonos\u00edt\u00e1si karaktersorozatok egyike nem ford\u00edthat\u00f3 le EBCDIC k\u00f3dol\u00e1sra, ez\u00e9rt nem adhat\u00f3 \u00e1t az IFAUSAGE szolg\u00e1ltat\u00e1snak.
+PRODUCT_REGISTRATION_FAILED_BAD_PARM.useraction=Keresse meg a term\u00e9k tulajdonos\u00e1t \u00e9s k\u00e9rje meg, hogy jav\u00edtsa az azonos\u00edt\u00e1si karaktersorozatokat.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_REGISTRATION_SUCCESSFUL=CWWKB0108I: {0} {1} term\u00e9k\u00e9nek {2} v\u00e1ltozata sikeresen bejegyz\u00e9sre ker\u00fclt a z/OS rendszerbe.
+PRODUCT_REGISTRATION_SUCCESSFUL.explanation=A megnevezett term\u00e9k regisztr\u00e1l\u00e1sra ker\u00fclt a z/OS rendszerben az IFAUSAGE szolg\u00e1ltat\u00e1s seg\u00edts\u00e9g\u00e9vel.
+PRODUCT_REGISTRATION_SUCCESSFUL.useraction=Semmit sem kell tennie.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+#{3} is the return code
+PRODUCT_REGISTRATION_UNSUCCESSFUL=CWWKB0109E: {0} {1} term\u00e9k\u00e9nek {2} v\u00e1tozat\u00e1t nem siker\u00fclt regisztr\u00e1lni a z/OS rendszerben, visszat\u00e9r\u00e9si k\u00f3d: {3}.
+PRODUCT_REGISTRATION_UNSUCCESSFUL.explanation=A megnevezett term\u00e9k regisztr\u00e1l\u00e1sa a z/OS rendszerben az IFAUSAGE szolg\u00e1ltat\u00e1ssal nem siker\u00fclt.  A null\u00e1n\u00e1l nagyobb visszat\u00e9r\u00e9si k\u00f3dok mag\u00e1b\u00f3l az IFAUSAGE szolg\u00e1ltat\u00e1sb\u00f3l \u00e9rkeznek.  A negat\u00edv visszat\u00e9r\u00e9si k\u00f3dok a regisztr\u00e1ci\u00f3s k\u00e9r\u00e9s feldolgoz\u00e1s\u00e1val kapcsolatos bels\u0151 probl\u00e9m\u00e1t jeleznek.   
+PRODUCT_REGISTRATION_UNSUCCESSFUL.useraction=A(z) (8) visszat\u00e9r\u00e9si k\u00f3d azt jelezheti, hogy a kiszolg\u00e1l\u00f3 t\u00fal sok term\u00e9ket pr\u00f3b\u00e1l meg egyszerre bejegyezni.  
+
+#No fill-ins
+SERVER_SAFM_NOT_APF_AUTHORIZED=CWWKB0110I: A bbgzsafm modul nem APF jogosult. Nem lesz el\u00e9rhet\u0151 jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok.
+SERVER_SAFM_NOT_APF_AUTHORIZED.explanation=A bbgzsafm modul nem APF jogosult. A bbgzsafm modulnak APF jogosultnak kell lennie a jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok el\u00e9r\u00e9s\u00e9nek enged\u00e9lyez\u00e9s\u00e9hez.
+SERVER_SAFM_NOT_APF_AUTHORIZED.useraction=Ha a kiszolg\u00e1l\u00f3hoz nem sz\u00fcks\u00e9gesek jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok, akkor nincs teend\u0151. Ha a kiszolg\u00e1l\u00f3 jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sokat v\u00e1r el, akkor adjon APF jogosults\u00e1got a bbgzsafm modulnak. N\u00e9zze meg az extattr parancs le\u00edr\u00e1s\u00e1t a "z/OS UNIX rendszerszolg\u00e1ltat\u00e1sok parancsle\u00edr\u00e1sai" c\u00edm\u0171 kiadv\u00e1nyban (SA22-7802-xx).
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_DEREGISTRATION_SUCCESSFUL=CWWKB0111I: {0} {1} term\u00e9ke {2} v\u00e1ltozat\u00e1nak regisztr\u00e1ci\u00f3ja sikeresen elt\u00e1vol\u00edtva a z/OS rendszerb\u0151l.
+PRODUCT_DEREGISTRATION_SUCCESSFUL.explanation=A megnevezett term\u00e9k regisztr\u00e1ci\u00f3ja a z/OS rendszerb\u0151l az IFAUSAGE szolg\u00e1ltat\u00e1s haszn\u00e1lat\u00e1val elt\u00e1vol\u00edt\u00e1sra ker\u00fclt.
+PRODUCT_DEREGISTRATION_SUCCESSFUL.useraction=Semmit sem kell tennie.
+
+#{0} successful product registration count
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED=CWWKB0112I: A z/OS rendszerben sikeresen regisztr\u00e1lt term\u00e9kek sz\u00e1ma {0}. A kiszolg\u00e1l\u00f3 a le\u00e1ll\u00edt\u00e1s sor\u00e1n megk\u00eds\u00e9rli elt\u00e1vol\u00edtani ezen term\u00e9kek regisztr\u00e1ci\u00f3j\u00e1t a z/OS rendszerb\u0151l.
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED.explanation=A kiszolg\u00e1l\u00f3 meg fogja k\u00eds\u00e9relni az \u00f6sszes sikeresen regisztr\u00e1lt term\u00e9k regisztr\u00e1ci\u00f3j\u00e1nak megsz\u00fcntet\u00e9s\u00e9t a z/OS rendszeren a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa sor\u00e1n. A term\u00e9kek regisztr\u00e1ci\u00f3j\u00e1nak megsz\u00fcntet\u00e9s\u00e9hez haszn\u00e1lt z/OS szolg\u00e1ltat\u00e1s az IFAUSAGE.
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED.useraction=Semmit sem kell tennie.
+
+#{0} successful product registration count
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED=CWWKB0113I: A z/OS rendszerben sikeresen regisztr\u00e1lt term\u00e9kek sz\u00e1ma {0}. Ezen term\u00e9kek regisztr\u00e1ci\u00f3ja el lesz t\u00e1vol\u00edtva a z/OS rendszerr\u0151l a c\u00edmt\u00e9r lez\u00e1rul\u00e1sa sor\u00e1n.
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED.explanation=Az \u00f6sszes sikeresen regisztr\u00e1lt term\u00e9k regisztr\u00e1ci\u00f3ja elt\u00e1vol\u00edt\u00e1sra ker\u00fcl a z/OS rendszerr\u0151l, amikor a c\u00edmt\u00e9r lez\u00e1rul. Ha kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s sor\u00e1n term\u00e9kek regisztr\u00e1ci\u00f3j\u00e1nak kifejezett megsz\u00fcntet\u00e9se sz\u00fcks\u00e9ges, akkor hozza l\u00e9tre \u00e9s enged\u00e9lyezze a kiszolg\u00e1l\u00f3profilt felhatalmazott szolg\u00e1ltat\u00e1sok el\u00e9r\u00e9s\u00e9re a PRODMGR csoport alatt, majd ind\u00edtsa el az angel folyamatot. Az angel folyamatot a kiszolg\u00e1l\u00f3 elind\u00edt\u00e1sa el\u0151tt kell elind\u00edtani.
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED.useraction=Semmit sem kell tennie.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+#{3} is the return code
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL=CWWKB0114E: {0} {1} term\u00e9ke {2} v\u00e1ltozat\u00e1hoz tartoz\u00f3 regisztr\u00e1ci\u00f3 elt\u00e1vol\u00edt\u00e1sa a z/OS rendszerr\u0151l meghi\u00fasult. Visszat\u00e9r\u00e9si k\u00f3d = {3}.
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL.explanation=A megnevezett term\u00e9k regisztr\u00e1ci\u00f3j\u00e1nak t\u00f6rl\u00e9se a z/OS rendszerb\u0151l az IFAUSAGE szolg\u00e1ltat\u00e1ssal meghi\u00fasult.  A null\u00e1n\u00e1l nagyobb visszat\u00e9r\u00e9si k\u00f3dok mag\u00e1b\u00f3l az IFAUSAGE szolg\u00e1ltat\u00e1sb\u00f3l \u00e9rkeznek.  A negat\u00edv visszat\u00e9r\u00e9si k\u00f3dok a regisztr\u00e1ci\u00f3 megsz\u00fcntet\u00e9si k\u00e9r\u00e9s feldolgoz\u00e1s\u00e1val kapcsolatos bels\u0151 probl\u00e9m\u00e1t jeleznek.
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL.useraction=A nyolcas (8) visszat\u00e9r\u00e9si k\u00f3d azt jelzi, hogy a term\u00e9k sosem ker\u00fclt el\u0151sz\u00f6r regisztr\u00e1l\u00e1sra.
+
+SERVER_SAFM_NOT_SAF_AUTHORIZED=CWWKB0115I: A kiszolg\u00e1l\u00f3nak nincs jogosults\u00e1ga bet\u00f6lteni a bbgzsafm modult.  Nem lesznek bet\u00f6ltve jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok.
+SERVER_SAFM_NOT_SAF_AUTHORIZED.explanation=A kiszolg\u00e1l\u00f3t ind\u00edt\u00f3 felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3nak nincs hozz\u00e1f\u00e9r\u00e9se az SAF kiszolg\u00e1l\u00f3 oszt\u00e1ly BBG.AUTHMOD.BBGZSAFM profilj\u00e1hoz.  Az angel folyamathoz csak akkor lehet csatlakozni, \u00e9s jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sokat csak akkor lehet bet\u00f6lteni, ha olvas\u00e1si enged\u00e9llyel rendelkezik ehhez a profilhoz.
+SERVER_SAFM_NOT_SAF_AUTHORIZED.useraction=Ha a kiszolg\u00e1l\u00f3hoz nem sz\u00fcks\u00e9gesek jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok, akkor nincs teend\u0151. Ha a kiszolg\u00e1l\u00f3nak jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sokat kell haszn\u00e1lnia, akkor adjon a kiszolg\u00e1l\u00f3t ind\u00edt\u00f3 felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3nak olvas\u00e1si hozz\u00e1f\u00e9r\u00e9st a SAF kiszolg\u00e1l\u00f3oszt\u00e1ly BBG.AUTHMOD.BBGZSAFM profilj\u00e1hoz. 
+
+NOT_REGISTERED_WITH_REQUIRED_ANGEL=CWWKB0116I: Ez a kiszolg\u00e1l\u00f3 nincs regisztr\u00e1lva angel folyamattal, b\u00e1r be\u00e1ll\u00edt\u00e1sai megk\u00f6vetelik az angel folyamattal t\u00f6rt\u00e9n\u0151 regisztr\u00e1ci\u00f3t. A kiszolg\u00e1l\u00f3 megpr\u00f3b\u00e1l le\u00e1llni.
+NOT_REGISTERED_WITH_REQUIRED_ANGEL.explanation=A kiszolg\u00e1l\u00f3 \u00fagy van be\u00e1ll\u00edtva, hogy megszak\u00edtsa az ind\u00edt\u00e1si folyamatot, ha nincs angel folyamattal regisztr\u00e1lva. A kiszolg\u00e1l\u00f3 nincs regisztr\u00e1lva angel folyamattal \u00e9s le\u00e1ll.
+NOT_REGISTERED_WITH_REQUIRED_ANGEL.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az angel folyamat el van ind\u00edtva \u00e9s a kiszolg\u00e1l\u00f3 k\u00e9pes hozz\u00e1 csatlakozni \u00e9s regisztr\u00e1lni. Alternat\u00edv megold\u00e1sk\u00e9nt, m\u00f3dos\u00edtsa \u00fagy a konfigur\u00e1ci\u00f3t, hogy az megengedje a kiszolg\u00e1l\u00f3 elind\u00edt\u00e1s\u00e1t angel folyamattal t\u00f6rt\u00e9n\u0151 regisztr\u00e1ci\u00f3 n\u00e9lk\u00fcl.
+
+#{0} is the name of the angel process.  1-54 characters.
+#{1} is an integer reason code.
+ANGEL_NOT_AVAILABLE_NAME=CWWKB0117W: A(z) {0} angel folyamat nem \u00e9rhet\u0151 el. Nem lesznek bet\u00f6ltve jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok. Az okk\u00f3d: {1}.
+ANGEL_NOT_AVAILABLE_NAME.explanation=Vagy nem, l\u00e9tezik az \u00fczenetben megjelen\u00edtett nev\u0171 angel folyamat, vagy l\u00e9tezik, de a kiszolg\u00e1l\u00f3 hiba miatt nem tudott hozz\u00e1 csatlakozni.
+ANGEL_NOT_AVAILABLE_NAME.useraction=Ha a kiszolg\u00e1l\u00f3hoz jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok sz\u00fcks\u00e9gesek, akkor ind\u00edtson el egy angel folyamatot a rendszeren, hogy a kiszolg\u00e1l\u00f3 bet\u00f6lthesse a jogosults\u00e1got biztos\u00edt\u00f3 k\u00f3dot \u00e9s a jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sokat el\u00e9rhet\u0151v\u00e9 tehesse. Az \u00fczenet sz\u00f6vege tartalmaz egy bels\u0151 okk\u00f3dot a term\u00e9kt\u00e1mogat\u00e1s sz\u00e1m\u00e1ra. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor tanulm\u00e1nyozza a hibafelder\u00edt\u00e9shez kapcsol\u00f3d\u00f3 inform\u00e1ci\u00f3kat a WebSphere Application Server k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si weboldal\u00e1n: http://www.ibm.com/software/webservers/appserv/was/support. Ha a kiszolg\u00e1l\u00f3hoz nem sz\u00fcks\u00e9gesek jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok, akkor nincs teend\u0151. Ha meg k\u00edv\u00e1nja akad\u00e1lyozni ennek az \u00fczenetnek a megjelen\u00edt\u00e9s\u00e9t, akkor t\u00e1vol\u00edtsa el a com.ibm.ws.zos.core.angelName tulajdons\u00e1got a bootstrap.properties f\u00e1jlb\u00f3l.
+
+#{0} is the name of the angel process. 1-54 characters.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME=CWWKB0118W: A kiszolg\u00e1l\u00f3nak nincs jogosults\u00e1ga csatlakozni a(z) {0} angel folyamathoz. Nem lesznek bet\u00f6ltve jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME.explanation=A kiszolg\u00e1l\u00f3t ind\u00edt\u00f3 felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3nak nincs hozz\u00e1f\u00e9r\u00e9se az \u00fczenetben megnevezett angel folyamat System Authorization Facility (SAF) profilj\u00e1hoz. Az angel folyamathoz csak akkor lehet csatlakozni, ha olvas\u00e1si hozz\u00e1f\u00e9r\u00e9ssel rendelkezik ehhez a profilhoz.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME.useraction=Ha a kiszolg\u00e1l\u00f3 felhatalmazott szolg\u00e1ltat\u00e1sokat ig\u00e9nyel, akkor n\u00e9zzen ut\u00e1na a dokument\u00e1ci\u00f3ban, hogyan kell neves\u00edtett angel folyamatot be\u00e1ll\u00edtani. Ha a kiszolg\u00e1l\u00f3hoz nem sz\u00fcks\u00e9gesek jogosults\u00e1got ig\u00e9nyl\u0151 szolg\u00e1ltat\u00e1sok, akkor nincs teend\u0151. Ha meg k\u00edv\u00e1nja akad\u00e1lyozni ennek az \u00fczenetnek a megjelen\u00edt\u00e9s\u00e9t, akkor t\u00e1vol\u00edtsa el a com.ibm.ws.zos.core.angelName tulajdons\u00e1got a bootstrap.properties f\u00e1jlb\u00f3l.
+
+ANGEL_NAME_TOO_LONG=CWWKB0119E: A bootstrap.properties f\u00e1jlban megadott angel n\u00e9v t\u00f6bb, mint 54 karakterb\u0151l \u00e1ll.
+ANGEL_NAME_TOO_LONG.explanation=A com.ibm.ws.zos.core.angelName tulajdons\u00e1g adja meg az angel folyamat nev\u00e9t, amelyhez a kiszolg\u00e1l\u00f3nak csatlakoznia kell. A tulajdons\u00e1g a bootstrap.properties f\u00e1jlban van megadva \u00e9s legfeljebb 54 karakter hossz\u00fa lehet.  
+ANGEL_NAME_TOO_LONG.useraction=Ez a kiszolg\u00e1l\u00f3 nem fog angel folyamathoz csatlakozni. Ahhoz, hogy angel folyamathoz csatlakozhasson, adjon meg egy legfeljebb 54 karakterb\u0151l \u00e1ll\u00f3 \u00e9rt\u00e9ket a com.ibm.ws.zos.core.angelName tulajdons\u00e1ghoz, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+#{0} is an unsupported character
+#{1} is a number between 1 and 54
+ANGEL_NAME_UNSUPPORTED_CHARACTER=CWWKB0120E: A bootstrap.properties f\u00e1jlban megadott angel n\u00e9v a nem t\u00e1mogatott {0} karaktert tartalmazza a(z) {1} poz\u00edci\u00f3ban.
+ANGEL_NAME_UNSUPPORTED_CHARACTER.explanation=A com.ibm.ws.zos.core.angelName tulajdons\u00e1g adja meg az angel folyamat nev\u00e9t, amelyhez a kiszolg\u00e1l\u00f3nak csatlakoznia kell. A tulajdons\u00e1g a boostrap.properties f\u00e1jlban ker\u00fcl megad\u00e1sra \u00e9s csak a k\u00f6vetkez\u0151 karakterk\u00e9szlet karaktereit tartalmazhatja: A-Z 0-9 ! # $ + - / : < > = ? @ [ ] ^ _ ` { } | ~
+ANGEL_NAME_UNSUPPORTED_CHARACTER.useraction=Ez a kiszolg\u00e1l\u00f3 nem fog angel folyamathoz csatlakozni. Ahhoz, hogy angel folyamathoz csatlakozhasson, adjon meg egy \u00e9rt\u00e9ket a t\u00e1mogatott karakterk\u00e9szlet haszn\u00e1lat\u00e1val a com.ibm.ws.zos.core.angelName tulajdons\u00e1ghoz, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+#{0} is the server's UMASK value.
+SERVER_CURRENT_UMASK=CWWKB0121I: A kiszolg\u00e1l\u00f3folyamat UMASK \u00e9rt\u00e9k\u00e9nek be\u00e1ll\u00edt\u00e1sa: {0}.
+SERVER_CURRENT_UMASK.explanation=A kiszolg\u00e1l\u00f3folyamat UMASK \u00e9rt\u00e9ke.  Alap\u00e9rtelmez\u00e9sben az UMASK \u00e9rt\u00e9k a Liberty kiszolg\u00e1l\u00f3t elind\u00edt\u00f3 folyamatb\u00f3l \u00f6r\u00f6kl\u0151dik, de a k\u00e9s\u0151bbiekben \u00fagy m\u00f3dosul, hogy nem teszi lehet\u0151v\u00e9 az olvas\u00e1si, \u00edr\u00e1si vagy v\u00e9grehajt\u00e1si hozz\u00e1f\u00e9r\u00e9st az EGY\u00c9B felhaszn\u00e1l\u00f3k sz\u00e1m\u00e1ra. A WLP_SKIP_UMASK k\u00f6rnyezeti v\u00e1ltoz\u00f3 true \u00e9rt\u00e9kre \u00e1ll\u00edt\u00e1s\u00e1val megakad\u00e1lyozhatja, hogy a kiszolg\u00e1l\u00f3 \u00edgy m\u00f3dos\u00edtsa az UMASK be\u00e1ll\u00edt\u00e1s\u00e1t. Ha a Liberty kiszolg\u00e1l\u00f3 z/OS elj\u00e1r\u00e1s seg\u00edts\u00e9g\u00e9vel lett elind\u00edtva, testreszabhatja a kiszolg\u00e1l\u00f3folyamat \u00e1ltal haszn\u00e1lt UMASK be\u00e1ll\u00edt\u00e1st a WLP_SKIP_UMASK \u00e9s a _BPX_BATCH_UMASK k\u00f6rnyezeti v\u00e1ltoz\u00f3k megad\u00e1s\u00e1val. A WLP_SKIP_UMASK megadhat\u00f3 a server.env f\u00e1jlban, vagy ha a kiszolg\u00e1l\u00f3 z/OS elj\u00e1r\u00e1s seg\u00edts\u00e9g\u00e9vel lett elind\u00edtva, akkor az STDENDV DD bejegyz\u00e9ssel. Ezzel ellent\u00e9tben, a _BPX_BATCH_UMASK \u00e9rt\u00e9k\u00e9t nem lehet a server.env f\u00e1jlban megadni. Ezt a k\u00f6rnyezeti v\u00e1ltoz\u00f3t csak az STDENV DD bejegyz\u00e9ssel lehet megadni a z/OS elj\u00e1r\u00e1sban.
+SERVER_CURRENT_UMASK.useraction=Nincs teend\u0151.
+
+#{0} is the name of the angel process. 1-54 characters.
+SERVER_CONNECTED_TO_ANGEL=CWWKB0122I: Ez a kiszolg\u00e1l\u00f3 csatlakozik a(z) {0} angel folyamathoz.
+SERVER_CONNECTED_TO_ANGEL.explanation=Ez a kiszolg\u00e1l\u00f3 csatlakozik a be\u00e1ll\u00edtott angel folyamathoz.
+SERVER_CONNECTED_TO_ANGEL.useraction=Nincs teend\u0151.
+
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID=CWWKB0123W: Az angel bootstrap.properties f\u00e1jlban megadott ind\u00edt\u00e1s v\u00e1rakoz\u00e1si ideje k\u00edv\u00fcl esik az enged\u00e9lyezett \u00e9rt\u00e9kek tartom\u00e1ny\u00e1n, vagy \u00e9rv\u00e9nytelen. A(z) 0 mp alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID.explanation=A kiszolg\u00e1l\u00f3 angel ind\u00edt\u00e1s v\u00e1rakoz\u00e1si id\u0151 konfigur\u00e1ci\u00f3ja helytelen. Az enged\u00e9lyezett tartom\u00e1ny 0 - 300 m\u00e1sodperc.
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID.useraction=Ez a kiszolg\u00e1l\u00f3 az alap\u00e9rtelmezett 0 mp v\u00e1rakoz\u00e1si id\u0151t fogja haszn\u00e1lni az Angel el\u00e9r\u00e9s\u00e9hez. Az \u00e9rv\u00e9nyes ind\u00edt\u00e1s v\u00e1rakoz\u00e1si id\u0151 konfigur\u00e1l\u00e1s\u00e1hoz adjon meg egy 0 \u00e9s 300 k\u00f6z\u00f6tti eg\u00e9sz sz\u00e1mot a com.ibm.ws.zos.core.angelWaitTimeSeconds tulajdons\u00e1gban, \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+#{0} is the configured time that liberty server will wait the required angel to start, {1} is the name of the required angel process.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT=CWWKB0124I: Az Angel {1} k\u00f6telez\u0151, a kiszolg\u00e1l\u00f3 \u00fagy lett konfigur\u00e1lva, hogy legfeljebb {0} m\u00e1sodpercet v\u00e1rakozzon a c\u00e9l Angel el\u00e9r\u00e9s\u00e9re.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT.explanation=Ez a kiszolg\u00e1l\u00f3 megk\u00f6veteli, hogy az Angel elinduljon, ugyancsak meg van adva egy maxim\u00e1lis ind\u00edt\u00e1sra v\u00e1rakoz\u00e1si id\u0151 a le\u00e1ll\u00edt\u00e1sig, ha a sz\u00fcks\u00e9ges Angel regisztr\u00e1ci\u00f3 meghi\u00fasul.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT.useraction=Nincs teend\u0151.
+
+
+REGION_REQUESTED=CWWKB0125I: Ez a kiszolg\u00e1l\u00f3 egy {0} m\u00e9ret\u0171 R\u00c9GI\u00d3T k\u00e9rt. A vonal alatti t\u00e1rol\u00f3 korl\u00e1t {1}, a vonal feletti pedig {2}.
+REGION_REQUESTED.explanation=Ez az \u00fczenet k\u00fcl\u00f6nb\u00f6z\u0151 \u00e9rt\u00e9keket jelen\u00edt meg a helyi adatter\u00fcletet (LDA) vez\u00e9rl\u0151blokkb\u00f3l, ami az el\u00e9gtelen t\u00e1rter\u00fclet k\u00f6r\u00fclm\u00e9nyeinek hibakeres\u00e9s\u00e9ben lehet hasznos. A r\u00e9gi\u00f3m\u00e9ret a c\u00edmt\u00e9rnek kiosztott t\u00e1rol\u00f3r\u00e9gi\u00f3 kilobyte-ban jelezve. A vonal alatti \u00e9s feletti korl\u00e1tok megabyte-ban vannak megadva. A "LINE" a hat\u00e1r a 24 bites \u00e9s 31 bit t\u00e1rol\u00f3c\u00edmek k\u00f6z\u00f6tt. A korl\u00e1tok jelzik a t\u00e9nyleges t\u00e1rkorl\u00e1tokat a hat\u00e1r alatti c\u00edmek (24 bites c\u00edmek) \u00e9s a hat\u00e1r feletti c\u00edmek (31 bites c\u00edmek) sz\u00e1m\u00e1ra.
+REGION_REQUESTED.useraction=Nincs teend\u0151.
+
+MEMORY_LIMIT_INFORMATION=CWWKB0126I: MEMLIMIT={0}. MEMLIMIT CONFIGURATION SOURCE={1}.
+MEMORY_LIMIT_INFORMATION.explanation=Megjelen\u00edti a c\u00edmt\u00e9rhez be\u00e1ll\u00edtott MEMLIMIT \u00e9rt\u00e9ket, \u00e9s a MEMLIMIT konfigur\u00e1ci\u00f3 forr\u00e1s\u00e1t. A MEMLIMIT CONFIGURATION SOURCE a k\u00f6vetkez\u0151 \u00e9rt\u00e9kek egyike lehet. "SMF" az SMF \u00e1ltal az SMFPRMxx param\u00e9terben be\u00e1ll\u00edtva, illetve alap\u00e9rtelmez\u00e9sben 0. "JCL" a JCL \u00e1ltal be\u00e1ll\u00edtva. "REG0" Korl\u00e1tlan m\u00e9ret a REGION=0 specifik\u00e1ci\u00f3 alapj\u00e1n. "USI" az IEFSMFIE mez\u0151ben konfigur\u00e1lva \u00e9s az IEFUSI exit rutin haszn\u00e1lat\u00e1val be\u00e1ll\u00edtva. "OMVS" a UNIX OMVS szegmensben be\u00e1ll\u00edtva. "SETR" a UNIX setrlimit f\u00fcggv\u00e9ny seg\u00edts\u00e9g\u00e9vel be\u00e1ll\u00edtva. "SPW" a UNIX ind\u00edt\u00e1si parancs \u00e1ltal be\u00e1ll\u00edtva. "SETO" a UNIX SETOMVS parancs haszn\u00e1lat\u00e1val be\u00e1ll\u00edtva. "AUTH" a jogosult alkalmaz\u00e1sm\u00f3dos\u00edt\u00e1s \u00e1ltal be\u00e1ll\u00edtva. "URG" az IEFSMFIE mez\u0151ben az IEFUSI exit rutinnal be\u00e1ll\u00edtva. "UNKNOWN" ismeretlen forr\u00e1s \u00e1ltal be\u00e1ll\u00edtva. "BAD" Hiba a MEMLIMIT be\u00e1ll\u00edt\u00e1sakor.
+MEMORY_LIMIT_INFORMATION.useraction=Nincs teend\u0151.
+
+OLD_ANGEL_VERSION=CWWKB0127W: A jelenlegi angel v\u00e1ltozat r\u00e9gebbi, mint amit a kiszolg\u00e1l\u00f3 v\u00e1r. Friss\u00edtse az angel folyamatot a rendelkez\u00e9sre \u00e1ll\u00f3 legfrissebb v\u00e1ltozatra.
+OLD_ANGEL_VERSION.explanation=A kiszolg\u00e1l\u00f3n van egy elv\u00e1rt \u00e9rt\u00e9k az angel folyamat verzi\u00f3sz\u00e1m\u00e1ra vonatkoz\u00f3an. Az aktu\u00e1lis v\u00e1ltozat r\u00e9gebbi, mint az elv\u00e1rt v\u00e1ltozat. Ha egy Liberty kiszolg\u00e1l\u00f3p\u00e9ld\u00e1ny r\u00e9gebbi szolg\u00e1ltat\u00e1si szinten fut\u00f3 angel folyamathoz kapcsol\u00f3dik, akkor a kiszolg\u00e1l\u00f3 egyes szolg\u00e1ltat\u00e1sai el\u00e9rhetetlenn\u00e9 v\u00e1lhatnak.
+OLD_ANGEL_VERSION.useraction=Annak \u00e9rdek\u00e9ben, hogy a kiszolg\u00e1l\u00f3 minden szolg\u00e1ltat\u00e1sa el\u00e9rhet\u0151 legyen az angel folyamat sz\u00e1m\u00e1ra, friss\u00edtse az angel folyamatot a legfrissebb v\u00e1ltozatra.

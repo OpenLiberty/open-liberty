@@ -1,0 +1,129 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.tx/resources/com.ibm.ws.zos.tx.internal.resources/NativeTransactionMessages.nlsprops
+#COMPONENTPREFIX CWLIB
+#COMPONENTNAMEFOR CWLIB zOS Native Transaction Manager Extension
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0101-0200: zOS Native Transaction Manager Extension
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the invoked service name
+#{1} is the service's return code.
+#{2} is the additional debug information relevant to the service call.
+INVALID_RRS_SERVICE_RC=CWLIB0101E: Der Systemservice {0} ist mit dem R\u00fcckkehrcode {1} fehlgeschlagen. Relevante Informationen: {2}
+INVALID_RRS_SERVICE_RC.explanation=Der Aufruf des angegebenen Service ist fehlgeschlagen. Der R\u00fcckgabecode ist eine hexadezimale Ganzzahl.
+INVALID_RRS_SERVICE_RC.useraction=Weitere Informationen zum R\u00fcckgabecode finden Sie in der Ver\u00f6ffentlichung MVS Programming: Resource Recovery. Bleibt das Problem bestehen, wenden Sie sich an die n\u00e4chste Supportstufe.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+#{3} is the list of outstanding transaction global transaction IDs.
+OUTSTANDING_TRANS_RM_UNREGISTERED=CWLIB0102W: Die Registrierung des Ressourcenmanagers mit dem Namen {0} und der Token-ID {1} beim System wurde aufgehoben. Als die Registrierung des Ressourcenmanagers aufgehoben wurde, waren noch {2} ausstehende Transaktionen vorhanden. Diese Transaktionen haben die folgenden globalen Transaktions-IDs: {3}
+OUTSTANDING_TRANS_RM_UNREGISTERED.explanation=Als die Registrierung des Ressourcenmanagers aufgehoben wurde, waren noch ausstehende Transaktionen vorhanden. Alle ausstehenden Ressourcen durchlaufen die Wiederherstellung, wenn der Server das n\u00e4chste Mal gestartet wird.
+OUTSTANDING_TRANS_RM_UNREGISTERED.useraction=Stellen Sie sicher, dass alle erforderlichen Einstellungen f\u00fcr die Ausf\u00fchrung von transaktionsorientierten Arbeitsvorg\u00e4ngen vorhanden sind. Suchen Sie in den Serverprotokollen nach weiteren Informationen. Bleibt das Problem bestehen, wenden Sie sich an die n\u00e4chste Supportstufe.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token
+#{2} is the number of outstanding transactions
+RM_RESTART_COMPLETE=CWLIB0103I: Der Resource Manager {0} mit der entsprechenden Token-ID {1} wurde erfolgreich mit Resource Recovery Services (RRS) erneut gestartet. Anzahl der unaufgel\u00f6sten Arbeitseinheiten mit Wiederherstellung: {2}
+RM_RESTART_COMPLETE.explanation=Der angegebene Ressourcenmanager wurde mit RRS gestartet. Alle gemeldeten unaufgel\u00f6sten Arbeitseinheiten mit Wiederherstellung durchlaufen die Wiederherstellung.
+RM_RESTART_COMPLETE.useraction=Es ist keine Aktion erforderlich.
+
+#{0} is the resource manager name
+#{1} is the 16 byte resource manager name token 
+RM_RECOVERY_COMPLETE=CWLIB0104I: Die Wiederherstellung f\u00fcr den Ressourcenmanager {0} mit der entsprechenden Token-ID {1} ist abgeschlossen.
+RM_RECOVERY_COMPLETE.explanation=Die Wiederherstellung f\u00fcr den angegebenen Ressourcenmanager ist abgeschlossen. Alle gemeldeten unaufgel\u00f6sten Arbeitseinheiten mit Wiederherstellung wurden wiederhergestellt.
+RM_RECOVERY_COMPLETE.useraction=Es ist keine Aktion erforderlich.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_WAIT_FOR_SUSPENDED_CTX=CWLIB0105I: Der native RRS-Kontextmanager wartet, bis das ausgesetzte Kontexttoken {0} die Bearbeitung der folgenden Arbeitseinheit abgeschlossen hat: {1}
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.explanation=Der native RRS-Kontextserver wird beendet. Der Kontextmanager wartet, bis alle Arbeitseinheiten mit einem zugeordneten nativen Kontext abgeschlossen sind.
+CTXMGR_WAIT_FOR_SUSPENDED_CTX.useraction=Es ist keine Aktion erforderlich. Der native RRS-Kontextmanager setzt die Beendigung fort, sobald alle Arbeitseinheiten abgeschlossen sind.
+
+#{0} is the context token (hex bytes)
+#{1} is a thread ID
+#{2} is a unit of work identifier
+CTXMGR_WAIT_FOR_ACTIVE_CTX=CWLIB0106I: Der native RRS-Kontextmanager wartert, bis das Kontexttoken {0} im Thread {1} die Bearbeitung der folgenden Arbeitseinheit abgeschlossen hat: {2}
+CTXMGR_WAIT_FOR_ACTIVE_CTX.explanation=Der native RRS-Kontextserver wird beendet. Der Kontextmanager wartet, bis alle Arbeitseinheiten mit einem zugeordneten nativen Kontext abgeschlossen sind.
+CTXMGR_WAIT_FOR_ACTIVE_CTX.useraction=Es ist keine Aktion erforderlich. Der native RRS-Kontextmanager setzt die Beendigung fort, sobald alle Arbeitseinheiten abgeschlossen sind.
+
+#{0} is the context token (hex bytes)
+#{1} is a unit of work identifier
+CTXMGR_TERMINATING_CTX_WITH_WORK=CWLIB0107I: Der native RRS-Kontextmanager beendet das Kontexttoken {0}, das momentan der folgenden Arbeitseinheit zugeordnet ist: {1}
+CTXMGR_TERMINATING_CTX_WITH_WORK.explanation=Der native RRS-Kontextserver wird beendet, nachdem auf die Stilllegung der aktiven Arbeit gewartet wurde. Der Kontextmanager beendet den in dieser Nachricht angegebenen Kontext. Der Kontext ist einer Arbeitseinheit zugeordnet und die Arbeitseinheit wird zur\u00fcckgesetzt.
+CTXMGR_TERMINATING_CTX_WITH_WORK.useraction=Es ist keine Aktion erforderlich. Mindestens einer Ihrer Ressourcenmanager meldet m\u00f6glicherweise einen Fehler, wenn sie bei Beendigung des Kontextes Arbeiten ausgef\u00fchrt haben.
+
+#{0} is the resource manager name
+#{1} is the number of non-restart transactions waiting to complete
+#{2} is the number of milliseconds to wait
+TM_DEACTIVATE_WAITING_FOR_TRANS=CWLIB0108I: Der Ressourcenmanager {0} wartet auf den Abschluss von {1} Transaktionen. Er wartet maximal {2} Millisekunden.
+TM_DEACTIVATE_WAITING_FOR_TRANS.explanation=Der native RRS-Ressourcenmanager wird beendet. Es gibt noch aktive Transaktionen, die native RRS-Ressourcen, wie z. B. Datenbankverbindungen des Typs 2, verwenden. Der native Ressourcenmanager wartet den Abschluss dieser Transaktionen ab, bevor er endet.
+TM_DEACTIVATE_WAITING_FOR_TRANS.useraction=Es ist keine Aktion erforderlich. Die Ressourcenmanager setzt die Beendigung nach Abschluss der Transaktionen bzw. nach Ablauf der angegebenen Wartezeit ab. Wenn die maximale Wartezeit abgelaufen ist, zeigt die Nachricht CWLIB0102W an, welche Transaktionen noch aktiv waren.
+
+#{0} is the RRS unit of recovery identifier (URID).
+#{1} is an Xid
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE=CWLIB0109E: Die Transaktionsverzweigung, die von der RRS-URID {0} dargestellt wird, kann nicht aufgel\u00f6st werden, weil die NativeTransactionManager-Instanz, die die Verzweigung erstellt hat, inaktiviert wurde. Der Server muss erneut gestartet werden, damit diese Transaktion abgeschlossen werden kann. Die XID der Transaktionsverzweigung ist {1}.
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.explanation=Der native RRS-Transaktions-Manager-Service wurde stoppt und ist nicht mehr mit RRS verbunden. Die Transaktionsverzweigung kann nicht abgeschlossen werden, weil RRS nicht \u00fcber das Ergebnis benachrichtigt werden kann. Der Server muss erneut gestartet werden, damit der Transaktionsmanager mit RRS resynchronisiert werden und die Transaktion aufl\u00f6sen kann.
+TM_INACTIVE_CANT_RESOLVE_XARESOURCE.useraction=Starten Sie den Server erneut
+ 
+#{0} is a unit of work identifier
+#{1} is the context token (hex bytes)
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK=CWLIB0110W: Die Arbeitseinheit {0} wird beendet, und die zugeh\u00f6rige RRS-Arbeitseinheit mit Wiederherstellung, die unter dem Kontexttoken {1} ausgef\u00fchrt wird, unaufgel\u00f6ste Ressourceninteressen hat. Die RRS-Arbeitseinheit mit Wiederherstellung wird r\u00fcckg\u00e4ngig gemacht.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.explanation=Es wurde eine RRS-Arbeitseinheit gefunden, die am Ende der Arbeitseinheit ausstehende Ressourceninteressen hat.
+CTXMGR_DIRTY_UR_ON_END_ROLLBACK.useraction=Vergewissern Sie sich, dass die verwendeten RRS-f\u00e4higen Ressourcen nicht au\u00dferhalb eines Transaktionsbereichs ausgef\u00fchrt werden. Bleibt das Problem bestehen, wenden Sie sich an die n\u00e4chste Supportstufe.
+
+#{0} The configured resource manager prefix.
+INVALID_CONFIGURED_RMNAME_PREFIX=CWLIB0111W: Das konfigurierte Ressourcenmanagerpr\u00e4fix von {0} ist ung\u00fcltig. Es wird das Standardressourcenmanagerpr\u00e4fix verwendet.
+INVALID_CONFIGURED_RMNAME_PREFIX.explanation=Das konfigurierte Ressourcenmanagerpr\u00e4fix muss 1 bis 8 Zeichen enthalten und darf nur aus alphanumerischen Zeichen (a-z,A-Z,0-9) und Sonderzeichen bestehen.
+INVALID_CONFIGURED_RMNAME_PREFIX.useraction=Vergewissern Sie sich, dass das konfigurierte Ressourcenmanagerpr\u00e4fix die L\u00e4ngen- und Zeichenvoraussetzungen erf\u00fcllt. Bleibt das Problem bestehen, wenden Sie sich an die n\u00e4chste Supportstufe.
+
+#{0} The configured resource manager prefix.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED=CWLIB0112W: Die Konfigurationsaktualisierung zum Setzen des Ressourcenmanagernamenspr\u00e4fixes {0} ist zur Laufzeit nicht zul\u00e4ssig. Die Aktualisierung wird ignoriert.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.explanation=Die Konfigurationsaktualisierung, um das Ressourcenmanagerpr\u00e4fix zu setzen, wird zur Laufzeit ignoriert.
+RMNAME_PREFIX_RUNTIME_CONFIG_CHANGE_NOT_ALLOWED.useraction=Konfigurieren Sie das Ressourcenmanagerpr\u00e4fix vor dem Serverstart oder vor der Konfiguration des Features zosTransaction-1.0. Bleibt das Problem bestehen, wenden Sie sich an die n\u00e4chste Supportstufe.
+
+#{0} The configured resource manager prefix.
+#{1} The Internal authorization check return code.
+#{2} The SAF return code.
+#{3} The RACF return code.
+#{4} The RACF reason code.
+RMNAME_PREFIX_AUTH_CHECK_FAILED=CWLIB0113E: Die Berechtigungspr\u00fcfung, die Benutzerberechtigungen mit dem konfigurierten Ressourcenmanagerpr\u00e4fixnamen {0} abgleicht, ist fehlgeschlagen. Interner R\u00fcckkehrcode: {1} SAF_RC: {2}, RACF_RC: {3}, RACF_RSN: {4}
+RMNAME_PREFIX_AUTH_CHECK_FAILED.explanation=Die Berechtigungspr\u00fcfung, die Benutzerberechtigungen mit dem konfigurierten Ressourcenmanagerpr\u00e4fixnamen abgleicht, ist mit den genannten R\u00fcckgabecodes fehlgeschlagen.
+RMNAME_PREFIX_AUTH_CHECK_FAILED.useraction=Vergewissern Sie sich, dass das konfigurierte Ressourcenmanagerpr\u00e4fix die Namens-, L\u00e4ngen- und Zeichenvoraussetzungen erf\u00fcllt. Stellen Sie sicher, dass der Pr\u00e4fixnamen nicht falsch konfiguriert wurde. Vergewissern Sie sich, dass dem Benutzer die entsprechenden Berechtigungen f\u00fcr die Verwendung des Pr\u00e4fixnamens erteilt wurden. Bleibt das Problem bestehen, wenden Sie sich an die n\u00e4chste Supportstufe.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) being ended.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR=CWLIB0114W: Thread {0} wird beendet. Die dem Kontexttoken {1} zugeordnete RRS-Arbeitseinheit mit Wiederherstellung enth\u00e4lt nicht aufgel\u00f6ste Ressourceninteressen. Der navtive Kontextmanager beendet den Kontext.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.explanation=Der angegebene Thread wird beendet und die dem Kontext zugeordnete RRS-Arbeitseinheit mit Wiederherstellung enth\u00e4lt nicht aufgel\u00f6ste Ressourceninteressen. Versuche, ein Rollback der RRS-Arbeitseinheit mit Wiederherstellung durchzuf\u00fchren, sind fehlgeschlagen.
+THREAD_TERM_TERMINATING_CTX_WITH_DIRTY_UR.useraction=Vergewissern Sie sich, dass die verwendeten RRS-f\u00e4higen Ressourcenmanager nicht au\u00dferhalb eines Transaktionsbereichs ausgef\u00fchrt werden. Mindestens einer Ihrer Ressourcenmanager meldet m\u00f6glicherweise einen Fehler, wenn sie bei Beendigung des Kontextes Arbeiten ausgef\u00fchrt haben. Bleibt das Problem bestehen, wenden Sie sich an die n\u00e4chste Supportstufe.
+
+#{0} The terminating thread.
+#{1} The context token (hex bytes) associated with the UR whose outstanding interests were rolled back.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED=CWLIB0115W: Thread {0} wird beendet. Die dem Kontexttoken {1} zugeordnete RRS-Arbeitseinheit mit Wiederherstellung enth\u00e4lt nicht aufgel\u00f6ste Ressourceninteressen. Es wird ein Rollback f\u00fcr die RRS-Arbeitseinheit mit Wiederherstellung durchgef\u00fchrt und der Kontexttoken wird wiederverwendet.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.explanation=Der angegebene Thread wird beendet und bei der RRS-Arbeitseinheit mit Wiederherstellung wurden ausstehende Ressourceninteressen ermittelt.
+THREAD_TERM_DIRTY_UR_ENDED_POOLED.useraction=Vergewissern Sie sich, dass die verwendeten RRS-f\u00e4higen Ressourcenmanager nicht au\u00dferhalb eines Transaktionsbereichs ausgef\u00fchrt werden. Mindestens einer Ihrer Ressourcenmanager meldet m\u00f6glicherweise einen Fehler, wenn sie bei der Durchf\u00fchrung des Rollbacks Arbeiten durchgef\u00fchrt haben. Bleibt das Problem bestehen, wenden Sie sich an die n\u00e4chste Supportstufe.

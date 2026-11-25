@@ -1,0 +1,26 @@
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.saf/resources/com/ibm/ws/security/authorization/saf/internal/resources/SAFAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security SAF Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2960 - CWWKS2999
+
+UNABLE_TO_CREATE_DEFAULT_CRED=CWWKS2960W: Der Standardberechtigungsnachweis f\u00fcr die SAF-Berechtigung nicht authentifizierter Benutzer kann nicht erstellt werden. Alle Berechtigungspr\u00fcfungen f\u00fcr nicht authentifizierte Benutzer schlagen fehl. Der Standardberechtigungsnachweis konnte wegen des folgenden Fehlers nicht erstellt werden: {0}
+UNABLE_TO_CREATE_DEFAULT_CRED.explanation=Der Server kann den Standardberechtigungsnachweis, der den nicht authentifizierten SAF-Benutzer darstellt, nicht erstellen. Der nicht authentifizierte SAF-Benutzer ist mit dem Attribut unauthenticatedUser in der Serverkonfiguration angegeben. Der Server kann keine Berechtigungspr\u00fcfungen f\u00fcr nicht authentifizierte Benutzer durchf\u00fchren. Deshalb schlagen solche Berechtigungsversuche fehl.
+UNABLE_TO_CREATE_DEFAULT_CRED.useraction=Beheben Sie den in der Nachricht beschriebenen Fehler.
+
+CANNOT_READ_APPLDATA=CWWKS2961E: Lesen von APPLDATA aus dem SAF-EJBROLE-Profil {0} aufgrund des folgenden Fehlers nicht m\u00f6glich: {1}
+CANNOT_READ_APPLDATA.explanation=Der Server konnte das Feld APPLDATA aus dem angegebenen SAF-EJBROLE-Profil nicht lesen. Das Feld APPLDATA enth\u00e4lt den RunAs-Benutzer f\u00fcr die SAF-Delegierung.
+CANNOT_READ_APPLDATA.useraction=Die Fehlernachricht enth\u00e4lt die SAF-R\u00fcckgabecodes und SAF-Ursachencodes zur Fehlerermittlung.

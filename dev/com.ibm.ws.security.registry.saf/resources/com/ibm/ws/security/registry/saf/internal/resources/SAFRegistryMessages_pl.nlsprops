@@ -1,0 +1,52 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.saf/resources/com/ibm/ws/security/registry/saf/internal/resources/SAFRegistryMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security SAF Registry
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2930 - CWWKS2959
+
+PENALTY_BOX_FALLBACK=CWWKS2930W: Pr\u00f3ba uwierzytelnienia SAF przeprowadzona przy u\u017cyciu uprawnionych us\u0142ug SAF zosta\u0142a odrzucona, poniewa\u017c serwer nie jest autoryzowany do uzyskania dost\u0119pu do zasobu APPL-ID {0}. Uwierzytelnianie b\u0119dzie kontynuowane przy u\u017cyciu nieuprawnionych us\u0142ug SAF.
+PENALTY_BOX_FALLBACK.explanation=Serwer podj\u0105\u0142 pr\u00f3b\u0119 u\u017cycia uprawnionych us\u0142ug SAF do przeprowadzenia uwierzytelniania, jednak ta pr\u00f3ba nie powiod\u0142a si\u0119, poniewa\u017c serwer nie ma uprawnie\u0144 dost\u0119pu do wskazanego zasobu APPL-ID, zgodnie z definicjami w domenie WZSSAD (WLP z/OS System Security Access Domain). Serwer b\u0119dzie przeprowadza\u0142 uwierzytelnianie przy u\u017cyciu nieuprawnionych us\u0142ug SAF dostarczanych w ramach us\u0142ug systemowych Unix.
+PENALTY_BOX_FALLBACK.useraction=Je\u015bli uprawnione us\u0142ugi SAF s\u0105 potrzebne, nadaj u\u017cytkownikowi powi\u0105zanemu z serwerem odpowiednie uprawnienia do zasobu APPL-ID w domenie WZSSAD (WLP z/OS System Security Access Domain). Wi\u0119cej informacji na temat domeny WZSSAD zawiera Centrum informacyjne. Je\u015bli uprawnione us\u0142ugi SAF nie s\u0105 potrzebne, skonfiguruj serwer pod k\u0105tem u\u017cywania nieuprawnionego rejestru SAF. Szczeg\u00f3\u0142owe informacje mo\u017cna znale\u017a\u0107 w Centrum informacyjnym.
+
+PENALTY_BOX_RECOVERY=CWWKS2931I: Serwer jest teraz uprawniony do uzyskania dost\u0119pu do zasobu APPL-ID {0}. Uwierzytelnianie b\u0119dzie kontynuowane przy u\u017cyciu uprawnionych us\u0142ug SAF.
+PENALTY_BOX_RECOVERY.explanation=Poprzednia pr\u00f3ba uwierzytelnienia nie powiod\u0142a si\u0119, poniewa\u017c serwer nie by\u0142 autoryzowany do uzyskania dost\u0119pu do zasobu APPL-ID (patrz komunikat CWWKS2930W), jednak teraz serwer ma uprawnienia do uzyskania dost\u0119pu do tego zasobu. Przysz\u0142e pr\u00f3by uwierzytelniania b\u0119d\u0105 kontynuowane przy u\u017cyciu uprawnionych us\u0142ug SAF.
+PENALTY_BOX_RECOVERY.useraction=Brak.
+
+ACTIVATION_MESSAGE=CWWKS2932I: Aktywowano wersj\u0119 {0} \
+rejestru u\u017cytkownik\u00f3w SAF. Uwierzytelnianie b\u0119dzie kontynuowane przy u\u017cyciu \
+rodzimych us\u0142ug {0}.
+ACTIVATION_MESSAGE.explanation=Ten komunikat wskazuje \
+u\u017cywan\u0105 wersj\u0119 rejestru u\u017cytkownik\u00f3w SAF.  \
+Istniej\u0105 dwie wersje: (1) wersja nieuprawniona, kt\u00f3ra u\u017cywa nieuprawnionych us\u0142ug \
+systemu UNIX, takich jak __passwd, i (2) wersja uprawniona, kt\u00f3ra u\u017cywa \
+uprawnionych us\u0142ug SAF, takich jak initACEE.  
+ACTIVATION_MESSAGE.useraction=Aby u\u017cywa\u0107 wersji \
+uprawnionej rejestru SAF, serwer musi mie\u0107 dost\u0119p do uprawnionych zasob\u00f3w \
+SAFCRED i domeny WZSSAD (WLP z/OS System Security Access Domain).
+ 
+DAEMON_LOGIN_ERROR=CWWKS2933E: Nie mo\u017cna sprawdzi\u0107 nazwy u\u017cytkownika i has\u0142a, poniewa\u017c profil BPX.DAEMON jest aktywny, a przestrze\u0144 adresowa nie jest kontrolowana przez program.
+DAEMON_LOGIN_ERROR.explanation=U\u017cywanie nieautoryzowanej wersji rejestru SAF w systemie z aktywnym profilem BPX.DAEMON wymaga, aby wszystkie biblioteki u\u017cywane przez produkt Liberty by\u0142y kontrolowane przez program. Alternatywnym rozwi\u0105zaniem jest u\u017cycie autoryzowanej wersji rejestru SAF.
+DAEMON_LOGIN_ERROR.useraction=Je\u015bli zamierzano u\u017cy\u0107 autoryzowanej wersji rejestru SAF, sprawd\u017a komunikaty o wcze\u015bniejszych b\u0142\u0119dach w pliku message.log, kt\u00f3re mog\u0142y uniemo\u017cliwi\u0107 uruchomienie autoryzowanego rejestru. W przeciwnym razie wy\u0142\u0105cz profil BPX.DAEMON lub spraw, aby wszystkie biblioteki by\u0142y kontrolowane przez program.
+
+ENABLE_FAILOVER_MESSAGE=CWWKS2934E: Serwer nie ma uprawnie\u0144 do korzystania z autoryzowanego rejestru SAF.
+ENABLE_FAILOVER_MESSAGE.explanation=Serwer nie ma uprawnie\u0144 do korzystania z autoryzowanego rejestru SAF. \
+Warto\u015b\u0107 parametru enableFailover uniemo\u017cliwia serwerowi korzystanie z nieautoryzowanego rejestru SAF. Wszystkie przysz\u0142e pr\u00f3by uwierzytelnienia nie powiod\u0105 si\u0119.
+ENABLE_FAILOVER_MESSAGE.useraction=Je\u015bli serwer ma korzysta\u0107 z autoryzowanego rejestru SAF, sprawd\u017a, czy proces Angel jest uruchomiony oraz czy serwer ma dost\u0119p do wymaganych profili SAF w celu u\u017cycia autoryzowanego rejestru SAF. Je\u015bli serwer ma korzysta\u0107 z nieautoryzowanego rejestru SAF, ustawienie enableFailover musi zosta\u0107 zmienione na warto\u015b\u0107 true, co jest warto\u015bci\u0105 domy\u015bln\u0105.
+
+UNAUTH_INCLUDE_SAF=CWWKS2935W: Atrybut serwera includeSafGroups zosta\u0142 w\u0142\u0105czony, ale serwer nie ma dost\u0119pu do wymaganych autoryzowanych funkcji.
+UNAUTH_INCLUDE_SAF.explanation=W\u0142\u0105czono atrybut pobierania grup innych ni\u017c OMVS, ale serwer nie ma dost\u0119pu do autoryzowanych funkcji, wi\u0119c nie mo\u017ce pobra\u0107 grup SAF.
+UNAUTH_INCLUDE_SAF.useraction=Aby uzyska\u0107 dost\u0119p do grup innych ni\u017c OMVS, u\u017cytkownik powinien w\u0142\u0105czy\u0107 autoryzowane funkcje. 

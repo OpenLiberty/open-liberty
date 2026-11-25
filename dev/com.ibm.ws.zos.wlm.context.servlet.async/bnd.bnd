@@ -1,0 +1,34 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: z/OS WLM context service for asynchronous servlets
+Bundle-SymbolicName: com.ibm.ws.zos.wlm.context.servlet.async
+Bundle-Description: z/OS WLM context service for asynchronous servlets; version=${bVersion}
+
+WS-TraceGroup: zOSWLMContextServletAsync
+                
+Private-Package: com.ibm.ws.zos.wlm.context.servlet.async.*
+
+-dsannotations: \
+  com.ibm.ws.zos.wlm.context.servlet.async.internal.WLMTransferContextServiceImpl
+
+instrument.classesExcludes: com/ibm/ws/zos/wlm/context/servlet/async/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.zos.wlm;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.ws.webcontainer;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

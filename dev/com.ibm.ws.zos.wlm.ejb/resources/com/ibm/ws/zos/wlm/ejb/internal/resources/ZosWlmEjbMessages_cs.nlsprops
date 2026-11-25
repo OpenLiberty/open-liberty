@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.wlm.ejb/resources/com.ibm.ws.zos.wlm.ejb.internal.resources/ZosWlmEjbMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB  z/OS WLM EJB (MDB) classification
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0701-0750 z/OS WLM EJB (MDB) classification
+# -------------------------------------------------------------------------------------------------
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED=CWWKB0701W: Hodnota atributu transactionClass {0} p\u0159idru\u017een\u00e1 ke specifikaci aktivace {1} pod prvkem konfigurace mdbClassification byla o\u0159\u00edznuta na hodnotu {2}. Hodnota byla o\u0159\u00edznuta, proto\u017ee p\u0159ekra\u010dovala maxim\u00e1ln\u00ed povolenou velikost {3} znak\u016f.
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.explanation=Hodnota zmi\u0148ovan\u00e9ho nakonfigurovan\u00e9ho atributu transactionClass pod prvkem konfigurace mdbclassification byla o\u0159\u00edznuta na maxim\u00e1ln\u00ed povolenou d\u00e9lku znak\u016f. M\u011bjte na pam\u011bti, \u017ee pokud je jako specifikace aktivace zobrazen z\u00e1stupn\u00fd symbol, byl bu\u010f takto zad\u00e1n, nebo nebyl zad\u00e1n, a pou\u017eije se v\u00fdchoz\u00ed hodnota.
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.useraction=Ov\u011b\u0159te, \u017ee atribut transactionClass pod prvkem konfigurace mdbClassification obsahuje hodnotu, kter\u00e1 nep\u0159ekra\u010duje maxim\u00e1ln\u00ed d\u00e9lku.
+
+MDB_CONFIG_INVALID_ACTIVATION_SPEC=CWWKB0702W: Hodnota atributu jmsActivationSpec {0} p\u0159idru\u017een\u00e1 ke t\u0159\u00edd\u011b transakce {1} pod prvkem konfigurace mdbClassification je neplatn\u00e1. Prvek mdbClassification je ignorov\u00e1n.
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.explanation=Hodnota uv\u00e1d\u011bn\u00e9ho nakonfigurovan\u00e9ho atributu jmsActivationSpec pod prvkem konfigurace mdbClassification nem\u016f\u017ee b\u00fdt pr\u00e1zdn\u00fd \u0159et\u011bzec ani posloupnost mezer. M\u011bjte na pam\u011bti, \u017ee pokud je jako t\u0159\u00edda transakce zobrazen pr\u00e1zdn\u00fd \u0159et\u011bzec, byla bu\u010f takto zad\u00e1na, nebo nebyla zad\u00e1na, a pou\u017eije se v\u00fdchoz\u00ed hodnota.
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.useraction=Ov\u011b\u0159te, \u017ee atribut jmsActivationSpec pod prvkem konfigurace mdbClassification obsahuje platnou hodnotu.

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <!-- 
+      - Example: 
+      - <zosLocalAdapters wolaGroup="LIBERTY" wolaName2="SERVER" wolaName3="FORWOLA" />
+     -->
+    <OCD id="com.ibm.ws.zos.channel.wola.config" ibm:alias="zosLocalAdapters" name="%zosWolaConfig" description="%zosWolaConfig.desc">
+        <AD id="wolaGroup"
+            name="%wolaGroup"
+            description="%wolaGroup.desc" 
+            required="true"
+            type="String" />
+        <AD id="wolaName2"
+            name="%wolaName2"
+            description="%wolaName2.desc" 
+            required="true"
+            type="String" />
+        <AD id="wolaName3"
+            name="%wolaName3"
+            description="%wolaName3.desc" 
+            required="true"
+            type="String" />
+        <AD id="useCicsTaskUserId" 
+            type="Boolean" 
+            required="false"
+            default="false" 
+            name="%useCicsTaskUserId" 
+            description="%useCicsTaskUserId.desc"/>
+    </OCD>
+    
+    <Designate pid="com.ibm.ws.zos.channel.wola.config">
+        <Object ocdref="com.ibm.ws.zos.channel.wola.config" />
+    </Designate>
+  
+</metatype:MetaData>

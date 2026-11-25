@@ -1,0 +1,179 @@
+###############################################################################
+# Copyright (c) 2011, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.core/resources/com/ibm/ws/zos/core/internal/resources/CoreMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Core
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: Command processing (com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops)
+#0051-0100: Native code (com.ibm.zos.native/resources/com/ibm/ws/zos/native/native_messages.nlsprops)
+#0101-0150: core (here)
+# -------------------------------------------------------------------------------------------------
+
+#{0} is an integer reason code.
+ANGEL_NOT_AVAILABLE=CWWKB0101I: Procesul angel (\u00eenger) nu este disponibil.  Nu se va \u00eenc\u0103rca niciun serviciu autorizat.  Codul de motiv este {0}.
+ANGEL_NOT_AVAILABLE.explanation=Fie nu exist\u0103 niciun proces angel fie exist\u0103 unul dar serverul nu s-a putut conecta la procesul angel din cauza unei erori.
+ANGEL_NOT_AVAILABLE.useraction=Dac\u0103 serverul nu necesit\u0103 servicii autorizate, atunci nu este necesar\u0103 nicio ac\u0163iune. Dac\u0103 serverul necesit\u0103 servicii autorizate, porni\u0163i un proces angel pe acest sistem pentru ca acest server s\u0103-\u015fi poat\u0103 \u00eenc\u0103rca codul autorizat \u015fi s\u0103 poat\u0103 face disponibile serviciile autorizate.  Textul mesajului include un cod motiv intern pentru a fi utilizat de personalul de suport pentru produs.  Dac\u0103 problema persist\u0103, consulta\u0163i informa\u0163iile de determinare a problemei de pe pagina web de suport WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL=CWWKB0102I: Acest server nu este autorizat s\u0103 se conecteze la procesul angel.  Nu se va \u00eenc\u0103rca niciun serviciu autorizat.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL.explanation=ID-ul de utilizator care a pornit acest server nu are acces la profilul BBG.ANGEL clasei de servere SAF.  Accesul de citire la acest profil este necesar pentru conectarea la procesul angel.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL.useraction=Dac\u0103 nu este cerut niciun serviciu autorizat de acest server, atunci nu este necesar\u0103 nicio ac\u0163iune. Dac\u0103 serverul necesit\u0103 servicii autorizate, acorda\u0163i ID-ului de utilizator care porne\u015fte serverul acces de citire la profilul BBG.ANGEL al clasei serverului SAF. 
+
+#{0} is the name of a service group (a text string between 1-8 characters)
+AUTHORIZED_SERVICE_AVAILABLE=CWWKB0103I: Grupul de servicii autorizate {0} este disponibil.
+AUTHORIZED_SERVICE_AVAILABLE.explanation=Grupul de servicii autorizate numit \u00een mesaj a fost \u00eenc\u0103rcat cu succes.
+AUTHORIZED_SERVICE_AVAILABLE.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+#{0} is the name of a service group (a text string between 1-8 characters)
+AUTHORIZED_SERVICE_NOT_AVAILABLE=CWWKB0104I: Grupul de servicii autorizate {0} nu este disponibil.
+AUTHORIZED_SERVICE_NOT_AVAILABLE.explanation=ID-ul de utilizator care a pornit acest server nu are acces la profilul corespunz\u0103tor \u00een clasa de server SAF.  Numele de profil este BBG.BBGZSAFM.<name> unde <name> este numele grupului de servicii din acest mesaj.
+AUTHORIZED_SERVICE_NOT_AVAILABLE.useraction=Dac\u0103 acest grup de servicii nu este cerut de acest server, atunci nu este necesar\u0103 nicio ac\u0163iune. Dac\u0103 serverul necesit\u0103 servicii care sunt furnizate de acest grup de servicii autorizat, acorda\u0163i ID-ului de utilizator care porne\u015fte serverul acces de citire la profilurile corespunz\u0103toare din clasa de server SAF.
+
+#{0} is the name of the unauthorized function module
+#{1} is the return value from BPX4LOD
+#{2} is the return code from BPX4LOD
+#{3} is the reason code from BPX4LOD
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD=CWWKB0105E: Nu se poate \u00eenc\u0103rca biblioteca de cod nativ\u0103 z/OS {0}.  BPX4LOD a e\u015fuat, rv = {1} rc = {2} rsn = {3}.
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD.explanation=O por\u0163iune din bibliotecile native z/OS pentru serverul de aplica\u0163ii nu a putut fi \u00eenc\u0103rcat\u0103.  Serviciul de sistem Unix BPX4LOD a e\u015fuat c\u00e2nd \u00eencerca \u00eenc\u0103rcarea bibliotecii indicate \u00een mesaj.  Valoarea de retur, codul retur \u015fi codul motiv returnate de BPX4LOD sunt \u015fi ele indicate \u00een mesaj.  Codurile retur \u015fi motiv sunt tip\u0103rite ca \u00eentregi hexazecimali.
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD.useraction=Confirma\u0163i c\u0103 to\u0163i pa\u015fii de instalare au fost finaliza\u0163i c\u00e2nd instala\u0163i serverul de aplica\u0163ii pe acest sistem.  Valoarea de retur, codul retur \u015fi codul motiv pot fi c\u0103utate \u00een "Mesaje \u015fi coduri servicii de sistem z/OS UNIX", num\u0103rul publica\u0163iei SA22-7807-xx.  Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 urm\u0103torul nivel de suport.
+
+#{0} is the name of the library
+LIBRARY_DOES_NOT_EXIST=CWWKB0106E: Biblioteca nativ\u0103 z/OS {0} nu exist\u0103 \u00een sistemul de fi\u015fiere.
+LIBRARY_DOES_NOT_EXIST.explanation=Nu s-a g\u0103sit o bibliotec\u0103 de cod nativ\u0103 z/OS \u00een sistemul de fi\u015fiere.  Numele bibliotecii este indicat \u00een mesaj.
+LIBRARY_DOES_NOT_EXIST.useraction=Confirma\u0163i c\u0103 to\u0163i pa\u015fii de instalare au fost finaliza\u0163i c\u00e2nd instala\u0163i serverul de aplica\u0163ii pe acest sistem.  Dac\u0103 problema persist\u0103, contacta\u0163i-v\u0103 urm\u0103torul nivel de suport.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_REGISTRATION_FAILED_BAD_PARM=CWWKB0107E: {0} produsul {1} versiunea {2} a e\u015fuat s\u0103 se \u00eenregistreze cu z/OS din cauza problemelor cu traducerea \u015firurilor necesare la EBCDIC.
+PRODUCT_REGISTRATION_FAILED_BAD_PARM.explanation=Unul din \u015firurile de identificare de produs nu a putut fi tradus \u00een EBCDIC pentru transmitere la serviciul IFAUSAGE.
+PRODUCT_REGISTRATION_FAILED_BAD_PARM.useraction=Contacta\u0163i proprietarul produsului pentru a ob\u0163ine \u015firurile de identificare corectate.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_REGISTRATION_SUCCESSFUL=CWWKB0108I: {0} produsul {1} versiunea {2} s-a \u00eenregistrat cu succes cu z/OS.
+PRODUCT_REGISTRATION_SUCCESSFUL.explanation=Produsul numit a fost \u00eenregistrat cu z/OS folosind serviciul IFAUSAGE.
+PRODUCT_REGISTRATION_SUCCESSFUL.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+#{3} is the return code
+PRODUCT_REGISTRATION_UNSUCCESSFUL=CWWKB0109E: {0} produsul {1} versiunea {2} a e\u015fuat s\u0103 se \u00eenregistreze cu z/OS, cod retur = {3}.
+PRODUCT_REGISTRATION_UNSUCCESSFUL.explanation=Produsul numit a e\u015fuat s\u0103 se \u00eenregistreze cu z/OS folosind serviciul IFAUSAGE.  Codurile retur mai mari ca zero vin de la serviciul IFAUSAGE \u00een sine.  Codurile retur negative indic\u0103 o problem\u0103 intern\u0103 la procesarea cererii de \u00eenregistrare.   
+PRODUCT_REGISTRATION_UNSUCCESSFUL.useraction=Codul retur opt (8) ar putea indica faptul c\u0103 serverul \u00eencearc\u0103 s\u0103 se \u00eenregistreze pentru prea multe produse \u00een acela\u015fi timp.  
+
+#No fill-ins
+SERVER_SAFM_NOT_APF_AUTHORIZED=CWWKB0110I: Modulul bbgzsafm nu este autorizat APF. Niciun serviciu autorizat nu va fi disponibil.
+SERVER_SAFM_NOT_APF_AUTHORIZED.explanation=Modulul bbgzsafm nu este autorizat APF. bbgzsafm trebuie s\u0103 fie autorizat APF pentru a permite accesul la servicii autorizate.
+SERVER_SAFM_NOT_APF_AUTHORIZED.useraction=Dac\u0103 nu este cerut niciun serviciu autorizat de acest server, atunci nu este necesar\u0103 nicio ac\u0163iune. Dac\u0103 serverul necesit\u0103 servicii autorizate, APF autorizeaz\u0103 modulul bbgzsafm. Vede\u0163i comanda extattr \u00een "Referin\u0163\u0103 de comand\u0103 servicii de sistem z/OS UNIX", num\u0103rul d e publica\u0163ie SA22-7802-xx.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_DEREGISTRATION_SUCCESSFUL=CWWKB0111I: {0} produsul {1} versiunea {2} \u015fi-a anulat cu succes \u00eenregistrarea din z/OS.
+PRODUCT_DEREGISTRATION_SUCCESSFUL.explanation=Produsului numit i s-a anulat \u00eenregistrarea din z/OS folosind serviciul IFAUSAGE.
+PRODUCT_DEREGISTRATION_SUCCESSFUL.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+#{0} successful product registration count
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED=CWWKB0112I: Num\u0103rul de produse \u00eenregistrate cu succes cu z/OS este de {0}. Serverul va \u00eencerca s\u0103 anuleze \u00eenregistrarea acestor produse din z/OS \u00een timpul opririi activit\u0103\u0163ii serverului.
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED.explanation=Serverul va \u00eencerca s\u0103 anuleze explicit \u00eenregistrarea tuturor produselor \u00eenregistrate cu succes din z/OS \u00een timpul opririi activit\u0103\u0163ii serverului. Serviciul z/OS folosit pentru a anula \u00eenregistrarea produselor este IFAUSAGE.
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+#{0} successful product registration count
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED=CWWKB0113I: Num\u0103rul de produse \u00eenregistrate cu succes cu z/OS este de {0}. Aceste produse vor avea anulat\u0103 \u00eenregistrarea din z/OS c\u00e2nd se termin\u0103 spa\u0163iul de adres\u0103.
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED.explanation=Toate produsele \u00eenregistrate cu succes vor avea anulat\u0103 \u00eenregistrarea din z/OS c\u00e2nd se termin\u0103 spa\u0163iul de adres\u0103. Dac\u0103 anularea explicit\u0103 a \u00eenregistr\u0103rii produsului \u00een timpul opririi activit\u0103\u0163ii serverului este necesar\u0103, crea\u0163i \u015fi activa\u0163i profilul de server pentru a accesa servicii autorizate sub grupul PRODMGR \u015fi porni\u0163i procesul angel. Procesul angel trebuie pornit \u00eenainte de pornirea serverului.
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+#{3} is the return code
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL=CWWKB0114E: {0} produsul {1} versiunea {2} a e\u015fuat anularea \u00eenregistr\u0103rii din z/OS. Cod retur = {3}.
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL.explanation=Produsul numit a \u015feuat anularea \u00eenregistr\u0103rii din z/OS folosind serviciul IFAUSAGE.  Codurile retur mai mari ca zero vin de la serviciul IFAUSAGE \u00een sine.  Codurile retur negative indic\u0103 o problem\u0103 intern\u0103 la procesarea cererii de anulare a \u00eenregistr\u0103rii.
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL.useraction=Codul retur opt (8)indic\u0103 faptul c\u0103 produsul nu a fost niciodat\u0103 \u00eenregistrat.
+
+SERVER_SAFM_NOT_SAF_AUTHORIZED=CWWKB0115I: Acest server nu este autorizat s\u0103 \u00eencarce modulul bbgzsafm.  Nu se va \u00eenc\u0103rca niciun serviciu autorizat.
+SERVER_SAFM_NOT_SAF_AUTHORIZED.explanation=ID-ul de utilizator care a pornit acest server nu are acces la profilul BBG.AUTHMOD.BBGZSAFM al clasei de servere SAF.  Accesul de citire la acest profil este necesar pentru conectarea la procesul angel \u015fi \u00eenc\u0103rcarea serviciilor autorizate.
+SERVER_SAFM_NOT_SAF_AUTHORIZED.useraction=Dac\u0103 nu este cerut niciun serviciu autorizat de acest server, atunci nu este necesar\u0103 nicio ac\u0163iune. Dac\u0103 serverul necesit\u0103 servicii autorizate, acorda\u0163i ID-ului de utilizator care porne\u015fte serverul acces de citire la profilul BBG.AUTHMOD.BBGZSAFM al clasei serverului SAF. 
+
+NOT_REGISTERED_WITH_REQUIRED_ANGEL=CWWKB0116I: Acest server nu este \u00eenregistrat cu un proces angel chiar dac\u0103 este configurat pentru a cere \u00eenregistrarea cu un proces angel. Acest server \u00eencearc\u0103 s\u0103 se opreasc\u0103.
+NOT_REGISTERED_WITH_REQUIRED_ANGEL.explanation=Serverul este configurat pentru a renun\u0163a la pornire c\u00e2nd nu este \u00eenregistrat cu un proces angel. Serverul nu este \u00eenregistrat cu un proces angel \u015fi se opre\u015fte.
+NOT_REGISTERED_WITH_REQUIRED_ANGEL.useraction=Asigura\u0163i-v\u0103 c\u0103 procesul angel este pornit \u015fi c\u0103 serverul este capabil s\u0103 se conecteze la el \u015fi c\u0103 se poate \u00eenregistra cu el. Alternativ, modifica\u0163i configura\u0163ia pentru a permite ca serverul s\u0103 porneasc\u0103 f\u0103r\u0103 \u00eenregistrarea cu un proces angel.
+
+#{0} is the name of the angel process.  1-54 characters.
+#{1} is an integer reason code.
+ANGEL_NOT_AVAILABLE_NAME=CWWKB0117W: Procesul angel {0} nu este disponibil. Nu se va \u00eenc\u0103rca niciun serviciu autorizat. Codul  motiv este {1}.
+ANGEL_NOT_AVAILABLE_NAME.explanation=Fie niciun proces angel cu numele afi\u015fat \u00een mesaj nu exist\u0103 sau unul exist\u0103 dar serverul nu s-a putut conecta la el din cauza unei erori.
+ANGEL_NOT_AVAILABLE_NAME.useraction=Dac\u0103 serverul necesit\u0103 servicii autorizate, porni\u0163i un proces angel pe acest sistem pentru ca acest server s\u0103-\u015fi poat\u0103 \u00eenc\u0103rca codul autorizat \u015fi s\u0103 poat\u0103 face disponibile serviciile autorizate. Textul mesajului include un cod motiv intern pentru a fi utilizat de personalul de suport pentru produs. Dac\u0103 problema persist\u0103, vede\u0163i informa\u0163iile de determinare ale problemei pe pagina de web urm\u0103toare WebSphere Application Server Support: http://www.ibm.com/software/webservers/appserv/was/support. Dac\u0103 nu este cerut niciun serviciu autorizat de acest server, atunci nu este necesar\u0103 nicio ac\u0163iune. Pentru a \u00eempiedica acest mesaj de la apari\u0163ie, \u00eenl\u0103tura\u0163i proprietatea com.ibm.ws.zos.core.angelName din fi\u015fierul bootstrap.properties.
+
+#{0} is the name of the angel process. 1-54 characters.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME=CWWKB0118W: Acest server nu este autorizat pentru conectarea la procesul angel {0}. Nu se va \u00eenc\u0103rca niciun serviciu autorizat.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME.explanation=ID-ul utilizator care a pornit acest server nu are acces la System Authorization Facility (SAF) pentru procesul angel numit \u00een mesaj. Accesul de citire este necesar pentru conectarea la acest proces angel.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME.useraction=Dac\u0103 serverul necesit\u0103 servicii autorizate, consulta\u0163i documenta\u0163ia despre cum s\u0103 seta\u0163i un angel numit. Dac\u0103 nu este cerut niciun serviciu autorizat de acest server, atunci nu este necesar\u0103 nicio ac\u0163iune. Pentru a \u00eempiedica acest mesaj de la apari\u0163ie, \u00eenl\u0103tura\u0163i proprietatea com.ibm.ws.zos.core.angelName din fi\u015fierul bootstrap.properties.
+
+ANGEL_NAME_TOO_LONG=CWWKB0119E: Numele angel specificat \u00een bootstrap.properties este mai mare de 54 de caractere.
+ANGEL_NAME_TOO_LONG.explanation=Proprietatea com.ibm.ws.zos.core.angelName specific\u0103 numele procesului angel la care ar trebui s\u0103 se conecteze acest server. Proprietatea este specificat\u0103 \u00een bootstrap.properties \u015fi trebuie s\u0103 fie de 54 de caractere sau mai pu\u0163in.  
+ANGEL_NAME_TOO_LONG.useraction=Acest server se va conecta la un proces angel. Pentru a se conecta la un proces angel, specifica\u0163i o valoare de 54 de caractere sau mai mic\u0103 pentru proprietatea com.ibm.ws.zos.core.angelName \u015fi reporni\u0163i serverul.
+
+#{0} is an unsupported character
+#{1} is a number between 1 and 54
+ANGEL_NAME_UNSUPPORTED_CHARACTER=CWWKB0120E: Numele angel name specificat \u00een bootstrap.properties con\u0163ine caracterul nesuportat {0} la pozi\u0163ia {1}.
+ANGEL_NAME_UNSUPPORTED_CHARACTER.explanation=Proprietatea com.ibm.ws.zos.core.angelName specific\u0103 numele procesului angel la care ar trebui s\u0103 se conecteze acest server. Proprietatea este specificat\u0103 \u00een boostrap.properties \u015fi poate con\u0163ine doar caractere din setul de caractere: A-Z 0-9 ! # $ + - / : < > = ? @ [ ] ^ _ ` { } | ~
+ANGEL_NAME_UNSUPPORTED_CHARACTER.useraction=Acest server se va conecta la un proces angel. Pentru a se conecta la un proces angel, specifica\u0163i o valoare pentru proprietatea com.ibm.ws.zos.core.angelName \u015fi reporni\u0163i serverul.
+
+#{0} is the server's UMASK value.
+SERVER_CURRENT_UMASK=CWWKB0121I: Valoarea UMASK a procesului de server este setat\u0103 la {0}.
+SERVER_CURRENT_UMASK.explanation=Valoarea UMASK a procesului de server. Implicit, valoarea UMASK este mo\u015ftenit\u0103 de la procesul care a pornit serverul Liberty, dar este modificat \u00een continuare pentru a nu permite acces de citire, scriere sau executare ALTOR utilizatori. Setarea variabile de mediu WLP_SKIP_UMASKla true \u00eempiedic\u0103 serverul s\u0103 modifice UMASK \u00een acest fel. C\u00e2nd un server Liberty este pornit utiliz\u00e2nd o procedur\u0103 z/OS, pute\u0163i personaliza UMASK utilizat de procesul de server prin definirea variabilelor de mediu WLP_SKIP_UMASK \u015fi _BPX_BATCH_UMASK. WLP_SKIP_UMASK poate fi specificat fie \u00een fi\u015fierul server.env fie, dac\u0103 serverul este pornit utiliz\u00e2nd o procedur\u0103 z/OS, poate fi specificat utiliz\u00e2nd intrarea STDENDV. Prin contrast, _BPX_BATCH_UMASK nu poate fi specificat \u00een fi\u015fierul server.env. Trebuie s\u0103 fie specificat numai utiliz\u00e2nd intrarea STDENV DD \u00een procedura z/OS.
+SERVER_CURRENT_UMASK.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+#{0} is the name of the angel process. 1-54 characters.
+SERVER_CONNECTED_TO_ANGEL=CWWKB0122I: Acest server este conectat la procesul angel {0}.
+SERVER_CONNECTED_TO_ANGEL.explanation=Acest server este conectat la procesul angel configurat.
+SERVER_CONNECTED_TO_ANGEL.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID=CWWKB0123W: Timpul de a\u015fteptare de pornire angel care a fost specificat \u00een bootstrap.properties este \u00een afara intervalului de valori permise sau este invalid. Va fi utilizat\u0103 valoarea implicit\u0103 de 0(s).
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID.explanation=Serverul are configura\u0163ia gre\u015fit\u0103 pentru timpul de a\u015fteptare de pornire angel. Intervalul permis este de la 0 la 300 secunde.
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID.useraction=Acest server va folosi valoarea implicit\u0103 de timp de a\u015fteptare 0(s) pentru a se conecta la Angel-ul necesar. Pentru a configura timpul de a\u015fteptare de pornire valid, specifica\u0163i o valoare \u00eentreag\u0103 \u00eentre 0 \u015fi 300 \u00een proprietatea com.ibm.ws.zos.core.angelWaitTimeSeconds \u015fi reporni\u0163i serverul.
+
+#{0} is the configured time that liberty server will wait the required angel to start, {1} is the name of the required angel process.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT=CWWKB0124I: Este necesar Angel-ul {1}, serverul a fost configurat s\u0103 a\u015ftepte p\u00e2n\u0103 la {0} secunde pentru a se conecta la Angel-ul vizat.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT.explanation=Acest server necesit\u0103 pornirea Angel-ului, are specificat \u015fi un timp maxim de a\u015fteptare la pornire p\u00e2n\u0103 la oprirea activit\u0103\u0163ii dac\u0103 serverul e\u015fueaz\u0103 s\u0103 se \u00eenregistreze cu Angel-ul necesar.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+
+REGION_REQUESTED=CWWKB0125I: Acest server a cerut o m\u0103rime REGION de {0}. Limita de stocate below-the-line este {1}, iar limita de stocare above-the-line este {2}.
+REGION_REQUESTED.explanation=Acest mesaj afi\u015feaz\u0103 diverse valori din blocul de control Local Data Area (LDA), care pot fi utile pentru depanarea erorii out-of-storage. M\u0103rimea regiunii este regiunea de stocare alocat\u0103 spa\u0163iului de adrese, indicat\u0103 \u00een kiloocte\u0163i. Limitele below-the-line \u015fi above-the-line sunt date \u00een megaocte\u0163i. "LINE" este grani\u0163a dintre adresele de spa\u0163iu de stocare de 24 de bi\u0163i \u015fi 31 de bi\u0163i. Aceste limite indic\u0103 limitele spa\u0163iului de stocare real pentru adresele pe 24 de bi\u0163i (below-the-line) \u015fi adresele pe 31 de bi\u0163i (above-the-line).
+REGION_REQUESTED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+MEMORY_LIMIT_INFORMATION=CWWKB0126I: MEMLIMIT={0}. MEMLIMIT CONFIGURATION SOURCE={1}.
+MEMORY_LIMIT_INFORMATION.explanation=Afi\u015feaz\u0103 valoarea MEMLIMIT configurat\u0103 pentru spa\u0163iul de adrese \u015fi sursa de configurare MEMLIMIT. MEMLIMIT CONFIGURATION SOURCE este una dintre urm\u0103toarele valori. "SMF" - setat\u0103 de SMF \u00een SMFPRMxx sau setat\u0103 la 0 implicit. "JCL" - setat\u0103 de JCL. "REG0" - m\u0103rime nelimitat\u0103 bazat\u0103 pe specifica\u0163ia REGION=0. "USI" - configurat\u0103 de c\u00e2mpul IEFSMFIE \u015fi setat\u0103 utiliz\u00e2nd ie\u015firea IEFUSI. "OMVS" - setat\u0103 de segmentul UNIX OMVS. "SETR" - setat\u0103 de UNIX setrlimit. "SPW" - setat\u0103 de UNIX spawn. "SETO" - setat\u0103 de comanda UNIX SETOMVS. "AUTH" - setat\u0103 de modificarea de aplica\u0163ie autorizat\u0103. "URG" - setat\u0103 \u00een IEFSMFIE de ie\u015firea IEFUSI. "UNKNOWN" - setat\u0103 de o surs\u0103 necunsocut\u0103. "BAD" - Eroare la setarea MEMLIMIT.
+MEMORY_LIMIT_INFORMATION.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+OLD_ANGEL_VERSION=CWWKB0127W: Versiune angel curent\u0103 este anterioar\u0103 versiunii pe care o a\u015fteapt\u0103 serverul. Actualiza\u0163i versiunea de angel la cea mai recent\u0103 versiune disponibil\u0103.
+OLD_ANGEL_VERSION.explanation=Serverul are o valoare a\u015fteptat\u0103 pentru versiunea procesului angel. Versiune curent\u0103 este anterioar\u0103 versiunii a\u015fteptate. Dac\u0103 o instan\u0163\u0103 de server Liberty se conecteaz\u0103 la un angel care ruleaz\u0103 la un nivel de serviciu anterior, unele caracteristici ale serverului ar putea fi indisponibile.
+OLD_ANGEL_VERSION.useraction=Pentru a v\u0103 asigura c\u0103 toate caracteristicile serverului sunt disponibile procesului angel, actualiza\u0163i angel la ultima versiunea.

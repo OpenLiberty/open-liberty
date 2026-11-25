@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2011, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.wlm/resources/com.ibm.ws.zos.wlm.internal.resources/ZWLMMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WLM Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0151-0200: WLM Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+NATIVE_SERVICE_OOM=CWWKB0151E: Nativn\u00ed rutina ({0}) rozpoznala p\u0159epln\u011bn\u00ed pam\u011bti.
+NATIVE_SERVICE_OOM.explanation=Server spustil nativn\u00ed metodu, kter\u00e1 rozpoznala p\u0159epln\u011bn\u00ed pam\u011bti.
+NATIVE_SERVICE_OOM.useraction=Prozkoumejte protokoly serveru a b\u011bhov\u00e9 prost\u0159ed\u00ed a ur\u010dete p\u0159\u00ed\u010dinu selh\u00e1n\u00ed nativn\u00edho k\u00f3du.
+
+#{0}
+#{1}
+NATIVE_SERVICE_WLM_FAILURE=CWWKB0152E: Nativn\u00ed rutina ({0}) obdr\u017eela k\u00f3d p\u0159\u00ed\u010diny selh\u00e1n\u00ed ({1}) od WLM.
+NATIVE_SERVICE_WLM_FAILURE.explanation=Server spustil nativn\u00ed metodu, kter\u00e1 vyvolala uvedenou slu\u017ebu WLM. K\u00f3d p\u0159\u00ed\u010diny vygenerovan\u00fd slu\u017ebou WLM signalizuje d\u016fvod selh\u00e1n\u00ed.
+NATIVE_SERVICE_WLM_FAILURE.useraction=Pou\u017eijte k\u00f3d p\u0159\u00ed\u010diny WLM k ur\u010den\u00ed d\u016fvodu selh\u00e1n\u00ed.
+
+#{0}
+#{1}
+NATIVE_SERVICE_ERRNO=CWWKB0153E: Nativn\u00ed rutina ({0}) selhala s \u010d\u00edslem chyby errno ({1}).
+NATIVE_SERVICE_ERRNO.explanation=Server spustil nativn\u00ed metodu, kter\u00e1 vyvolala uvedenou slu\u017ebu WLM. \u010c\u00edslo chyby errno vygenerovan\u00fd slu\u017ebou WLM signalizuje p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+NATIVE_SERVICE_ERRNO.useraction=K ur\u010den\u00ed p\u0159\u00ed\u010diny selh\u00e1n\u00ed pou\u017eijte \u010d\u00edslo chyby errno.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0154E: Selhala nativn\u00ed rutina, slu\u017eba serveru WebSphere Application Server ({0}) RC({1}), slu\u017eba WLM ({2}) RC({3}) RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=Server spustil nativn\u00ed metodu, je\u017e selhala. Zobrazuje se c\u00edlov\u00e1 slu\u017eba serveru WebSphere Application Server a n\u00e1vratov\u00fd k\u00f3d. Rovn\u011b\u017e se zobrazuje c\u00edlov\u00e1 slu\u017eba WLM s n\u00e1vratov\u00fdm k\u00f3dem a k\u00f3dem p\u0159\u00ed\u010diny.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=Pou\u017eijte n\u00e1vratov\u00fd k\u00f3d a k\u00f3d p\u0159\u00ed\u010diny k ur\u010den\u00ed d\u016fvodu selh\u00e1n\u00ed.
+
+#{0}
+NATIVE_SERVICE_PC=CWWKB0155E: Nativn\u00ed rutina ({0}) obdr\u017eena neo\u010dek\u00e1van\u00fd n\u00e1vratov\u00fd k\u00f3d ({1}) od sv\u00e9 autorizovan\u00e9 slu\u017eby PC.
+NATIVE_SERVICE_PC.explanation=Server spustil nativn\u00ed metodu k proveden\u00ed vol\u00e1n\u00ed autorizovan\u00e9 slu\u017eby. Obdr\u017eel nenulov\u00fd n\u00e1vratov\u00fd k\u00f3d od autorizovan\u00e9ho vol\u00e1n\u00ed programu (Program Call - PC).
+NATIVE_SERVICE_PC.useraction=Prozkoumejte protokoly serveru a b\u011bhov\u00e9 prost\u0159ed\u00ed a ur\u010dete p\u0159\u00ed\u010dinu selh\u00e1n\u00ed nativn\u00edho k\u00f3du.
+
+#{0} 
+NATIVE_SERVICE_FAILED_TO_REGISTER=CWWKB0156E: Nativn\u00ed rutin\u011b ({0}) se nepoda\u0159ilo zaregistrovat enkl\u00e1vu spr\u00e1vy WLM Enclave do nativn\u00edho registru.
+NATIVE_SERVICE_FAILED_TO_REGISTER.explanation=Server spustil nativn\u00ed metodu k proveden\u00ed vol\u00e1n\u00ed autorizovan\u00e9 slu\u017eby. Bylo \u00fasp\u011b\u0161n\u011b dokon\u010deno vyvol\u00e1n\u00ed nativn\u00ed slu\u017eby WLM, nepoda\u0159ilo se ale zaregistrovat enkl\u00e1vu spr\u00e1vy WLM Enclave do nativn\u00edho registru.
+NATIVE_SERVICE_FAILED_TO_REGISTER.useraction=Prozkoumejte protokoly serveru a b\u011bhov\u00e9 prost\u0159ed\u00ed a ur\u010dete p\u0159\u00ed\u010dinu selh\u00e1n\u00ed nativn\u00edho k\u00f3du.
+
+#{0} 
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE=CWWKB0157E: Nativn\u00ed rutin\u011b ({0}) se nepoda\u0159ilo ov\u011b\u0159it enkl\u00e1vu spr\u00e1vy WLM Enclave v nativn\u00edm registru.
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE.explanation=V nativn\u00edm registru se nepoda\u0159ilo ov\u011b\u0159it dodan\u00fd token reprezentuj\u00edc\u00ed spr\u00e1vu enkl\u00e1vy WLM Enclave. 
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE.useraction=Prozkoumejte protokoly serveru a b\u011bhov\u00e9 prost\u0159ed\u00ed a ur\u010dete p\u0159\u00ed\u010dinu selh\u00e1n\u00ed nativn\u00edho k\u00f3du.
+
+#{0} 
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND=CWWKB0158E: Nativn\u00ed rutin\u011b ({0}) se nepoda\u0159ilo nal\u00e9zt nativn\u00ed neautorizovanou rutinu stub.
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND.explanation=Nebyla nalezena nativn\u00ed slu\u017eba nezbytn\u00e1 pro zpracov\u00e1n\u00ed vol\u00e1n\u00ed slu\u017eby. 
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND.useraction=Prozkoumejte protokoly serveru a b\u011bhov\u00e9 prost\u0159ed\u00ed a ur\u010dete p\u0159\u00ed\u010dinu selh\u00e1n\u00ed nativn\u00edho k\u00f3du.
+
+#{0} 
+NATIVE_SERVICE_BPX4IPT_FAILED=CWWKB0159E: Nativn\u00ed rutina ({0}) obdr\u017eela od slu\u017eby BPX4IPT neo\u010dek\u00e1van\u00fd v\u00fdsledek.
+NATIVE_SERVICE_BPX4IPT_FAILED.explanation=Selhal pokus o vol\u00e1n\u00ed slu\u017eby pomoc\u00ed nativn\u00ed slu\u017eby BPX4IPT. 
+NATIVE_SERVICE_BPX4IPT_FAILED.useraction=Prozkoumejte protokoly serveru a b\u011bhov\u00e9 prost\u0159ed\u00ed a ur\u010dete p\u0159\u00ed\u010dinu selh\u00e1n\u00ed nativn\u00edho k\u00f3du.
+
+#{0} 
+CONFIG_INVALID_COLLECTIONNAME=CWWKB0160W: Hodnota atributu collectionName ({0}) konfigurace spr\u00e1vy pracovn\u00ed z\u00e1t\u011b\u017ee byla zkr\u00e1cena.
+CONFIG_INVALID_COLLECTIONNAME.explanation=Dodan\u00e1 hodnota atributu collectionName p\u0159ekro\u010dila maxim\u00e1ln\u00ed d\u00e9lku osmn\u00e1cti znak\u016f. Bude pou\u017eito prvn\u00edch osmn\u00e1ct znak\u016f.
+CONFIG_INVALID_COLLECTIONNAME.useraction=Aktualizujte konfiguraci serveru zad\u00e1n\u00edm spr\u00e1vn\u00e9 hodnoty atributu collectionName.
+
+#{0}
+CONFIG_NO_COLLECTIONNAME=CWWKB0161W: Hodnota atributu collectionName konfigurace spr\u00e1vy pracovn\u00ed z\u00e1t\u011b\u017ee je null nebo je pr\u00e1zdn\u00e1. Bude pou\u017eita v\u00fdchoz\u00ed hodnota {0}.
+CONFIG_NO_COLLECTIONNAME.explanation=Dodan\u00e1 hodnota atributu collectionName je null nebo je pr\u00e1zdn\u00e1. 
+CONFIG_NO_COLLECTIONNAME.useraction=Aktualizujte konfiguraci serveru zad\u00e1n\u00edm hodnoty atributu collectionName.
+
+#{0}
+#{1}
+CLASSIFICATION_TRANCLASS_TRUNCATED=CWWKB0162W: Hodnota atributu transactionClass konfigurace WLM Classification byla zkr\u00e1cena z ({0}) na ({1}).
+CLASSIFICATION_TRANCLASS_TRUNCATED.explanation=Bylo zad\u00e1no pravidlo klasifikace, kter\u00e9 obsahovalo t\u0159\u00eddu transakce del\u0161\u00ed ne\u017e 8 znak\u016f. Ta byla zkr\u00e1cena na 8 znak\u016f.
+CLASSIFICATION_TRANCLASS_TRUNCATED.useraction=Aktualizujte p\u0159idru\u017een\u00e9 pravidlo klasifikace zad\u00e1n\u00edm spr\u00e1vn\u00e9 hodnoty atributu transactionClass.
+
+#{0}
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS=CWWKB0163W: Hodnota atributu resource konfigurace WLM Classification chybn\u011b pou\u017e\u00edv\u00e1 z\u00e1stupn\u00e9 znaky. ({0}) obsahuje p\u0159\u00edli\u0161 mnoho po sob\u011b jdouc\u00edch z\u00e1stupn\u00fdch znak\u016f.
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS.explanation=Bylo zad\u00e1no klasifika\u010dn\u00ed pravidlo obsahuj\u00edc\u00ed \u0159et\u011bzec prost\u0159edku, kter\u00fd pou\u017e\u00edv\u00e1 p\u0159\u00edli\u0161 mnoho z\u00e1stupn\u00fdch znak\u016f. Uveden\u00fd \u0159et\u011bzec prost\u0159edku obsahuje p\u0159\u00edli\u0161 mnoho po sob\u011b jdouc\u00edch z\u00e1stupn\u00fdch znak\u016f. (Vedle sebe lze pou\u017e\u00edt nejv\u00fd\u0161e dva.)
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS.useraction=Opravte pou\u017eit\u00ed z\u00e1stupn\u00fdch znak\u016f tak, aby p\u0159idru\u017een\u00e9 klasifika\u010dn\u00ed pravidlo ur\u010dovalo platn\u00fd \u0159et\u011bzec prost\u0159edku.
+
+#{0}
+CLASSIFICATION_DROPPED_BAD_WILDCARD=CWWKB0164W: Hodnota atributu resource konfigurace WLM Classification chybn\u011b pou\u017e\u00edv\u00e1 z\u00e1stupn\u00e9 znaky. ({0}) obsahuje chybn\u00e9 pou\u017eit\u00ed dvojit\u00fdch z\u00e1stupn\u00fdch znak\u016f.
+CLASSIFICATION_DROPPED_BAD_WILDCARD.explanation=Bylo zad\u00e1no klasifika\u010dn\u00ed pravidlo obsahuj\u00edc\u00ed \u0159et\u011bzec prost\u0159edku, kter\u00fd pou\u017e\u00edv\u00e1 dvojit\u00e9 z\u00e1stupn\u00e9 znaky.
+CLASSIFICATION_DROPPED_BAD_WILDCARD.useraction=Zabra\u0148te pou\u017eit\u00ed dvojit\u00fdch z\u00e1stupn\u00fdch znak\u016f tak, aby p\u0159idru\u017een\u00e9 klasifika\u010dn\u00ed pravidlo ur\u010dovalo platn\u00fd \u0159et\u011bzec prost\u0159edku.
+
+#{0}
+WLM_CURRENT_HEALTH_PERCENTAGE=CWWKB0165I: Procentn\u00ed \u010d\u00e1st stavu WLM serveru je nyn\u00ed {0}.
+WLM_CURRENT_HEALTH_PERCENTAGE.explanation=Tato zpr\u00e1va ozna\u010duje nov\u00fd faktor stavu dodan\u00fd prost\u0159ed\u00ed WLM pro tento server pomoc\u00ed rozhran\u00ed API IWM4HLTH.
+WLM_CURRENT_HEALTH_PERCENTAGE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

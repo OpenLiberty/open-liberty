@@ -1,0 +1,39 @@
+###############################################################################
+# Copyright (c) 2018 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.wlm.ejb/resources/com.ibm.ws.zos.wlm.ejb.internal.resources/ZosWlmEjbMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB  z/OS WLM EJB (MDB) classification
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0701-0750 z/OS WLM EJB (MDB) classification
+# -------------------------------------------------------------------------------------------------
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED=CWWKB0701W: O valor de atributo transactionClass de {0} associado \u00e0 especifica\u00e7\u00e3o de ativa\u00e7\u00e3o {1} sob o elemento de configura\u00e7\u00e3o mdbClassification foi truncado para o valor de {2}. O valor foi truncado porque excedeu o tamanho m\u00e1ximo permitido de {3} caracteres.
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.explanation=O valor do atributo transactionClass configurado mencionado sob o elemento de configura\u00e7\u00e3o mdbClassification foi truncado para ser o comprimento m\u00e1ximo permitido de caracteres. Observe que se a especifica\u00e7\u00e3o de ativa\u00e7\u00e3o mostrada for um curinga, ela foi especificada como tal ou n\u00e3o foi especificada e o valor padr\u00e3o est\u00e1 sendo usado.
+MDB_CLASSIFICATION_TRANCLASS_TRUNCATED.useraction=Verifique se o atributo transactionClass sob o elemento de configura\u00e7\u00e3o mdbClassification cont\u00e9m um valor que n\u00e3o excede o comprimento m\u00e1ximo.
+
+MDB_CONFIG_INVALID_ACTIVATION_SPEC=CWWKB0702W: O valor de atributo jmsActivationSpec de {0} associado \u00e0 classe de transa\u00e7\u00e3o {1} sob o elemento de configura\u00e7\u00e3o mdbClassification \u00e9 inv\u00e1lido. O elemento mdbClassification \u00e9 ignorado.
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.explanation=O valor do atributo jmsActivationSpec configurado mencionado sob o elemento de configura\u00e7\u00e3o mdbClassification n\u00e3o pode ser uma sequ\u00eancia de caracteres vazia ou uma sequ\u00eancia de espa\u00e7os. Observe que se a classe de transa\u00e7\u00e3o mostrada for uma sequ\u00eancia de caracteres vazia, ela foi especificada como tal ou n\u00e3o foi especificada e o valor padr\u00e3o est\u00e1 sendo usado.
+MDB_CONFIG_INVALID_ACTIVATION_SPEC.useraction=Verifique se o atributo jmsActivationSpec sob o elemento de configura\u00e7\u00e3o mdbClassification cont\u00e9m um valor v\u00e1lido.

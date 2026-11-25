@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.console/resources/com.ibm.ws.zos.channel.console.internal.resources/ZConsoleChannelMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE zOS Pause and Resume Console Command
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0651-0700: zOS Console Channel
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the command type.
+ERROR.PAUSEABLE.COMPONENT.NOTAVAILABLE=CWWKE0651E: Um comando do servidor {0} foi recebido, mas a infraestrutura para pausar componentes n\u00e3o est\u00e1 dispon\u00edvel. A solicita\u00e7\u00e3o n\u00e3o pode ser processada. 
+ERROR.PAUSEABLE.COMPONENT.NOTAVAILABLE.explanation=Um usu\u00e1rio emitiu um comando que \u00e9 processado pela infraestrutura para pausar componentes. Entretanto, o comando n\u00e3o p\u00f4de ser processado. O servidor pode estar sendo inicializado ou sendo encerrado. 
+ERROR.PAUSEABLE.COMPONENT.NOTAVAILABLE.useraction=Verifique se o servidor foi totalmente inicializado e se n\u00e3o est\u00e1 no processo de encerramento.

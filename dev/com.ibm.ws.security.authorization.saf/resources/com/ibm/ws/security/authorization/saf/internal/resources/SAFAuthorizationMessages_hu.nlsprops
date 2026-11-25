@@ -1,0 +1,26 @@
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.saf/resources/com/ibm/ws/security/authorization/saf/internal/resources/SAFAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security SAF Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2960 - CWWKS2999
+
+UNABLE_TO_CREATE_DEFAULT_CRED=CWWKS2960W: Nem hozhat\u00f3k l\u00e9tre a nem hiteles\u00edtett felhaszn\u00e1l\u00f3k SAF felhatalmaz\u00e1s\u00e1hoz sz\u00fcks\u00e9ges alap\u00e9rtelmezett hiteles\u00edt\u00e9si adatok. A nem hiteles\u00edtett felhaszn\u00e1l\u00f3k minden jogosults\u00e1gellen\u0151rz\u00e9se meghi\u00fasul. Az alap\u00e9rtelmezett hiteles\u00edt\u00e9si adatok a k\u00f6vetkez\u0151 hiba miatt nem hozhat\u00f3k l\u00e9tre: {0}
+UNABLE_TO_CREATE_DEFAULT_CRED.explanation=A kiszolg\u00e1l\u00f3 nem tudja l\u00e9trehozni a nem hiteles\u00edtett SAF felhaszn\u00e1l\u00f3t k\u00e9pvisel\u0151 alap\u00e9rtelmezett hiteles\u00edt\u00e9si adatokat. A nem hiteles\u00edtett SAF felhaszn\u00e1l\u00f3t kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban tal\u00e1lhat\u00f3 unauthenticatedUser attrib\u00fatum hat\u00e1rozza meg. A kiszolg\u00e1l\u00f3 nem tud jogosults\u00e1gellen\u0151rz\u00e9st v\u00e9gezni a nem hiteles\u00edtett felhaszn\u00e1l\u00f3k eset\u00e9ben, ez\u00e9rt minden ilyen felhatalmaz\u00e1si k\u00eds\u00e9rlet meghi\u00fasul.
+UNABLE_TO_CREATE_DEFAULT_CRED.useraction=Jav\u00edtsa az \u00fczenetben le\u00edrt hib\u00e1t.
+
+CANNOT_READ_APPLDATA=CWWKS2961E: Nem siker\u00fclt beolvasni az APPLDATA mez\u0151t a(z) {0} SAF EJBROLE profilb\u00f3l a k\u00f6vetkez\u0151 hiba miatt: {1}
+CANNOT_READ_APPLDATA.explanation=A kiszolg\u00e1l\u00f3 nem tudta beolvasni az APPLDATA mez\u0151t a megadott SAF EJBROLE profilb\u00f3l.  Az APPLDATA mez\u0151 tartalmazza a RunAs felhaszn\u00e1l\u00f3t a SAF deleg\u00e1l\u00e1shoz.
+CANNOT_READ_APPLDATA.useraction=A hiba\u00fczenet tartalmazza a hiba ok\u00e1t azonos\u00edt\u00f3 SAF visszat\u00e9r\u00e9si- \u00e9s okk\u00f3dokat.

@@ -1,0 +1,179 @@
+###############################################################################
+# Copyright (c) 2011, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.core/resources/com/ibm/ws/zos/core/internal/resources/CoreMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Core
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: Command processing (com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops)
+#0051-0100: Native code (com.ibm.zos.native/resources/com/ibm/ws/zos/native/native_messages.nlsprops)
+#0101-0150: core (here)
+# -------------------------------------------------------------------------------------------------
+
+#{0} is an integer reason code.
+ANGEL_NOT_AVAILABLE=CWWKB0101I: Es ist kein Angel-Prozess verf\u00fcgbar. Es werden keine berechtigten Services geladen. Ursachencode: {0}
+ANGEL_NOT_AVAILABLE.explanation=Entweder ist kein Angel-Prozess vorhanden oder es ist ein Angel-Prozess vorhanden, aber der Server konnte wegen eines Fehlers keine Verbindung zum Angel-Prozess herstellen.
+ANGEL_NOT_AVAILABLE.useraction=Wenn der Server keine berechtigten Server erfordert, ist keine Aktion erforderlich. Wenn der Server berechtigte Services erfordert, starten Sie einen Angel-Prozess auf diesem System, damit dieser Server seinen berechtigten Code laden und die berechtigten Services bereitstellen kann. Der Nachrichtentext enth\u00e4lt einen internen Ursachencode f\u00fcr die Produktunterst\u00fctzung. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der Webseite von WebSphere Application Server mit der Adresse http://www.ibm.com/software/webservers/appserv/was/support/ an.
+
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL=CWWKB0102I: Dieser Server ist nicht berechtigt, eine Verbindung zu einem Angel-Prozess herzustellen. Es werden keine berechtigten Services geladen.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL.explanation=Die Benutzer-ID, die diesen Server gestartet hat, hat keinen Zugriff auf das Profil BBG.ANGEL der SAF-Serverklasse. Es ist Lesezugriff f\u00fcr dieses Profil erforderlich, um eine Verbindung zum Angel-Prozess herzustellen.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL.useraction=Wenn der Server keine berechtigten Services erfordert, ist keine Aktion erforderlich. Wenn der Server berechtigte Services erfordert, erteilen Sie der Benutzer-ID, die den Server startet, Lesezugriff f\u00fcr das Profil BBG.ANGEL der SAF-Serverklasse. 
+
+#{0} is the name of a service group (a text string between 1-8 characters)
+AUTHORIZED_SERVICE_AVAILABLE=CWWKB0103I: Die berechtigte Servicegruppe {0} ist verf\u00fcgbar.
+AUTHORIZED_SERVICE_AVAILABLE.explanation=Die in der Nachricht genannte berechtigte Servicegruppe wurde erfolgreich geladen.
+AUTHORIZED_SERVICE_AVAILABLE.useraction=Es ist keine Aktion erforderlich.
+
+#{0} is the name of a service group (a text string between 1-8 characters)
+AUTHORIZED_SERVICE_NOT_AVAILABLE=CWWKB0104I: Die berechtigte Servicegruppe {0} ist nicht verf\u00fcgbar.
+AUTHORIZED_SERVICE_NOT_AVAILABLE.explanation=Die Benutzer-ID, die diesen Server gestartet hat, hat keinen Zugriff auf das entsprechenden Profil der SAF-Serverklasse. Der Profilname ist BBG.BBGZSAFM.<Name>, wobei <Name> der Servicegruppenname in dieser Nachricht ist.
+AUTHORIZED_SERVICE_NOT_AVAILABLE.useraction=Wenn der Server die berechtigte Servicegruppe nicht ben\u00f6tigt, ist keine Aktion erforderlich. Wenn der Server Services ben\u00f6tigt, die von dieser berechtigten Servicegruppe bereitgestellt werden, erteilen Sie der Benutzer-ID, die den Server startet, Lesezugriff auf die entsprechenden Profile in der SAF-Serverklasse.
+
+#{0} is the name of the unauthorized function module
+#{1} is the return value from BPX4LOD
+#{2} is the return code from BPX4LOD
+#{3} is the reason code from BPX4LOD
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD=CWWKB0105E: Die Bibliothek mit nativem Code, {0}, konnte nicht geladen werden. BPX4LOD fehlgeschlagen, rv = {1} rc = {2} rsn = {3}
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD.explanation=Ein Teil der z/OS-Bibliotheken mit nativem Code f\u00fcr den Anwendungsserver konnte nicht geladen werden. UNIX System Service BPX4LOD beim Laden der in der Nachricht angegebenen Bibliothek fehlgeschlagen. Der R\u00fcckgabewert, R\u00fcckkehrcode und Ursachencode von BPX4LOD sind ebenfalls in der Nachricht angegeben. Der R\u00fcckkehrcode und der Ursachencode werden als hexadezimale Ganzzahlen angezeigt.
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD.useraction=Vergewissern Sie sich, dass alle Installationsschritte ausgef\u00fchrt wurden, wenn der Anwendungsserver auf diesem System installiert wird. Der R\u00fcckgabewert, der R\u00fcckkehrcode und der Ursachencode k\u00f6nnen in "z/OS UNIX System Services Messages and Codes" (Ver\u00f6ffentlichungsnummer SA22-7807-xx) nachgeschlagen werden.  Bleibt das Problem bestehen, wenden Sie sich an die n\u00e4chste Supportstufe.
+
+#{0} is the name of the library
+LIBRARY_DOES_NOT_EXIST=CWWKB0106E: Die native z/OS-Bibliothek {0} ist nicht im Dateisystem enthalten.
+LIBRARY_DOES_NOT_EXIST.explanation=Die z/OS-Bibliothek mit nativem Code wurde nicht im Dateisystem gefunden. Der Bibliotheksname ist in der Nachricht angegeben.
+LIBRARY_DOES_NOT_EXIST.useraction=Vergewissern Sie sich, dass alle Installationsschritte ausgef\u00fchrt wurden, wenn der Anwendungsserver auf diesem System installiert wird. Bleibt das Problem bestehen, wenden Sie sich an die n\u00e4chste Supportstufe.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_REGISTRATION_FAILED_BAD_PARM=CWWKB0107E: Das Produkt {1} mit der Version {2} von {0} konnte wegen Problemn beim \u00dcbersetzen der erforderlichen Zeichenfolgen in EBCDIC nicht bei z/OS registriert werden.
+PRODUCT_REGISTRATION_FAILED_BAD_PARM.explanation=Eine der Produktidentifikationszeichenfolgen konnte f\u00fcr die \u00dcbergabe an den Service IFAUSAGE nicht in EBCDIC \u00fcbersetzt werden.
+PRODUCT_REGISTRATION_FAILED_BAD_PARM.useraction=Wenden Sie sich an den Eigner des Produkts, um die Identifikationszeichenfolgen zu korrigieren.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_REGISTRATION_SUCCESSFUL=CWWKB0108I: Das Produkt {1} mit der Version {2} von {0} wurde erfolgreich bei z/OS registriert.
+PRODUCT_REGISTRATION_SUCCESSFUL.explanation=Das benannte Produkt \u00fcber den Service IFAUSAGE bei z/OS registriert.
+PRODUCT_REGISTRATION_SUCCESSFUL.useraction=Es ist keine Aktion erforderlich.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+#{3} is the return code
+PRODUCT_REGISTRATION_UNSUCCESSFUL=CWWKB0109E: Das Produkt {1} mit der Version {2} von {0} konnte nicht bei z/OS registriert werden. R\u00fcckkehrcode: {3}.
+PRODUCT_REGISTRATION_UNSUCCESSFUL.explanation=Das benannte Produkt konnte nicht \u00fcber den Service IFAUSAGE bei z/OS registriert werden. R\u00fcckkehrcodes gr\u00f6\u00dfer als null stammen vom Service IFAUSAGE selbst. Negative R\u00fcckkehrcodes weisen auf ein internes Problem bei der Verarbeitung der Registrierungsanforderung hin.
+PRODUCT_REGISTRATION_UNSUCCESSFUL.useraction=Der R\u00fcckkehrcode (8) kann darauf hinweisen, dass der Server versucht, Registrierungen bei zu vielen Produkten gleichzeitig durchzuf\u00fchren.
+
+#No fill-ins
+SERVER_SAFM_NOT_APF_AUTHORIZED=CWWKB0110I: Das Modul bbgzsafm ist nicht f\u00fcr APF berechtigt. Es sind keine berechtigten Services verf\u00fcgbar.
+SERVER_SAFM_NOT_APF_AUTHORIZED.explanation=Das Modul bbgzsafm ist nicht f\u00fcr APF berechtigt. bbgzsafm muss f\u00fcr APF berechtigt sein, um den Zugriff auf berechtigte Services zu aktivieren.
+SERVER_SAFM_NOT_APF_AUTHORIZED.useraction=Wenn der Server keine berechtigten Services erfordert, ist keine Aktion erforderlich. Wenn der Server berechtigte Services erfordert, berechtigen Sie das Modul bbgzsafm f\u00fcr APF. Lesen Sie die Informationen zum Befehl extattr in der Ver\u00f6ffentlichung "z/OS UNIX System Services Command Reference" mit der Ver\u00f6ffentlichungsnummer IBM Form SA22-7802-xx.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_DEREGISTRATION_SUCCESSFUL=CWWKB0111I: Die Registrierung des Produkts {1} mit der Version {2} von {0} bei z/OS wurde erfolgreich aufgehoben.
+PRODUCT_DEREGISTRATION_SUCCESSFUL.explanation=Die Registrierung des benannten Produkts wurde mit dem Service IFAUSAGE bei z/OS aufgehoben.
+PRODUCT_DEREGISTRATION_SUCCESSFUL.useraction=Es ist keine Aktion erforderlich.
+
+#{0} successful product registration count
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED=CWWKB0112I: Die Anzahl der erfolgreich bei z/OS registrierten Produkte ist {0}. Der Server wird versuchen, die Registrierung dieser Produkte bei z/OS beim Herunterfahren des Servers zur\u00fcckzunehmen.
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED.explanation=Der Server wird versuchen, die Registrierung aller erfolgreich registrierten Produkte bei z/OS beim Herunterfahren des Servers zur\u00fcckzunehmen. Der f\u00fcr das Zur\u00fccknehmen der Registrierung verwendete z/OS-Service ist IFAUSAGE.
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED.useraction=Es ist keine Aktion erforderlich.
+
+#{0} successful product registration count
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED=CWWKB0113I: Die Anzahl der erfolgreich bei z/OS registrierten Produkte ist {0}. Die Registrierung dieser Produkte wird bei z/OS zur\u00fcckgenommen, wenn der Adressraum beendet wird.
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED.explanation=Die Registrierung aller erfolgreich registrierten Produkte wird bei z/OS zur\u00fcckgenommen, wenn der Adressraum beendet wird. Wenn die explizite Zur\u00fccknahme der Produktregistrierung w\u00e4hrend des Herunterfahrens des Servers erforderlich ist, erstellen und aktivieren Sie das Serverprofil, um auf berechtigte Services unter der Gruppe PRODMGR zugreifen zu k\u00f6nnen, und starten Sie den Angel-Prozess. Der Angel-Prozess muss vor dem Server gestartet werden.
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED.useraction=Es ist keine Aktion erforderlich.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+#{3} is the return code
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL=CWWKB0114E: Die Registrierung des Produkts {1} mit der Version {2} von {0} bei z/OS konnte nicht aufgehoben werden. R\u00fcckgabecode = {3}.
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL.explanation=Die Zur\u00fccknahme der Registrierung des benannten Produkts mit dem Service IFAUSAGE bei z/OS ist fehlgeschlagen. R\u00fcckkehrcodes gr\u00f6\u00dfer als null stammen vom Service IFAUSAGE selbst. Negative R\u00fcckkehrcodes weisen auf ein internes Problem bei der Verarbeitung der Anforderung zur R\u00fccknahme der Registrierung hin.
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL.useraction=Ein R\u00fcckkehrcode von acht (8) zeigt an, dass das Produkt noch nie registriert war.
+
+SERVER_SAFM_NOT_SAF_AUTHORIZED=CWWKB0115I: Dieser Server ist nicht berechtigt, das Modul bbgzsafm zu laden. Es werden keine berechtigten Services geladen.
+SERVER_SAFM_NOT_SAF_AUTHORIZED.explanation=Die Benutzer-ID, die diesen Server gestartet hat, hat keinen Zugriff auf das Profil BBG.AUTHMOD.BBGZSAFM der SAF-Serverklasse. Es ist Lesezugriff f\u00fcr dieses Profil erforderlich, um eine Verbindung zum Angel-Prozess herzustellen und berechtigte Services zu laden.
+SERVER_SAFM_NOT_SAF_AUTHORIZED.useraction=Wenn der Server keine berechtigten Services erfordert, ist keine Aktion erforderlich. Wenn der Server berechtigte Services erfordert, erteilen Sie der Benutzer-ID, die den Server startet, Lesezugriff f\u00fcr das Profil BBG.AUTHMOD.BBGZSAFM der SAF-Serverklasse. 
+
+NOT_REGISTERED_WITH_REQUIRED_ANGEL=CWWKB0116I: Dieser Server ist nicht bei einem Angel-Prozess registriert, obwohl laut Konfiguration eine Registrierung bei einem Angel-Prozess erforderlich ist. Es wird versucht, diesen Server zu stoppen.
+NOT_REGISTERED_WITH_REQUIRED_ANGEL.explanation=Der Server ist so konfiguriert, dass er den Start abbricht, wenn er nicht bei einem Angel-Prozess registriert ist. Der Server ist nicht bei einem Angel-Prozess registriert und wird gestoppt.
+NOT_REGISTERED_WITH_REQUIRED_ANGEL.useraction=Stellen Sie sicher, dass der Angel-Prozess gestartet ist und dass der Server eine Verbindung zu diesem Prozess herstellen und sich bei diesem registrieren kann. Alternativ k\u00f6nnen Sie die Konfiguration \u00e4ndern, um dem Server das Starten ohne Registrierung bei einem Angel-Prozess zu erlauben.
+
+#{0} is the name of the angel process.  1-54 characters.
+#{1} is an integer reason code.
+ANGEL_NOT_AVAILABLE_NAME=CWWKB0117W: Der Angel-Prozess {0} ist nicht verf\u00fcgbar. Es werden keine berechtigten Services geladen. Der Ursachencode ist {1}.
+ANGEL_NOT_AVAILABLE_NAME.explanation=Entweder ist kein Angel-Prozess mit dem in der Nachricht angegebenen Namen vorhanden oder es ist ein Angel-Prozess vorhanden, aber der Server konnte wegen eines Fehlers keine Verbindung zum Angel-Prozess herstellen.
+ANGEL_NOT_AVAILABLE_NAME.useraction=Wenn der Server berechtigte Services erfordert, starten Sie einen Angel-Prozess auf diesem System, damit dieser Server seinen berechtigten Code laden und die berechtigten Services bereitstellen kann. Der Nachrichtentext enth\u00e4lt einen internen Ursachencode f\u00fcr die Produktunterst\u00fctzung. Wenn das Problem weiterhin auftritt, sehen Sie sich die Informationen zur Fehlerbestimmung auf der folgenden Webseite von WebSphere Application Server an: http://www.ibm.com/software/webservers/appserv/was/support/. Wenn der Server keine berechtigten Services erfordert, ist keine Aktion erforderlich. Damit diese Nachricht nicht angezeigt wird, m\u00fcssen Sie die Eigenschaft com.ibm.ws.zos.core.angelName aus der Datei bootstrap.properties entfernen.
+
+#{0} is the name of the angel process. 1-54 characters.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME=CWWKB0118W: Dieser Server ist nicht berechtigt, eine Verbindung zum Angel-Prozess {0} herzustellen. Es werden keine berechtigten Services geladen.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME.explanation=Die Benutzer-ID, die diesen Server gestartet hat, hat keinen Zugriff auf das SAF-Profil (System Authorization Facility) f\u00fcr den in der Nachricht angegebenen Angel-Prozess. Um eine Verbindung zu diesem Angel-Prozess herstellen zu k\u00f6nnen, ist Lesezugriff auf dieses Profil erforderlich.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME.useraction=Wenn der Server berechtigte Services erfordert, lesen Sie in der Dokumentation nach, wie ein benannter Angel-Prozess eingerichtet wird. Wenn der Server keine berechtigten Services erfordert, ist keine Aktion erforderlich. Damit diese Nachricht nicht angezeigt wird, m\u00fcssen Sie die Eigenschaft com.ibm.ws.zos.core.angelName aus der Datei bootstrap.properties entfernen.
+
+ANGEL_NAME_TOO_LONG=CWWKB0119E: Der in der Datei bootstrap.properties angegebene Angel-Prozess ist l\u00e4nger als 54 Zeichen.
+ANGEL_NAME_TOO_LONG.explanation=Die Eigenschaft com.ibm.ws.zos.core.angelName gibt den Namen des Angel-Prozesses an, zu dem dieser Server eine Verbindung herstellen soll. Die Eigenschaft wird in der Datei bootstrap.properties angegeben und darf maximal 54 Zeichen lang sein. 
+ANGEL_NAME_TOO_LONG.useraction=Dieser Server stellt keine Verbindung zu einem Angel-Prozess her. Zum Herstellen einer Verbindung zu einem Angel-Prozess geben Sie einen Wert mit maximal 54 Zeichen f\u00fcr die Eigenschaft com.ibm.ws.zos.core.angelName an und starten Sie dann den Server erneut.
+
+#{0} is an unsupported character
+#{1} is a number between 1 and 54
+ANGEL_NAME_UNSUPPORTED_CHARACTER=CWWKB0120E: Der in der Datei bootstrap.properties angegebene Angel-Name enth\u00e4lt das nicht unterst\u00fctzte Zeichen {0} an Position {1}.
+ANGEL_NAME_UNSUPPORTED_CHARACTER.explanation=Die Eigenschaft com.ibm.ws.zos.core.angelName gibt den Namen des Angel-Prozesses an, zu dem dieser Server eine Verbindung herstellen soll. Die Eigenschaft wird in der Datei bootstrap.properties angegeben und darf nur Zeichen aus dem folgenden Zeichensatz enthalten: A-Z 0-9 ! # $ + - / : < > = ? @ [ ] ^ _ ` { } | ~
+ANGEL_NAME_UNSUPPORTED_CHARACTER.useraction=Dieser Server stellt keine Verbindung zu einem Angel-Prozess her. Zum Herstellen einer Verbindung zu einem Angel-Prozess geben Sie einen Wert mit Zeichen aus dem unterst\u00fctzten Zeichensatz f\u00fcr die Eigenschaft com.ibm.ws.zos.core.angelName an und starten Sie dann den Server erneut.
+
+#{0} is the server's UMASK value.
+SERVER_CURRENT_UMASK=CWWKB0121I: Die UMASK-Einstellung f\u00fcr den Serverprozess ist auf den Wert {0} gesetzt.
+SERVER_CURRENT_UMASK.explanation=Der UMASK-Wert des Serverprozesses. Standardm\u00e4\u00dfig wird der UMASK-Wert von dem Prozess \u00fcbernommen, der den Liberty- Server gestartet hat, und wird dann ge\u00e4ndert, um Lese-, Schreib- oder Ausf\u00fchrungszugriff f\u00fcr andere Benutzer zu unterbinden. Wenn Sie die Umgebungsvariable WLP_SKIP_UMASK auf true setzen, kann der Server den UMASK-Wert nicht auf diese Weise \u00e4ndern. Wenn ein Liberty-Server mit einer z/OS-Prozedur gestartet wird, k\u00f6nnen Sie den vom Serverprozess verwendeten UMASK-Wert durch die Definition der Umgebungsvariablen WLP_SKIP_UMASK und _BPX_BATCH_UMASK anpassen. Die Umgebungsvariable WLP_SKIP_UMASK kann in der Datei server.env oder, falls der Server mit einer z/OS-Prozedur gestartet wird, mit dem STDENDV DD-Eintrag angegeben werden. Die Umgebungsvariable _BPX_BATCH_UMASK hingegen kann nicht in der Datei server.env angegeben werden. Sie darf nur mit dem STDENV DD-Eintrag in der z/OS-Prozedur angegeben werden.
+SERVER_CURRENT_UMASK.useraction=Es ist keine Aktion erforderlich.
+
+#{0} is the name of the angel process. 1-54 characters.
+SERVER_CONNECTED_TO_ANGEL=CWWKB0122I: Dieser Server ist mit dem Angel-Prozess {0} verbunden.
+SERVER_CONNECTED_TO_ANGEL.explanation=Dieser Server ist mit dem konfigurierten Angel-Prozess verbunden.
+SERVER_CONNECTED_TO_ANGEL.useraction=Es ist keine Aktion erforderlich.
+
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID=CWWKB0123W: Die Wartezeit f\u00fcr den Angel-Start, die in der Datei bootstrap.properties angegeben ist, liegt au\u00dferhalb des zul\u00e4ssigen Wertebereichs oder sie ist ung\u00fcltig. Standardm\u00e4\u00dfig wird 0 (Sekunden) verwendet.
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID.explanation=Der Server hat eine falsche Konfiguration f\u00fcr die Wartezeit des Angel-Starts. Der zul\u00e4ssige Wertebereich ist 0 bis 300 Sekunden.
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID.useraction=Dieser Server verwendet die Standardwartezeit von 0 (Sekunden), um eine Verbindung zur erforderlichen Angel-Instanz herzustellen. Geben Sie zum Konfigurieren einer g\u00fcltigen Startwartezeit einen ganzzahligen Wert zwischen 0 und 300 in der Eigenschaft com.ibm.ws.zos.core.angelWaitTimeSeconds an und starten Sie den Server erneut.
+
+#{0} is the configured time that liberty server will wait the required angel to start, {1} is the name of the required angel process.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT=CWWKB0124I: Angel {1} ist erforderlich und der Server wurde so konfiguriert, dass {0} Sekunden auf die Herstellung der Verbindung zur Angel-Instanz gewartet wird.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT.explanation=Dieser Server ben\u00f6tigt Angel f\u00fcr den Start und hat au\u00dferdem eine maximale Startwartezeit bis zur Beendigung, falls die Registrierung bei der erforderlichen Angel-Instanz fehlschl\u00e4gt.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT.useraction=Es ist keine Aktion erforderlich.
+
+
+REGION_REQUESTED=CWWKB0125I: Dieser Server hat eine Regionsgr\u00f6\u00dfe von {0} angefordert. Die ''Below-the-line''-Speichergrenze ist {1} und der ''Above-the-line''-Speichergrenze ist {2}.
+REGION_REQUESTED.explanation=Diese Nachricht enth\u00e4lt verschiedene Werte aus dem LDA-Steuerblock (Local Data Area, Lokaler Datenbereich), die f\u00fcr das Debugging einer abnormalen Speicherbedingung hilfreich sein k\u00f6nnen. Die Regionsgr\u00f6\u00dfe ist die Speicherregion, die dem Adressraum zugeordnet ist. Die 'Below-the-line'- und 'Above-the-line'-Speichergenzen sind in MB angegeben. Das Wort 'Line' bezeichnet die Grenze zwischen 24-Bit- und 31-Bit-Speicheraadressen an. Die Grenzen geben die tats\u00e4chlichen Speichergrenzen f\u00fcr Adressen an, die unterhalb der 'Line' (Grenze) liegen (24-Bit-Adressen) und Adressen, die oberhalb der 'Line' (Grenze) liegen (31-Bit-Adressen).
+REGION_REQUESTED.useraction=Es ist keine Aktion erforderlich.
+
+MEMORY_LIMIT_INFORMATION=CWWKB0126I: MEMLIMIT={0}. MEMLIMIT-KONFIGURATIONSQUELLE={1}.
+MEMORY_LIMIT_INFORMATION.explanation=Zeigt den konfigurierten MEMLIMIT-Wert f\u00fcr den Adressraum und die Konfigurationsquelle von MEMLIMIT an. Die g\u00fcltigen Werte f\u00fcr die MEMLIMIT-KONFIGURATIONSQUELLE sind folgende: "SMF" (von SMF in SMFPRMxx oder auf 0 (Standardwert) gesetzt). "JCL" (von der JCL gesetzt). "REG0" (uneingeschr\u00e4nkte Gr\u00f6\u00dfe basierend auf der Spezifikation REGION=0). "USI" (\u00fcber das Feld IEFSMFIE konfiguriert und vom IEFUSI-Exit gesetzt). "OMVS" (vom UNIX-OMVS-Segment gesetzt). "SETR" (von UNIX setrlimit gesetzt). "SPW" (von UNIX spawn gesetzt). "SETO" (vom UNIX-Befehl SETOMVS gesetzt). "AUTH" (durch berechtigte Anwendungs\u00e4nderung gesetzt). "URG" (in IEFSMFIE vom IEFUSI-Exit gesetzt). "UNKNOWN" (von einer unbekannte Quelle gesetzt). "BAD" (Fehler beim Setzen von MEMLIMIT).
+MEMORY_LIMIT_INFORMATION.useraction=Es ist keine Aktion erforderlich.
+
+OLD_ANGEL_VERSION=CWWKB0127W: Die aktuelle Angel-Version ist \u00e4lter als die Version, die vom Server erwartet wird. Aktualisieren Sie die Angel-Version auf die aktuellste verf\u00fcgbare Version.
+OLD_ANGEL_VERSION.explanation=Der Server erwartet einen Wert f\u00fcr die Version des Angel-Prozesses. Die aktuelle Version ist \u00e4lter als die erwartete Version. Wenn eine Liberty-Server-Instanz eine Verbindung zu einem Angel mit einem \u00e4lteren Service-Level herstellt, sind einige Features des Servers m\u00f6glicherweise nicht verf\u00fcgbar.
+OLD_ANGEL_VERSION.useraction=Aktualisieren Sie den Angel auf die aktuellste Version, um sicherzustellen, dass alle Features des Servers dem Angel-Prozess zur Verf\u00fcgung stehen.

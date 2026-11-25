@@ -1,0 +1,305 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# DISCLAIMER OF WARRANTIES:  The following [enclosed] code is sample
+# code created by IBM Corporation.  This sample code is not part of
+# any standard or IBM product and is provided to you solely for the
+# purpose of assisting you in the development of your applications.
+# The code is provided "AS IS", without warranty of any kind.  IBM
+# shall not be liable for any damages arising out of your use of the
+# sample code, even if they have been advised of the possibility of
+# such damages.
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+# 4) %%SERVICETEXT%% - (Is substitued by a text description which  
+#        is done by the book generation tool) 
+#    - for the complete text description see: include/private/bborabnd.mac 
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+#-----------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.zos.ola/resources/com/ibm/ws390/ola/resources/olaMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WOLA Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0351-0400: WOLA Resource Adapter
+# -------------------------------------------------------------------------------------------------
+
+# Messages for DISPLAY,ADAPTER command.
+
+#{0} is the registration type, a single character.
+#{1} is the job name of the Liberty server, a text string between 1-8 characters
+#{2} is the registration name of the Liberty server, a text string between 1-12 characters
+CWWKB0351I=CWWKB0351I: T\u00cdPUS: {0} FELADATN\u00c9V: {1} N\u00c9V: {2}
+CWWKB0351I.explanation=V\u00e1lasz els\u0151 sora egy r\u00e9szletes regisztr\u00e1ci\u00f3list\u00e1z\u00e1si parancsra.
+CWWKB0351I.useraction=Nincs
+#-----------------------------------------------------------------------
+
+#{0} is the job number corresponding to the registration which is being described
+#{1} is either 'true' or 'false'
+#{2} is a number >= 0.
+CWWKB0352I=CWWKB0352I:  FELADATSZ\u00c1M: {0} AKT\u00cdV: {1} AKT\u00cdV KAPCSOLATOK: {2}
+CWWKB0352I.explanation=V\u00e1lasz m\u00e1sodik sora egy r\u00e9szletes regisztr\u00e1ci\u00f3list\u00e1z\u00e1si parancsra.
+CWWKB0352I.useraction=Nincs
+#-----------------------------------------------------------------------
+
+#{0} is a number >= 0.
+#{1} is a number >= 0.
+#{2} is a number >= 0 (representing the state of the registration)
+#{3} is a number >= 0
+CWWKB0353I=CWWKB0353I: MIN. KAPCS.: {0} MAX. KAPCS.: {1} \u00c1LLAPOT: {2} NYOMK\u00d6VET\u00c9SI SZINT: {3}
+CWWKB0353I.explanation=V\u00e1lasz harmadik sora egy r\u00e9szletes regisztr\u00e1ci\u00f3list\u00e1z\u00e1si parancsra.
+CWWKB0353I.useraction=Nincs
+#-----------------------------------------------------------------------
+
+CWWKB0354I=CWWKB0354I: N\u00e9v         Feladatn\u00e9v  SWT TL Min.  Max.  Akt.  \u00c1llapot
+CWWKB0354I.explanation=Fejl\u00e9cv\u00e1lasz t\u00e1bl\u00e1zatos regisztr\u00e1ci\u00f3slist\u00e1z\u00e1si parancsra.
+CWWKB0354I.useraction=Nincs
+#-----------------------------------------------------------------------
+
+#{0} is a string, corresponding to 'Name' in message CWWKB0354I
+#{1} is a string, corresponding to 'Jobname' in message CWWKB0354I
+#{2} is a three digit number, corresponding to "SWT" in message CWWKB0354I
+#{3} is a two digit number, corresponding to "TL" in message CWWKB0354I
+#{4} is a number, corresponding to 'Min' in message CWWKB0354I
+#{5} is a number, corresponding to 'Max' in message CWWKB0354I
+#{6} is a number, corresponding to 'Active'	in message CWWKB0354I
+#{7} is a number, corresponding to 'State' in message CWWKB0354I
+CWWKB0355I=CWWKB0355I: {0} {1} {2} {3} {4} {5} {6} {7}
+CWWKB0355I.explanation=RGE sorv\u00e1lasz a k\u00f6vetkez\u0151 t\u00e1bl\u00e1zatos parancsra: MODIFY,DISPLAY,ADAPTER,RGE,*
+CWWKB0355I.useraction=Nincs
+#-----------------------------------------------------------------------
+
+#{0} is a number
+#{1} is a number >= 0
+#{2} is a string from 1-8 characters.
+CWWKB0356I=CWWKB0356I: \u00c1LLAPOT: VER.:{0} MAX. KAPCS.:{1} WOLA CSOP. N\u00c9V:{2}
+CWWKB0356I.explanation=V\u00e1lasz a k\u00f6vetkez\u0151 parancsra: MODIFY DISPLAY,ADAPTER,STATUS
+CWWKB0356I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0357I=CWWKB0357I: KISZOLG\u00c1L\u00d3 REGISZTR\u00c1CI\u00d3INAK MEGJELEN\u00cdT\u00c9SE:
+CWWKB0357I.explanation=V\u00e1lasz a k\u00f6vetkez\u0151 parancsra: MODIFY DISPLAY,ADAPTER,REGISTRATIONS
+CWWKB0357I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0358I=CWWKB0358I: WOLA CSOPORT REGISZTR\u00c1CI\u00d3INAK MEGJELEN\u00cdT\u00c9SE:
+CWWKB0358I.explanation=V\u00e1lasz a k\u00f6vetkez\u0151 parancsra: MODIFY DISPLAY,ADAPTER,GROUPRGES
+CWWKB0358I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0359I=CWWKB0359I: AZ ILLESZT\u0150 LEHETS\u00c9GES PARANCSAI: (P\u00c9LD\u00c1UL: DISPLAY,ADAPTER,STATUS)
+CWWKB0359I.explanation=V\u00e1lasz ismeretlen ADAPTER vagy HELP parancsra
+CWWKB0359I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} is a string (an option name)
+#{1} is a description (of the option in #0)
+CWWKB0360I=CWWKB0360I: {0} - {1}
+CWWKB0360I.explanation=Parancsot vagy keres\u00e9si be\u00e1ll\u00edt\u00e1st, valamint annak le\u00edr\u00e1s\u00e1t jelen\u00edti meg
+CWWKB0360I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} is a string which the user supplied
+CWWKB0361I=CWWKB0361I: \u00c9RV\u00c9NYTELEN BE\u00c1LL\u00cdT\u00c1S VAGY TOKEN: {0}
+CWWKB0361I.explanation=Hiba\u00fczenetet jelen\u00edt meg \u00e9rv\u00e9nytelen be\u00e1ll\u00edt\u00e1s vagy token eset\u00e9n
+CWWKB0361I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0362I=CWWKB0362I: MEGYAR\u00c1ZAT: \u00c9RV\u00c9NYTELEN LOGIKAI \u00c9RT\u00c9K: A V\u00c1RT \u00c9RT\u00c9K IGAZ/HAMIS VAGY 0/1
+CWWKB0362I.explanation=Hib\u00e1t jelen\u00edt meg \u00e9rv\u00e9nytelen logikai \u00e9rt\u00e9k eset\u00e9n
+CWWKB0362I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0363I=CWWKB0363I: MAGYAR\u00c1ZAT: \u00c9RV\u00c9NYTELEN SZ\u00c1M\u00c9RT\u00c9K
+CWWKB0363I.explanation=Hib\u00e1t jelen\u00edt meg \u00e9rv\u00e9nytelen sz\u00e1m\u00e9rt\u00e9k eset\u00e9n
+CWWKB0363I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0364I=CWWKB0364I: MAGYAR\u00c1ZAT: \u00c9RV\u00c9NYTELEN ATTRIB\u00daTUMN\u00c9V
+CWWKB0364I.explanation=Hib\u00e1t jelen\u00edt meg \u00e9rv\u00e9nytelen attrib\u00fatumn\u00e9v eset\u00e9n keres\u00e9skor
+CWWKB0364I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0365I=CWWKB0365I: MAGYAR\u00c1ZAT: NEM TARTALMAZHAT T\u00d6BB = JELET
+CWWKB0365I.explanation=Hib\u00e1t jelen\u00edt meg a t\u00f6bb = jelet tartalmaz\u00f3 keres\u00e9si param\u00e9terek eset\u00e9n
+CWWKB0365I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0366I=CWWKB0366I: \u00c9RV\u00c9NYES KERES\u00c9SI BE\u00c1LL\u00cdT\u00c1SOK:
+CWWKB0366I.explanation=Fejl\u00e9cet jelen\u00edt meg az \u00e9rv\u00e9nyes keres\u00e9si be\u00e1ll\u00edt\u00e1sok \u00e9s t\u00edpusaik list\u00e1j\u00e1hoz
+CWWKB0366I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0367I=CWWKB0367I: {0}
+CWWKB0367I.explanation=Keres\u00e9si be\u00e1ll\u00edt\u00e1st \u00e9s t\u00edpus\u00e1t jelen\u00edti meg
+CWWKB0367I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0368I=CWWKB0368I: {0} MEGJELEN\u00cdTI AZ OLA \u00c1LLAPOTOT
+CWWKB0368I.explanation=A STATUS parancs le\u00edr\u00e1sa
+CWWKB0368I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0369I=CWWKB0369I: {0} MEGJELEN\u00cdTI AZ AKTU\u00c1LIS KISZOLG\u00c1L\u00d3 REGISZTR\u00c1CI\u00d3IT
+CWWKB0369I.explanation=A STATUS parancs le\u00edr\u00e1sa
+CWWKB0369I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0370I=CWWKB0370I: {0} MEGJELEN\u00cdTI EGY ADOTT KISZOLG\u00c1L\u00d3N\u00c9V REGISZTR\u00c1CI\u00d3IT
+CWWKB0370I.explanation=A STATUS parancs le\u00edr\u00e1sa
+CWWKB0370I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0371I=CWWKB0371I: {0} MEGJELEN\u00cdTI EGY WOLA CSOPORT REGISZTR\u00c1CI\u00d3IT
+CWWKB0371I.explanation=A STATUS parancs le\u00edr\u00e1sa
+CWWKB0371I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0372I=CWWKB0372I: {0} INFORM\u00c1CI\u00d3K\u00c9RT L\u00c1SD: DISPLAY,ADAPTER,SEARCHRGES,HELP
+CWWKB0372I.explanation=A STATUS parancs le\u00edr\u00e1sa
+CWWKB0372I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} is a string (a server name supplied by the user)
+CWWKB0373I=CWWKB0373I: NEM TAL\u00c1LHAT\u00d3 {0} NEV\u0170 KISZOLG\u00c1L\u00d3
+CWWKB0373I.explanation=Hiba\u00fczenet a DISPLAY,ADAPTER,REGISTRATIONS,kiszolg\u00e1l\u00f3n\u00e9v parancshoz
+CWWKB0373I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0374I=CWWKB0374I: EZ A REGISZTR\u00c1CI\u00d3 NEM RENDELKEZIK \u00d6SSZEK\u00d6TTET\u00c9S-AZONOS\u00cdT\u00d3KKAL
+CWWKB0374I.explanation=\u00d6sszek\u00f6ttet\u00e9s-azonos\u00edt\u00f3k n\u00e9lk\u00fcli r\u00e9szletes RGE n\u00e9zethez megjelen\u00edtett \u00fczenet
+CWWKB0374I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0375I=CWWKB0375I: AZONOS\u00cdT\u00d3           LSCB        \u00c1llapot
+CWWKB0375I.explanation=Fejl\u00e9c az \u00f6sszek\u00f6ttet\u00e9s-azonos\u00edt\u00f3k t\u00e1bl\u00e1zatos megjelen\u00edt\u00e9s\u00e9hez
+CWWKB0375I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} is a hexidecimal integer, corresponding to "ID" in message CWWKB0375I
+#{1} is a hexidecimal integer, corresponding to "LSCB" in message CWWKB0375I
+#{2} is a string describing connection state, corresponding to "State" in message CWWKB0375I
+CWWKB0376I=CWWKB0376I: {0} {1} {2}
+CWWKB0376I.explanation=\u00d6sszek\u00f6ttet\u00e9s-azonos\u00edt\u00f3k megjelen\u00edt\u00e9si sora regisztr\u00e1ci\u00f3hoz
+CWWKB0376I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0377I=CWWKB0377I: 
+CWWKB0377I.explanation=Sz\u00f3k\u00f6zszer\u0171 karakterekb\u0151l \u00e1ll\u00f3 sor
+CWWKB0377I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} Is a string
+CWWKB0378I=CWWKB0378I: {0} A TELJES PARANCS UT\u00c1N KITERJESZTETT INFORM\u00c1CI\u00d3K JELENNEK MEG
+CWWKB0378I.explanation=A DETAILS parancs le\u00edr\u00e1sa
+CWWKB0378I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0379I=CWWKB0379I: Az optimaliz\u00e1lt helyi illeszt\u0151k ezen kiszolg\u00e1l\u00f3 \u00e1ltal haszn\u00e1lt RAR f\u00e1jlj\u00e1t friss\u00edteni kell
+CWWKB0379I.explanation=A jav\u00edt\u00f3csomag a WebSphere Application Server for z/OS Optimaliz\u00e1lt helyi illeszt\u0151k (OLA) szolg\u00e1ltat\u00e1s\u00e1nak RAR f\u00e1jlj\u00e1nak friss\u00edtett v\u00e1ltozat\u00e1t biztos\u00edtja.  A jelenleg telep\u00edtett v\u00e1ltozat nem biztos, hogy kompatibilis a jav\u00edt\u00f3csomaggal.
+CWWKB0379I.useraction=Cser\u00e9lje le az erre a kiszolg\u00e1l\u00f3p\u00e9ld\u00e1nyra telep\u00edtett Optimaliz\u00e1lt helyi illeszt\u0151k (OLA) RAR f\u00e1jlt a WebSphere Application Server for z/OS most telep\u00edtett szolg\u00e1ltat\u00e1si szintje \u00e1ltal biztos\u00edtott v\u00e1ltozatra.  A telep\u00edt\u00e9si \u00fatmutat\u00e1sok a WebSphere Applicatin Server for z/OS inform\u00e1ci\u00f3k\u00f6zpontj\u00e1ban tal\u00e1lhat\u00f3k.
+#-----------------------------------------------------------------------
+CWWKB0380E=CWWKB0380E: Hiba t\u00f6rt\u00e9nt a tranzakci\u00f3-\u00fajraszinkroniz\u00e1l\u00e1s sor\u00e1n a(z) {0} OLA regisztr\u00e1ci\u00f3val 
+CWWKB0380E.explanation=A WebSphere Application Server for z/OS tranzakci\u00f3-\u00fajraszinkroniz\u00e1l\u00e1st k\u00e9r az \u00fczenetben azonos\u00edtott Optimaliz\u00e1lt helyi illeszt\u0151 regisztr\u00e1ci\u00f3s n\u00e9vvel.  Az \u00fajraszinkroniz\u00e1l\u00e1si folyamat kiv\u00e9tel miatt nem fejez\u0151d\u00f6tt be.
+CWWKB0380E.useraction=A CICS-sel t\u00f6rt\u00e9n\u0151 \u00fajraszinkroniz\u00e1l\u00e1s sor\u00e1n gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a regisztr\u00e1ci\u00f3s n\u00e9vnek megfelel\u0151 Optimaliz\u00e1lt helyi illeszt\u0151 kapcsolat kiszolg\u00e1l\u00f3 elindult.  Tekintse meg a WebSphere Application Server for z/OS napl\u00f3it \u00e9s az FFDC-t az \u00fajraszinkroniz\u00e1l\u00e1s m\u0171velethez t\u00e1rs\u00edtott kiv\u00e9tel\u00e9rt.  Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll,  l\u00e9pjen kapcsolatba a k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si szinttel.
+#-----------------------------------------------------------------------
+CWWKB0381E=CWWKB0381E: Kiv\u00e9tel keletkezett a k\u00f6vetkez\u0151 sor\u00e1n: {0}, amely a(z) {1} OLA regisztr\u00e1ci\u00f3j\u00fa tranzakci\u00f3
+CWWKB0381E.explanation=A WebSphere Application Server for z/OS k\u00eds\u00e9rletet tett egy k\u00e9tf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9si tranzakci\u00f3 befejez\u00e9s\u00e9re, \u00e9s hib\u00e1ba \u00fctk\u00f6z\u00f6tt az Optimaliz\u00e1 lt helyi illeszt\u0151k regisztr\u00e1ci\u00f3j\u00e1val val\u00f3 kommunik\u00e1ci\u00f3 sor\u00e1n.  Ez az \u00fczenet kikapcsolhat\u00f3 akkor, ha ism\u00e9telten hib\u00e1k t\u00f6rt\u00e9nnek ugyanazzal a regisztr\u00e1ci\u00f3val.
+CWWKB0381E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben megnevezett Optimaliz\u00e1lt helyi illeszt\u0151k elindultak.  A kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sakor v\u00e9gzett \u00fajraszinkroniz\u00e1l\u00e1s sor\u00e1n ez az \u00fczenet nem felt\u00e9tlen\u00fcl jelzi, hogy hiba t\u00f6rt\u00e9nt. Ez a k\u00e9tf\u00e1zis\u00fa v\u00e9gleges\u00edt\u00e9si \u00e9s felt\u00e9telezett megszak\u00edt\u00e1si protokollok miatt van \u00edgy.  Ellen\u0151rizze a WebSphere Application Server for z/OS napl\u00f3kat \u00e9s az FFDC-t a kiv\u00e9telhez tartoz\u00f3 r\u00e9szletek\u00e9rt, amelyek az \u00fczenet kiad\u00e1s\u00e1t okozt\u00e1k.  A kiv\u00e9tel tartalmazhatja a meghi\u00fasult tranzakci\u00f3t \u00e9s  m\u0171veletet azonos\u00edt\u00f3 XID azonos\u00edt\u00f3t.  Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll,  l\u00e9pjen kapcsolatba a k\u00f6vetkez\u0151 t\u00e1mogat\u00e1si szinttel.
+#-----------------------------------------------------------------------
+#{0} Is a string representing an IMS OTMA XCF group ID
+#{1} Is a string representing an IMS OTMA XCF server name
+CWWKB0382I=CWWKB0382I: A(Z) {0} / {1} IMS R\u00c9SZLETEI
+CWWKB0382I.explanation=Azon IMS rendszer OTMA-ja \u00e1ltal haszn\u00e1lt XCF csoportazonos\u00edt\u00f3t \u00e9s XCF kiszolg\u00e1l\u00f3nevet jelen\u00edti meg, amelyhez a WebSphere Application Server for z/OS kapcsol\u00f3dik.  Egy\u00e9ni \u00fcgyf\u00e9lnevek k\u00f6vetkeznek ut\u00e1na a CWWKB0383I \u00fczenet haszn\u00e1lat\u00e1val.
+CWWKB0382I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} Is a string representing a Liberty server name
+#{1} Is a string representing an IMS OTMA client name
+CWWKB0383I=CWWKB0383I: {0} {1}
+CWWKB0383I.explanation=Azon WebSphere Application Server for z/OS kiszolg\u00e1l\u00f3 \u00e9s OTMA \u00fcgyf\u00e9l nev\u00e9t jelen\u00edti meg, amelyeket az el\u0151z\u0151 CWWKB0382I \u00fczenet \u00e1ltal azonos\u00edtott IMS rendszer haszn\u00e1l.
+CWWKB0383I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0384I=CWWKB0384I: OTMA N\u00c9VT\u00c1ROL\u00d3 NEM L\u00c9TEZIK
+CWWKB0384I.explanation=A rendszer OTMA n\u00e9vt\u00e1rol\u00f3ja m\u00e9g nem j\u00f6tt l\u00e9tre, \u00e9s nem a display parancs nem tudja megjelen\u00edteni.
+CWWKB0384I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0385I=CWWKB0385I: {0} MEGJELEN\u00cdTI AZ OTMA N\u00c9VT\u00c1ROL\u00d3T
+CWWKB0385I.explanation=Az OTMANAMES parancs le\u00edr\u00e1sa.
+CWWKB0385I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} Is a number >= 0
+CWWKB0386I=CWWKB0386I: NEVEK MAX. SZ\u00c1MA / {0} IMS
+CWWKB0386I.explanation=Azon OTMA \u00fcgyf\u00e9lnevek maxim\u00e1lis sz\u00e1m\u00e1t jelen\u00edti meg, amelyeket a WebSphere Application Server for z/OS az egyes IMS  rendszerekhez csatlakoz\u00e1sra haszn\u00e1lhat.
+CWWKB0386I.useraction=Nincs
+#-----------------------------------------------------------------------
+#{0} Is a string
+#{1} is a hexidecimal number (a timestamp in STCK format)
+CWWKB0387I=CWWKB0387I: BE\u00c1LL\u00cdTOTTA: {0}, ID\u0150PONT: {1}
+CWWKB0387I.explanation=Megjelen\u00edti azon WebSphere Application Server for z/OS d\u00e9moncsoport nev\u00e9t, amely az OTMA \u00fcgyf\u00e9lnevek maxim\u00e1lis sz\u00e1m\u00e1t be\u00e1ll\u00edtotta. Az OTMA \u00fcgyf\u00e9lnevek annak megjelen\u00edt\u00e9s\u00e9re haszn\u00e1lhat\u00f3k, hogy mely IMS rendszerekre kapcsol\u00f3dnak az egyes WebSphere Application Server for z/OS p\u00e9ld\u00e1nyok.  Az OTMA \u00fcgyf\u00e9lnevek be\u00e1ll\u00edt\u00e1s\u00e1nak id\u0151pontja is megjelenik STCK form\u00e1tumban.  Az OTMA \u00fcgyf\u00e9lnevek maxim\u00e1lis sz\u00e1ma a CWWKB0386I \u00fczenet haszn\u00e1lat\u00e1val lett megjelen\u00edtve.
+CWWKB0387I.useraction=Nincs
+#-----------------------------------------------------------------------
+CWWKB0388W=CWWKB0388W: Az Optimaliz\u00e1lt helyi illeszt\u0151k RAR proxy m\u00f3dban m\u0171k\u00f6dik, \u00e9s nem fog r\u00e9sztvenni helyi vagy glob\u00e1lis tranzakci\u00f3kban.
+CWWKB0388W.explanation=Ha az Optimaliz\u00e1lt helyi illeszt\u0151k RAR nem z/OS platformon van telep\u00edtve, akkor proxy m\u00f3dban m\u0171k\u00f6dik, \u00e9s egy WebSphere Application Server for z/OS kiszolg\u00e1l\u00f3val kommunik\u00e1l, amelyen telep\u00edtve van a proxy EJB.  Ebben a m\u00f3dban a tranzakci\u00f3k nem t\u00e1mogatottak.  Az er\u0151forr\u00e1s-illeszt\u0151 figyelmen k\u00edv\u00fcl fogja hagyni az \u00f6sszes tranzakci\u00f3 protokoll \u00fczenetet.
+CWWKB0388W.useraction=Nincs.  Ez az \u00fczenet akkor jelenik meg, amikor az er\u0151forr\u00e1s-illeszt\u0151 els\u0151 alkalommal pr\u00f3b\u00e1l meg r\u00e9sztvenni egy tranzakci\u00f3ban, mik\u00f6zben proxy m\u00f3dban m\u0171k\u00f6dik.
+#-----------------------------------------------------------------------
+CWWKB0389E=CWWKB0389E: Hiba t\u00f6rt\u00e9nt egy WebSphere Optimized Local Adapter (WOLA) t\u00e1voli munkak\u00e9r\u00e9s feldolgoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n a(z) {0} JNDI n\u00e9vvel azonos\u00edtott EJB c\u00e9lon. A kiv\u00e9tel: {1}.
+CWWKB0389E.explanation=Hiba t\u00f6rt\u00e9nt egy WebSphere Optimized Local Adapter (WOLA) t\u00e1voli munkak\u00e9r\u00e9s feldolgoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n a t\u00e1voli EJB c\u00e9lon.
+CWWKB0389E.useraction=Ellen\u0151rizze, hogy helyes-e a megadott JNDI n\u00e9v. Ellen\u0151rizze, hogy az EJB c\u00e9l olyan hat\u00f3k\u00f6rben van-e, amely l\u00e1that\u00f3 \u00e9s el\u00e9rhet\u0151 a h\u00edv\u00f3 sz\u00e1m\u00e1ra. Tekintse meg a WebSphere Application Server for z/OS napl\u00f3it \u00e9s az FFDC-t a t\u00e1voli EJB h\u00edv\u00e1ssal kapcsolatos kiv\u00e9tel\u00e9rt.
+#-----------------------------------------------------------------------
+#{0} is a string representing a transaction identifier (XID)
+CWWKB0390E=CWWKB0390E: A meghi\u00fasult k\u00e9r\u00e9s tranzakci\u00f3s XID azonos\u00edt\u00f3ja: {0}
+CWWKB0390E.explanation=A WebSphere Application Server for z/OS meghi\u00fasult WebSphere Optimized Local Adapters (WOLA) tranzakci\u00f3 felold\u00e1si k\u00e9r\u00e9st jelentett a CWWKB0381E \u00fczenetben.  Ez az \u00fczenet tartalmazza a meghi\u00fasult k\u00e9r\u00e9shez tartoz\u00f3 tranzakci\u00f3-azonos\u00edt\u00f3t.
+CWWKB0390E.useraction=Nincs teend\u0151. Az \u00fczenetben tal\u00e1lhat\u00f3 inform\u00e1ci\u00f3k hasznosak lehetnek a CWWKB0381E \u00fczenetben jelentett hiba megold\u00e1sa sor\u00e1n.
+#-----------------------------------------------------------------------
+#{0} is a string representing a registration name
+CWWKB0391E=CWWKB0391E: A k\u00e9rt {0} regisztr\u00e1ci\u00f3s n\u00e9v nem tal\u00e1lhat\u00f3.
+CWWKB0391E.explanation=Az er\u0151forr\u00e1s-illeszt\u0151 nem tal\u00e1lta a k\u00e9rt regisztr\u00e1ci\u00f3s nevet.
+CWWKB0391E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a regisztr\u00e1ci\u00f3s nevet helyesen adta meg a ConnectionFactory tulajdons\u00e1gokban vagy a getConnection k\u00e9r\u00e9s ConnectionSpecImpl param\u00e9ter\u00e9ben.
+#-----------------------------------------------------------------------
+CWWKB0392W=CWWKB0392W: Az OTMA \u00fcgyf\u00e9ln\u00e9v nem ker\u00fclt megad\u00e1sra.
+CWWKB0392W.explanation=Az OTMA \u00fcgyf\u00e9l nev\u00e9t meg kell adni a ConnectionSpec param\u00e9terben vagy a server.xml f\u00e1jlban.
+CWWKB0392W.useraction=Gondoskodjon egy OTMA \u00fcgyf\u00e9ln\u00e9v be\u00e1ll\u00edt\u00e1s\u00e1r\u00f3l a ConnectionSpec param\u00e9terben a ConnectionSpecImpl.setOTMAClientName() paranccsal vagy a server.xml f\u00e1jlban.
+#-----------------------------------------------------------------------
+#{0} is a string representing the name of an OTMA Client
+#{1} is a integer representing the maximum allowable length of an OTMA name
+CWWKB0393W=CWWKB0393W: A megadott ({0}) OTMA \u00fcgyf\u00e9ln\u00e9v \u00fcres, t\u00f6bb, mint {1} karakter hossz\u00fa vagy a A-Z, 0-9, @, \# \u00e9s $ karaktereken k\u00edv\u00fcl m\u00e1s karaktereket is tartalmaz.
+CWWKB0393W.explanation=Az OTMA \u00fcgyf\u00e9ln\u00e9v hossz\u00e1nak 1 \u00e9s az \u00fczenetben megjel\u00f6lt hossz k\u00f6z\u00e9 kell esnie, \u00e9s az \u00fcgyf\u00e9ln\u00e9v csak a k\u00f6vetkez\u0151 karaktereket tartalmazhatja: A-Z, 0-9, @, \#, vagy $.
+CWWKB0393W.useraction=Adjon meg a hossz\u00fas\u00e1gi korl\u00e1tok k\u00f6z\u00e9 es\u0151 OTMA \u00fcgyf\u00e9lnevet, amely csak a megengedett karaktereket tartalmazza.
+#-----------------------------------------------------------------------
+#{0} is a string representing an OTMA Client name
+CWWKB0394I=CWWKB0394I: A(z) ({0}) OTMA \u00fcgyf\u00e9ln\u00e9v ker\u00fcl alkalmaz\u00e1sra.
+CWWKB0394I.explanation=A megadott OTMA \u00fcgyf\u00e9ln\u00e9v a haszn\u00e1land\u00f3 OTMA \u00fcgyf\u00e9ln\u00e9v. Ez sz\u00e1rmazhat a server.xml f\u00e1jlb\u00f3l, a ConnectionSpec param\u00e9terb\u0151l vagy lehet az alap\u00e9rtelmezett \u00e9rt\u00e9k.
+CWWKB0394I.useraction=Nincs teend\u0151.
+#-----------------------------------------------------------------------
+#{0} is a string representing an OTMA name type, Server, or Group
+#{1} is a string representing the name of an OTMA Server, or OTMA Group
+#{2} is an integer representing the maximum allowable length of an OTMA name
+CWWKB0395E=CWWKB0395E: A megadott ({1}) OTMA {0} n\u00e9v \u00fcres, t\u00f6bb, mint {2} karakter hossz\u00fa vagy a A-Z, 0-9, @, \# \u00e9s $ karaktereken k\u00edv\u00fcl m\u00e1s karaktereket is tartalmaz.
+CWWKB0395E.explanation=Az OTMA n\u00e9v hossz\u00e1nak 1 \u00e9s az \u00fczenetben megjel\u00f6lt hossz k\u00f6z\u00e9 kell esnie, \u00e9s a n\u00e9v csak a k\u00f6vetkez\u0151 karaktereket tartalmazhatja: A-Z, 0-9, @, \#, vagy $.
+CWWKB0395E.useraction=Adjon meg a hossz\u00fas\u00e1gi korl\u00e1tok k\u00f6z\u00e9 es\u0151 OTMA nevet, amely csak a megengedett karaktereket tartalmazza. 
+#-----------------------------------------------------------------------
+CWWKB0396E=CWWKB0396E: Az OTMA csoportnevet \u00e9s az OTMA kiszolg\u00e1l\u00f3nevet a ConnectionFactory vagy a ConnectionSpec param\u00e9terekben kell be\u00e1ll\u00edtani.
+CWWKB0396E.explanation=Nem lett \u00e9rt\u00e9k megadva OTMA csoportn\u00e9vnek, OTMA kiszolg\u00e1l\u00f3n\u00e9vnek vagy egyiknek sem. 
+CWWKB0396E.useraction=Gondoskodjon OTMA csoportn\u00e9v \u00e9s OTMA kiszolg\u00e1l\u00f3n\u00e9v be\u00e1ll\u00edt\u00e1s\u00e1r\u00f3l a ConnectionFactory vagy ConnectionSpec param\u00e9terben.
+#-----------------------------------------------------------------------
+#{0} is a string representing the Maximum configured Receive Message size
+#{1} is a string representing the Max Number of segments configured
+#{2} is a string representing the Reconfigured maximum receive message size 
+CWWKB0397W=CWWKB0397W: A be\u00e1ll\u00edtott OTMA maxim\u00e1lis fogad\u00e1si m\u00e9ret {0}, ami nagyobb, mint a(z) {1} maxim\u00e1lis szegmenshez enged\u00e9lyezett maxim\u00e1lis \u00fczenetm\u00e9ret. A maxim\u00e1lis fogadott \u00fczenetm\u00e9ret {2} \u00e9rt\u00e9kre v\u00e1ltozott.
+CWWKB0397W.explanation=A be\u00e1ll\u00edtott maxim\u00e1lis fogadott \u00fczenetm\u00e9ret nagyobb, mint a be\u00e1ll\u00edtott maxim\u00e1lis szegmenssz\u00e1m \u00e1ltal kezelhet\u0151 \u00fczenet m\u00e9rete. Minden szegmens csak 32k adatot tartalmazhat. 
+CWWKB0397W.useraction=N\u00e9zze \u00e1t a konfigur\u00e1ci\u00f3t, \u00e9s gondoskodjon arr\u00f3l, hogy a maxim\u00e1lis \u00fczenethossz \u00e9s a szegmensek maxim\u00e1lis sz\u00e1ma megfelel\u0151en legyen be\u00e1ll\u00edtva. 

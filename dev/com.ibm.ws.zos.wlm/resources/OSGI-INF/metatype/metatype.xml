@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+                   
+    <OCD id="com.ibm.ws.zos.wlm" name="%zos.wlm.config" description="%zos.wlm.config.desc" ibm:alias="zosWorkloadManager">
+        <AD id="collectionName" name="%collectionName" description="%collectionName.desc" 
+        required="false" type="String" default="${wlp.server.name}" />
+    </OCD>
+    <Designate pid="com.ibm.ws.zos.wlm.WLMConfigManager">
+        <Object ocdref="com.ibm.ws.zos.wlm" />
+    </Designate>
+    
+    <OCD id="com.ibm.ws.zos.wlm.classification"
+         name="%zos.wlm.classification.config.name"
+         description="%zos.wlm.classification.config.description"
+         ibm:supportExtensions="true"
+         ibm:alias="wlmClassification">
+         <AD id="classificationName" name="%classificationName" description="%classificationName.desc" required="false" type="String" default="null"/>
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.zos.wlm.classification">
+        <Object ocdref="com.ibm.ws.zos.wlm.classification"/>
+    </Designate>
+    
+    <OCD id="com.ibm.ws.zos.wlm.httpclassification"
+         name="%zos.wlm.httpclassification.config.name"
+         description="%zos.wlm.httpclassification.config.description"
+         ibm:parentPid="com.ibm.ws.zos.wlm.classification"
+         ibm:childAlias="httpClassification">
+        <AD id="transactionClass" name="%tclass" description="%tclass.desc" required="false" type="String" default="" />
+		<AD id="host" name="%host" description="%host.desc" required="false" type="String" default="*" />
+		<AD id="port" name="%port" description="%port.desc" required="false" type="String" default="*" />
+		<AD id="resource" name="%resource" description="%resource.desc" required="false" type="String" default="*" />
+		<AD id="method" name="%method" description="%method.desc" required="false" type="String" default="*" />
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.zos.wlm.httpclassification">
+        <Object ocdref="com.ibm.ws.zos.wlm.httpclassification"/>
+    </Designate>
+
+    <OCD id="com.ibm.ws.zos.wlm.mdbClassification"
+         name="%zos.wlm.mdbClassification.config.name"
+         description="%zos.wlm.mdbClassification.config.description"
+         ibm:parentPid="com.ibm.ws.zos.wlm.classification"
+         ibm:childAlias="mdbClassification">
+        <AD id="transactionClass" name="%mdb.tclass" description="%mdb.tclass.desc" required="false" type="String" default="" />
+		<AD id="jmsActivationSpec" name="%mdb.jmsActivationSpec" description="%mdb.jmsActivationSpec.desc" required="false" type="String" default="*" />
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.zos.wlm.mdbClassification">
+        <Object ocdref="com.ibm.ws.zos.wlm.mdbClassification"/>
+    </Designate>
+
+    <OCD id="com.ibm.ws.zos.wlm.health" name="%zos.wlm.health.config.name" description="%zos.wlm.health.config.desc" ibm:alias="zosWlmHealth">
+        <AD id="interval" name="%interval" description="%interval.desc" required="false" type="String" ibm:type="duration(ms)" default="0s" />
+        <AD id="increment" name="%increment" description="%increment.desc" required="false" type="Integer" min="1" max="100" default="100" />
+    </OCD>
+    <Designate pid="com.ibm.ws.zos.wlm.WLMHealthImpl">
+        <Object ocdref="com.ibm.ws.zos.wlm.health" />
+    </Designate>
+
+</metatype:MetaData>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.security.authorization.saf" name="%saf.authorization.config" description="%saf.authorization.config.desc" ibm:alias="safAuthorization">
+        <AD id="roleMapper" 
+            name="%roleMapper" 
+            description="%roleMapper.desc"
+            required="false" 
+            type="String"
+            default="com.ibm.ws.security.authorization.saf.internal.SAFRoleMapperImpl" />
+
+        <AD id="racRouteLog" 
+            name="%racRouteLog" 
+            description="%racRouteLog.desc"
+            required="false" 
+            type="String" 
+            default="NONE" >
+                <Option label="%racRouteLog.asis" value="ASIS"/>
+                <Option label="%racRouteLog.nofail" value="NOFAIL"/>
+                <Option label="%racRouteLog.none" value="NONE"/>
+                <Option label="%racRouteLog.nostat" value="NOSTAT"/>
+        </AD>
+
+        <AD id="enableDelegation" 
+            required="false" 
+            type="Boolean" 
+            default="false" 
+            name="%enableDelegation.name" 
+            description="%enableDelegation.desc"/>
+        
+        <AD id="reportAuthorizationCheckDetails"
+            required="false"
+            type="Boolean"
+            default="false"
+            name="%reportAuthorizationCheckDetails.name" 
+            description="%reportAuthorizationCheckDetails.desc"/>
+    </OCD>
+
+    <OCD id="com.ibm.ws.security.rolemapper.saf" name="%saf.rolemapper.config" description="%saf.rolemapper.config.desc" ibm:alias="safRoleMapper">
+        <AD id="profilePattern" 
+            name="%profilePattern" 
+            description="%profilePattern.desc"
+            required="false" 
+            type="String"
+            default="%profilePrefix%.%resource%.%role%"/>
+
+        <AD id="toUpperCase" 
+            name="%toUpperCase" 
+            description="%toUpperCase.desc"
+            required="false" 
+            type="Boolean"
+            default="false"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.authorization.saf">
+        <Object ocdref="com.ibm.ws.security.authorization.saf" />
+    </Designate>
+
+    <Designate pid="com.ibm.ws.security.authorization.saf.internal.SAFRoleMapperImpl">
+        <Object ocdref="com.ibm.ws.security.rolemapper.saf" />
+    </Designate>
+    
+</metatype:MetaData>

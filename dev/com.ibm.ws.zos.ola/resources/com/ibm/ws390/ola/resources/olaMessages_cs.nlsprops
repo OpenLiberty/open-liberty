@@ -1,0 +1,305 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# DISCLAIMER OF WARRANTIES:  The following [enclosed] code is sample
+# code created by IBM Corporation.  This sample code is not part of
+# any standard or IBM product and is provided to you solely for the
+# purpose of assisting you in the development of your applications.
+# The code is provided "AS IS", without warranty of any kind.  IBM
+# shall not be liable for any damages arising out of your use of the
+# sample code, even if they have been advised of the possibility of
+# such damages.
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+# 4) %%SERVICETEXT%% - (Is substitued by a text description which  
+#        is done by the book generation tool) 
+#    - for the complete text description see: include/private/bborabnd.mac 
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+#-----------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.zos.ola/resources/com/ibm/ws390/ola/resources/olaMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WOLA Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0351-0400: WOLA Resource Adapter
+# -------------------------------------------------------------------------------------------------
+
+# Messages for DISPLAY,ADAPTER command.
+
+#{0} is the registration type, a single character.
+#{1} is the job name of the Liberty server, a text string between 1-8 characters
+#{2} is the registration name of the Liberty server, a text string between 1-12 characters
+CWWKB0351I=CWWKB0351I: TYP: {0} N\u00c1ZEV \u00daLOHY: {1} N\u00c1ZEV: {2}
+CWWKB0351I.explanation=Prvn\u00ed \u0159\u00e1dek odezvy na p\u0159\u00edkaz v\u00fdpisu podrobn\u00e9 registrace.
+CWWKB0351I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+
+#{0} is the job number corresponding to the registration which is being described
+#{1} is either 'true' or 'false'
+#{2} is a number >= 0.
+CWWKB0352I=CWWKB0352I:  \u010c\u00cdSLO \u00daLOHY: {0} AKTIVN\u00cd: {1} AKTIVN\u00cd P\u0158IPOJEN\u00cd: {2}
+CWWKB0352I.explanation=Druh\u00fd \u0159\u00e1dek odezvy na p\u0159\u00edkaz v\u00fdpisu podrobn\u00e9 registrace.
+CWWKB0352I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+
+#{0} is a number >= 0.
+#{1} is a number >= 0.
+#{2} is a number >= 0 (representing the state of the registration)
+#{3} is a number >= 0
+CWWKB0353I=CWWKB0353I: MIN.P\u0158IPOJEN\u00cd: {0} MAX.P\u0158IPOJEN\u00cd: {1} STAV: {2} \u00daROVE\u0147 TRASOV\u00c1N\u00cd: {3}
+CWWKB0353I.explanation=T\u0159et\u00ed \u0159\u00e1dek odezvy na p\u0159\u00edkaz v\u00fdpisu podrobn\u00e9 registrace.
+CWWKB0353I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+
+CWWKB0354I=CWWKB0354I: N\u00e1zev     N\u00e1zev \u00falohy SWT TL Min  Max  Akt  Stav
+CWWKB0354I.explanation=Z\u00e1hlav\u00ed odezvy pro p\u0159\u00edkaz v\u00fdpisu tabulky registrace.
+CWWKB0354I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+
+#{0} is a string, corresponding to 'Name' in message CWWKB0354I
+#{1} is a string, corresponding to 'Jobname' in message CWWKB0354I
+#{2} is a three digit number, corresponding to "SWT" in message CWWKB0354I
+#{3} is a two digit number, corresponding to "TL" in message CWWKB0354I
+#{4} is a number, corresponding to 'Min' in message CWWKB0354I
+#{5} is a number, corresponding to 'Max' in message CWWKB0354I
+#{6} is a number, corresponding to 'Active'	in message CWWKB0354I
+#{7} is a number, corresponding to 'State' in message CWWKB0354I
+CWWKB0355I=CWWKB0355I: {0} {1} {2} {3} {4} {5} {6} {7}
+CWWKB0355I.explanation=\u0158\u00e1dek odezvy RGE na tabulkov\u00fd p\u0159\u00edkaz: MODIFY,DISPLAY,ADAPTER,RGE,*
+CWWKB0355I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+
+#{0} is a number
+#{1} is a number >= 0
+#{2} is a string from 1-8 characters.
+CWWKB0356I=CWWKB0356I: STAV: VER:{0} MAX.P\u0158IPOJEN\u00cd:{1} N\u00c1ZEV-SKUP-WOLA:{2}
+CWWKB0356I.explanation=Odezva na p\u0159\u00edkaz: MODIFY DISPLAY,ADAPTER,STATUS
+CWWKB0356I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0357I=CWWKB0357I: ZOBRAZEN\u00cd REGISTRAC\u00cd PRO SERVER:
+CWWKB0357I.explanation=Odezva na p\u0159\u00edkaz: MODIFY DISPLAY,ADAPTER,REGISTRATIONS
+CWWKB0357I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0358I=CWWKB0358I: ZOBRAZEN\u00cd REGISTRAC\u00cd PRO SKUPINU WOLA:
+CWWKB0358I.explanation=Odezva na p\u0159\u00edkaz: MODIFY DISPLAY,ADAPTER,GROUPRGES
+CWWKB0358I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0359I=CWWKB0359I: MO\u017dN\u00c9 P\u0158\u00cdKAZY PRO ADAPT\u00c9R: (P\u0158\u00cdKLAD: DISPLAY,ADAPTER,STATUS)
+CWWKB0359I.explanation=Odezva na nezn\u00e1m\u00fd p\u0159\u00edkaz ADAPTER nebo na p\u0159\u00edkaz HELP
+CWWKB0359I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} is a string (an option name)
+#{1} is a description (of the option in #0)
+CWWKB0360I=CWWKB0360I: {0} - {1}
+CWWKB0360I.explanation=Zobraz\u00ed volbu p\u0159\u00edkazu nebo hled\u00e1n\u00ed a jej\u00ed popis
+CWWKB0360I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} is a string which the user supplied
+CWWKB0361I=CWWKB0361I: NEPLATN\u00c1 VOLBA NEBO TOKEN: {0}
+CWWKB0361I.explanation=Zobraz\u00ed chybovou zpr\u00e1vu pro neplatnou volbu nebo token
+CWWKB0361I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0362I=CWWKB0362I: VYSV\u011aTLEN\u00cd: NEPLATN\u00c1 LOGICK\u00c1 HODNOTA: O\u010cEK\u00c1V\u00c1NO TRUE/FALSE NEBO 0/1
+CWWKB0362I.explanation=Zobraz\u00ed chybu pro neplatnou logickou hodnotu
+CWWKB0362I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0363I=CWWKB0363I: VYSV\u011aTLEN\u00cd: NEPLATN\u00c1 \u010c\u00cdSELN\u00c1 HODNOTA
+CWWKB0363I.explanation=Zobraz\u00ed chybu pro neplatnou \u010d\u00edselnou hodnotu
+CWWKB0363I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0364I=CWWKB0364I: VYSV\u011aTLEN\u00cd: NEPLATN\u00dd N\u00c1ZEV ATRIBUTU
+CWWKB0364I.explanation=Zobraz\u00ed chybu pro neplatn\u00fd n\u00e1zev atributu p\u0159i hled\u00e1n\u00ed
+CWWKB0364I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0365I=CWWKB0365I: VYSV\u011aTLEN\u00cd: V\u00cdCE NE\u017d JEDEN ZNAK =
+CWWKB0365I.explanation=Zobraz\u00ed chybu pro volbu hled\u00e1n\u00ed obsahuj\u00edc\u00ed v\u00edce ne\u017e jeden znak =
+CWWKB0365I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0366I=CWWKB0366I: PLATN\u00c9 VOLBY HLED\u00c1N\u00cd:
+CWWKB0366I.explanation=Zobraz\u00ed z\u00e1hlav\u00ed pro seznam platn\u00fdch voleb hled\u00e1n\u00ed a jejich typ\u016f
+CWWKB0366I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0367I=CWWKB0367I: {0}
+CWWKB0367I.explanation=Zobraz\u00ed volbu hled\u00e1n\u00ed a jej\u00ed typ
+CWWKB0367I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0368I=CWWKB0368I: {0} ZOBRAZ\u00cd STAV OLA
+CWWKB0368I.explanation=Popis p\u0159\u00edkazu STATUS
+CWWKB0368I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0369I=CWWKB0369I: {0} ZOBRAZ\u00cd REGISTRACE PRO AKTU\u00c1LN\u00cd SERVER
+CWWKB0369I.explanation=Popis p\u0159\u00edkazu STATUS
+CWWKB0369I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0370I=CWWKB0370I: {0} ZOBRAZ\u00cd REGISTRACE PRO DAN\u00dd N\u00c1ZEV SERVERU
+CWWKB0370I.explanation=Popis p\u0159\u00edkazu STATUS
+CWWKB0370I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0371I=CWWKB0371I: {0} ZOBRAZ\u00cd REGISTRACE PRO SKUPINU WOLA
+CWWKB0371I.explanation=Popis p\u0159\u00edkazu STATUS
+CWWKB0371I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0372I=CWWKB0372I: {0} INFORMACE VIZ DISPLAY,ADAPTER,SEARCHRGES,HELP
+CWWKB0372I.explanation=Popis p\u0159\u00edkazu STATUS
+CWWKB0372I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} is a string (a server name supplied by the user)
+CWWKB0373I=CWWKB0373I: NEBYL NALEZEN SERVER S N\u00c1ZVEM {0}
+CWWKB0373I.explanation=Chybov\u00e1 zpr\u00e1va pro p\u0159\u00edkaz DISPLAY,ADAPTER,REGISTRATIONS,n\u00e1zev_serveru
+CWWKB0373I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0374I=CWWKB0374I: TATO REGISTRACE NEM\u00c1 \u017d\u00c1DN\u00c9 OBSLU\u017dN\u00c9 RUTINY P\u0158IPOJEN\u00cd
+CWWKB0374I.explanation=Zpr\u00e1va zobrazen\u00e1 pro podrobn\u00e9 zobrazen\u00ed RGE bez obslu\u017en\u00fdch rutin p\u0159ipojen\u00ed
+CWWKB0374I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0375I=CWWKB0375I: ID                  LSCB        Stav
+CWWKB0375I.explanation=Z\u00e1hlav\u00ed tabulkov\u00e9ho zobrazen\u00ed obslu\u017en\u00fdch rutin p\u0159ipojen\u00ed
+CWWKB0375I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} is a hexidecimal integer, corresponding to "ID" in message CWWKB0375I
+#{1} is a hexidecimal integer, corresponding to "LSCB" in message CWWKB0375I
+#{2} is a string describing connection state, corresponding to "State" in message CWWKB0375I
+CWWKB0376I=CWWKB0376I: {0} {1} {2}
+CWWKB0376I.explanation=\u0158\u00e1dek zobrazen\u00ed obslu\u017en\u00fdch rutin p\u0159ipojen\u00ed pro registraci
+CWWKB0376I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0377I=CWWKB0377I: 
+CWWKB0377I.explanation=Pr\u00e1zdn\u00fd \u0159\u00e1dek
+CWWKB0377I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} Is a string
+CWWKB0378I=CWWKB0378I: {0} PO CEL\u00c9M P\u0158\u00cdKAZU ZOBRAZ\u00cd ROZ\u0160\u00cd\u0158EN\u00c9 INFORMACE
+CWWKB0378I.explanation=Popis p\u0159\u00edkazu DETAILS
+CWWKB0378I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0379I=CWWKB0379I: Soubor RAR funkce OLA (Optimized Local Adapters) pou\u017e\u00edvan\u00fd t\u00edmto serverem je t\u0159eba aktualizovat.
+CWWKB0379I.explanation=V r\u00e1mci tohoto servisn\u00edho bal\u00edku byl dod\u00e1n aktualizovan\u00fd soubor RAR pro funkci OLA (Optimized Local Adapters) produktu WebSphere Application Server for z/OS. Je mo\u017en\u00e9, \u017ee aktu\u00e1ln\u011b instalovan\u00e1 verze nen\u00ed s t\u00edmto servisn\u00edm bal\u00edkem kompatibiln\u00ed.
+CWWKB0379I.useraction=Nahra\u010fte soubor RAR funkce OLA (Optimized Local Adapters) instalovan\u00fd v t\u00e9to instanci serveru souborem obsa\u017een\u00fdm v aktu\u00e1ln\u011b instalovan\u00e9 servisn\u00ed \u00farovni produktu WebSphere Application Server for z/OS. Pokyny pro instalaci jsou uvedeny v Informa\u010dn\u00edm centru produktu WebSphere Application Server for z/OS.
+#-----------------------------------------------------------------------
+CWWKB0380E=CWWKB0380E: Do\u0161lo k chyb\u011b p\u0159i prov\u00e1d\u011bn\u00ed resynchronizace transakce s registrac\u00ed funkce OLA {0}. 
+CWWKB0380E.explanation=Produkt WebSphere Application Server for z/OS po\u017eaduje resynchronizaci transakce s n\u00e1zvem registrace funkce OLA (Optimized Local Adapters) uveden\u00fdm ve zpr\u00e1v\u011b. Proces resynchronizace nebyl dokon\u010den kv\u016fli v\u00fdjimce.
+CWWKB0380E.useraction=P\u0159i resynchronizaci se syst\u00e9mem CICS se ujist\u011bte, \u017ee je spu\u0161t\u011bn server odkaz\u016f funkce OLA (Optimized Local Adapter) odpov\u00eddaj\u00edc\u00ed n\u00e1zvu registrace. V protokolech produkt\u016f WebSphere Application Server for z/OS a FFDC nalezn\u011bte v\u00fdjimku p\u0159idru\u017eenou k t\u00e9to operaci resynchronizace. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na dal\u0161\u00ed \u00farove\u0148 podpory.
+#-----------------------------------------------------------------------
+CWWKB0381E=CWWKB0381E: Do\u0161lo k v\u00fdjimce p\u0159i operaci {0} pro transakci s registrac\u00ed funkce OLA {1}.
+CWWKB0381E.explanation=Produkt WebSphere Application Server for z/OS se pokusil o proveden\u00ed dvouf\u00e1zov\u00e9 transakce potvrzen\u00ed, do\u0161lo v\u0161ak k chyb\u011b p\u0159i komunikaci s registrac\u00ed funkce OLA (Optimized Local Adapters). Tuto zpr\u00e1vu lze potla\u010dit v p\u0159\u00edpad\u011b, \u017ee pro tut\u00e9\u017e registraci doch\u00e1z\u00ed k opakovan\u00fdm chyb\u00e1m.
+CWWKB0381E.useraction=Ujist\u011bte se, \u017ee registrace funkce OLA (Optimized Local Adapters) uveden\u00e1 ve zpr\u00e1v\u011b je spu\u0161t\u011bna. B\u011bhem resynchronizace p\u0159i spu\u0161t\u011bn\u00ed serveru tato zpr\u00e1va nemus\u00ed nutn\u011b indikovat, \u017ee do\u0161lo k selh\u00e1n\u00ed, vzhledem k charakteru dvouf\u00e1zov\u00e9ho potvrzen\u00ed a protokol\u016fm p\u0159ed\u010dasn\u00e9ho ukon\u010den\u00ed. V protokolech produkt\u016f WebSphere Application Server for z/OS a FFDC vyhledejte podrobnosti t\u00fdkaj\u00edc\u00ed se v\u00fdjimky, kter\u00e1 zp\u016fsobila vyd\u00e1n\u00ed t\u00e9to zpr\u00e1vy. V\u00fdjimka m\u016f\u017ee obsahovat identifik\u00e1tor XID identifikuj\u00edc\u00ed specifickou transakci a operaci, pro kterou do\u0161lo k nezdaru. Pokud probl\u00e9m p\u0159etrv\u00e1v\u00e1, obra\u0165te se na dal\u0161\u00ed \u00farove\u0148 podpory.
+#-----------------------------------------------------------------------
+#{0} Is a string representing an IMS OTMA XCF group ID
+#{1} Is a string representing an IMS OTMA XCF server name
+CWWKB0382I=CWWKB0382I: PODROBNOSTI PRO SYST\u00c9M IMS {0} / {1}
+CWWKB0382I.explanation=Zobraz\u00ed ID skupiny XCF a n\u00e1zev serveru XCF, kter\u00fd pou\u017e\u00edv\u00e1 klient OTMA pro syst\u00e9m IMS, k n\u011bmu\u017e je p\u0159ipojen produkt WebSphere Application Server for z/OS. V n\u00e1sleduj\u00edc\u00ed zpr\u00e1v\u011b CWWKB0383I budou uvedeny n\u00e1zvy jednotliv\u00fdch klient\u016f.
+CWWKB0382I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} Is a string representing a Liberty server name
+#{1} Is a string representing an IMS OTMA client name
+CWWKB0383I=CWWKB0383I: {0} {1}
+CWWKB0383I.explanation=Zobraz\u00ed n\u00e1zev serveru WebSphere Application Server for z/OS a n\u00e1zev klienta OTMA, kter\u00e9 slou\u017e\u00ed k p\u0159ipojen\u00ed k syst\u00e9mu IMS identifikovan\u00e9mu v p\u0159edchoz\u00ed zpr\u00e1v\u011b CWWKB0382I.
+CWWKB0383I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0384I=CWWKB0384I: FOND N\u00c1ZV\u016e OTMA NEEXISTUJE.
+CWWKB0384I.explanation=Fond n\u00e1zv\u016f OTMA pro tento syst\u00e9m nebyl dosud vytvo\u0159en a nelze jej zobrazit p\u0159\u00edkazem pro zobrazen\u00ed.
+CWWKB0384I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} is a string
+CWWKB0385I=CWWKB0385I: P\u0158\u00cdKAZ {0} ZOBRAZUJE N\u00c1ZEV FONDU N\u00c1ZV\u016e OTMA.
+CWWKB0385I.explanation=Popis p\u0159\u00edkazu OTMANAMES.
+CWWKB0385I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} Is a number >= 0
+CWWKB0386I=CWWKB0386I: MAXIM\u00c1LN\u00cd PO\u010cET N\u00c1ZV\u016e NA SYST\u00c9M IMS {0}
+CWWKB0386I.explanation=Zobraz\u00ed maxim\u00e1ln\u00ed po\u010det n\u00e1zv\u016f klient\u016f OTMA, kter\u00e9 m\u016f\u017ee produkt WebSphere Application Server for z/OS pou\u017e\u00edt k p\u0159ipojen\u00ed ke ka\u017ed\u00e9mu syst\u00e9mu IMS.
+CWWKB0386I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+#{0} Is a string
+#{1} is a hexidecimal number (a timestamp in STCK format)
+CWWKB0387I=CWWKB0387I: NASTAVENO {0} V {1}
+CWWKB0387I.explanation=Zobraz\u00ed n\u00e1zev skupiny d\u00e9mon\u016f produktu WebSphere Application Server for z/OS, kter\u00e1 nastavila maxim\u00e1ln\u00ed po\u010det n\u00e1zv\u016f klient\u016f OTMA. N\u00e1zvy klient\u016f OTMA lze pou\u017e\u00edt ke zji\u0161t\u011bn\u00ed, ke kter\u00fdm syst\u00e9m\u016fm IMS je instance produktu WebSphere Application Server for z/OS p\u0159ipojena. Zobrazen je rovn\u011b\u017e \u010das, kdy byl maxim\u00e1ln\u00ed po\u010det n\u00e1zv\u016f klient\u016f OTMA nastaven, ve form\u00e1tu STCK. Maxim\u00e1ln\u00ed po\u010det n\u00e1zv\u016f klient\u016f OTMA byl zobrazen pomoc\u00ed zpr\u00e1vy CWWKB0386I.
+CWWKB0387I.useraction=Nen\u00ed
+#-----------------------------------------------------------------------
+CWWKB0388W=CWWKB0388W: Optimalizovan\u00fd soubor RAR lok\u00e1ln\u00edch adapt\u00e9r\u016f pracuje v re\u017eimu proxy, a nezapoj\u00ed se tedy do lok\u00e1ln\u00edch ani glob\u00e1ln\u00edch transakc\u00ed.
+CWWKB0388W.explanation=Pokud je optimalizovan\u00fd soubor RAR lok\u00e1ln\u00edch adapt\u00e9r\u016f nainstalov\u00e1n na jin\u00e9 platform\u011b ne\u017e z/OS, funguje v re\u017eimu proxy a komunikuje s aplika\u010dn\u00edm serverem WAS pro z/OS, na kter\u00e9m je nainstalov\u00e1n objekt proxy EJB. V tomto re\u017eimu nejsou transakce podporov\u00e1ny. Adapt\u00e9r prost\u0159edku bude ignorovat v\u0161echny zpr\u00e1vy protokolu transakc\u00ed.
+CWWKB0388W.useraction=Nen\u00ed. Tato zpr\u00e1va je vyd\u00e1na p\u0159i prvn\u00edm pokusu adapt\u00e9ru prost\u0159edku o p\u0159ihl\u00e1\u0161en\u00ed do transakce, pokud je aktivn\u00ed re\u017eim proxy.
+#-----------------------------------------------------------------------
+CWWKB0389E=CWWKB0389E: Do\u0161lo k chyb\u011b p\u0159i pokusu o zpracov\u00e1n\u00ed vzd\u00e1len\u00e9ho pracovn\u00edho po\u017eadavku WOLA (WebSphere Optimized Local Adapter) na c\u00edli EJB (Enterprise Java Bean) ur\u010den\u00e9m pomoc\u00ed tohoto n\u00e1zvu JNDI: {0}. Byla rozpozn\u00e1na tato v\u00fdjimka: {1}.
+CWWKB0389E.explanation=Do\u0161lo k chyb\u011b p\u0159i pokusu o zpracov\u00e1n\u00ed vzd\u00e1len\u00e9ho pracovn\u00edho po\u017eadavku WOLA (WebSphere Optimized Local Adapter) na vzd\u00e1len\u00e9m c\u00edli EJB (Enterprise Java Bean).
+CWWKB0389E.useraction=Ov\u011b\u0159te, zda je n\u00e1zev JNDI (Java Naming and Directory Interface) zad\u00e1n spr\u00e1vn\u011b. Ov\u011b\u0159te, zda je c\u00edl EJB (Enterprise Java Bean) v rozsahu viditelnosti volaj\u00edc\u00edho. V protokolu serveru WebSphere Application Server for z/OS a FDDC (First Failure Data Capture) vyhledejte v\u00fdjimku p\u0159idru\u017eenou k vol\u00e1n\u00ed vzd\u00e1len\u00e9ho objektu EJB (Enterprise Java Bean).
+#-----------------------------------------------------------------------
+#{0} is a string representing a transaction identifier (XID)
+CWWKB0390E=CWWKB0390E: XID transakce pro nezda\u0159enou \u017e\u00e1dost je: {0}
+CWWKB0390E.explanation=Server WebSphere Application Server for z/OS nahl\u00e1sil nezda\u0159enou \u017e\u00e1dost o \u0159e\u0161en\u00ed transakce WOLA (WebSphere Optimized Local Adapters) ve zpr\u00e1v\u011b CWWKB0381E. V t\u00e9to zpr\u00e1v\u011b je uveden transak\u010dn\u00ed identifik\u00e1tor nezda\u0159en\u00e9 \u017e\u00e1dosti.
+CWWKB0390E.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Informace v t\u00e9to zpr\u00e1v\u011b mohou b\u00fdt u\u017eite\u010dn\u00e9 p\u0159i \u0159e\u0161en\u00ed selh\u00e1n\u00ed nahl\u00e1\u0161en\u00e9ho ve zpr\u00e1v\u011b CWWKB0381E.
+#-----------------------------------------------------------------------
+#{0} is a string representing a registration name
+CWWKB0391E=CWWKB0391E: Nelze vyhledat n\u00e1zev po\u017eadovan\u00fd registrace {0}
+CWWKB0391E.explanation=N\u00e1zev po\u017eadovan\u00e9 registrace nelze naj\u00edt adapt\u00e9rem prost\u0159edku.
+CWWKB0391E.useraction=Ujist\u011bte se, \u017ee n\u00e1zev registrace byl zad\u00e1n spr\u00e1vn\u011b, bu\u010f ve vlastnostech ConnectionFactory, nebo v ConnectionSpecImpl dodan\u00e9 v \u017e\u00e1dosti getConnection.
+#-----------------------------------------------------------------------
+CWWKB0392W=CWWKB0392W: Nen\u00ed ur\u010den n\u00e1zev klienta OTMA.
+CWWKB0392W.explanation=N\u00e1zev klienta OTMA mus\u00ed b\u00fdt ur\u010den v r\u00e1mci ConnectionSpec, nebo v souboru server.xml.
+CWWKB0392W.useraction=Ujist\u011bte se, \u017ee je n\u00e1zev klienta OTMA nastaven v r\u00e1mci ConnectionSpec prost\u0159ednictv\u00edm ConnectionSpecImpl.setOTMAClientName(), nebo v souboru server.xml.
+#-----------------------------------------------------------------------
+#{0} is a string representing the name of an OTMA Client
+#{1} is a integer representing the maximum allowable length of an OTMA name
+CWWKB0393W=CWWKB0393W: N\u00e1zev uveden\u00e9ho klienta OTMA ({0}) je pr\u00e1zdn\u00fd, del\u0161\u00ed ne\u017e {1} znak\u016f nebo obsahuje jin\u00e9 znaky ne\u017e A-Z, 0-9, @, \# a $.
+CWWKB0393W.explanation=D\u00e9lka n\u00e1zvu klienta OTMA mus\u00ed b\u00fdt od 1 do d\u00e9lky uveden\u00e9 ve zpr\u00e1v\u011b a n\u00e1zev klienta mus\u00ed tvo\u0159it pouze znaky A-Z, 0-9, @, \# nebo $.
+CWWKB0393W.useraction=Zadejte n\u00e1zev klienta OTMA o d\u00e9lce nep\u0159ekra\u010duj\u00edc\u00ed limit a tvo\u0159en\u00fd pouze povolen\u00fdmi znaky.
+#-----------------------------------------------------------------------
+#{0} is a string representing an OTMA Client name
+CWWKB0394I=CWWKB0394I: Pou\u017eije se n\u00e1zev klienta OTMA ({0}).
+CWWKB0394I.explanation=Bude se pou\u017e\u00edvat uveden\u00fd n\u00e1zev klienta OTMA. M\u016f\u017ee poch\u00e1zet ze souboru server.xml, ze specifikace ConnectionSpec nebo se m\u016f\u017ee jednat o v\u00fdchoz\u00ed hodnotu.
+CWWKB0394I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+#-----------------------------------------------------------------------
+#{0} is a string representing an OTMA name type, Server, or Group
+#{1} is a string representing the name of an OTMA Server, or OTMA Group
+#{2} is an integer representing the maximum allowable length of an OTMA name
+CWWKB0395E=CWWKB0395E: N\u00e1zev {0} OTMA ({1}) je pr\u00e1zdn\u00fd, del\u0161\u00ed ne\u017e {2} znak\u016f nebo obsahuje jin\u00e9 znaky ne\u017e A-Z, 0-9, @, \# a $.
+CWWKB0395E.explanation=D\u00e9lka uveden\u00e9ho n\u00e1zvu OTMA mus\u00ed b\u00fdt od 1 do d\u00e9lky ur\u010den\u00e9 ve zpr\u00e1v\u011b a n\u00e1zev mus\u00ed tvo\u0159it pouze znaky A-Z, 0-9, @, \# nebo $.
+CWWKB0395E.useraction=Zadejte n\u00e1zev OTMA o d\u00e9lce nep\u0159ekra\u010duj\u00edc\u00ed limit a tvo\u0159en\u00fd pouze povolen\u00fdmi znaky. 
+#-----------------------------------------------------------------------
+CWWKB0396E=CWWKB0396E: N\u00e1zev skupiny OTMA a n\u00e1zev serveru OTMA mus\u00ed b\u00fdt uvedeny v r\u00e1mci ConnectionFactory nebo ConnectionSpec.
+CWWKB0396E.explanation=Nebyla ur\u010dena hodnota n\u00e1zvu skupiny OTMA, n\u00e1zvu serveru OTMA, p\u0159\u00edpadn\u011b \u017e\u00e1dn\u00e9ho z t\u011bchto n\u00e1zv\u016f. 
+CWWKB0396E.useraction=Ujist\u011bte se, \u017ee jsou n\u00e1zev skupiny OTMA a n\u00e1zev serveru OTMA uvedeny v r\u00e1mci ConnectionFactory nebo v r\u00e1mci specifikace ConnectionSpec.
+#-----------------------------------------------------------------------
+#{0} is a string representing the Maximum configured Receive Message size
+#{1} is a string representing the Max Number of segments configured
+#{2} is a string representing the Reconfigured maximum receive message size 
+CWWKB0397W=CWWKB0397W: Ur\u010den\u00e1 maxim\u00e1ln\u00ed konfigurovan\u00e1 velikost OTMA pro p\u0159ijet\u00ed {0} je v\u011bt\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed velikost zpr\u00e1v povolen\u00e1 pro maxim\u00e1ln\u00ed konfigurovan\u00fd po\u010det segment\u016f {1}. Maxim\u00e1ln\u00ed velikost pro p\u0159ijet\u00ed zpr\u00e1v je zm\u011bn\u011bna na {2}.
+CWWKB0397W.explanation=Maxim\u00e1ln\u00ed konfigurovan\u00e1 velikost pro p\u0159ijet\u00ed zpr\u00e1v je v\u011bt\u0161\u00ed ne\u017e velikost zpr\u00e1vy, kterou lze zpracovat maxim\u00e1ln\u00edm konfigurovan\u00fdm po\u010dtem segment\u016f. Ka\u017ed\u00fd segment m\u016f\u017ee n\u00e9st pouze 32k dat. 
+CWWKB0397W.useraction=Zrevidujte konfiguraci a ujist\u011bte se, \u017ee maxim\u00e1ln\u00ed d\u00e9lka zpr\u00e1vy a maxim\u00e1ln\u00ed po\u010det segment\u016f jsou nakonfigurov\u00e1ny spr\u00e1vn\u011b. 

@@ -1,0 +1,26 @@
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.saf/resources/com/ibm/ws/security/authorization/saf/internal/resources/SAFAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security SAF Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2960 - CWWKS2999
+
+UNABLE_TO_CREATE_DEFAULT_CRED=CWWKS2960W: No se ha podido crear la credencial por omisi\u00f3n para la autorizaci\u00f3n SAF de usuarios no autenticados. Todas las comprobaciones de autorizaci\u00f3n de usuarios no autenticados fallar\u00e1n. La credencial por omisi\u00f3n no se ha podido crear debido al error siguiente: {0}
+UNABLE_TO_CREATE_DEFAULT_CRED.explanation=El servidor no puede crear la credencial por omisi\u00f3n que representa el usuario SAF no autenticado. El usuario SAF no autenticado est\u00e1 especificado en el atributo unauthenticatedUser en la configuraci\u00f3n de servidor. El servidor no puede realizar comprobaciones de autorizaci\u00f3n para usuarios no autenticados; por lo tanto, todos los intentos de autorizaci\u00f3n fallar\u00e1n.
+UNABLE_TO_CREATE_DEFAULT_CRED.useraction=Enc\u00e1rguese del error que se describe en el mensaje.
+
+CANNOT_READ_APPLDATA=CWWKS2961E: No se ha podido leer APPLDATA del perfil SAF EJBROLE {0} debido al siguiente error: {1}
+CANNOT_READ_APPLDATA.explanation=El servidor no ha podido leer el campo APPLDATA del perfil SAF EJBROLE dado. El campo APPLDATA contiene el usuario Ejecutar como para la delegaci\u00f3n SAF.
+CANNOT_READ_APPLDATA.useraction=El mensaje de error incluye los c\u00f3digos de retorno y raz\u00f3n de SAF que identifican la causa de la anomal\u00eda.

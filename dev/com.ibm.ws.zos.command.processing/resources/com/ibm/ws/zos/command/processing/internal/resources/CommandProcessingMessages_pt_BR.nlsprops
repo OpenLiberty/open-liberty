@@ -1,0 +1,101 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Command Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: command processing
+# -------------------------------------------------------------------------------------------------
+
+STOP_COMMAND_RECEIVED=CWWKB0001I: Comando de parada recebido para o servidor {0}.
+STOP_COMMAND_RECEIVED.explanation=O servidor recebeu um comando de parada.  O servidor iniciar\u00e1 o encerramento.
+STOP_COMMAND_RECEIVED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is target command
+#{1} is completion status
+MODIFY_COMMAND_COMPLETED=CWWKB0002I: COMANDO DE MODIFICA\u00c7\u00c3O {0} CONCLUIU {1}.
+MODIFY_COMMAND_COMPLETED.explanation=O servidor concluiu o processamento do comando indicado. Se o comando n\u00e3o foi conclu\u00eddo com sucesso, mensagens anteriores indicar\u00e3o a raz\u00e3o.
+MODIFY_COMMAND_COMPLETED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is native error code
+NATIVE_ERROR_COMMAND_RECEIVED=CWWKB0003E: O processamento de comando recebeu um c\u00f3digo de erro de {0} a partir de uma chamada nativa.
+NATIVE_ERROR_COMMAND_RECEIVED.explanation=O servidor chamado para o c\u00f3digo nativo para um servi\u00e7o relacionado ao processamento de comando.  O c\u00f3digo nativo encontrou o problema identificado pelo c\u00f3digo de erro exibido.
+NATIVE_ERROR_COMMAND_RECEIVED.useraction=Examine os logs do servidor para determinar a raz\u00e3o para a falha do c\u00f3digo nativo.
+
+#{0} is command response from the command handler
+MODIFY_COMMAND_HANDLER_MSG=CWWKB0004I: {0}
+MODIFY_COMMAND_HANDLER_MSG.explanation=O servidor recebeu um comando de modifica\u00e7\u00e3o para processar.  Este \u00e9 a mensagem de resposta do comando a partir do manipulador de comandos.  A mensagem CWWKB0005I identifica o manipulador de comandos.
+MODIFY_COMMAND_HANDLER_MSG.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is the command handler completion status
+#{1} is the modify command handler name
+MODIFY_COMMAND_HANDLER_DONE=CWWKB0005I: RESPOSTAS DO COMANDO CONCLU\u00cdRAM {0} A PARTIR DE {1}.
+MODIFY_COMMAND_HANDLER_DONE.explanation=O servidor recebeu um comando de modifica\u00e7\u00e3o para processar.  Esta mensagem indica que o manipulador de comandos concluiu o processamento do comando.
+MODIFY_COMMAND_HANDLER_DONE.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is target command
+MODIFY_COMMAND_UNKNOWN=CWWKB0006W: COMANDO DE MODIFICA\u00c7\u00c3O {0} N\u00c3O ERA CONHECIDO PARA NENHUM MANIPULADOR DE COMANDO ATIVO.
+MODIFY_COMMAND_UNKNOWN.explanation=O servidor concluiu o processamento do comando indicado.  Nenhum manipulador de comandos ativo relatou o processamento do comando. 
+MODIFY_COMMAND_UNKNOWN.useraction=Verifique a sintaxe do comando para assegurar que esteja correta e, em seguida, emita novamente o comando.
+
+#{0} is the modify command handler name
+MODIFY_HANDLER_ERROR=CWWKB0007E: ERRO RECEBIDO DO MANIPULADOR DE COMANDOS {0}.
+MODIFY_HANDLER_ERROR.explanation=O servidor recebeu um comando de modifica\u00e7\u00e3o para processar.  Esta mensagem indica que o manipulador de comandos encontrou um erro ao processar o comando.
+MODIFY_HANDLER_ERROR.useraction=Examine os logs do servidor para determinar a raz\u00e3o para o erro do Manipulador de Comandos.
+
+#{0} is command response related message 
+MODIFY_NLSBUILDMSG_FAILED=CWWKB0008E: {0}.
+MODIFY_NLSBUILDMSG_FAILED.explanation=O servidor tentou emitir uma mensagem de resposta do comando.  Ele n\u00e3o conseguiu resolver a mensagem com seu pacote configur\u00e1vel de mensagem.  
+MODIFY_NLSBUILDMSG_FAILED.useraction=Examine os logs do servidor para determinar a raz\u00e3o para um erro do Manipulador de Comandos relacionado.
+
+
+MESSAGE_TRANSLATE_ERROR=CWWKB0009E: UMA RESPOSTA DO COMANDO N\u00c3O P\u00d4DE SER CONVERTIDA PARA A CODIFICA\u00c7\u00c3O NATIVA.
+MESSAGE_TRANSLATE_ERROR.explanation=O servidor tentou emitir uma mensagem de resposta do comando.  N\u00e3o foi poss\u00edvel converter a resposta da mensagem na codifica\u00e7\u00e3o nativa ("Cp1047").
+MESSAGE_TRANSLATE_ERROR.useraction=Examine os logs do servidor para determinar a raz\u00e3o para o erro.
+
+COMMAND_TRANSLATE_ERROR=CWWKB0010E: Formato incorreto do comando de modifica\u00e7\u00e3o recebido. 
+COMMAND_TRANSLATE_ERROR.explanation=O servidor recebeu um comando de modifica\u00e7\u00e3o.  Ele n\u00e3o conseguiu converter o texto do comando a partir da codifica\u00e7\u00e3o nativa ("Cp1047").
+COMMAND_TRANSLATE_ERROR.useraction=Examine os logs do servidor para determinar a raz\u00e3o para o erro.
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_HDR=CWWKB0011I: IN\u00cdCIO DE INFORMA\u00c7\u00d5ES DE HELP DE {0}.
+MODIFY_COMMAND_HANDLER_HELP_HDR.explanation=Esta mensagem representa o in\u00edcio das informa\u00e7\u00f5es da ajuda a partir do manipulador de comandos indicado.
+MODIFY_COMMAND_HANDLER_HELP_HDR.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is the help text from a command handler
+MODIFY_COMMAND_HANDLER_HELP_TXT=CWWKB0012I: {0}
+MODIFY_COMMAND_HANDLER_HELP_TXT.explanation=As informa\u00e7\u00f5es da ajuda do manipulador de comandos indicado s\u00e3o exibidas.
+MODIFY_COMMAND_HANDLER_HELP_TXT.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_END=CWWKB0013I: FIM DE INFORMA\u00c7\u00d5ES DE HELP DE {0}.
+MODIFY_COMMAND_HANDLER_HELP_END.explanation=Esta mensagem representa o fim das informa\u00e7\u00f5es da ajuda a partir do manipulador de comandos indicado.
+MODIFY_COMMAND_HANDLER_HELP_END.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+FILE_DELETE_UNSUCCESSFUL=CWWKB0014W: ARQUIVO PID N\u00c3O P\u00d4DE SER EXCLU\u00cdDO.
+FILE_DELETE_UNSUCCESSFUL.explanation=O servidor tentou excluir o arquivo pid durante a parada do servidor.  Ele n\u00e3o conseguiu excluir o arquivo pid especificado por {0}.
+FILE_DELETE_UNSUCCESSFUL.useraction=Examine nos logs do servidor se o servidor foi interrompido corretamente.

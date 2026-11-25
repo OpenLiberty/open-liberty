@@ -1,0 +1,44 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.saf/resources/com/ibm/ws/security/registry/saf/internal/resources/SAFRegistryMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security SAF Registry
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2930 - CWWKS2959
+
+PENALTY_BOX_FALLBACK=CWWKS2930W: Egy jogosult SAF szolg\u00e1ltat\u00e1sokat haszn\u00e1l\u00f3 SAF hiteles\u00edt\u00e9si k\u00eds\u00e9rlet visszautas\u00edt\u00e1sra ker\u00fclt, mert a kiszolg\u00e1l\u00f3 nem jogosult a k\u00f6vetkez\u0151 APPL-ID el\u00e9r\u00e9s\u00e9re: {0}. A hiteles\u00edt\u00e9s jogosulatlan SAF szolg\u00e1ltat\u00e1sok haszn\u00e1lat\u00e1val folytat\u00f3dik.
+PENALTY_BOX_FALLBACK.explanation=A kiszolg\u00e1l\u00f3 jogosult SAF szolg\u00e1ltat\u00e1sok haszn\u00e1lat\u00e1val pr\u00f3b\u00e1lt hiteles\u00edt\u00e9st v\u00e9gezni; a k\u00eds\u00e9rlet azonban meghi\u00fasult, mert a kiszolg\u00e1l\u00f3 nem jogosult a jelzett APPL-ID er\u0151forr\u00e1s el\u00e9r\u00e9s\u00e9re a WLP z/OS rendszerbiztons\u00e1g el\u00e9r\u00e9si tartom\u00e1ny (WZSSAD) szerint. A kiszolg\u00e1l\u00f3 a Unix rendszerszolg\u00e1ltat\u00e1sok \u00e1ltal biztos\u00edtott jogosulatlan SAF szolg\u00e1ltat\u00e1sok haszn\u00e1lat\u00e1ra t\u00e9r \u00e1t a hiteles\u00edt\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz.
+PENALTY_BOX_FALLBACK.useraction=Ha jogosult SAF szolg\u00e1ltat\u00e1sok haszn\u00e1lata k\u00edv\u00e1natos, akkor adja meg a kiszolg\u00e1l\u00f3hoz tartoz\u00f3 felhaszn\u00e1l\u00f3nak a megfelel\u0151 jogosults\u00e1got az APPL-ID er\u0151forr\u00e1shoz a WLP z/OS rendszerbiztons\u00e1g el\u00e9r\u00e9si tartom\u00e1nyban (WZSSAD). A WZSSAD tartom\u00e1nyr\u00f3l tov\u00e1bbi inform\u00e1ci\u00f3kat az inform\u00e1ci\u00f3s k\u00f6zpontban tal\u00e1l. Ha nem sz\u00fcks\u00e9ges a jogosult SAF szolg\u00e1ltat\u00e1sok haszn\u00e1lata, akkor \u00fagy \u00e1ll\u00edtsa be a kiszolg\u00e1l\u00f3t, hogy a jogosulatlan SAF nyilv\u00e1ntart\u00e1st haszn\u00e1lja a jogosult SAF nyilv\u00e1ntart\u00e1s helyett. R\u00e9szleteket az inform\u00e1ci\u00f3s k\u00f6zpontban olvashat.
+
+PENALTY_BOX_RECOVERY=CWWKS2931I: A kiszolg\u00e1l\u00f3 most m\u00e1r jogosult az al\u00e1bbi APPL-ID el\u00e9r\u00e9s\u00e9re: {0}. A hiteles\u00edt\u00e9s jogosult SAF szolg\u00e1ltat\u00e1sok haszn\u00e1lat\u00e1val folytat\u00f3dik.
+PENALTY_BOX_RECOVERY.explanation=Egy kor\u00e1bbi hiteles\u00edt\u00e9si k\u00eds\u00e9rlet meghi\u00fasult, mert a kiszolg\u00e1l\u00f3 nem volt jogosult hozz\u00e1f\u00e9rni a jelzett APPL-ID er\u0151forr\u00e1shoz (l\u00e1sd a CWWKS2930W \u00fczenetet); azonban a kiszolg\u00e1l\u00f3 most m\u00e1r jogosult az APPL-ID el\u00e9r\u00e9s\u00e9re. A tov\u00e1bbi hiteles\u00edt\u00e9si k\u00eds\u00e9rletek jogosult SAF szolg\u00e1ltat\u00e1sok haszn\u00e1lat\u00e1val folytat\u00f3dnak.
+PENALTY_BOX_RECOVERY.useraction=Nincs.
+
+ACTIVATION_MESSAGE=CWWKS2932I: A SAF felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s {0} v\u00e1ltozata van aktiv\u00e1lva. A hiteles\u00edt\u00e9s a(z) {0} nat\u00edv szolg\u00e1ltat\u00e1sok haszn\u00e1lat\u00e1val folytat\u00f3dik.
+ACTIVATION_MESSAGE.explanation=Ez az \u00fczenet jelzi, hogy a SAF felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s mely v\u00e1ltozata van haszn\u00e1latban.  \
+K\u00e9t v\u00e1ltozat l\u00e9tezik: (1) a jogosulatlan v\u00e1ltozat, amely nem jogosult UNIX rendszerszolg\u00e1ltat\u00e1sokat haszn\u00e1l, mint p\u00e9ld\u00e1ul a __passwd; (2) a jogosult v\u00e1ltozat, amely jogosult SAF szolg\u00e1ltat\u00e1sokat haszn\u00e1l, mint p\u00e9ld\u00e1ul az initACEE.  
+ACTIVATION_MESSAGE.useraction=A kiszolg\u00e1l\u00f3nak rendelkeznie kell hozz\u00e1f\u00e9r\u00e9ssel a SAFCRED jogosult er\u0151forr\u00e1sokhoz \u00e9s a WLP z/OS rendszer biztons\u00e1gi hozz\u00e1f\u00e9r\u00e9si tartom\u00e1nyhoz, hogy a SAF nyilv\u00e1ntart\u00e1s jogosult v\u00e1ltozat\u00e1t haszn\u00e1lja.
+ 
+DAEMON_LOGIN_ERROR=CWWKS2933E: A felhaszn\u00e1l\u00f3n\u00e9v \u00e9s a jelsz\u00f3 nem ellen\u0151rizhet\u0151, mert a BPX.DAEMON profil akt\u00edv, \u00e9s a c\u00edmt\u00e9r nincs programvez\u00e9rl\u00e9s alatt.
+DAEMON_LOGIN_ERROR.explanation=A jogosulatlan SAF v\u00e1ltozat haszn\u00e1lata olyan rendszeren, ahol a BPX.DAEMON akt\u00edv, azt ig\u00e9nyli, hogy a Liberty \u00e1ltal haszn\u00e1lt \u00f6sszes k\u00f6nyvt\u00e1r programvez\u00e9rl\u00e9s alatt legyen. A m\u00e1sik alternat\u00edva enged\u00e9llyel rendelkez\u0151 SAF nyilv\u00e1ntart\u00e1s v\u00e1ltozat haszn\u00e1lata.
+DAEMON_LOGIN_ERROR.useraction=Ha a sz\u00e1nd\u00e9k az enged\u00e9lyezett SAF nyilv\u00e1ntart\u00e1s haszn\u00e1lata volt, akkor keresse meg a jogosult nyilv\u00e1ntart\u00e1s elindul\u00e1s\u00e1t esetlegesen megakad\u00e1lyoz\u00f3 kor\u00e1bbi hiba\u00fczeneteket a message.log f\u00e1jlban. Egy\u00e9bk\u00e9nt vegye fontol\u00f3ra a BPX.DAEMON profil letilt\u00e1s\u00e1t, illetve helyezze az \u00f6sszes k\u00f6nyvt\u00e1rat programvez\u00e9rl\u00e9s al\u00e1.
+
+ENABLE_FAILOVER_MESSAGE=CWWKS2934E: A kiszolg\u00e1l\u00f3nak nincs enged\u00e9lye a jogosult SAF nyilv\u00e1ntart\u00e1s haszn\u00e1lat\u00e1ra.
+ENABLE_FAILOVER_MESSAGE.explanation=A kiszolg\u00e1l\u00f3nak nincs enged\u00e9lye a jogosult SAF nyilv\u00e1ntart\u00e1s haszn\u00e1lat\u00e1ra. Az enableFailover \u00e9rt\u00e9ke megakad\u00e1lyozza, hogy a kiszolg\u00e1l\u00f3 jogosulatlan SAF nyilv\u00e1ntart\u00e1st haszn\u00e1ljon. Minden j\u00f6v\u0151beli hiteles\u00edt\u00e9si k\u00eds\u00e9rlet meg fog hi\u00fasulni.
+ENABLE_FAILOVER_MESSAGE.useraction=Ha az volt a sz\u00e1nd\u00e9k, hogy a kiszolg\u00e1l\u00f3 a jogosult SAF nyilv\u00e1ntart\u00e1st haszn\u00e1lja, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az angel folyamat fut, \u00e9s hogy a kiszolg\u00e1l\u00f3 hozz\u00e1 tud f\u00e9rni a sz\u00fcks\u00e9ges SAF profilokhoz a jogosult SAF nyilv\u00e1ntart\u00e1s haszn\u00e1lata \u00e9rdek\u00e9ben. Ha a sz\u00e1nd\u00e9k az volt, hogy a kiszolg\u00e1l\u00f3 a jogosulatlan SAF nyilv\u00e1ntart\u00e1st haszn\u00e1lja, akkor az enableFailover be\u00e1ll\u00edt\u00e1st true \u00e9rt\u00e9kre kell m\u00f3dos\u00edtani (ez az alap\u00e9rtelmezett \u00e9rt\u00e9k).
+
+UNAUTH_INCLUDE_SAF=CWWKS2935W: Az includeSafGroups kiszolg\u00e1l\u00f3 attrib\u00fatum enged\u00e9lyezett, de a kiszolg\u00e1l\u00f3 nem f\u00e9r hozz\u00e1 a sz\u00fcks\u00e9ges felhatalmazott funkci\u00f3khoz.
+UNAUTH_INCLUDE_SAF.explanation=A nem-OMVS csoportok lek\u00e9rdez\u00e9s\u00e9re szolg\u00e1l\u00f3 attrib\u00fatum enged\u00e9lyezett; a kiszolg\u00e1l\u00f3 azonban nem f\u00e9r hozz\u00e1 a sz\u00fcks\u00e9ges felhatalmazott funkci\u00f3khoz \u00e9s nem tudja lek\u00e9rdezni a SAF csoportokat.
+UNAUTH_INCLUDE_SAF.useraction=A felhaszn\u00e1l\u00f3nak enged\u00e9lyeznie kell a felhatalmazott funkci\u00f3k sz\u00e1m\u00e1ra a nem-OMVS csoportok el\u00e9r\u00e9s\u00e9t. 

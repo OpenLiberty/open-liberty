@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2011, 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.wlm/resources/com.ibm.ws.zos.wlm.internal.resources/ZWLMMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS WLM Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0151-0200: WLM Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+NATIVE_SERVICE_OOM=CWWKB0151E: In der nativen Routine ({0}) ist mindestens eine abnormale Speicherbedingung aufgetreten.
+NATIVE_SERVICE_OOM.explanation=Der Server hat eine native Methode aufgerufen, in der eine abnormale Speicherbedingung aufgetreten ist.
+NATIVE_SERVICE_OOM.useraction=Untersuchen Sie die Serverprotokolle und die Laufzeitumgebung, um die Ursache f\u00fcr den Fehler im nativen Code zu bestimmen.
+
+#{0}
+#{1}
+NATIVE_SERVICE_WLM_FAILURE=CWWKB0152E: Die native Routine ({0}) hat einen Fehlerursachencode ({1}) von WLM empfangen.
+NATIVE_SERVICE_WLM_FAILURE.explanation=Der Server hat eine native Methode aufgerufen, die den referenzierten WLM-Service aufruft. Der Ursachencode des WLM-Service gibt die Ursache f\u00fcr den Fehler an.
+NATIVE_SERVICE_WLM_FAILURE.useraction=Verwenden Sie den WLM-Ursachencode, um die Fehlerursache zu bestimmen.
+
+#{0}
+#{1}
+NATIVE_SERVICE_ERRNO=CWWKB0153E: Die native Routine ({0}) ist mit der folgenden errno fehlgeschlagen: {1}
+NATIVE_SERVICE_ERRNO.explanation=Der Server hat eine native Methode aufgerufen, die den referenzierten WLM-Service aufruft. Die errno des WLM-Service gibt die Ursache f\u00fcr den Fehler an.
+NATIVE_SERVICE_ERRNO.useraction=Verwenden Sie den errno-Wert, um die Fehlerursache zu bestimmen.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0154E: Die native Routine ist fehlgeschlagen. Service von WebSphere Application Server ({0}) RC({1}) , WLM-Service ({2}) RC({3}) RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=Der Server hat eine native Methode gestartet, die fehlgeschlagen ist. Der WebSphere Application Server-Zielservice und der R\u00fcckgabecode sind angegeben. Der WLM-Zielservice mit R\u00fcckkehr- und Ursachencode ist ebenfalls angegeben.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=Bestimmen Sie die Ursache f\u00fcr den Fehler mithilfe der R\u00fcckgabe- und Ursachencodes.
+
+#{0}
+NATIVE_SERVICE_PC=CWWKB0155E: Die native Routine {0} hat den unerwarteten R\u00fcckkehrcode {1} von seinem berechtigten PC-Service empfangen.
+NATIVE_SERVICE_PC.explanation= Der Server hat eine native Methode zum Ausf\u00fchren eines berechtigten Serviceaufrufs gestartet. Er hat einen R\u00fcckgabecode ungleich null vom berechtigten Programmaufruf empfangen.
+NATIVE_SERVICE_PC.useraction=Untersuchen Sie die Serverprotokolle und die Laufzeitumgebung, um die Ursache f\u00fcr den Fehler im nativen Code zu bestimmen.
+
+#{0} 
+NATIVE_SERVICE_FAILED_TO_REGISTER=CWWKB0156E: Die native Routine ({0}) konnte die WLM-Enklave nicht in der nativen Registry registrieren.
+NATIVE_SERVICE_FAILED_TO_REGISTER.explanation=Der Server hat eine native Methode f\u00fcr die Durchf\u00fchrung eines berechtigten Serviceaufrufs aufgerufen. Er konnte den Aufruf des nativen WLM-Service zwar erfolgreich durchf\u00fchren, konnte die WLM-Enklave aber nicht in der nativen Registry registrieren.
+NATIVE_SERVICE_FAILED_TO_REGISTER.useraction=Untersuchen Sie die Serverprotokolle und die Laufzeitumgebung, um die Ursache f\u00fcr den Fehler im nativen Code zu bestimmen.
+
+#{0} 
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE=CWWKB0157E: Die native Routine ({0}) konnte die WLM-Enklave nicht in der nativen Registry validieren.
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE.explanation=Die Validierung des angegebenen Tokens, das eine WLM-Enklave darstellt, in der nativen Registry ist fehlgeschlagen. 
+NATIVE_SERVICE_REGISTRY_FAILED_VALIDATE.useraction=Untersuchen Sie die Serverprotokolle und die Laufzeitumgebung, um die Ursache f\u00fcr den Fehler im nativen Code zu bestimmen.
+
+#{0} 
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND=CWWKB0158E: Die native Routine ({0}) konnte die native nicht berechtigte Stubroutine nicht finden.
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND.explanation=Ein nativer Service, der f\u00fcr die Verarbeitung des Serviceaufrufs ben\u00f6tigt wird, wurde nicht gefunden. 
+NATIVE_SERVICE_UNAUTH_SERVICE_NOTFOUND.useraction=Untersuchen Sie die Serverprotokolle und die Laufzeitumgebung, um die Ursache f\u00fcr den Fehler im nativen Code zu bestimmen.
+
+#{0} 
+NATIVE_SERVICE_BPX4IPT_FAILED=CWWKB0159E: Die native Routine ({0}) hat ein nicht erwartetes Ergebnis von BPX4IPT empfangen.
+NATIVE_SERVICE_BPX4IPT_FAILED.explanation=Der Versuch, einen Service \u00fcber den nativen Service BPX4IPT aufzurufen, ist fehlgeschlagen. 
+NATIVE_SERVICE_BPX4IPT_FAILED.useraction=Untersuchen Sie die Serverprotokolle und die Laufzeitumgebung, um die Ursache f\u00fcr den Fehler im nativen Code zu bestimmen.
+
+#{0} 
+CONFIG_INVALID_COLLECTIONNAME=CWWKB0160W: Der Workload-Management-Konfigurationswert f\u00fcr das Attribut collectionName ({0}) wurde abgeschnitten.
+CONFIG_INVALID_COLLECTIONNAME.explanation=Der f\u00fcr das Attribut collectionName angegebene Wert \u00fcberschreitet die maximale L\u00e4nge von achtzehn Zeichen. Es werden nur die ersten achtzehn Zeichen verwendet.
+CONFIG_INVALID_COLLECTIONNAME.useraction=Aktualisieren Sie die Serverkonfiguration und geben Sie einen g\u00fcltigen Wert f\u00fcr das Attribut collectionName an.
+
+#{0}
+CONFIG_NO_COLLECTIONNAME=CWWKB0161W: Der Workload-Management-Konfigurationswert f\u00fcr das Attribut collectionName ist null oder leer. Es wird der Standardwert ({0}) verwendet.
+CONFIG_NO_COLLECTIONNAME.explanation=Der f\u00fcr das Attribut collectionName angegebene Wert ist null oder leer. 
+CONFIG_NO_COLLECTIONNAME.useraction=Aktualisieren Sie die Serverkonfiguration und geben Sie einen Wert f\u00fcr das Attribut collectionName an.
+
+#{0}
+#{1}
+CLASSIFICATION_TRANCLASS_TRUNCATED=CWWKB0162W: Der WLM-Klassifikationskonfigurationswert f\u00fcr das Attribut transactionClass wurde von ({0}) auf ({1}) abgeschnitten.
+CLASSIFICATION_TRANCLASS_TRUNCATED.explanation=Es wurde eine Klassifikationsregel angegeben, die eine Transaktionsklasse enth\u00e4lt, deren Name l\u00e4nger ist als acht Zeichen. Der Name wurde auf 8 Zeichen abgeschnitten.
+CLASSIFICATION_TRANCLASS_TRUNCATED.useraction=Aktualisieren Sie die zugeordnete Klassifikationsregel und geben Sie einen g\u00fcltigen Wert f\u00fcr das Attribut transactionClass an.
+
+#{0}
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS=CWWKB0163W: Der WLM-Klassifikationskonfigurationswert f\u00fcr das Attribut resource verwendet nicht g\u00fcltige Platzhalter. ({0}) enth\u00e4lt zu viele aufeinanderfolgende Platzhalter.
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS.explanation=Es wurde eine Klassifikationsregel angegeben, die eine Ressourcenzeichenfolge mit zu vielen aufeinanderfolgenden Platzhalterzeichen enth\u00e4lt. Die angegebene Ressourcenzeichenfolge enth\u00e4lt zu viele aufeinanderfolgende Platzhalterzeichen. (Es k\u00f6nnen bis zu zwei hintereinander verwendet werden.)
+CLASSIFICATION_DROPPED_TOO_MANY_WILDCARDS.useraction=Aktualisieren Sie die zugeordnete Klassifikationsregel, um eine g\u00fcltige Ressourcenzeichenfolge anzugeben. Korrigieren Sie hierzu die verwendeten Platzhalter.
+
+#{0}
+CLASSIFICATION_DROPPED_BAD_WILDCARD=CWWKB0164W: Der WLM-Klassifikationskonfigurationswert f\u00fcr das Attribut resource verwendet nicht g\u00fcltige Platzhalter. ({0}) enth\u00e4lt eine falsche Verwendung doppelter Platzhalter.
+CLASSIFICATION_DROPPED_BAD_WILDCARD.explanation=Es wurde eine Klassifikationsregel angegeben, die eine Ressourcenzeichenfolge mit doppelten Platzhalterzeichen enth\u00e4lt.
+CLASSIFICATION_DROPPED_BAD_WILDCARD.useraction=Aktualisieren Sie die zugeordnete Klassifikationsregel und geben Sie eine g\u00fcltige Ressourcenzeichenfolge an, die keine doppelten Platzhalter enth\u00e4lt.
+
+#{0}
+WLM_CURRENT_HEALTH_PERCENTAGE=CWWKB0165I: Der WLM-Zustand (in Prozent) ist jetzt {0}.
+WLM_CURRENT_HEALTH_PERCENTAGE.explanation=Diese Nachricht zeigt an, dass mit der API IWM4HLTH ein neuer Zustandsfaktor f\u00fcr diesen Server an WLM \u00fcbergeben wurde.
+WLM_CURRENT_HEALTH_PERCENTAGE.useraction=Es ist keine Aktion erforderlich.

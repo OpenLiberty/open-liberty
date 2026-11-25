@@ -1,0 +1,13 @@
+task createOlaRar(type: Jar) {
+    from "$projectDir/src"
+    include "META-INF/ra.xml"
+    archiveName "$buildDir/ola.rar"
+}
+
+task copyOlaRar(type: Copy) {
+    dependsOn createOlaRar
+    from "$buildDir"
+    include "ola.rar"
+    into buildImage.file('wlp/lib')
+}
+jar.dependsOn copyOlaRar
