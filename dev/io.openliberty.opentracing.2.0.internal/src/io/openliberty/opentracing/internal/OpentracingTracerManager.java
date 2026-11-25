@@ -148,22 +148,23 @@ public class OpentracingTracerManager {
     }
     // Open tracing context pass through ...
 
+    @Trivial
+    public static Tracer getTracer() {
+    	return getTracer(OpentracingUtils.lookupAppName());
+    }
     /**
      * <p>Answer the tracer of the active open tracing context.</p>
      *
      * @Return The tracer of the active open tracing context.
      */
     @Trivial
-    public static Tracer getTracer() {
+    public static Tracer getTracer(String appName) {
         String methodName = "getTracer";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, methodName);
         }
 
-        String appName = null;
-        Tracer tracer = null;
-        appName = OpentracingUtils.lookupAppName();
-        tracer = ensureTracer(appName);
+        Tracer tracer = ensureTracer(appName);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Thread currentThread = Thread.currentThread();
