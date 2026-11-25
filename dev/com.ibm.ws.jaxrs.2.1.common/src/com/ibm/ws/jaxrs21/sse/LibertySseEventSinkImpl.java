@@ -189,7 +189,7 @@ public class LibertySseEventSinkImpl implements SseEventSink {
                 return new CompletableFuture<>();
             } 
             // Use Liberty thread pool
-            return completionStageFactory.newIncompleteFuture();
+            return completionStageFactory.newIncompleteFuture(JAXRSClientCompletionStageFactoryConfig.getExecutorService());
         }
         return AccessController.doPrivileged((PrivilegedAction<CompletableFuture<?>>)() -> {
             if (JAVA8 || COMPLETION_STAGE_FACTORY_IS_NULL) {
@@ -199,7 +199,7 @@ public class LibertySseEventSinkImpl implements SseEventSink {
                 return new CompletableFuture<>();
             }
             // Use Liberty thread pool
-            return completionStageFactory.newIncompleteFuture();
+            return completionStageFactory.newIncompleteFuture(JAXRSClientCompletionStageFactoryConfig.getExecutorService());
         });
     }
 }
