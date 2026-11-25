@@ -20,6 +20,8 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
@@ -36,6 +38,8 @@ import jakarta.enterprise.inject.spi.CDI;
  * according to the method's Schedule annotation.
  */
 public class ScheduledMethod<T> extends ScheduledMethodAbstract {
+    private static final TraceComponent tc = Tr.register(ScheduledMethod.class);
+
     private final Class<T> beanClass;
     private final Annotation[] beanQualifierAnnos;
     private final Class<? extends Annotation> beanScopeClass;
@@ -131,13 +135,11 @@ public class ScheduledMethod<T> extends ScheduledMethodAbstract {
         else if (result == null)
             return null;
         else
-            throw new ClassCastException("The " + method.getName() + " method of the " +
-                                         beanClass.getName() +
-                                         " managed bean class is annotated " +
-                                         "Schedule, but has the return type: " +
-                                         method.getReturnType().getName() +
-                                         ". Managed bean methods annotated Schedule" +
-                                         " must have one of the following return types: " +
-                                         "void, CompletionStage, CompletableFuture"); // TODO NLS
+            throw new ClassCastException(Tr //
+                            .formatMessage(tc, "CWWKC1416.sched.method.return.type",
+                                           method.getName(),
+                                           beanClass.getName(),
+                                           method.getReturnType().getName(),
+                                           "void, CompletionStage, CompletableFuture"));
     }
 }

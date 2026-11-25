@@ -100,11 +100,12 @@ public class ConcurrencyExtensionMetadata implements //
      * Scope annotations that are supported on CDI managed beans that have
      * methods annotated Schedule.
      */
-    private static final Set<Class<? extends Annotation>> SCHEDULED_METHOD_BEAN_SCOPES = //
-                    Set.of(Singleton.class,
-                           ApplicationScoped.class,
-                           Dependent.class,
-                           RequestScoped.class);
+    private static final List<Class<? extends Annotation>> //
+    SCHEDULED_METHOD_BEAN_SCOPES = //
+                    List.of(Singleton.class,
+                            ApplicationScoped.class,
+                            Dependent.class,
+                            RequestScoped.class);
 
     /**
      * For obtaining the JEE name of the application artifact that provides each
@@ -433,15 +434,10 @@ public class ConcurrencyExtensionMetadata implements //
 
                 if (scopeClass == null ||
                     !SCHEDULED_METHOD_BEAN_SCOPES.contains(scopeClass)) {
-                    // TODO NLS
-                    System.out.println("Methods of the " + beanClass.getName() +
-                                       " CDI managed bean that are annotated Schedule" +
-                                       " are not automatically scheduled because the" +
-                                       " CDI managed bean has a " +
-                                       (scopeClass == null ? null : scopeClass.getName()) +
-                                       " scope annotation. Scheduled methods must have" +
-                                       " one of the following scope annotations: " +
-                                       SCHEDULED_METHOD_BEAN_SCOPES);
+                    Tr.error(tc, "CWWKC1415.sched.method.scope.err",
+                             beanClass.getName(),
+                             scopeClass == null ? null : scopeClass.getName(),
+                             Util.classNames(SCHEDULED_METHOD_BEAN_SCOPES));
                     continue;
                 }
 
