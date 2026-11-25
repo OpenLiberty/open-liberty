@@ -10,12 +10,15 @@
 package io.openliberty.mcp.internal.fat.serverinfo;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.utils.McpClient.initializeParams;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -33,6 +36,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
 
 /**
  * Test that verifies multiple applications can be deployed with separate serverInfo configurations.
@@ -96,29 +100,15 @@ public class CustomServerInfoTest {
     @Test
     @Mode(TestMode.FULL)
     public void testPartialServerInfoHandling() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "initialize",
-                          "params": {
-                            "protocolVersion": "2025-11-25",
-                            "clientInfo": {
-                              "name": "test-client",
-                              "version": "1.0"
-                            },
-                            "capabilities": {}
-                          }
-                        }
-                        """;
+        McpRequest request = partialClient.request("initialize", initializeParams(VALUE_MCP_PROTOCOL_VERSION, new JSONObject()));
 
-        String response = partialClient.callMCP(request);
+        String response = partialClient.callMCP(request.toString());
 
         // Verify partial serverInfo with defaults applied correctly:
         String expectedResponse = """
                         {
                           "jsonrpc": "2.0",
-                          "id": 1,
+                          "id": "%s",
                           "result": {
                             "protocolVersion": "2025-11-25",
                             "capabilities": {
@@ -132,7 +122,7 @@ public class CustomServerInfoTest {
                             }
                           }
                         }
-                        """;
+                        """.formatted(request.getId());
 
         JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
     }
@@ -144,29 +134,15 @@ public class CustomServerInfoTest {
     @Test
     @Mode(TestMode.FULL)
     public void testFullyCustomServerInfoHandling() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "initialize",
-                          "params": {
-                            "protocolVersion": "2025-11-25",
-                            "clientInfo": {
-                              "name": "test-client",
-                              "version": "1.0"
-                            },
-                            "capabilities": {}
-                          }
-                        }
-                        """;
+        McpRequest request = customClient.request("initialize", initializeParams(VALUE_MCP_PROTOCOL_VERSION, new JSONObject()));
 
-        String response = customClient.callMCP(request);
+        String response = customClient.callMCP(request.toString());
 
         // Verify custom serverInfo values from server.xml
         String expectedResponse = """
                         {
                           "jsonrpc": "2.0",
-                          "id": 1,
+                          "id": "%s",
                           "result": {
                             "protocolVersion": "2025-11-25",
                             "capabilities": {
@@ -182,7 +158,7 @@ public class CustomServerInfoTest {
                             }
                           }
                         }
-                        """;
+                        """.formatted(request.getId());
 
         JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
     }
@@ -195,28 +171,14 @@ public class CustomServerInfoTest {
     @Mode(TestMode.FULL)
     public void testDynamicServerInfoUpdate() throws Exception {
         // Verify initial serverInfo values from server.xml
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "initialize",
-                          "params": {
-                            "protocolVersion": "2025-11-25",
-                            "clientInfo": {
-                              "name": "test-client",
-                              "version": "1.0"
-                            },
-                            "capabilities": {}
-                          }
-                        }
-                        """;
+        McpRequest request = dynamicClient.request("initialize", initializeParams(VALUE_MCP_PROTOCOL_VERSION, new JSONObject()));
 
-        String initialResponse = dynamicClient.callMCP(request);
+        String initialResponse = dynamicClient.callMCP(request.toString());
 
         String expectedInitialResponse = """
                         {
                           "jsonrpc": "2.0",
-                          "id": 1,
+                          "id": "%s",
                           "result": {
                             "protocolVersion": "2025-11-25",
                             "capabilities": {
@@ -232,7 +194,7 @@ public class CustomServerInfoTest {
                             }
                           }
                         }
-                        """;
+                        """.formatted(request.getId());
 
         JSONAssert.assertEquals(expectedInitialResponse, initialResponse, JSONCompareMode.STRICT);
 
@@ -250,12 +212,13 @@ public class CustomServerInfoTest {
         // Create a new client which will automatically establish a new session
         try (McpClient newClient = McpClient.builder(server, "/dynamicServerInfoUpdateTest").build()) {
             newClient.initialize();
-            String updatedResponse = newClient.callMCP(request);
+            McpRequest updatedRequest = newClient.request("initialize", initializeParams(VALUE_MCP_PROTOCOL_VERSION, new JSONObject()));
+            String updatedResponse = newClient.callMCP(updatedRequest.toString());
 
             String expectedUpdatedResponse = """
                             {
                               "jsonrpc": "2.0",
-                              "id": 1,
+                              "id": "%s",
                               "result": {
                                 "protocolVersion": "2025-11-25",
                                 "capabilities": {
@@ -271,7 +234,7 @@ public class CustomServerInfoTest {
                                 }
                               }
                             }
-                            """;
+                            """.formatted(updatedRequest.getId());
 
             JSONAssert.assertEquals(expectedUpdatedResponse, updatedResponse, JSONCompareMode.STRICT);
         }

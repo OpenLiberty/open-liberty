@@ -97,6 +97,10 @@ CWMCM0012E.bean.release.fail.useraction=Review the server message.log and FFDC l
 unsupported.mcp.http.version=An unsupported MCP-Protocol-Version header was provided. Supported values: {0}
 
 # Used as part of a response to a client
+# do not translate MCP-Protocol-Version, io.modelcontextprotocol/protocolVersion, _meta
+header.mismatch.protocol.version=The MCP-Protocol-Version header must match the io.modelcontextprotocol/protocolVersion field in the request _meta object.
+
+# Used as part of a response to a client
 # {0} = Method
 # {1} = RequestURI
 # {2} = RequestQuery
@@ -364,3 +368,11 @@ CWMCM0045E.protocol.version.invalid.useraction=Set the attribute to latest or to
 CWMCM0046E.protocol.version.range.invalid=CWMCM0046E: The {0} minimum MCP protocol version is newer than the {1} maximum MCP protocol version. The default protocol version range is used instead.
 CWMCM0046E.protocol.version.range.invalid.explanation=The minimumProtocolVersion attribute of the mcp configuration element must not be newer than the maximumProtocolVersion attribute.
 CWMCM0046E.protocol.version.range.invalid.useraction=Set the minimumProtocolVersion attribute to a protocol version that is the same as or older than the maximumProtocolVersion attribute.
+
+# Used for server logging
+# Do not translate "MCP", "enableEndpoint", "true", "auto", "false"
+# {0} = The value that was specified
+# {1} = The list of valid values
+CWMCM0047W.enable.endpoint.invalid=CWMCM0047W: The {0} value is not valid for the enableEndpoint attribute of the mcp configuration element. Valid values: {1}. The default value auto is used instead.
+CWMCM0047W.enable.endpoint.invalid.explanation=The enableEndpoint attribute must be set to true, auto, or false. The value is not case sensitive.
+CWMCM0047W.enable.endpoint.invalid.useraction=Set the enableEndpoint attribute to true, auto, or false.

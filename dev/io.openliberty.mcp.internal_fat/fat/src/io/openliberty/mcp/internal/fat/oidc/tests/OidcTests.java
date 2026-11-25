@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -193,19 +194,7 @@ public class OidcTests extends FATServletClient {
 
         McpClient client = McpClient.builder(server, "/oidcTests").mode(StateMode.STATELESS).bearerToken(accessToken).build();
 
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "adminTool",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        client.callMCPRaw(request).expectedStatus(403).run();
+        client.callMCPRaw(client.toolCallRequest("adminTool", Map.of()).toString()).expectedStatus(403).run();
     }
 
     /**

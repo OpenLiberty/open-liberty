@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.McpClient.initializeParams;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
@@ -29,6 +30,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.inactiveCdiApp.InactiveCdiTool;
+import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
 
 @RunWith(FATRunner.class)
 public class InactiveCdiTest extends FATServletClient {
@@ -55,33 +58,14 @@ public class InactiveCdiTest extends FATServletClient {
     @Test
     public void testMcpCallWithoutCDIReturnsNotFoundError() throws Exception {
         assertNotNull(serverLifecycle.getServer().waitForStringInTraceUsingMark(CDI_INACTIVE_TRACE_MESSAGE));
-        String initializeRequest = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "1",
-                          "method": "initialize",
-                          "params": {
-                            "protocolVersion": "2025-11-25",
-                            "capabilities": {
-                              "roots": {
-                                "listChanged": true
-                              },
-                              "sampling": {},
-                              "elicitation": {}
-                            },
-                            "clientInfo": {
-                              "name": "FAT Test Client",
-                              "title": "FAT Test Client",
-                              "version": "1.0.0"
-                            }
-                          }
-                        }
-                        """;
+        // Only used to build the request: it is never initialized because the endpoint does not exist
+        McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
+        McpRequest initializeRequest = client.request("initialize", initializeParams());
 
         new HttpRequest(serverLifecycle.getServer(), "/inactiveCdiTest/mcp")
                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                             .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
-                                                                            .jsonBody(initializeRequest)
+                                                                            .jsonBody(initializeRequest.toString())
                                                                             .method("POST")
                                                                             .expectCode(404)
                                                                             .run(String.class);

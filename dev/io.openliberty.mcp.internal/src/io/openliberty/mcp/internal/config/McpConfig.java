@@ -12,6 +12,7 @@ package io.openliberty.mcp.internal.config;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import io.openliberty.mcp.internal.McpProtocolVersion;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
@@ -75,5 +76,46 @@ public interface McpConfig {
         return Arrays.stream(McpProtocolVersion.values())
                      .filter(this::isAccepted)
                      .toList();
+    }
+
+    /**
+     * Controls whether the MCP endpoint is registered for this module.
+     * <ul>
+     *   <li>{@code true} – always register the endpoint. Applications that register tools only dynamically
+     *       (via {@code ToolManager}) must set this, because dynamic registration happens too late for the
+     *       endpoint to be detected automatically.</li>
+     *   <li>{@code auto} – register the endpoint only when {@code @Tool}-annotated methods are discovered
+     *       in the module (default).</li>
+     *   <li>{@code false} – never register the endpoint.</li>
+     * </ul>
+     *
+     * @return the configured endpoint-enable mode
+     */
+    EnableEndpoint enableEndpoint();
+
+    /** The three allowed values for the {@code enableEndpoint} configuration attribute. */
+    enum EnableEndpoint {
+        /** Always register the MCP endpoint. Required for applications that only add tools dynamically via {@code ToolManager}. */
+        TRUE,
+        /** Register the endpoint only when {@code @Tool}-annotated methods are present (default). */
+        AUTO,
+        /** Never register the MCP endpoint for this module. */
+        FALSE;
+
+        /**
+         * Converts a configuration value to an {@code EnableEndpoint}. Surrounding whitespace and case are ignored.
+         *
+         * @param value the configuration value
+         * @return the matching value
+         * @throws NoSuchElementException if the value is not {@code true}, {@code auto} or {@code false}
+         */
+        public static EnableEndpoint fromString(String value) {
+            return switch (value.trim().toLowerCase()) {
+                case "true" -> TRUE;
+                case "auto" -> AUTO;
+                case "false" -> FALSE;
+                default -> throw new NoSuchElementException(value);
+            };
+        }
     }
 }

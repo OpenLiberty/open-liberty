@@ -10,12 +10,15 @@
 package io.openliberty.mcp.internal.fat.timeout;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -125,25 +128,8 @@ public class ConfigurableAsyncTimeoutTest {
      */
     @Test
     public void testDefaultAsyncTimeout() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "timeout-test-2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "asyncEcho",
-                            "arguments": {
-                              "input": "Test with default timeout"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = defaultTimeoutClient.callMCP(request);
-
-        // Verify the tool executed successfully
-        assertTrue("Response should contain the echoed input",
-                   response.contains("Test with default timeout"));
+        assertThat(defaultTimeoutClient.callTool("asyncEcho", Map.of("input", "Test with default timeout")),
+                   toolResponse().withTextContent("Test with default timeout: (async)"));
     }
 
     /**
@@ -151,25 +137,8 @@ public class ConfigurableAsyncTimeoutTest {
      */
     @Test
     public void testQuickToolWithShortTimeout() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "timeout-test-3",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "asyncEcho",
-                            "arguments": {
-                              "input": "Quick response"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = shortTimeoutClient.callMCP(request);
-
-        // Verify the tool executed successfully even with short timeout
-        assertTrue("Response should contain the echoed input",
-                   response.contains("Quick response"));
+        assertThat(shortTimeoutClient.callTool("asyncEcho", Map.of("input", "Quick response")),
+                   toolResponse().withTextContent("Quick response: (async)"));
     }
 
     /**
@@ -237,23 +206,8 @@ public class ConfigurableAsyncTimeoutTest {
             }
 
             // Verify that a quick operation still works with the updated timeout
-            String quickRequest = """
-                            {
-                              "jsonrpc": "2.0",
-                              "id": "timeout-test-5",
-                              "method": "tools/call",
-                              "params": {
-                                "name": "asyncEcho",
-                                "arguments": {
-                                  "input": "Quick response after config update"
-                                }
-                              }
-                            }
-                            """;
-
-            String response = newShortTimeoutClient.callMCP(quickRequest);
-            assertTrue("Response should contain the echoed input after config update",
-                       response.contains("Quick response after config update"));
+            assertThat(newShortTimeoutClient.callTool("asyncEcho", Map.of("input", "Quick response after config update")),
+                       toolResponse().withTextContent("Quick response after config update: (async)"));
         }
     }
 

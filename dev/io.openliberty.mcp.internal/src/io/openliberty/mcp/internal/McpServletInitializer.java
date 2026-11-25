@@ -24,6 +24,7 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.http.VirtualHost;
 
+import io.openliberty.mcp.internal.config.McpConfig.EnableEndpoint;
 import io.openliberty.mcp.internal.config.McpServerApplicationTracker;
 import io.openliberty.mcp.internal.config.McpServerConfigProps;
 import io.openliberty.mcp.internal.introspection.McpIntrospectorContextListener;
@@ -49,28 +50,37 @@ public class McpServletInitializer implements ServletContainerInitializer {
     @FFDCIgnore(IllegalStateException.class)
     public void onStartup(Set<Class<?>> c, ServletContext context) throws ServletException, IllegalStateException {
         try {
-            ToolRegistry registry = ToolRegistry.get();
-            if (!registry.hasTools()) {
-                return;
-            }
-            // Register introspector context listener
-            context.addListener(new McpIntrospectorContextListener(registry));
-
             ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             String appName = getApplicationName(componentMetaData);
             String moduleName = getModuleName(componentMetaData);
 
-            McpServerConfigProps configProps = null;
+            McpServerConfigProps configProps = McpServerConfigProps.DEFAULT_CONFIG;
 
             if (appName != null) {
-                configProps = mcpAppTrackerService.run(tracker -> tracker.getConfigForModule(appName, moduleName)).get();
+                // The tracker is always present when the MCP feature is active, so its absence is an internal error
+                configProps = mcpAppTrackerService.run(tracker -> tracker.getConfigForModule(appName, moduleName))
+                                                  .orElseThrow(() -> new ServletException("Internal error: McpServerApplicationTracker service is not available while initializing the MCP endpoint for application "
+                                                                                          + appName + ", module " + moduleName));
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Looking up MCP config for application: " + appName + ", module: " + moduleName +
-                                       ", found: " + (configProps));
+                                       ", found: " + configProps);
                 }
             }
 
-            registerEndpoint(context, configProps);
+            EnableEndpoint enableEndpoint = configProps.enableEndpoint();
+
+            // With "false" the tool registry (and so CDI) is not consulted at all
+            if (enableEndpoint != EnableEndpoint.FALSE) {
+                ToolRegistry registry = ToolRegistry.get();
+
+                // "true" always registers the endpoint, "auto" only if the module has @Tool-annotated methods
+                if (enableEndpoint == EnableEndpoint.TRUE || registry.hasAnnotatedTools()) {
+                    // Register introspector context listener
+                    context.addListener(new McpIntrospectorContextListener(registry));
+
+                    registerEndpoint(context, configProps);
+                }
+            }
         } catch (IllegalStateException e) {
             String inactiveCdiMsg = "The MCP server endpoint for the application {0} is unavailable due to CDI being inactive. Verify that any MCP annotations are placed on methods of CDI beans that have an appropriate scope annotation (for example, @ApplicationScoped).";
             Tr.event(tc, inactiveCdiMsg, context.getServletContextName()); // called if ToolRegistry.get() has an issue with CDI

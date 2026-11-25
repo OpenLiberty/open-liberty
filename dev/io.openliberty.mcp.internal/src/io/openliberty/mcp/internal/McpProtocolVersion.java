@@ -118,6 +118,24 @@ public enum McpProtocolVersion {
         return this != V_2025_03_26;
     }
 
+    /**
+     * Returns true if requests using this protocol version carry connection information, such as the protocol
+     * version, in the {@code _meta} field of the request params.
+     * <p>
+     * When true, the MCP-Protocol-Version header must be checked against the value in the request body.
+     * <p>
+     * This is deliberately an exhaustive switch with no default, so that adding a new protocol version
+     * forces a decision on what it returns here.
+     *
+     * @return true if connection information is carried in the request {@code _meta}
+     */
+    public boolean connectionInfoInMeta() {
+        return switch (this) {
+            case V_2026_07_28 -> true;
+            case V_2025_11_25, V_2025_06_18, V_2025_03_26 -> false;
+        };
+    }
+
     public static class McpProtocolVersionAdapter implements JsonbAdapter<McpProtocolVersion, String> {
 
         @Override
