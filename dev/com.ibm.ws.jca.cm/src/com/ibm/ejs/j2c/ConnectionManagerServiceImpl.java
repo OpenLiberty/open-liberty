@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -167,14 +167,18 @@ public class ConnectionManagerServiceImpl extends ConnectionManagerService {
     public void addObserver(Observer observer) {
         super.addObserver(observer);
         if (countObservers() > 1) {
-            super.deleteObserver(observer);
             AbstractConnectionFactoryService cfSvc = (AbstractConnectionFactoryService) observer;
             Object[] params = new Object[] { CONNECTION_MANAGER, name, cfSvc.getConfigElementName() };
+			// TODO - After adding additional automated testing to ensure the working behavior is valid, we may decide to remove this warning/failure,
+			// since customers may already be successfully using a mixed connection pool with ignore or warn.
             RuntimeException failure = connectorSvc.ignoreWarnOrFail(tc, null, UnsupportedOperationException.class, "CARDINALITY_ERROR_J2CA8040", params);
-            if (failure != null)
+            if (failure != null) {
+                super.deleteObserver(observer); // only delete observer if throwing exception
                 throw failure;
+            }
+            this.pm.mixedConnectionPool = true; // set mixedConnectionPool to true for added trace information in the poolmanager.
         }
-    }
+	}
 
     /**
      * Create and initialize the connection manager/pool configuration

@@ -189,9 +189,13 @@ public class ConnectorServiceImpl extends ConnectorService {
                     Tr.debug(tc, "ignoring error: " + msgKey, objs);
                 return null;
             case WARN:
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "warning error: " + msgKey, objs);
                 Tr.warning(tc, msgKey, objs);
                 return null;
             case FAIL:
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "fail error: " + msgKey, objs);
                 try {
                     if (throwable != null && exceptionClassToRaise.isInstance(throwable))
                         return exceptionClassToRaise.cast(throwable);
