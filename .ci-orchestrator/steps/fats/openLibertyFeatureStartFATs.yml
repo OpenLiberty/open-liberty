@@ -9,10 +9,10 @@
     ebcShortlist: jenkins-child.yml
 
     # Product to be tested.
-    product_image_type_under_test: wlp-embeddable-full
-    # asyncArchive.zip is 6 directories up from the wlp-embeddable-full image.
+    product_image_type_under_test: openliberty-dev
+    # asyncArchive.zip is 6 directories up from the openliberty image.
     dependenciesRelativePath: ../../../../../..
-    
+
     # Buckets to be tested.
     fat.buckets.to.run: all
     fat.test.mode: full
