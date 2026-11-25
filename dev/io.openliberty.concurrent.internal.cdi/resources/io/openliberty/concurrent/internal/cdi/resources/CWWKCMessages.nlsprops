@@ -96,3 +96,36 @@ CWWKC1417.method.anno.conflict.explanation=The listed annotations are not \
  compatible on the same method.
 CWWKC1417.method.anno.conflict.useraction=Remove one of the conflicting \
  annotations from the method or its class.
+
+CWWKC1418.lock.upgrade.err=CWWKC1418E: The {0} member of the Lock annotation \
+ on the {1} method of the {2} CDI managed bean has the value WRITE, but the \
+ thread already holds a READ lock on the bean instance. The Jakarta Concurrency \
+ Lock API does not permit upgrading the Lock type from READ to WRITE.
+CWWKC1418.lock.upgrade.err.explanation=Lock upgrade from READ to WRITE is \
+ explicitly disallowed by the Jakarta Concurrency API.
+CWWKC1418.lock.upgrade.err.useraction=Update application code to ensure that \
+ either a WRITE lock is already held or no lock is held when invoking the method.
+
+CWWKC1419.anno.value.neg=CWWKC1419E: The {0} method of the {1} \
+ CDI managed bean has a {2} annotation with a negative {3} value ({4}).
+CWWKC1419.anno.value.neg.explanation=Negative values are not supported \
+ for the given annotation member.
+CWWKC1419.anno.value.neg.useraction=Configure a positive value or 0 for \
+ the given annotation member.
+
+CWWKC1420.lock.timeout=CWWKC1420E: Timed out waiting {0} {1} for a {2} lock \
+ that allows running the {3} method on instance {4} of the {5} CDI managed bean.
+CWWKC1420.lock.timeout.explanation=A Lock annotation on the given method or its \
+ bean class requires a lock to be obtained before running the method.
+CWWKC1420.lock.timeout.useraction=Investigate the cause of the lock timeout \
+ and consider whether to handle the timeout, retry the method, or correct a \
+ locking issue in the application.
+
+CWWKC1421.lock.interrupt=CWWKC1421E: The current thread with the {0} id and \
+ the {1} name was interrupted before obtaining a {2} lock that allows running \
+ the {3} method on instance {4} of the {5} CDI managed bean.
+CWWKC1421.lock.interrupt.explanation=The thread is unable to wait for a lock \
+ because the thread has been interrupted.
+CWWKC1421.lock.interrupt.useraction=Investigate the cause of the interrupt \
+ and consider whether to handle the interrupt, retry the method, or correct a \
+ locking issue in the application.

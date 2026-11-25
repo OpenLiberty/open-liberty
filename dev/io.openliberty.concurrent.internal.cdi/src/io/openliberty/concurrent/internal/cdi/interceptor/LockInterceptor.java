@@ -27,6 +27,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.concurrent.internal.cdi.Util;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.concurrent.ManagedExecutors;
@@ -147,7 +148,11 @@ public class LockInterceptor implements Serializable {
             // reject unsupported escalation from READ to WRITE
             // (which would otherwise time out or deadlock self)
             if (!read && reentrantLock.getReadHoldCount() > 0)
-                throw new IllegalStateException("Cannot upgrade from READ to WRITE lock"); // TODO NLS
+                throw new IllegalStateException(Tr //
+                                .formatMessage(tc, "CWWKC1418.lock.upgrade.err",
+                                               "type",
+                                               method.getName(),
+                                               method.getDeclaringClass().getName()));
 
             if (timeout > 0) {
                 acquired = lock.tryLock(timeout, unit);
@@ -157,12 +162,24 @@ public class LockInterceptor implements Serializable {
                 lock.lockInterruptibly();
                 acquired = true;
             } else { // negative accessTimeout value
-                throw new CompletionException(new UnsupportedOperationException//
-                ("accessTimeout=" + timeout)); // TODO NLS
+                throw new CompletionException(new UnsupportedOperationException(Tr //
+                                .formatMessage(tc, "CWWKC1419.anno.value.neg",
+                                               method.getName(),
+                                               method.getDeclaringClass().getName(),
+                                               "Lock",
+                                               "accessTimeout",
+                                               timeout)));
             }
 
             if (!acquired)
-                throw new CompletionException(new TimeoutException()); // TODO NLS
+                throw new CompletionException(new TimeoutException(Tr //
+                                .formatMessage(tc, "CWWKC1420.lock.timeout",
+                                               timeout,
+                                               unit,
+                                               read ? "READ" : "WRITE",
+                                               method.getName(),
+                                               Util.hex(invocation.getTarget().hashCode()),
+                                               method.getDeclaringClass().getName())));
 
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc,
@@ -176,14 +193,20 @@ public class LockInterceptor implements Serializable {
         } catch (InterruptedException x) {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + method.getName(), x);
-            Thread.currentThread().interrupt(); // restore interrupted status
+            Thread thread = Thread.currentThread();
+            thread.interrupt(); // restore interrupted status
             for (Class<?> c : invocation.getMethod().getExceptionTypes())
                 if (c.isInstance(x))
                     throw x;
-            String message = acquired //
-                            ? x.toString() //
-                            : "Interrupted while waiting for lock"; // TODO NLS
-            throw new IllegalStateException(message, x);
+            throw new IllegalStateException(Tr //
+                            .formatMessage(tc, "CWWKC1421.lock.interrupt",
+                                           Util.hex(thread.getId()),
+                                           thread.getName(),
+                                           read ? "READ" : "WRITE",
+                                           method.getName(),
+                                           Util.hex(invocation.getTarget().hashCode()),
+                                           method.getDeclaringClass().getName()), //
+                            x);
         } catch (Exception x) {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + method.getName(), x);

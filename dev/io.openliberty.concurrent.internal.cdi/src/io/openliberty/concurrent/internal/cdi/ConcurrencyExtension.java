@@ -12,8 +12,6 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.cdi;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,14 +25,10 @@ import org.osgi.framework.InvalidSyntaxException;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
-import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.runtime.metadata.MetaData;
-import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.concurrent.internal.cdi.interceptor.AsyncInterceptor;
@@ -219,7 +213,7 @@ public class ConcurrencyExtension implements Extension {
                          " Jakarta EE application module.");
                     }
                     perModule.computeIfAbsent(jeeNameOptional.get(),
-                                              ConcurrencyExtension::newList) //
+                                              Util::newList) //
                                     .add(beanType);
                 }
                 beanClassesWithScheduleMethods.clear();
@@ -262,8 +256,8 @@ public class ConcurrencyExtension implements Extension {
                          "context-service",
                          factory.getName(),
                          factory.getQualifiers(),
-                         toArtifactName(factory.getDeclaringMetadata()),
-                         toStackTrace(x));
+                         Util.toArtifactName(factory.getDeclaringMetadata()),
+                         Util.toStackTrace(x));
             }
         }
 
@@ -280,8 +274,8 @@ public class ConcurrencyExtension implements Extension {
                          "managed-executor",
                          factory.getName(),
                          factory.getQualifiers(),
-                         toArtifactName(factory.getDeclaringMetadata()),
-                         toStackTrace(x));
+                         Util.toArtifactName(factory.getDeclaringMetadata()),
+                         Util.toStackTrace(x));
             }
         }
 
@@ -298,8 +292,8 @@ public class ConcurrencyExtension implements Extension {
                          "managed-scheduled-executor",
                          factory.getName(),
                          factory.getQualifiers(),
-                         toArtifactName(factory.getDeclaringMetadata()),
-                         toStackTrace(x));
+                         Util.toArtifactName(factory.getDeclaringMetadata()),
+                         Util.toStackTrace(x));
             }
         }
 
@@ -316,8 +310,8 @@ public class ConcurrencyExtension implements Extension {
                          "managed-thread-factory",
                          factory.getName(),
                          factory.getQualifiers(),
-                         toArtifactName(factory.getDeclaringMetadata()),
-                         toStackTrace(x));
+                         Util.toArtifactName(factory.getDeclaringMetadata()),
+                         Util.toStackTrace(x));
             }
         }
     }
@@ -341,49 +335,5 @@ public class ConcurrencyExtension implements Extension {
             // Force instantiation of the bean in order to cause context to be captured
             mtf.toString();
         }
-    }
-
-    /**
-     * Constructs a new modifiable list.
-     *
-     * @param <T>    type of list elements
-     * @param ignore ignored value
-     * @return a new modifiable list.
-     */
-    @Trivial
-    private static final <T> ArrayList<T> newList(Object ignore) {
-        return new ArrayList<T>();
-    }
-
-    /**
-     * Utility method to obtain the JEE name for a MetaData instance if possible,
-     * and otherwise the name.
-     *
-     * @param metadata ComponentMetaData, ModuleMetaData, or ApplicationMetaData.
-     * @return the artifact name, preferably as a JEE name string.
-     */
-    @Trivial
-    private static String toArtifactName(MetaData metadata) {
-        if (metadata instanceof ComponentMetaData)
-            return ((ComponentMetaData) metadata).getJ2EEName().toString();
-        else if (metadata instanceof ModuleMetaData)
-            return ((ModuleMetaData) metadata).getJ2EEName().toString();
-        else if (metadata instanceof ApplicationMetaData)
-            return ((ApplicationMetaData) metadata).getJ2EEName().toString();
-        else
-            return metadata.getName();
-    }
-
-    /**
-     * Utility method that converts an exception to a stack trace string.
-     *
-     * @param x exception.
-     * @return stack trace string.
-     */
-    @Trivial
-    private static String toStackTrace(Throwable x) {
-        StringWriter s = new StringWriter();
-        x.printStackTrace(new PrintWriter(s));
-        return s.toString();
     }
 }

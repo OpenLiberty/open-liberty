@@ -172,12 +172,12 @@ public abstract class ScheduledMethodAbstract implements //
             } catch (RuntimeException x) {
                 failure = x;
             } finally {
-                if (failure != null)
-                    if (future.completeExceptionally(failure))
-                        Tr.error(tc, "CWWKC1414.sched.method.fail",
-                                 method.getName(),
-                                 method.getDeclaringClass().getName(),
-                                 failure);
+                if (failure != null &&
+                    future.completeExceptionally(failure))
+                    Tr.error(tc, "CWWKC1414.sched.method.fail",
+                             method.getName(),
+                             method.getDeclaringClass().getName(),
+                             failure);
             }
         }
 

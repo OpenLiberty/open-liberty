@@ -437,7 +437,7 @@ public class ConcurrencyExtensionMetadata implements //
                     Tr.error(tc, "CWWKC1415.sched.method.scope.err",
                              beanClass.getName(),
                              scopeClass == null ? null : scopeClass.getName(),
-                             names(SCHEDULED_METHOD_BEAN_SCOPES));
+                             Util.classNames(SCHEDULED_METHOD_BEAN_SCOPES));
                     continue;
                 }
 
@@ -467,19 +467,6 @@ public class ConcurrencyExtensionMetadata implements //
                 } // let Asynchronous handle the invalid combination of annos
             }
         }
-    }
-
-    /**
-     * Returns a String containing the names of classes delimited by commas.
-     *
-     * @param classes Java classes.
-     * @return the names of classes delimited by commas.
-     */
-    private static String names(Collection<? extends Class<?>> classes) {
-        StringBuilder b = new StringBuilder();
-        for (Class<?> c : classes)
-            b.append(b.isEmpty() ? "" : ", ").append(c.getName());
-        return b.toString();
     }
 
     /**
