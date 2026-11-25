@@ -11,6 +11,10 @@ package io.openliberty.mcp.internal.requests;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Map;
+
+import org.mcpjava.server.ImplementationInfo;
+
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.mcp.internal.McpProtocolVersion;
@@ -26,13 +30,19 @@ import jakarta.json.JsonObject;
  * @param id the request id, {@code null} for a notification
  * @param session the session, {@code null} if there's no associated session
  * @param args the unparsed method arguments object. May be empty if no args provided, but not {@code null}
+ * @param clientInfo the client info for the request, which comes from the session or from the request {@code _meta} depending on the protocol version.
+ *            {@link ImplementationInfoImpl#UNKNOWN} if it is not available.
+ * @param clientCapabilities the client capabilities for the request, which come from the session or from the request {@code _meta} depending on the protocol version.
+ *            Empty if they are not available.
  */
 @Trivial
 public record McpOperationRequest(RequestMethod method,
                                   McpProtocolVersion protocolVersion,
                                   RequestId id,
                                   McpSession session,
-                                  JsonObject args) {
+                                  JsonObject args,
+                                  ImplementationInfo clientInfo,
+                                  Map<String, Object> clientCapabilities) {
 
     public McpOperationRequest {
         requireNonNull(method, "method is required");
@@ -40,5 +50,7 @@ public record McpOperationRequest(RequestMethod method,
             requireNonNull(protocolVersion, "protocolVersion is required");
         }
         requireNonNull(args, "args is required");
+        requireNonNull(clientInfo, "clientInfo is required");
+        requireNonNull(clientCapabilities, "clientCapabilities is required");
     }
 }

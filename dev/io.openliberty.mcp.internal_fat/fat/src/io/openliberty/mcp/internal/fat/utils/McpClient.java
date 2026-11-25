@@ -93,6 +93,9 @@ public class McpClient extends ExternalResource implements AutoCloseable {
 
     private static final Class<?> c = McpClient.class;
 
+    /** The protocol version the server assumes when a request has no {@code MCP-Protocol-Version} header. */
+    private static final String DEFAULT_PROTOCOL_VERSION = "2025-03-26";
+
     private final LibertyServer server;
     private final String contextRoot;
     private final StateMode mode;
@@ -635,7 +638,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * @throws Exception if the request fails or the response status is not 200
      */
     public <T extends JsonRpcResponse> T call(McpRequest request, Class<T> responseType) throws Exception {
-        return createResponse(callMCP(request.toString()), request.getId(), responseType);
+        return createResponse(callMCP(request.toString()), request.getId(), VALUE_MCP_PROTOCOL_VERSION, responseType);
     }
 
     /**
@@ -652,16 +655,23 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * @throws Exception if the request fails or the response status is not 200
      */
     public JsonRpcResponse call(String jsonRequestBody) throws Exception {
-        Object requestId = JSONObject.NULL;
+        return createResponse(callMCP(jsonRequestBody), extractRequestId(jsonRequestBody), VALUE_MCP_PROTOCOL_VERSION, JsonRpcResponse.class);
+    }
+
+    /**
+     * Extracts the {@code id} from a raw JSON-RPC request body, or {@link JSONObject#NULL} if
+     * the request is malformed or does not contain a string or integer {@code id}.
+     */
+    private static Object extractRequestId(String jsonRequestBody) {
         try {
             Object id = new JSONObject(jsonRequestBody).opt("id");
             if (id instanceof String || id instanceof Integer) {
-                requestId = id;
+                return id;
             }
         } catch (JSONException e) {
             // malformed body: the server can't know an id, so none is expected
         }
-        return createResponse(callMCP(jsonRequestBody), requestId, JsonRpcResponse.class);
+        return JSONObject.NULL;
     }
 
     /**
@@ -669,9 +679,9 @@ public class McpClient extends ExternalResource implements AutoCloseable {
      * kind of response. The response types share the constructor
      * {@code (JSONObject json, Object requestId, String protocolVersion)}.
      */
-    private <T extends JsonRpcResponse> T createResponse(String json, Object requestId, Class<T> responseType) throws Exception {
+    private static <T extends JsonRpcResponse> T createResponse(String json, Object requestId, String protocolVersion, Class<T> responseType) throws Exception {
         return responseType.getDeclaredConstructor(JSONObject.class, Object.class, String.class)
-                           .newInstance(new JSONObject(json), requestId, VALUE_MCP_PROTOCOL_VERSION);
+                           .newInstance(new JSONObject(json), requestId, protocolVersion);
     }
 
     /**
@@ -763,6 +773,17 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         return new RawCall(jsonRequestBody);
     }
 
+    /**
+     * Like {@link #callMCPRaw(String)}, for a request built by this client, e.g. with
+     * {@link McpRequest#setMeta(Map)}.
+     *
+     * @param request the request to send
+     * @return a {@link RawCall} builder ready to be configured and executed
+     */
+    public RawCall callMCPRaw(McpRequest request) {
+        return new RawCall(request.toString());
+    }
+
     // -------------------------------------------------------------------------
     // RawCall
     // -------------------------------------------------------------------------
@@ -778,6 +799,7 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         private String mcpPath;
         private String sessionIdOverride;
         private String protocolVersionOverride;
+        private boolean omitProtocolVersion = false;
         private String basicAuthUsername;
         private String basicAuthPassword;
 
@@ -822,6 +844,16 @@ public class McpClient extends ExternalResource implements AutoCloseable {
         }
 
         /**
+         * Omits the {@code MCP-Protocol-Version} header for this single call. When the header is
+         * missing the server assumes protocol version {@code 2025-03-26}, which is the protocol
+         * version of a response parsed by {@link #run(Class)}.
+         */
+        public RawCall noProtocolVersion() {
+            this.omitProtocolVersion = true;
+            return this;
+        }
+
+        /**
          * Override the Basic Auth credentials for this single call only.
          * Use when the call must be made on an existing session but with different credentials,
          * e.g. testing that a cross-user request is rejected.
@@ -830,6 +862,20 @@ public class McpClient extends ExternalResource implements AutoCloseable {
             this.basicAuthUsername = username;
             this.basicAuthPassword = password;
             return this;
+        }
+
+        /**
+         * Executes the request and parses the response body as the given type, e.g.
+         * {@link ToolResponse} for a {@code tools/call} request. The response is expected to have the
+         * id of the request, and its protocol version is the one set with {@link #protocolVersion(String)}.
+         * Like {@link #run()}, expects HTTP 200 unless another status is set.
+         *
+         * @param responseType the type of response to create
+         * @return the parsed response
+         * @throws Exception if the HTTP call fails, the status does not match the expectation, or the body is not JSON
+         */
+        public <T extends JsonRpcResponse> T run(Class<T> responseType) throws Exception {
+            return run().body(responseType);
         }
 
         /**
@@ -846,9 +892,11 @@ public class McpClient extends ExternalResource implements AutoCloseable {
             HttpRequest.Builder builder = HttpRequest.newBuilder()
                                                      .uri(URI.create(url))
                                                      .header(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                     .header(MCP_PROTOCOL_VERSION, protocolVersionOverride != null ? protocolVersionOverride : VALUE_MCP_PROTOCOL_VERSION)
                                                      .header("Content-Type", VALUE_APPLICATION_JSON)
                                                      .POST(HttpRequest.BodyPublishers.ofString(jsonRequestBody));
+            if (!omitProtocolVersion) {
+                builder.header(MCP_PROTOCOL_VERSION, protocolVersionOverride != null ? protocolVersionOverride : VALUE_MCP_PROTOCOL_VERSION);
+            }
 
             // sessionIdOverride takes precedence over the client's session ID
             if (sessionIdOverride != null) {
@@ -877,11 +925,16 @@ public class McpClient extends ExternalResource implements AutoCloseable {
                                     + response.statusCode() + " (expected " + expectedStatus + ")\nBody: " + response.body());
             }
 
+            String version = omitProtocolVersion ? DEFAULT_PROTOCOL_VERSION
+                                                 : protocolVersionOverride != null ? protocolVersionOverride : VALUE_MCP_PROTOCOL_VERSION;
+
             return new McpDetailedAuthResponse(
                                                response.statusCode(),
                                                response.headers().firstValue("WWW-Authenticate").orElse(null),
                                                response.headers().firstValue("Content-Type").orElse(null),
-                                               response.body());
+                                               response.body(),
+                                               extractRequestId(jsonRequestBody),
+                                               version);
         }
     }
 
@@ -892,7 +945,25 @@ public class McpClient extends ExternalResource implements AutoCloseable {
     /**
      * Detailed response data returned by {@link RawCall#run()}.
      */
-    public record McpDetailedAuthResponse(int statusCode, String wwwAuthenticate, String contentType, String body) {}
+    public record McpDetailedAuthResponse(
+                    int statusCode,
+                    String wwwAuthenticate,
+                    String contentType,
+                    String body,
+                    Object requestId,
+                    String protocolVersion) {
+
+        /**
+         * Parses the response body as the given {@link JsonRpcResponse} type (e.g. {@link ToolResponse}).
+         *
+         * @param responseType the type of response to create
+         * @return the parsed response
+         * @throws Exception if the body is not JSON
+         */
+        public <T extends JsonRpcResponse> T body(Class<T> responseType) throws Exception {
+            return createResponse(body, requestId, protocolVersion, responseType);
+        }
+    }
 
     // -------------------------------------------------------------------------
     // Private helpers

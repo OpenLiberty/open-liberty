@@ -10,7 +10,11 @@
 package io.openliberty.mcp.internal.fat.protocol;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -28,6 +32,8 @@ import io.openliberty.mcp.internal.fat.suite.McpMainServerSuite;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.McpClient.McpDetailedAuthResponse;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
 
 /**
  * Tests that, for protocol version 2026-07-28, the MCP-Protocol-Version header is validated against the
@@ -44,7 +50,12 @@ public class ProtocolVersionHeaderValidationBetaTest {
     private static final String APP_NAME = "protocolVersionHeaderValidationBetaTest";
 
     private static final String[] GA_VERSIONS = { "2025-11-25", "2025-06-18", "2025-03-26" };
-    private static final String META_2026_07_28 = "{\"io.modelcontextprotocol/protocolVersion\": \"2026-07-28\"}";
+    private static final String META_2026_07_28 = """
+                    {
+                      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+                      "io.modelcontextprotocol/clientCapabilities": {}
+                    }
+                    """;
 
     private static final String ECHO_REQUEST = """
                     {
@@ -74,21 +85,6 @@ public class ProtocolVersionHeaderValidationBetaTest {
                       }
                     }
                     """;
-
-    private static final String ECHO_RESPONSE = """
-                    {
-                      "id": 1,
-                      "jsonrpc": "2.0",
-                      "result": {
-                        "content": [
-                          {
-                            "type": "text",
-                            "text": "Hello"
-                          }
-                        ],
-                        "isError": false
-                      }
-                    }""";
 
     /** The HeaderMismatch error response, with the id to be filled in */
     private static final String HEADER_MISMATCH_RESPONSE = """
@@ -130,12 +126,15 @@ public class ProtocolVersionHeaderValidationBetaTest {
 
     @Test
     public void testMatchingHeaderAndBodyMetaIsAccepted() throws Exception {
-        String response = client.callMCPRaw(ECHO_REQUEST_WITH_META.formatted(META_2026_07_28))
-                                .protocolVersion("2026-07-28")
-                                .run()
-                                .body();
+        McpRequest request = client.toolCallRequest("echo", Map.of("input", "Hello"))
+                                   .setMeta(Map.of("io.modelcontextprotocol/protocolVersion", "2026-07-28",
+                                                   "io.modelcontextprotocol/clientCapabilities", Map.of()));
 
-        JSONAssert.assertEquals(ECHO_RESPONSE, response, true);
+        ToolResponse response = client.callMCPRaw(request)
+                                      .protocolVersion("2026-07-28")
+                                      .run(ToolResponse.class);
+
+        assertThat(response, toolResponse().withTextContent("Hello"));
     }
 
     @Test
@@ -224,12 +223,11 @@ public class ProtocolVersionHeaderValidationBetaTest {
     @Test
     public void testMissingBodyMetaIsAcceptedForGaVersions() throws Exception {
         for (String version : GA_VERSIONS) {
-            String response = client.callMCPRaw(ECHO_REQUEST)
-                                    .protocolVersion(version)
-                                    .run()
-                                    .body();
+            ToolResponse response = client.callMCPRaw(ECHO_REQUEST)
+                                          .protocolVersion(version)
+                                          .run(ToolResponse.class);
 
-            JSONAssert.assertEquals("Unexpected response for MCP-Protocol-Version " + version, ECHO_RESPONSE, response, true);
+            assertThat("Unexpected response for MCP-Protocol-Version " + version, response, toolResponse().withTextContent("Hello"));
         }
     }
 

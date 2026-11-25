@@ -69,7 +69,8 @@ public final class ProtocolVersionRequests {
                           "input": "Hello"
                         },
                         "_meta": {
-                          "io.modelcontextprotocol/protocolVersion": "2026-07-28"
+                          "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+                          "io.modelcontextprotocol/clientCapabilities": {}
                         }
                       }
                     }

@@ -10,12 +10,16 @@
 package io.openliberty.mcp.internal.fat.protocol;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.JsonRpcResponseMatcher.jsonRpcResponse;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -25,15 +29,18 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpRequest;
+import io.openliberty.mcp.internal.fat.protocol.betaRequestApp.BetaRequestTools;
 import io.openliberty.mcp.internal.fat.suite.BetaRepeatAction;
 import io.openliberty.mcp.internal.fat.suite.McpMainServerSuite;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
+import io.openliberty.mcp.internal.fat.utils.JsonRpcResponse;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpRequest;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
 
 /**
  * Tests that the beta MCP protocol version 2026-07-28 is usable when the runtime is a beta runtime.
@@ -51,7 +58,8 @@ public class ProtocolVersionBetaTest {
 
     private static final String[] GA_VERSIONS = { "2025-11-25", "2025-06-18", "2025-03-26" };
     private static final String[] INVALID_VERSIONS = { "2026-07-29", "2026-7-28", "not-a-version" };
-    private static final String META_2026_07_28 = "{\"io.modelcontextprotocol/protocolVersion\": \"2026-07-28\"}";
+    private static final Map<String, Object> META_2026_07_28 = Map.of("io.modelcontextprotocol/protocolVersion", "2026-07-28",
+                                                                      "io.modelcontextprotocol/clientCapabilities", Map.of());
 
     private static final String ECHO_REQUEST = """
                     {
@@ -66,36 +74,6 @@ public class ProtocolVersionBetaTest {
                       }
                     }
                     """;
-
-    private static final String ECHO_REQUEST_WITH_META = """
-                    {
-                      "jsonrpc": "2.0",
-                      "id": 1,
-                      "method": "tools/call",
-                      "params": {
-                        "name": "echo",
-                        "arguments": {
-                          "input": "Hello"
-                        },
-                        "_meta": %s
-                      }
-                    }
-                    """;
-
-    private static final String ECHO_RESPONSE = """
-                    {
-                      "id": 1,
-                      "jsonrpc": "2.0",
-                      "result": {
-                        "content": [
-                          {
-                            "type": "text",
-                            "text": "Hello"
-                          }
-                        ],
-                        "isError": false
-                      }
-                    }""";
 
     private static final String INITIALIZE_REQUEST = """
                     {
@@ -118,7 +96,9 @@ public class ProtocolVersionBetaTest {
     @BeforeClass
     public static void setup() throws Exception {
         serverLifecycle.getServer().setMarkToEndOfLog();
-        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addPackage(BasicTools.class.getPackage());
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                                   .addPackage(BasicTools.class.getPackage())
+                                   .addPackage(BetaRequestTools.class.getPackage());
         serverLifecycle.deployDropinApp(war);
     }
 
@@ -129,12 +109,13 @@ public class ProtocolVersionBetaTest {
 
     @Test
     public void testAcceptsBetaProtocolVersionHeaderOnBeta() throws Exception {
-        String response = client.callMCPRaw(ECHO_REQUEST_WITH_META.formatted(META_2026_07_28))
-                                .protocolVersion("2026-07-28")
-                                .run()
-                                .body();
+        McpRequest request = client.toolCallRequest("echo", Map.of("input", "Hello")).setMeta(META_2026_07_28);
 
-        JSONAssert.assertEquals(ECHO_RESPONSE, response, true);
+        ToolResponse response = client.callMCPRaw(request)
+                                      .protocolVersion("2026-07-28")
+                                      .run(ToolResponse.class);
+
+        assertThat(response, toolResponse().withTextContent("Hello"));
     }
 
     @Test
@@ -203,12 +184,11 @@ public class ProtocolVersionBetaTest {
     @Test
     public void testAcceptsEachGaProtocolVersionHeaderOnBeta() throws Exception {
         for (String version : GA_VERSIONS) {
-            String response = client.callMCPRaw(ECHO_REQUEST)
-                                    .protocolVersion(version)
-                                    .run()
-                                    .body();
+            ToolResponse response = client.callMCPRaw(ECHO_REQUEST)
+                                          .protocolVersion(version)
+                                          .run(ToolResponse.class);
 
-            JSONAssert.assertEquals("Unexpected response for MCP-Protocol-Version " + version, ECHO_RESPONSE, response, true);
+            assertThat("Unexpected response for MCP-Protocol-Version " + version, response, toolResponse().withTextContent("Hello"));
         }
     }
 
@@ -231,6 +211,235 @@ public class ProtocolVersionBetaTest {
             String negotiated = new JSONObject(response).getJSONObject("result").getString("protocolVersion");
             assertEquals("Expected " + version + " to be negotiated as itself", version, negotiated);
         }
+    }
+
+    @Test
+    public void testMcpRequestExtractsClientInfoFromMetaOnBeta() throws Exception {
+        String meta = """
+                        "io.modelcontextprotocol/clientInfo": {
+                          "name": "beta-test-client",
+                          "title": "Beta Custom Client",
+                          "version": "2.0.0"
+                        },
+                        "io.modelcontextprotocol/clientCapabilities": {}
+                        """;
+
+        assertDescribeClientTitleResponse(meta, "Beta Custom Client");
+    }
+
+    /**
+     * Only the title is omitted, the title defaults to the name
+     */
+    @Test
+    public void testMcpRequestExtractsClientInfoWithoutTitleOnBeta() throws Exception {
+        String meta = """
+                        "io.modelcontextprotocol/clientInfo": {
+                          "name": "no-title-client",
+                          "version": "1.0.0"
+                        },
+                        "io.modelcontextprotocol/clientCapabilities": {}
+                        """;
+
+        assertDescribeClientTitleResponse(meta, "no-title-client");
+    }
+
+    /**
+     * clientInfo is optional, so a request without it reports unknown client info
+     */
+    @Test
+    public void testMcpRequestReturnsUnknownClientInfoWhenNoClientInfoOnBeta() throws Exception {
+        String meta = """
+                        "io.modelcontextprotocol/clientCapabilities": {}
+                        """;
+
+        assertDescribeClientTitleResponse(meta, "Unknown");
+    }
+
+    /**
+     * Unprefixed keys are application-defined metadata, they must not be treated as the MCP client info
+     */
+    @Test
+    public void testMcpRequestIgnoresUnprefixedClientInfoOnBeta() throws Exception {
+        String meta = """
+                        "clientInfo": {
+                          "name": "app-defined",
+                          "title": "App Defined",
+                          "version": "1.0.0"
+                        },
+                        "io.modelcontextprotocol/clientCapabilities": {}
+                        """;
+
+        assertDescribeClientTitleResponse(meta, "Unknown");
+    }
+
+    @Test
+    public void testMcpRequestWithInvalidClientInfoRejectsOnBeta() throws Exception {
+        String meta = """
+                        "io.modelcontextprotocol/clientInfo": "not-an-object",
+                        "io.modelcontextprotocol/clientCapabilities": {}
+                        """;
+
+        assertToolCallInvalidParams(meta);
+    }
+
+    /**
+     * clientInfo is optional, but if it is present then its name and version are required
+     */
+    @Test
+    public void testMcpRequestWithClientInfoMissingRequiredFieldsRejectsOnBeta() throws Exception {
+        String meta = """
+                        "io.modelcontextprotocol/clientInfo": { "title": "Missing Name and Version" },
+                        "io.modelcontextprotocol/clientCapabilities": {}
+                        """;
+
+        assertToolCallInvalidParams(meta);
+    }
+
+    /**
+     * clientCapabilities is required in the request _meta, even if the _meta has other valid entries
+     */
+    @Test
+    public void testMcpRequestWithoutClientCapabilitiesRejectsOnBeta() throws Exception {
+        String meta = """
+                        "io.modelcontextprotocol/clientInfo": {
+                          "name": "beta-test-client",
+                          "version": "2.0.0"
+                        }
+                        """;
+
+        assertToolCallInvalidParams(meta);
+    }
+
+    @Test
+    public void testMcpRequestWithInvalidClientCapabilitiesRejectsOnBeta() throws Exception {
+        String meta = """
+                        "io.modelcontextprotocol/clientCapabilities": "not-an-object"
+                        """;
+
+        assertToolCallInvalidParams(meta);
+    }
+
+    /**
+     * Unprefixed capabilities keys must not satisfy the requirement for the prefixed clientCapabilities
+     */
+    @Test
+    public void testMcpRequestWithOnlyUnprefixedClientCapabilitiesRejectsOnBeta() throws Exception {
+        String meta = """
+                        "clientCapabilities": {}
+                        """;
+
+        assertToolCallInvalidParams(meta);
+    }
+
+    @Test
+    public void testMcpRequestReturnsProtocolVersionCapabilitiesAndClientInfoOnBeta() throws Exception {
+        String meta = """
+                        "io.modelcontextprotocol/clientInfo": {
+                          "name": "beta-test-client",
+                          "version": "2.0.0"
+                        },
+                        "io.modelcontextprotocol/clientCapabilities": {
+                          "sampling": {},
+                          "roots": { "listChanged": true }
+                        }
+                        """;
+
+        assertDescribeMcpRequestResponse(meta, "version=2026-07-28;caps=[roots, sampling];client=beta-test-client");
+    }
+
+    /**
+     * clientCapabilities is required but may be an empty object
+     */
+    @Test
+    public void testMcpRequestReturnsEmptyCapabilitiesOnBeta() throws Exception {
+        String meta = """
+                        "io.modelcontextprotocol/clientCapabilities": {}
+                        """;
+
+        assertDescribeMcpRequestResponse(meta, "version=2026-07-28;caps=[];client=Unknown");
+    }
+
+    /**
+     * Unprefixed capabilities keys are application-defined metadata, they must not be treated as the client capabilities
+     */
+    @Test
+    public void testMcpRequestIgnoresUnprefixedCapabilitiesOnBeta() throws Exception {
+        String meta = """
+                        "capabilities": { "appCap": true },
+                        "clientCapabilities": { "appCap2": true },
+                        "io.modelcontextprotocol/clientCapabilities": {}
+                        """;
+
+        assertDescribeMcpRequestResponse(meta, "version=2026-07-28;caps=[];client=Unknown");
+    }
+
+    private void assertDescribeClientTitleResponse(String metaEntries, String expectedText) throws Exception {
+        assertToolCallResponse("describeClientTitle", metaEntries, expectedText);
+    }
+
+    private void assertDescribeMcpRequestResponse(String metaEntries, String expectedText) throws Exception {
+        assertToolCallResponse("describeMcpRequest", metaEntries, expectedText);
+    }
+
+    /**
+     * Calls a tool using protocol version 2026-07-28 with the given _meta entries and asserts that the request is
+     * rejected with an invalid params JSON-RPC error and HTTP status 400, as the _meta is not valid for the
+     * protocol version.
+     *
+     * @param metaEntries the entries to put inside the "_meta" object, in addition to the protocol version
+     */
+    private void assertToolCallInvalidParams(String metaEntries) throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "describeClientTitle",
+                            "_meta": {
+                              "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+                              %s
+                            }
+                          }
+                        }
+                        """.formatted(metaEntries);
+
+        JsonRpcResponse response = client.callMCPRaw(request)
+                                         .protocolVersion("2026-07-28")
+                                         .expectedStatus(400)
+                                         .run(JsonRpcResponse.class);
+
+        assertThat(response, jsonRpcResponse().withErrorCode(-32602));
+    }
+
+    /**
+     * Calls a tool using protocol version 2026-07-28 and asserts that it returns the expected text
+     *
+     * @param toolName the tool to call
+     * @param metaEntries the entries to put inside the "_meta" object
+     * @param expectedText the text expected in the tool response
+     */
+    private void assertToolCallResponse(String toolName, String metaEntries, String expectedText) throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "%s",
+                            "_meta": {
+                              "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+                              %s
+                            }
+                          }
+                        }
+                        """.formatted(toolName, metaEntries);
+
+        ToolResponse response = client.callMCPRaw(request)
+                                      .protocolVersion("2026-07-28")
+                                      .run(ToolResponse.class);
+
+        assertThat(response, toolResponse().withTextContent(expectedText));
     }
 
     /**

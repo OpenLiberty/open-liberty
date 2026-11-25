@@ -142,4 +142,32 @@ public class McpProtocolVersionTest {
         assertEquals(McpProtocolVersion.V_2025_11_25, McpProtocolVersion.latest());
         assertTrue(McpProtocolVersion.latest().isAvailable());
     }
+
+    @Test
+    public void testIsAtLeast() {
+        assertTrue(McpProtocolVersion.V_2026_07_28.isAtLeast(McpProtocolVersion.V_2026_07_28));
+        assertTrue(McpProtocolVersion.V_2026_07_28.isAtLeast(McpProtocolVersion.V_2025_03_26));
+        assertTrue(McpProtocolVersion.V_2025_11_25.isAtLeast(McpProtocolVersion.V_2025_11_25));
+        assertTrue(McpProtocolVersion.V_2025_11_25.isAtLeast(McpProtocolVersion.V_2025_06_18));
+        assertFalse(McpProtocolVersion.V_2025_11_25.isAtLeast(McpProtocolVersion.V_2026_07_28));
+        assertFalse(McpProtocolVersion.V_2025_03_26.isAtLeast(McpProtocolVersion.V_2025_06_18));
+    }
+
+    @Test
+    public void testIsAtMost() {
+        assertTrue(McpProtocolVersion.V_2025_03_26.isAtMost(McpProtocolVersion.V_2025_03_26));
+        assertTrue(McpProtocolVersion.V_2025_03_26.isAtMost(McpProtocolVersion.V_2026_07_28));
+        assertTrue(McpProtocolVersion.V_2025_11_25.isAtMost(McpProtocolVersion.V_2025_11_25));
+        assertTrue(McpProtocolVersion.V_2025_06_18.isAtMost(McpProtocolVersion.V_2025_11_25));
+        assertFalse(McpProtocolVersion.V_2025_06_18.isAtMost(McpProtocolVersion.V_2025_03_26));
+        assertFalse(McpProtocolVersion.V_2026_07_28.isAtMost(McpProtocolVersion.V_2025_11_25));
+    }
+
+    @Test
+    public void testSupportsRequestLevelClientInfo() {
+        assertTrue(McpProtocolVersion.V_2026_07_28.supportsRequestLevelClientInfo());
+        assertFalse(McpProtocolVersion.V_2025_11_25.supportsRequestLevelClientInfo());
+        assertFalse(McpProtocolVersion.V_2025_06_18.supportsRequestLevelClientInfo());
+        assertFalse(McpProtocolVersion.V_2025_03_26.supportsRequestLevelClientInfo());
+    }
 }
