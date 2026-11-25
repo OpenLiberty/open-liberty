@@ -10,7 +10,12 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -27,6 +32,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.genericToolApp.ChildConcreteTool;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
 
 /**
  *
@@ -39,7 +45,7 @@ public class GenericToolTest extends FATServletClient {
 
     @Rule
     public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
-    
+
     @BeforeClass
     public static void setup() throws Exception {
         serverLifecycle.getServer().setMarkToEndOfLog();
@@ -135,50 +141,13 @@ public class GenericToolTest extends FATServletClient {
 
     @Test
     public void testChildConcreteClass() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "addGenericToGenericArray",
-                            "arguments": {
-                                            "generic": "OpenLiberty",
-                                            "generic list 1": ["Hello", "World", "IBM", "Liberty"],
-                                            "generic list 2": [["Hello", "World"], ["IBM", "Liberty"]]
-                                    }
-                          }
-                        }
-                        """;
-        String response = client.callMCP(request);
-        JSONObject jsonResponse = new JSONObject(response);
-        // Strict Mode tests
-        String expectedResponseString = """
-                            {
-                            "id": 2,
-                            "jsonrpc": "2.0",
-                            "result": {
-                                "content": [
-                                    {
-                                        "text": "{\\\"returnList\\\":[[\\\"Hello\\\",\\\"World\\\"],[\\\"IBM\\\",\\\"Liberty\\\"]]}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "isError": false,
-                                "structuredContent": {
-                                "returnList":[
-                                    [
-                                        "Hello",
-                                        "World"
-                                    ],
-                                    [
-                                        "IBM",
-                                        "Liberty"
-                                    ]
-                                ]}
-                            }
-                        }
-                                                                                    """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+        ToolResponse response = client.callTool("addGenericToGenericArray",
+                                                Map.of("generic", "OpenLiberty",
+                                                       "generic list 1", List.of("Hello", "World", "IBM", "Liberty"),
+                                                       "generic list 2", List.of(List.of("Hello", "World"), List.of("IBM", "Liberty"))));
+
+        String expectedReturnList = "{\"returnList\":[[\"Hello\",\"World\"],[\"IBM\",\"Liberty\"]]}";
+        assertThat(response, toolResponse().withTextContent(expectedReturnList)
+                                           .withStructuredContent(new JSONObject(expectedReturnList)));
     }
 }

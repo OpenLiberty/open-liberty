@@ -11,9 +11,9 @@ package io.openliberty.mcp.internal.fat.protocol;
 
 import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
-import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_APPLICATION_JSON;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,7 +29,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -37,7 +36,9 @@ import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.suite.BetaRepeatAction;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpClient.McpDetailedAuthResponse;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
 
 /**
  * Tests the protocol version handling on a normal (non-beta) runtime. This class is skipped in the
@@ -66,21 +67,6 @@ public class ProtocolVersionTest {
                       }
                     }
                     """;
-
-    private static final String ECHO_RESPONSE = """
-                    {
-                      "id": 1,
-                      "jsonrpc": "2.0",
-                      "result": {
-                        "content": [
-                          {
-                            "type": "text",
-                            "text": "Hello"
-                          }
-                        ],
-                        "isError": false
-                      }
-                    }""";
 
     @Rule
     public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
@@ -113,33 +99,12 @@ public class ProtocolVersionTest {
                         }
                         """;
 
-        HttpRequest httpRequest = new HttpRequest(serverLifecycle.getServer(), "/" + APP_NAME + "/mcp")
-                                                                                                       .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                                                       .requestProp(MCP_SESSION_ID, client.getSessionId())
-                                                                                                       .jsonBody(request)
-                                                                                                       .method("POST")
-                                                                                                       .expectCode(200);
-        String response = httpRequest.run(String.class);
+        McpDetailedAuthResponse response = client.callMCPRaw(request).noProtocolVersion().run();
 
-        String expectedResponse = """
-                        {
-                          "id": 1,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "Hello"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }""";
+        ToolResponse toolResponse = response.body(ToolResponse.class);
+        assertThat(toolResponse, toolResponse().withTextContent("Hello"));
 
-        JSONAssert.assertEquals(expectedResponse, response, true);
-
-        String contentType = httpRequest.getResponseHeader("Content-Type");
-        assertThat(contentType, containsString(VALUE_APPLICATION_JSON));
+        assertThat(response.contentType(), containsString(VALUE_APPLICATION_JSON));
     }
 
     @Test
@@ -244,12 +209,11 @@ public class ProtocolVersionTest {
     @Test
     public void testAcceptsEachGaProtocolVersionHeaderOnNonBeta() throws Exception {
         for (String version : GA_VERSIONS) {
-            String response = client.callMCPRaw(ECHO_REQUEST)
-                                    .protocolVersion(version)
-                                    .run()
-                                    .body();
+            ToolResponse response = client.callMCPRaw(ECHO_REQUEST)
+                                          .protocolVersion(version)
+                                          .run(ToolResponse.class);
 
-            JSONAssert.assertEquals("Unexpected response for MCP-Protocol-Version " + version, ECHO_RESPONSE, response, true);
+            assertThat("Unexpected response for MCP-Protocol-Version " + version, response, toolResponse().withTextContent("Hello"));
         }
     }
 
@@ -298,6 +262,63 @@ public class ProtocolVersionTest {
                        response, containsString("An unsupported MCP-Protocol-Version header was provided."));
             assertSupportedValuesAreGaOnly(response);
         }
+    }
+
+    @Test
+    public void testMcpRequestUsesSessionClientInfoOnNonBeta() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "unannotatedArgTool",
+                            "arguments": {
+                              "name": "World",
+                              "count": 1
+                            },
+                            "_meta": {
+                              "io.modelcontextprotocol/clientInfo": {
+                                "name": "ignored-client",
+                                "title": "Ignored Client Title",
+                                "version": "9.9.9"
+                              }
+                            }
+                          }
+                        }
+                        """;
+
+        ToolResponse response = client.callMCPRaw(request).run(ToolResponse.class);
+        assertThat(response, toolResponse().withTextContent("hello World of FAT Test Client"));
+    }
+
+    @Test
+    public void testMcpRequestUsesSessionDataAndIgnoresMetaOnNonBeta() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "checkMcpRequest",
+                            "_meta": {
+                              "io.modelcontextprotocol/clientInfo": {
+                                "name": "ignored-client",
+                                "title": "Ignored Client Title",
+                                "version": "9.9.9",
+                                "description": "Ignored Description",
+                                "websiteUrl": "https://ignored.org"
+                              },
+                              "io.modelcontextprotocol/clientCapabilities": {
+                                "ignoredCap": true
+                              }
+                            }
+                          }
+                        }
+                        """;
+
+        ToolResponse response = client.callMCPRaw(request).run(ToolResponse.class);
+        assertThat(response, toolResponse().withTextContent("OK"));
     }
 
     private String initialize(String protocolVersion) throws Exception {

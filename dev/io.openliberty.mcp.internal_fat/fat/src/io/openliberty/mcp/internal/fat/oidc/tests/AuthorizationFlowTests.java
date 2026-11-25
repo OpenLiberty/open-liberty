@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -120,13 +121,13 @@ public class AuthorizationFlowTests extends FATServletClient {
         // follow HTTPS discovery URLs (Keycloak AS metadata, token endpoint) even though
         // the MCP calls themselves go over plain HTTP.
         httpClient = McpClient.builder(server, CONTEXT_ROOT).mode(StateMode.STATELESS).build()
-                        .withDiscoveryClient(keycloakContainer.getHttpClient());
+                              .withDiscoveryClient(keycloakContainer.getHttpClient());
 
         // HTTPS client — built now that key.p12 exists on disk.
         // This SSLContext trusts both Liberty's auto-generated cert and the Keycloak self-signed cert,
         // so it handles every URL in the discovery chain over TLS.
         httpsClient = McpClient.builder(server, CONTEXT_ROOT).mode(StateMode.STATELESS)
-                        .sslContext(HttpsRequestHelper.buildCombinedSslContext(keycloakContainer, server)).build();
+                               .sslContext(HttpsRequestHelper.buildCombinedSslContext(keycloakContainer, server)).build();
     }
 
     @AfterClass
@@ -233,32 +234,32 @@ public class AuthorizationFlowTests extends FATServletClient {
     public void testFullOAuthDiscoveryFlowAllowsAdminToolCall() throws Exception {
         assertFullFlowAllowsToolCall(httpClient, "adminTool", TEST_ADMIN_USERNAME,
                                      """
-                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}],"isError":false}}
-                                     """);
+                                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}],"isError":false}}
+                                                     """);
     }
 
     @Test
     public void testFullOAuthDiscoveryFlowAllowsAdminToolCall_Https() throws Exception {
         assertFullFlowAllowsToolCall(httpsClient, "adminTool", TEST_ADMIN_USERNAME,
                                      """
-                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}],"isError":false}}
-                                     """);
+                                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you handsome admin!"}],"isError":false}}
+                                                     """);
     }
 
     @Test
     public void testFullOAuthDiscoveryFlowAllowsUserToolCall() throws Exception {
         assertFullFlowAllowsToolCall(httpClient, "userTool", TEST_USER_USERNAME,
                                      """
-                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}],"isError":false}}
-                                     """);
+                                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}],"isError":false}}
+                                                     """);
     }
 
     @Test
     public void testFullOAuthDiscoveryFlowAllowsUserToolCall_Https() throws Exception {
         assertFullFlowAllowsToolCall(httpsClient, "userTool", TEST_USER_USERNAME,
                                      """
-                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}],"isError":false}}
-                                     """);
+                                                     {"id":1,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello you basic user"}],"isError":false}}
+                                                     """);
     }
 
     /**
@@ -266,13 +267,14 @@ public class AuthorizationFlowTests extends FATServletClient {
      * unauthenticated call → discover endpoints → obtain token → call tool → verify response.
      */
     private void assertFullFlowAllowsToolCall(McpClient unauthClient, String toolName,
-                                              String username, String expectedResponse) throws Exception {
+                                              String username, String expectedResponse)
+                    throws Exception {
         String tokenEndpoint = discoverTokenEndpoint(unauthClient, toolName);
         String accessToken = keycloakContainer.obtainAccessToken(tokenEndpoint, username, TEST_PASSWORD);
         assertNotNull("Access token must not be null", accessToken);
 
         McpClient authenticatedClient = McpClient.builder(server, CONTEXT_ROOT).mode(StateMode.STATELESS)
-                        .bearerToken(accessToken).sslContext(unauthClient.getSslContext()).build();
+                                                 .bearerToken(accessToken).sslContext(unauthClient.getSslContext()).build();
         String response = authenticatedClient.callMCP(toolCallRequest(toolName));
 
         JSONAssert.assertEquals(expectedResponse, response, true);
@@ -299,8 +301,8 @@ public class AuthorizationFlowTests extends FATServletClient {
         assertNotNull("Access token must not be null", accessToken);
 
         McpClient authenticatedClient = McpClient.builder(server, CONTEXT_ROOT).mode(StateMode.STATELESS)
-                        .bearerToken(accessToken).sslContext(unauthClient.getSslContext()).build();
-        authenticatedClient.callMCPRaw(toolCallRequest("adminTool")).expectedStatus(403).run();
+                                                 .bearerToken(accessToken).sslContext(unauthClient.getSslContext()).build();
+        authenticatedClient.callMCPRaw(authenticatedClient.toolCallRequest("adminTool", Map.of()).toString()).expectedStatus(403).run();
     }
 
     // Private helpers
@@ -349,8 +351,8 @@ public class AuthorizationFlowTests extends FATServletClient {
             return null;
         }
         java.util.regex.Matcher matcher = java.util.regex.Pattern
-                        .compile("resource_metadata=\"([^\"]+)\"")
-                        .matcher(wwwAuthenticate);
+                                                                 .compile("resource_metadata=\"([^\"]+)\"")
+                                                                 .matcher(wwwAuthenticate);
         return matcher.find() ? matcher.group(1) : null;
     }
 
@@ -359,10 +361,10 @@ public class AuthorizationFlowTests extends FATServletClient {
      */
     private static JSONObject fetchJson(McpClient client, String url) throws Exception {
         java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
-                        .uri(URI.create(url))
-                        .header("Accept", "application/json")
-                        .GET()
-                        .build();
+                                                                     .uri(URI.create(url))
+                                                                     .header("Accept", "application/json")
+                                                                     .GET()
+                                                                     .build();
 
         java.net.http.HttpResponse<String> response = client.getDiscoveryHttpClient().send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {

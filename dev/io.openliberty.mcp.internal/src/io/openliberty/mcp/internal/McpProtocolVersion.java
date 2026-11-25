@@ -108,6 +108,28 @@ public enum McpProtocolVersion {
     }
 
     /**
+     * Checks whether this protocol version is the same as or newer than the given version.
+     *
+     * @param other the version to compare against
+     * @return true if this version is {@code other} or a newer version
+     */
+    public boolean isAtLeast(McpProtocolVersion other) {
+        // Versions are declared newest first, so a newer version has a lower ordinal
+        return ordinal() <= other.ordinal();
+    }
+
+    /**
+     * Checks whether this protocol version is the same as or older than the given version.
+     *
+     * @param other the version to compare against
+     * @return true if this version is {@code other} or an older version
+     */
+    public boolean isAtMost(McpProtocolVersion other) {
+        // Versions are declared newest first, so an older version has a higher ordinal
+        return ordinal() >= other.ordinal();
+    }
+
+    /**
      * Return true if this protocol version supports structured content in tool responses and outputSchema
      * in tool descriptions. Structured content and outputSchema are only supported in protocol version
      * 2025-06-18 and later
@@ -116,6 +138,35 @@ public enum McpProtocolVersion {
      */
     public boolean supportsStructuredContent() {
         return this != V_2025_03_26;
+    }
+
+    /**
+     * Returns true if requests using this protocol version carry connection information, such as the protocol
+     * version, in the {@code _meta} field of the request params.
+     * <p>
+     * When true, the MCP-Protocol-Version header must be checked against the value in the request body.
+     * <p>
+     * This is deliberately an exhaustive switch with no default, so that adding a new protocol version
+     * forces a decision on what it returns here.
+     *
+     * @return true if connection information is carried in the request {@code _meta}
+     */
+    public boolean connectionInfoInMeta() {
+        return switch (this) {
+            case V_2026_07_28 -> true;
+            case V_2025_11_25, V_2025_06_18, V_2025_03_26 -> false;
+        };
+    }
+
+    /**
+     * Return true if this protocol version sends client information (clientInfo and capabilities) in
+     * request _meta rather than establishing it exclusively during session initialization.
+     * Supported in protocol version 2026-07-28 and later.
+     *
+     * @return true if request-level client info is supported
+     */
+    public boolean supportsRequestLevelClientInfo() {
+        return isAtLeast(V_2026_07_28);
     }
 
     public static class McpProtocolVersionAdapter implements JsonbAdapter<McpProtocolVersion, String> {

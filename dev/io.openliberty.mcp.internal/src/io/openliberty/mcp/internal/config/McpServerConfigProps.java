@@ -36,7 +36,8 @@ public record McpServerConfigProps(boolean stateless,
                                    ServerInfo serverInfo,
                                    long asyncTimeoutMs,
                                    McpProtocolVersion minimumProtocolVersion,
-                                   McpProtocolVersion maximumProtocolVersion) implements McpConfig {
+                                   McpProtocolVersion maximumProtocolVersion,
+                                   McpConfig.EnableEndpoint enableEndpoint) implements McpConfig {
     /** Config value which selects the latest protocol version available on this runtime */
     public static final String LATEST = "latest";
 
@@ -51,7 +52,7 @@ public record McpServerConfigProps(boolean stateless,
     public static final ServerInfo DEFAULT_SERVER_INFO = new ServerInfo(DEFAULT_SERVER_NAME, null, DEFAULT_SERVER_VERSION, null);
 
     public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, Duration.ofMinutes(10), null, DEFAULT_ASYNC_TIMEOUT_MS,
-                                                                                       null, null);
+                                                                                       null, null, McpConfig.EnableEndpoint.AUTO);
 
     /**
      * Compact constructor that validates and applies defaults for required fields.

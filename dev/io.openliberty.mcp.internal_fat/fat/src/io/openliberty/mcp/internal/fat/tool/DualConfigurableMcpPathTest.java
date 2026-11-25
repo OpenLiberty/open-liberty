@@ -10,6 +10,10 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.utils.ToolResponseMatcher.toolResponse;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.Map;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -19,7 +23,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -29,6 +32,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.ToolResponse;
 
 @RunWith(FATRunner.class)
 public class DualConfigurableMcpPathTest extends FATServletClient {
@@ -66,30 +70,10 @@ public class DualConfigurableMcpPathTest extends FATServletClient {
 
     @Test
     public void testMultipleWarModulesInEarCanHaveDifferentMcpPaths() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "echo",
-                            "arguments": {
-                              "input": "Hello"
-                            }
-                          }
-                        }
-                        """;
+        ToolResponse war1Response = war1Client.callTool("echo", Map.of("input", "Hello"));
+        assertThat(war1Response, toolResponse().withTextContent("Hello").withNoStructuredContent());
 
-        String war1Response = war1Client.callMCP(request);
-
-        String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, war1Response, true);
-
-        String war2Response = war2Client.callMCP(request);
-
-        JSONAssert.assertEquals(expectedResponseString, war2Response, true);
+        ToolResponse war2Response = war2Client.callTool("echo", Map.of("input", "Hello"));
+        assertThat(war2Response, toolResponse().withTextContent("Hello").withNoStructuredContent());
     }
 }

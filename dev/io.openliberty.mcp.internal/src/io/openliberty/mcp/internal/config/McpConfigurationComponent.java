@@ -44,6 +44,7 @@ public class McpConfigurationComponent {
     private volatile McpServerConfigProps config;
     private volatile String servicePid;
 
+    private static final String CFG_ENABLE_ENDPOINT = "enableEndpoint";
     private static final String CFG_MINIMUM_PROTOCOL_VERSION = "minimumProtocolVersion";
     private static final String CFG_MAXIMUM_PROTOCOL_VERSION = "maximumProtocolVersion";
 
@@ -70,6 +71,7 @@ public class McpConfigurationComponent {
         boolean stateless = (boolean) properties.get("stateless");
         long asyncTimeout = (long) properties.get("asyncTimeout");
         Duration sessionTimeout = Duration.ofSeconds((Long) properties.get("sessionTimeout"));
+        McpConfig.EnableEndpoint enableEndpoint = parseEnableEndpoint(properties);
 
         // Parse flattened serverInfo properties (ibm:flat="true" in metatype.xml)
         ServerInfo serverInfo = parseServerInfo(properties);
@@ -93,7 +95,32 @@ public class McpConfigurationComponent {
         }
 
         this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid, sessionTimeout, serverInfo, asyncTimeout,
-                                               minimumProtocolVersion, maximumProtocolVersion);
+                                               minimumProtocolVersion, maximumProtocolVersion, enableEndpoint);
+    }
+
+    /**
+     * Parse the enableEndpoint attribute, which is one of "true", "auto" or "false".
+     * An attribute which is missing, empty or only whitespace is treated as not set.
+     * Logs a warning and returns {@code auto} if the value is not valid.
+     *
+     * @param properties the configuration properties
+     * @return the configured value, or {@code auto} if the attribute is not set or not valid
+     */
+    @FFDCIgnore(NoSuchElementException.class)
+    private McpConfig.EnableEndpoint parseEnableEndpoint(Map<String, Object> properties) {
+        String value = (String) properties.get(CFG_ENABLE_ENDPOINT);
+        if (value == null || value.isBlank()) {
+            return McpConfig.EnableEndpoint.AUTO;
+        }
+        try {
+            return McpConfig.EnableEndpoint.fromString(value);
+        } catch (NoSuchElementException e) {
+            String validValues = Arrays.stream(McpConfig.EnableEndpoint.values())
+                                       .map(v -> v.name().toLowerCase())
+                                       .collect(Collectors.joining(", "));
+            Tr.warning(tc, "CWMCM0047W.enable.endpoint.invalid", value, validValues);
+            return McpConfig.EnableEndpoint.AUTO;
+        }
     }
 
     /**
