@@ -68,6 +68,27 @@ public class ProtocolVersionBetaTest {
                     }
                     """;
 
+    /**
+     * From protocol version 2026-07-28 the {@code MCP-Protocol-Version} header must match the
+     * {@code io.modelcontextprotocol/protocolVersion} entry of the request {@code _meta} object.
+     */
+    private static final String BETA_ECHO_REQUEST = """
+                    {
+                      "jsonrpc": "2.0",
+                      "id": 1,
+                      "method": "tools/call",
+                      "params": {
+                        "_meta": {
+                          "io.modelcontextprotocol/protocolVersion": "2026-07-28"
+                        },
+                        "name": "echo",
+                        "arguments": {
+                          "input": "Hello"
+                        }
+                      }
+                    }
+                    """;
+
     private static final String ECHO_RESPONSE = """
                     {
                       "id": 1,
@@ -100,7 +121,7 @@ public class ProtocolVersionBetaTest {
 
     @Test
     public void testAcceptsBetaProtocolVersionHeaderOnBeta() throws Exception {
-        String response = client.callMCPRaw(ECHO_REQUEST)
+        String response = client.callMCPRaw(BETA_ECHO_REQUEST)
                                 .protocolVersion("2026-07-28")
                                 .run()
                                 .body();
