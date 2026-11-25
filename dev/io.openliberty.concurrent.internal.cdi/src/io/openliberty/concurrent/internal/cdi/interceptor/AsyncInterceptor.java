@@ -59,11 +59,12 @@ public class AsyncInterceptor implements Serializable {
 
         // Reject invalid combination of @Asynchronous and @Schedule
         if (method.isAnnotationPresent(Schedule.class))
-            throw new UnsupportedOperationException //
-            ("The " + method.getName() + " method of the " +
-             method.getDeclaringClass().getName() +
-             " bean cannot be annotated both " + "@Asynchronous" + " and " +
-             "@Schedule"); // TODO NLS
+            throw new UnsupportedOperationException(Tr //
+                            .formatMessage(tc, "CWWKC1417.method.anno.conflict",
+                                           method.getName(),
+                                           method.getDeclaringClass().getName(),
+                                           "Schedule",
+                                           "Asynchronous"));
 
         // Is it a scheduled asynchronous method? @Asynchronous(runAt = @Schedule)
         Schedule[] schedules = anno == null ? new Schedule[0] : anno.runAt();
@@ -80,9 +81,10 @@ public class AsyncInterceptor implements Serializable {
         validateTransactional(invocation);
 
         if (method.getDeclaringClass().getAnnotation(Asynchronous.class) != null)
-            throw new UnsupportedOperationException(ConcurrencyNLS.getMessage("CWWKC1401.class.anno.disallowed",
-                                                                              "@Asynchronous",
-                                                                              method.getDeclaringClass().getName()));
+            throw new UnsupportedOperationException(ConcurrencyNLS //
+                            .getMessage("CWWKC1401.class.anno.disallowed",
+                                        "@Asynchronous",
+                                        method.getDeclaringClass().getName()));
 
         // @Asynchronous must be on a method that returns completion stage or void
         Class<?> returnType = method.getReturnType();

@@ -63,3 +63,36 @@ CWWKC1413.sched.method.args.explanation=Methods that are annotated Schedule \
  must have no parameters.
 CWWKC1413.sched.method.args.useraction=Remove the parameters from the method, \
  or remove the Schedule annotation from the method.
+
+CWWKC1414.sched.method.fail=CWWKC1414E: The {0} scheduled method of the \
+ {1} CDI managed bean failed due to an error and will not run again. The \
+ error is {2}
+CWWKC1414.sched.method.fail.explanation=A scheduled method does not attempt \
+ to run again after raising an exception or error.
+CWWKC1414.sched.method.fail.useraction=Correct the cause of the error, and \
+ then restart the application so that the method is scheduled again.
+
+CWWKC1415.sched.method.scope.err=CWWKC1415E: Methods of the {0} CDI managed \
+ bean that are annotated Schedule are not automatically scheduled because \
+ the CDI managed bean has the {1} scope. The CDI managed bean must have one \
+ of the following scope annotations: {2}.
+CWWKC1415.sched.method.scope.err.explanation=CDI managed beans with scopes \
+ other than those listed are not capable of having scheduled methods.
+CWWKC1415.sched.method.scope.err.useraction=Apply one of the listed scope \
+ annotations to the CDI managed bean.
+
+CWWKC1416.sched.method.return.type=CWWKC1416E: The {0} method of the \
+ {1} CDI managed bean is annotated Schedule, but the method has the {2} \
+ return type. CDI managed bean methods annotated Schedule must have one \
+ of the following return types: {3}.
+CWWKC1416.sched.method.return.type.explanation=A scheduled method must have \
+ one of the listed return types.
+CWWKC1416.sched.method.return.type.useraction=Change the return type of the \
+ scheduled method to be one of the listed types.
+
+CWWKC1417.method.anno.conflict=CWWKC1417E: The {0} method of the {1} \
+ CDI managed bean cannot be annotated with both {2} and {3}.
+CWWKC1417.method.anno.conflict.explanation=The listed annotations are not \
+ compatible on the same method.
+CWWKC1417.method.anno.conflict.useraction=Remove one of the conflicting \
+ annotations from the method or its class.

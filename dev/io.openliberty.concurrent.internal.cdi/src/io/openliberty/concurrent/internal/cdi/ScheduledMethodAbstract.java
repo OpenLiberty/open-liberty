@@ -172,16 +172,12 @@ public abstract class ScheduledMethodAbstract implements //
             } catch (RuntimeException x) {
                 failure = x;
             } finally {
-                if (failure != null) {
-                    future.completeExceptionally(failure);
-                    // TODO NLS
-                    System.out.println("The " + method.getName() +
-                                       " scheduled method of the " +
-                                       method.getDeclaringClass().getName() +
-                                       " CDI managed bean failed due to an error" +
-                                       " and will not run again. The error is: " +
-                                       failure);
-                }
+                if (failure != null)
+                    if (future.completeExceptionally(failure))
+                        Tr.error(tc, "CWWKC1414.sched.method.fail",
+                                 method.getName(),
+                                 method.getDeclaringClass().getName(),
+                                 failure);
             }
         }
 
