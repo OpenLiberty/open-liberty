@@ -94,7 +94,7 @@ public class LoggingServletTest {
      * Ensures that an info message from a Liberty application are bridged over to the otlp container.
      */
     @Test
-    public void testMessageLogs() throws Exception {
+    public void testMessageLogs() throws Exception { 
         assertTrue("The server was not started successfully.", server.isStarted());
 
         TestUtils.isContainerStarted("Everything is ready.", container);
@@ -104,7 +104,7 @@ public class LoggingServletTest {
 
         TestUtils.runApp(server, "logs");
 
-        //Allow time for the collector to receive and bridge logs.
+        //Allow time for the collector to receive and bridge logs. 
         TimeUnit.SECONDS.sleep(WAIT_TIMEOUT);
 
         // Get logs for remaining assertions
