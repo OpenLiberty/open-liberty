@@ -170,6 +170,7 @@ public class TestEnableDisableFeaturesTest {
            	new String[] { "vendor:" });
     }
     
+
     @Test 
     public void testEDF2() throws Exception {
     	currentServ = serverEDF2;
