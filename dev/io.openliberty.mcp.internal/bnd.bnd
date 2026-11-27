@@ -71,10 +71,14 @@ Bundle-Localization: \
 	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.app.manager;version=latest
 
 -testpath: \
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest,\
 	org.hamcrest:hamcrest-all;version=1.3,\
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
 	io.openliberty.jakarta.jsonb.3.0;version=latest,\

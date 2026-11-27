@@ -9,7 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpTelemetryServerSuite.serverLifecycle;
+
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -20,11 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.observability.telemetry.PullExporterAutoConfigurationCustomizerProvider;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -33,14 +31,12 @@ import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvide
 @RunWith(FATRunner.class)
 public class TelemetrySessionsTest extends FATServletClient {
 
+    // Server is managed by McpTelemetryServerSuite — do NOT add @Server or copy the field here.
     private final static String APP_NAME = "telemetryTest";
 
-    @Server("mcp-server-telemetry")
-    public static LibertyServer server;
-
     @Rule
-    public McpClient client = McpClient.builder(server, "/" + APP_NAME).build();
-
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
+    
     private static final String BASIC_TOOL_REQUEST = """
                       {
                       "jsonrpc": "2.0",
@@ -67,24 +63,25 @@ public class TelemetrySessionsTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+        serverLifecycle.getServer().setMarkToEndOfLog();
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(PullExporterAutoConfigurationCustomizerProvider.class.getPackage())
                                    .addAsResource(new StringAsset("otel.sdk.disabled=false"),
                                                   "META-INF/microprofile-config.properties")
                                    .addAsServiceProvider(AutoConfigurationCustomizerProvider.class,
                                                          PullExporterAutoConfigurationCustomizerProvider.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-        server.startServer();
+        serverLifecycle.deployDropinApp(war);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWWKS9113E");
+        serverLifecycle.getServer().addIgnoredErrors(List.of("CWWKS9113E"));
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @Test
     public void testSessionDurationMetrics() throws Exception {
-        FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "captureSessionDurationMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpSessionMetricServlet", "captureSessionDurationMetrics");
         // Perform some operations within the session
         client.callMCP(BASIC_TOOL_REQUEST);
         client.callMCP(ADVANCED_TOOL_REQUEST);
@@ -92,7 +89,7 @@ public class TelemetrySessionsTest extends FATServletClient {
         // Delete the session to trigger sessionEnded metric recording
         client.deleteSession();
 
-        FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "testSessionDurationMetrics");
+        FATServletClient.runTest(serverLifecycle.getServer(), APP_NAME + "/McpSessionMetricServlet", "testSessionDurationMetrics");
     }
 
 }

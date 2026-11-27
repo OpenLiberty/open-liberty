@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.isolation;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -25,11 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.isolation.alpha.AlphaTools;
 import io.openliberty.mcp.internal.fat.isolation.beta.BetaTools;
@@ -43,35 +39,36 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
  */
 @RunWith(FATRunner.class)
 public class MultiAppIsolationTest extends FATServletClient {
-    @Server("mcp-server")
-    public static LibertyServer server;
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String ALPHA_APP = "alphaApp";
+    private static final String BETA_APP = "betaApp";
 
     @Rule
-    public McpClient alphaClient = McpClient.builder(server, "/alphaApp").build();
+    public McpClient alphaClient = McpClient.builder(serverLifecycle.getServer(), "/" + ALPHA_APP).build();
 
     @Rule
-    public McpClient betaClient = McpClient.builder(server, "/betaApp").build();
+    public McpClient betaClient = McpClient.builder(serverLifecycle.getServer(), "/" + BETA_APP).build();
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive alphaWar = ShrinkWrap.create(WebArchive.class, "alphaApp.war")
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        WebArchive alphaWar = ShrinkWrap.create(WebArchive.class, ALPHA_APP + ".war")
                                         .addPackage(AlphaTools.class.getPackage());
 
-        WebArchive betaWar = ShrinkWrap.create(WebArchive.class, "betaApp.war")
+        WebArchive betaWar = ShrinkWrap.create(WebArchive.class, BETA_APP + ".war")
                                        .addPackage(BetaTools.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, alphaWar, SERVER_ONLY);
-        ShrinkHelper.exportDropinAppToServer(server, betaWar, SERVER_ONLY);
+        serverLifecycle.deployDropinApp(alphaWar);
+        serverLifecycle.deployDropinApp(betaWar);
 
-        server.startServer();
-
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/alphaApp/mcp$"));
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/betaApp/mcp$"));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("MCP server endpoint: .*/alphaApp/mcp$"));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("MCP server endpoint: .*/betaApp/mcp$"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        serverLifecycle.undeployDropinApp(ALPHA_APP);
+        serverLifecycle.undeployDropinApp(BETA_APP);
     }
 
     /**

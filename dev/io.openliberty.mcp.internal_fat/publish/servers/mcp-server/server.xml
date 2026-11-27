@@ -1,4 +1,4 @@
-<server description="Sample Liberty server">
+<server description="MCP Base Liberty server">
 
   <featureManager>
     <feature>servlet-6.0</feature>

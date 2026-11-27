@@ -31,12 +31,14 @@ import org.json.JSONObject;
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.RemoteDockerImage;
 import org.testcontainers.images.builder.Transferable;
 
 import com.ibm.websphere.simplicity.config.OpenidConnectClient;
 import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.security.utils.SSLUtils;
 import componenttest.topology.impl.LibertyServer;
@@ -53,7 +55,20 @@ import componenttest.topology.impl.LibertyServer;
 public class KeycloakContainer extends org.testcontainers.containers.GenericContainer<KeycloakContainer> {
 
     static final String TAG = "26.6.2";
-    private static final String IMAGE = "quay.io/keycloak/keycloak:" + TAG;
+
+    /**
+     * Custom image whose Dockerfile lives in
+     * {@code io.openliberty.org.testcontainers/resources/openliberty/testcontainers/keycloak-optimized/26.6.2/Dockerfile}.
+     *
+     * <p>The Dockerfile runs {@code kc.sh build} at image build time, so the
+     * container can be started with {@code start --optimized} and skips the
+     * expensive Quarkus augmentation on every start.
+     *
+     * <p>{@link ImageBuilder} resolves the image in this order: cached on the
+     * docker host, pulled from the internal registry, built from the Dockerfile.
+     * Update the version directory (and {@link #TAG}) whenever the Dockerfile changes.
+     */
+    private static final RemoteDockerImage KEYCLOAK_OPTIMIZED = ImageBuilder.build("keycloak-optimized:" + TAG).getFuture();
 
     static final String REALM = "mcp-realm";
     static final String LIBERTY_CLIENT_ID = "liberty-mcp-server-conf-client";
@@ -90,21 +105,31 @@ public class KeycloakContainer extends org.testcontainers.containers.GenericCont
     // Constructor
 
     public KeycloakContainer() {
-        super(IMAGE);
+        super(KEYCLOAK_OPTIMIZED);
         withExposedPorts(8080, 8443);
         withStartupAttempts(3);
         withCopyToContainer(buildKeycloakKeystore(), "/keystore.p12");
         withEnv("KC_BOOTSTRAP_ADMIN_USERNAME", "admin");
         withEnv("KC_BOOTSTRAP_ADMIN_PASSWORD", "admin");
         withEnv("KC_SPI_ADMIN_REALM", "primary");
-        withCommand("start-dev",
+
+        // --http-enabled=true (KC_HTTP_ENABLED): `kc.sh start` (production mode) disables
+        // plain HTTP by default and only listens on HTTPS. setupRealm() runs kcadm.sh
+        // inside the container against http://localhost:8080.
+
+        withCommand("start",
+                    "--optimized",
+                    "--http-enabled=true",
                     "--https-key-store-file=/keystore.p12",
                     "--https-key-store-password=password",
                     "--hostname-strict=false");
         withLogConsumer(new SimpleLogConsumer(KeycloakContainer.class, "keycloak-container"));
-        // Allow up to 5 minutes for busy or remote CI build machines.
-        waitingFor(Wait.forLogMessage(".*Listening on:.*", 1)
-                       .withStartupTimeout(Duration.ofMinutes(5)));
+        // Augmentation is already done in the image, so the HTTP listener comes up
+        // quickly ("Listening on:"). Keycloak then initializes the database schema and
+        // the bootstrap admin.
+        //Wait for that message so that setupRealm() does not race the bootstrap.
+        waitingFor(Wait.forLogMessage(".*Bootstrap completed.*", 1)
+                       .withStartupTimeout(Duration.ofSeconds(120)));
     }
 
     // Public API

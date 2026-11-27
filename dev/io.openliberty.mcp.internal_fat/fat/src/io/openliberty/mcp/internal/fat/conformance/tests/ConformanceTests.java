@@ -76,7 +76,7 @@ public class ConformanceTests extends FATServletClient {
 
     // Container config
     private static String MCP_SERVER_URL_FROM_CONTAINER;
-    private static final String DOCKER_REGISTRY = "public.ecr.aws/docker/library/node:22-alpine";
+    private static final String DOCKER_REGISTRY = "public.ecr.aws/docker/library/node:26-slim";
 
     @Server("mcp-conformance-server")
     public static LibertyServer server;

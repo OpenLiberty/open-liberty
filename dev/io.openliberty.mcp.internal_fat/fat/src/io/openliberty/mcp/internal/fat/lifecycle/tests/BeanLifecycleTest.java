@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.lifecycle.tests;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.suite.McpMainServerSuite.serverLifecycle;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertFalse;
@@ -29,12 +29,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.lifecycle.tools.ClassTool;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
@@ -45,11 +42,12 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 @RunWith(FATRunner.class)
 public class BeanLifecycleTest {
 
-    @Server("mcp-server")
-    public static LibertyServer server;
+    // Server is managed by McpMainServerSuite — do NOT add @Server or copy the field here.
+    private static final String APP_NAME = "beanLifecycleTest";
 
     @Rule
-    public McpClient client = McpClient.builder(server, "/beanLifecycleTest").build();
+    public McpClient client = McpClient.builder(serverLifecycle.getServer(), "/" + APP_NAME).build();
+
 
     public static void info(Class<?> clazz, String method, String message) {
         Log.info(clazz, method, message);
@@ -57,23 +55,21 @@ public class BeanLifecycleTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "beanLifecycleTest.war")
+        serverLifecycle.getServer().setMarkToEndOfLog();
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(ClassTool.class.getPackage());
-
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.startServer();
+        serverLifecycle.deployDropinApp(war);
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        serverLifecycle.undeployDropinApp(APP_NAME);
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testDependentBeanLifecycle() throws Exception {
-        server.setMarkToEndOfLog();
+        serverLifecycle.getServer().setMarkToEndOfLog();
         String request = """
                         {
                           "jsonrpc": "2.0",
@@ -107,9 +103,9 @@ public class BeanLifecycleTest {
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
 
-        assertNotNull(server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy ClassTool"));
+        assertNotNull(serverLifecycle.getServer().waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy ClassTool"));
         // Fetch all lifecycle-related log messages
-        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        List<String> lifecycleMessages = serverLifecycle.getServer().findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", serverLifecycle.getServer().getDefaultLogFile());
         assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());
 
         // Print lifecycle messages before asserting
@@ -131,7 +127,7 @@ public class BeanLifecycleTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testDependentBeanIsNotReusedAcrossSuccessiveCalls() throws Exception {
-        server.setMarkToEndOfLog();
+        serverLifecycle.getServer().setMarkToEndOfLog();
 
         String request = """
                         {
@@ -169,7 +165,7 @@ public class BeanLifecycleTest {
         long startTime = System.nanoTime();
         boolean found = false;
         while (System.nanoTime() - startTime < Duration.ofSeconds(30).toNanos()) {
-            List<String> predestroyMessages = server.findStringsInLogsUsingMark("\\[LIFECYCLE] @PreDestroy ClassTool", server.getDefaultLogFile());
+            List<String> predestroyMessages = serverLifecycle.getServer().findStringsInLogsUsingMark("\\[LIFECYCLE] @PreDestroy ClassTool", serverLifecycle.getServer().getDefaultLogFile());
 
             if (predestroyMessages.size() >= 2) {
                 found = true;
@@ -182,7 +178,7 @@ public class BeanLifecycleTest {
             fail("Not found two PreDestroy messages");
         }
 
-        List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
+        List<String> lifecycleMessages = serverLifecycle.getServer().findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", serverLifecycle.getServer().getDefaultLogFile());
         assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());
 
         assertThat("Unexpected lifecycle sequence:\n" + String.join("\n", lifecycleMessages),

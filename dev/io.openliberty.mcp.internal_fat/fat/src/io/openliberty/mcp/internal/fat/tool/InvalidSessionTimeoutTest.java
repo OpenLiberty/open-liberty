@@ -30,8 +30,8 @@ import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 /**
- * Test that verifies invalid sessionTimeout configuration falls back to default 10-minute timeout
- * and logs appropriate warning message.
+ * Test that verifies invalid sessionTimeout configuration is rejected by the configuration
+ * framework (CWWKG0075E) and the server continues to work using the default timeout.
  */
 @RunWith(FATRunner.class)
 public class InvalidSessionTimeoutTest {
@@ -66,22 +66,22 @@ public class InvalidSessionTimeoutTest {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWMCM0036W");
+        // Allow the invalid configuration value error
+        server.stopServer("CWWKG0075E");
     }
 
     /**
      * Test that invalid sessionTimeout configuration:
-     * 1. Logs warning message CWMCM0036W with the invalid value
-     * 2. Falls back to default 10-minute timeout
-     * 3. Session remains active for more than 1 second (proving it's not using the invalid value)
+     * 1. Logs error message CWWKG0075E naming the invalid value
+     * 2. Does not prevent the application from serving requests
      */
     @Test
     public void testInvalidTimeoutFallsBackToDefault() throws Exception {
         // Make a request to create a session
         client.callMCP(BASIC_TOOL_REQUEST);
 
-        // Expected: "CWMCM0036W: The invalid-value sessionTimeout configuration value is not valid. The default timeout of 10 minutes is used."
-        String expectedErrorHeader = "CWMCM0036W: The (.+?) sessionTimeout configuration value is not valid";
+        // Expected: "CWWKG0075E: The value invalid-value is not valid for attribute Session timeout of configuration element ..."
+        String expectedErrorHeader = "CWWKG0075E: The value (.+?) is not valid for attribute Session timeout";
         List<String> expectedErrorList = List.of("invalid-value");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid sessionTimeout: ", 
                                                                        expectedErrorHeader, 
