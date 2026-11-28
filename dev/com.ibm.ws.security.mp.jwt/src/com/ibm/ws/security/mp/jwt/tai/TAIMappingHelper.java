@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ public class TAIMappingHelper {
         config = null;
         //addJwtPrincipalToSubject = true;
         if (jwtToken != null) {
-            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, "upn", "groups", false);
+            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, "upn", "groups", false, "realm");
             setUsername();
             setRealm();
         }
@@ -66,7 +66,7 @@ public class TAIMappingHelper {
         }
         config = clientConfig;
         if (jwtToken != null) {
-            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, config.getUserNameAttribute(), config.getGroupNameAttribute(), config.getMapToUserRegistry());
+            claimToPrincipalMapping = new JwtPrincipalMapping(jwtToken, config.getUserNameAttribute(), config.getGroupNameAttribute(), config.getMapToUserRegistry(), config.getRealmIdentifier());
             setUsername();
             setRealm();
         }
@@ -76,11 +76,23 @@ public class TAIMappingHelper {
     }
 
     /**
-     *
+     * Sets the realm for the subject being created. When {@code mapToUserRegistry} is false, the realm
+     * is resolved in priority order: the configured {@code realmName} attribute takes precedence; if it
+     * is not set (null), the realm claim from the JWT token (via {@code claimToPrincipalMapping}) is used.
      */
     private void setRealm() {
-        this.realm = claimToPrincipalMapping.getMappedRealm();
-
+        if (getmaptoURconfig()) {
+            return;
+        }
+        if (config != null) {
+            this.realm = config.getRealmName();
+        }
+        if (this.realm == null) {
+            this.realm = claimToPrincipalMapping.getMappedRealm();
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "realm name = ", this.realm);
+        }
     }
 
     public void createJwtPrincipalAndPopulateCustomProperties(@Sensitive JwtToken jwtToken, boolean addJwtPrincipal) throws MpJwtProcessingException {
@@ -205,6 +217,9 @@ public class TAIMappingHelper {
             customProperties.put(AttributeNameConstants.WSCREDENTIAL_USERID, username);
         } else {
             if (realm == null && issuer != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "There is no realm, using issuer as realm");
+                }
                 realm = getRealm(issuer);
             }
             String uniqueID = getUniqueId(realm);
