@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -97,5 +97,21 @@ public class LdapHelperTest {
         assertEquals("get Valid RDN with LDAPSyntaxException and multiple escaped commas should return the original DN", "uid=user\\,\\, \\#",
                      LdapHelper.getRDN("uid=user\\,\\, \\#"));
 
+    }
+
+    @Test
+    public void testEncodeForLDAP_PlusSign(){
+        String input ="user+test@example.com";
+        String expected ="user\\2btest@example.com";
+        String actual = LdapHelper.encode(input,true);
+        assertEquals("Plus sign should be hex-encoded as \\2b", expected, actual);
+    }
+
+    @Test
+    public void testEncodeForLDAP_PlusSignWithOtherSpecialChars() {
+        String input = "user+test(special)@example.com";
+        String expected = "user\\2btest\\28special\\29@example.com";
+        String actual = LdapHelper.encode(input, true);
+        assertEquals("Plus sign and other special chars should all be encoded", expected, actual);
     }
 }
