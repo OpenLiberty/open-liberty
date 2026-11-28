@@ -420,7 +420,7 @@ public class RSSamlBasicTests extends SAMLCommonTest {
      * @throws Exception
      */
     //	@Mode(TestMode.LITE)
-    @SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES})
+    @SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES})
     @Test
     public void RSSamlBasicTests_unprotectedApp() throws Exception {
 

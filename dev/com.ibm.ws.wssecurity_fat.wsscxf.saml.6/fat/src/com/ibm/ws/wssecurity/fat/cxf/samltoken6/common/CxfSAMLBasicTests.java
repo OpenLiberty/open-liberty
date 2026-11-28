@@ -34,6 +34,7 @@ import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh20;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 /**
@@ -193,7 +194,7 @@ public class CxfSAMLBasicTests extends SAMLCommonTest {
 
     @Mode(TestMode.FULL)
     //issue 23060
-    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     @Test
     public void CxfSAMLBasicTests_SAMLTokenMissingSignature_test() throws Exception {
 
