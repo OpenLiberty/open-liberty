@@ -157,43 +157,49 @@ public class SSOAuthenticator implements WebAuthenticator {
     private AuthenticationResult handleLtpaSSO(HttpServletRequest req, HttpServletResponse res, Cookie[] cookies) {
         AuthenticationResult authResult = null;
         String cookieName = ssoCookieHelper.getSSOCookiename();
-        String[] hdrVals = CookieHelper.getCookieValues(cookies, cookieName);
+        
+        // Use the common method to retrieve and reassemble LTPA token from cookies
+        // This handles both single cookies and fragmented LTPA3 tokens (Post-Quantum Cryptography)
+        // Note: Token format varies by version:
+        //   - LTPA2: Base64-encoded
+        //   - LTPA3: Hex-encoded binary (PQC)
+        String ltpaToken = ssoCookieHelper.getSsoTokenFromCookies(req, cookieName);
+        
+        // Fall back to default cookie name if custom cookie name yields no results
         boolean useOnlyCustomCookieName = webAppSecurityConfig != null && webAppSecurityConfig.isUseOnlyCustomCookieName();
-        if (hdrVals == null && !DEFAULT_SSO_COOKIE_NAME.equalsIgnoreCase(cookieName) && !useOnlyCustomCookieName) {
-            hdrVals = CookieHelper.getCookieValues(cookies, DEFAULT_SSO_COOKIE_NAME);
+        if (ltpaToken == null && !DEFAULT_SSO_COOKIE_NAME.equalsIgnoreCase(cookieName) && !useOnlyCustomCookieName) {
+            ltpaToken = ssoCookieHelper.getSsoTokenFromCookies(req, DEFAULT_SSO_COOKIE_NAME);
         }
-        if (hdrVals != null) {
-            for (int n = 0; n < hdrVals.length; n++) {
-                String hdrVal = hdrVals[n];
-                if (hdrVal != null && hdrVal.length() > 0) {
-                    String ltpa64 = hdrVal;
+        
+        if (ltpaToken != null && ltpaToken.length() > 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Retrieved LTPA token, size: " + ltpaToken.length());
+            }
+            
+            /*
+             * Track logged out LTPA tokens if webAppSecurityConfig is not null, AND either:
+             * 1. wsAppSecurity->trackLoggedOutSSOCookies == true
+             * 2. loggedOutTokenCache is present in the configuration.
+             */
+            boolean checkLoggedOutToken = webAppSecurityConfig != null && (webAppSecurityConfig.isTrackLoggedOutSSOCookiesEnabled()
+                                                                           || LoggedOutTokenCacheImpl.getInstance().shouldTrackTokens());
+            if (checkLoggedOutToken && isTokenLoggedOut(ltpaToken)) {
+                cleanupLoggedOutToken(req, res, true);
+                return authResult;
+            }
 
-                    /*
-                     * Track logged out LTPA tokens if webAppSecurityConfig is not null, AND either:
-                     * 1. wsAppSecurity->trackLoggedOutSSOCookies == true
-                     * 2. loggedOutTokenCache is present in the configuration.
-                     */
-                    boolean checkLoggedOutToken = webAppSecurityConfig != null && (webAppSecurityConfig.isTrackLoggedOutSSOCookiesEnabled()
-                                                                                   || LoggedOutTokenCacheImpl.getInstance().shouldTrackTokens());
-                    if (checkLoggedOutToken && isTokenLoggedOut(ltpa64)) {
-                        cleanupLoggedOutToken(req, res, true);
-                        return authResult;
-                    }
-
-                    AuthenticationData authenticationData = createAuthenticationData(req, res, ltpa64, LTPA_OID);
-                    try {
-                        Subject authenticatedSubject = authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, null);
-                        authResult = new AuthenticationResult(AuthResult.SUCCESS, authenticatedSubject, ssoCookieHelper.getSSOCookiename(), null, AuditEvent.OUTCOME_SUCCESS);
-                        return authResult;
-                    } catch (AuthenticationException e) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "handleSSO Exception: ", new Object[] { e });
-                        }
-                        //TODO - Remove authentication cache.
-                    }
+            AuthenticationData authenticationData = createAuthenticationData(req, res, ltpaToken, LTPA_OID);
+            try {
+                Subject authenticatedSubject = authenticationService.authenticate(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND, authenticationData, null);
+                authResult = new AuthenticationResult(AuthResult.SUCCESS, authenticatedSubject, ssoCookieHelper.getSSOCookiename(), null, AuditEvent.OUTCOME_SUCCESS);
+            } catch (AuthenticationException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "handleSSO Exception: ", new Object[] { e });
                 }
+                //TODO - Remove authentication cache.
             }
         }
+        
         return authResult;
     }
 
@@ -209,7 +215,7 @@ public class SSOAuthenticator implements WebAuthenticator {
             return null;
         }
 
-        String encodedjwtssotoken = ssoCookieHelper.getJwtSsoTokenFromCookies(req, jwtCookieName);
+        String encodedjwtssotoken = ssoCookieHelper.getSsoTokenFromCookies(req, jwtCookieName);
 
         if (encodedjwtssotoken == null) { //jwt sso cookie is missing, look at the auth header
             encodedjwtssotoken = getJwtBearerToken(req);

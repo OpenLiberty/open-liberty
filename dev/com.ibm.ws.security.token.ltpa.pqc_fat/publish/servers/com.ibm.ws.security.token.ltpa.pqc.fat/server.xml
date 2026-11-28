@@ -1,0 +1,44 @@
+<server description="PQC LTPA Test Server">
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>appSecurity-3.0</feature>
+        <feature>pqcltpafattestlibertyinternals-1.0</feature>
+    </featureManager>
+
+    <!-- Enable PQC LTPA Configuration -->
+    <ltpa 
+        keysFileName="${server.config.dir}/resources/security/ltpa.keys"
+        keysPassword="WebAS"
+        expiration="120"
+        pqcEnabled="true"
+        pqcAlgorithm="ML-DSA-65"
+        pqcHybridMode="false" />
+
+    <!-- Basic User Registry for Testing -->
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="testuser" password="testpwd" />
+        <user name="pqcuser" password="pqcpwd" />
+        <user name="hybriduser" password="hybridpwd" />
+    </basicRegistry>
+
+    <!-- Test Application -->
+    <webApplication id="pqcLtpaTest" 
+                    location="pqcLtpaTest.war" 
+                    name="pqcLtpaTest">
+        <classloader apiTypeVisibility="+third-party" />
+        <application-bnd>
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </webApplication>
+
+    <!-- HTTP Endpoint -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}" />
+
+</server>

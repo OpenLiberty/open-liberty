@@ -27,7 +27,9 @@ Import-Package: \
     com.ibm.ws.security.registry, \
 	*
 
-Export-Package: com.ibm.ws.security.token.ltpa
+Export-Package: \
+  com.ibm.ws.security.token.ltpa, \
+  com.ibm.ws.security.token.ltpa.pqc
 
 Private-Package: \
   com.ibm.ws.security.token.ltpa.internal.*

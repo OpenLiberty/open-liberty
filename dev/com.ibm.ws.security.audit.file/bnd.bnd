@@ -52,6 +52,7 @@ Include-Resource: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.request.probes;version=latest,\
 	com.ibm.ws.security.audit.source;version=latest,\
+	com.ibm.ws.security.token.ltpa;version=latest,\
 	com.ibm.ws.ssl;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\

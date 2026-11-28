@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="LTPA PQC Test Server">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>pages-3.1</feature>
+        <feature>appSecurity-5.0</feature>
+    </featureManager>
+
+    <!-- Basic Registry for testing -->
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="testuser" password="testpwd"/>
+        <user name="user1" password="user1pwd"/>
+        <user name="user2" password="user2pwd"/>
+        <group name="group1">
+            <member name="user1"/>
+        </group>
+        <group name="group2">
+            <member name="user2"/>
+        </group>
+    </basicRegistry>
+
+    <!-- Form Login Application -->
+    <application type="war" id="formlogin" name="formlogin" location="${server.config.dir}/apps/formlogin.war">
+        <application-bnd>
+            <security-role name="Employee">
+                <user name="user1" />
+                <group name="group1" />
+            </security-role>
+            <security-role name="Manager">
+                <user name="user2" />
+                <group name="group2" />
+            </security-role>
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <!-- LTPA Configuration with Hybrid Post-Quantum Cryptography (PQC) -->
+    <!-- Combines RSA-2048 + ML-DSA-65 + ML-KEM-768 for defense-in-depth -->
+    <ltpa
+        keysFileName="${server.output.dir}/resources/security/ltpa.keys"
+        keysPassword="{xor}Lz4sLCgwLTs="
+        expiration="30m"
+        tokenVersion="3"
+        hybridPqcEnabled="true"
+        hybridKeystoreFile="${server.output.dir}/resources/security/ltpa-hybrid.p12"
+        hybridKeystorePassword="{xor}Lz4sLCgwLTs="
+        mldsaAlgorithm="ML-DSA-65"
+        mlkemAlgorithm="ML-KEM-768"/>
+
+    <!-- Application Security -->
+    <webAppSecurity 
+        httpOnlyCookies="true"
+        ssoRequiresSSL="false"
+        ssoCookieName="LtpaToken2"/>
+
+    <!-- Logging -->
+    <logging
+        traceSpecification="*=info:com.ibm.ws.security.token.ltpa*=all:com.ibm.ws.security.token.ltpa.pqc*=all"
+        maxFileSize="20"
+        maxFiles="10"/>
+
+    <!-- Include FAT test infrastructure (provides test port configuration) -->
+    <include location="../fatTestPorts.xml" />
+
+    <!-- Java permissions for security testing -->
+    <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getCallerSubject"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
+
+</server>
+
+<!-- Made with Bob -->

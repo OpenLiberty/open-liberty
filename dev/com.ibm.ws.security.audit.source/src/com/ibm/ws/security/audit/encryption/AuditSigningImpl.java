@@ -31,6 +31,7 @@ import javax.management.ObjectName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.crypto.CryptoUtils;
+import com.ibm.ws.security.audit.pqc.AuditPQCRuntimeSupport;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.audit.AuditDecryptionException;
@@ -97,7 +98,20 @@ public class AuditSigningImpl implements AuditSigning {
         crypto = new AuditCrypto();
 
         try {
-            signature = Signature.getInstance(CryptoUtils.SIGNATURE_ALGORITHM_SHA512WITHRSA);
+            // ML-KEM is a key encapsulation mechanism, not a signature algorithm.
+            // Audit signing continues to use the existing digest+shared-key flow, so
+            // do not initialize a java.security.Signature instance with an ML-KEM name.
+            if (AuditPQCRuntimeSupport.isPQCSupported()) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "PQC mode detected, skipping Signature initialization because ML-KEM-768 is not a signature algorithm");
+                }
+                signature = null;
+            } else {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Traditional mode, initializing audit signer with RSA signature algorithm");
+                }
+                signature = Signature.getInstance(CryptoUtils.SIGNATURE_ALGORITHM_SHA512WITHRSA);
+            }
         } catch (Exception e) {
             Tr.error(tc, "security.audit.signing.init.error", new Object[] { e });
             throw new AuditSigningException(e.getMessage());
@@ -120,17 +134,21 @@ public class AuditSigningImpl implements AuditSigning {
         javax.crypto.spec.SecretKeySpec sharedKey = null;
         try {
             if (crypto != null) {
-                sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generateSharedKey(), 0, CryptoUtils.AES_256_KEY_LENGTH_BYTES, CryptoUtils.ENCRYPT_ALGORITHM_AES);
+                byte[] keyBytes = crypto.generateSharedKey();
+                if (keyBytes == null) {
+                    throw new com.ibm.websphere.crypto.KeyException("Failed to generate random key bytes.");
+                }
+                sharedKey = new javax.crypto.spec.SecretKeySpec(keyBytes, 0, CryptoUtils.AES_256_KEY_LENGTH_BYTES, CryptoUtils.ENCRYPT_ALGORITHM_AES);
             }
 
             if (sharedKey != null) {
                 return sharedKey;
             } else {
-                throw new com.ibm.websphere.crypto.KeyException("Key could not be generated.");
+                throw new com.ibm.websphere.crypto.KeyException("Key could not be generated - crypto object is null.");
             }
 
         } catch (Exception e) {
-            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.audit.AuditEncryptionImpl.generateKey", "98", this);
+            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.audit.AuditSigningImpl.generateSharedKey", "98", this);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Error generating key.", new Object[] { e });
 

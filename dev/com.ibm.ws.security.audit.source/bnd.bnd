@@ -22,9 +22,11 @@ WS-TraceGroup: audit
 
 
 Export-Package: \
+	com.ibm.ws.security.audit.crypto,\
 	com.ibm.ws.security.audit.encryption,\
 	com.ibm.ws.security.audit.event,\
 	com.ibm.ws.security.audit.pipeline,\
+	com.ibm.ws.security.audit.pqc,\
 	com.ibm.ws.security.audit.source.utils
 
 Private-Package: \
