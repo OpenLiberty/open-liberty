@@ -750,9 +750,11 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
 		// #10: Look for methods that have hard-coded entry/exit trace points
 		processManuallyTracedMethods(info);
 
-		// #11: Dump the list of warnings
-		for (String warning : info.warnings) {
-			System.out.println(warning);
+		// #11: Dump the list of warnings - skip if building for LLM consumption
+		if (!"true".equalsIgnoreCase(System.getProperty("llm"))) {
+			for (String warning : info.warnings) {
+				System.out.println(warning);
+			}
 		}
 
 		if (info.failInstrumentation) {

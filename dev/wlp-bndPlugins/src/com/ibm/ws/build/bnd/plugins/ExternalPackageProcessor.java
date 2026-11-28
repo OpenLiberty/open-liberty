@@ -26,10 +26,13 @@ public class ExternalPackageProcessor implements AnalyzerPlugin, Plugin {
 
     @Override
     public boolean analyzeJar(Analyzer analyzer) throws Exception {
+        boolean quiet = Boolean.parseBoolean(analyzer.getProperty("llm")) 
+                || "true".equalsIgnoreCase(System.getProperty("llm"));
 
         File externalsMF = analyzer.getFile(EXTERNALS_MF);
         if (externalsMF != null && externalsMF.exists()) {
-            System.out.println("Custom bnd plugin: " + getClass().getName() + " detected " + EXTERNALS_MF + " file @ " + externalsMF.getPath());
+            if (!quiet)
+                System.out.println("Custom bnd plugin: " + getClass().getName() + " detected " + EXTERNALS_MF + " file @ " + externalsMF.getPath());
             Manifest mf = ManifestProcessor.parseManifest(new FileInputStream(externalsMF));
             if (mf != null) {            	
                 Map<String, String> manifestEntries = ManifestProcessor.readManifestIntoMap(mf);
@@ -40,8 +43,8 @@ public class ExternalPackageProcessor implements AnalyzerPlugin, Plugin {
                 String apiString = manifestEntries.get(API_HEADER);
                 //compare the externals.mf list with the exports
                 Parameters exports = analyzer.getExportPackage();
-                addAttribute(SPI_ATTRIBUTE_NAME, new Parameters(spiString), exports);
-                addAttribute(API_ATTRIBUTE_NAME, new Parameters(apiString), exports);
+                addAttribute(SPI_ATTRIBUTE_NAME, new Parameters(spiString), exports, quiet);
+                addAttribute(API_ATTRIBUTE_NAME, new Parameters(apiString), exports, quiet);
                 //set the new string with the modified attributes
                 analyzer.setExportPackage(exports.toString());
             }
@@ -50,7 +53,7 @@ public class ExternalPackageProcessor implements AnalyzerPlugin, Plugin {
         return false;
     }
 
-    private void addAttribute(String attributeName, Parameters externalsParams, Parameters exports) {
+    private void addAttribute(String attributeName, Parameters externalsParams, Parameters exports, boolean quiet) {
         Set<String> pkgs = externalsParams.keySet();
 
         for (String key : exports.keySet()) {
@@ -69,7 +72,8 @@ public class ExternalPackageProcessor implements AnalyzerPlugin, Plugin {
                         reporter.error("Could not default type attribute for package {0}", key);
                     }
                 }
-                System.out.println("Adding attribute: " + attributeName + "=" + type + " for package " + key);
+                if (!quiet)
+                    System.out.println("Adding attribute: " + attributeName + "=" + type + " for package " + key);
                 //add the attribute
                 Attrs exportAttrs = exports.get(key);
                 exportAttrs.put(SPI_ATTRIBUTE_NAME, type);
