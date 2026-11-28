@@ -348,11 +348,30 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     }
 
     protected AuthenticationResult handleSSO(WebRequest webRequest, String ssoCookieName) {
+
         WebAuthenticator authenticator = getSSOAuthenticator(webRequest, ssoCookieName);
+
+        // Start timing
+        long startTime = 0;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            startTime = System.nanoTime();
+        }
         AuthenticationResult authResult = authenticator.authenticate(webRequest);
         if (authResult == null || authResult.getStatus() != AuthResult.SUCCESS) {
             authResult = new AuthenticationResult(AuthResult.CONTINUE, "SSO did not succeed, so continue ...");
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            // End timing
+            long endTime = System.nanoTime();
+            // Calculate duration in milliseconds
+            long durationMs = (endTime - startTime) / 1_000_000;
+            // Or in seconds (with decimals)
+            double durationSeconds = (endTime - startTime) / 1_000_000_000.0;
+
+            Tr.debug(tc, "handleSSO() took milliseconds: " + durationMs + " seconds: " + durationSeconds);
+        }
+
         return authResult;
     }
 
@@ -766,8 +785,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
             OAuth20Service oauthService = oauthServiceRef.getService();
             if (oauthService == null) {
                 return new AuthenticationResult(AuthResult.CONTINUE, "OAuth service is not available, skipping OAuth...");
-            }
-            else if (webRequest.isUnprotectedURI() && !webRequest.hasAuthenticationData()){
+            } else if (webRequest.isUnprotectedURI() && !webRequest.hasAuthenticationData()) {
                 return new AuthenticationResult(AuthResult.CONTINUE, "OAuth service is  available, but resource is unprotected, skipping OAuth...");
             }
 

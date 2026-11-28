@@ -38,6 +38,12 @@ public interface LTPAConfiguration {
      */
     public static final String CFG_KEY_TOKEN_EXPIRATION = "expiration";
 
+    public static final String CFG_KEY_REFRESH_THRESHOLD = "refreshThreshold";
+
+    public static final String CFG_KEY_INACTIVITY_TIMEOUT = "inactivityTimeout";
+
+    public static final String CFG_KEY_DYNAMIC_EXPIRATION_VALIDATION = "dynamicExpirationValidation";
+
     /**
      * The token keys file's monitor interval.
      */
@@ -113,6 +119,72 @@ public interface LTPAConfiguration {
     long getTokenExpiration();
 
     /**
+     * Returns the refresh threshold for LTPA tokens in minutes.
+     * When the time remaining until the token's <em>inactivity timeout</em> falls at or
+     * below this threshold, the token is proactively refreshed: a new token is issued
+     * with the creation time reset to now (restarting the inactivity window) while the
+     * absolute expiration from the original token is preserved.
+     * <p>
+     * Note: this threshold is measured against the <strong>inactivity window</strong>,
+     * not against the total token lifetime ({@code expiration}). It must be configured
+     * to a value less than {@code inactivityTimeout}.
+     * <p>
+     * This is a beta feature and is only available when running in beta mode.
+     *
+     * @return refresh threshold in minutes
+     * @ibm-api
+     */
+    long getRefreshThreshold();
+
+    /**
+     * Returns the inactivity timeout for LTPA tokens in minutes.
+     * The token expires after this period of inactivity (measured from the token's
+     * creation time, which is reset on each refresh). The inactivity timeout is always
+     * capped at the absolute expiration so it can never extend beyond the token's hard
+     * deadline. When the remaining time until inactivity timeout falls at or below
+     * {@code refreshThreshold}, a new token is issued with a fresh inactivity window.
+     * <p>
+     * This is a beta feature and is only available when running in beta mode.
+     *
+     * @return inactivity timeout in minutes, or 0 if disabled
+     * @ibm-api
+     */
+    long getInactivityTimeout();
+
+    /**
+     * Returns whether the LTPA token refresh feature is enabled.
+     * Both {@code inactivityTimeout} and {@code refreshThreshold} must be
+     * configured with positive values for token refresh to be active.
+     * <p>
+     * This is a beta feature and is only available when running in beta mode.
+     *
+     * @return {@code true} if both inactivityTimeout and refreshThreshold are positive
+     * @ibm-api
+     */
+    default boolean isTokenRefreshEnabled() {
+        return getInactivityTimeout() > 0 && getRefreshThreshold() > 0;
+    }
+
+    /**
+     * Returns whether dynamic expiration validation is enabled.
+     * <p>
+     * When {@code true}:
+     * <ul>
+     *   <li>On token creation: the expiration stored in the token is set to
+     *       {@code creationTime + inactivityTimeout} (not the configured {@code expiration}).</li>
+     *   <li>On token validation: the stored expiration field is ignored; the effective
+     *       expiration is recalculated as {@code creationTime + expiration} from the
+     *       server configuration.</li>
+     * </ul>
+     * <p>
+     * This is a beta feature and is only available when running in beta mode.
+     *
+     * @return {@code true} if dynamic expiration validation is enabled, {@code false} otherwise
+     * @ibm-api
+     */
+    boolean isDynamicExpirationValidation();
+
+    /**
      * @return authFiler reference
      */
     String getAuthFilterRef();
@@ -141,5 +213,5 @@ public interface LTPAConfiguration {
      * @return validation Keys
      */
     List<Properties> getValidationKeys();
-    
+
 }

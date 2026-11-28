@@ -132,6 +132,10 @@ public class HashtableLoginModuleTest extends LoginModuleTester {
                 will(returnValue(0L));
                 allowing(ssoTokenOverride).getExpiration();
                 will(returnValue(0L));
+                allowing(ssoToken).getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+                will(returnValue(null));
+                allowing(ssoTokenOverride).getAttributes(AttributeNameConstants.WSTOKEN_CREATION_TIME);
+                will(returnValue(null));
                 allowing(cc).locateService(JAASServiceImpl.KEY_JAAS_CONFIG_FACTORY, jaasConfigurationFactoryRef);
                 will(returnValue(null));
             }
