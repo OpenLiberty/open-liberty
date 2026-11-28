@@ -21,5 +21,6 @@
          which requires a user registry.  The QSS element
          creates a simple one element user registry. -->
     <quickStartSecurity userName="admin" userPassword="adminpwd"/>
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
    	
 </server>
