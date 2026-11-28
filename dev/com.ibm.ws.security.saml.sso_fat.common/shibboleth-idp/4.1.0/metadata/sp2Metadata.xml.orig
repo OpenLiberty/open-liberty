@@ -49,6 +49,14 @@
 					</ds:X509Certificate>
 				</ds:X509Data>
 			</ds:KeyInfo>
+                        <!-- use rsa-oaep with sha256 digest and mgf1sha256 -->
+			<md:EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#rsa-oaep"
+                            xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+                            xmlns:xenc11="http://www.w3.org/2009/xmlenc11#">
+				<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+				<xenc11:MGF Algorithm="http://www.w3.org/2009/xmlenc11#mgf1sha256"/>
+			</md:EncryptionMethod>
+                        <md:EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#aes128-gcm"/>
 		</md:KeyDescriptor>
 		<md:SingleLogoutService
 			Location="https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp2/slo"
