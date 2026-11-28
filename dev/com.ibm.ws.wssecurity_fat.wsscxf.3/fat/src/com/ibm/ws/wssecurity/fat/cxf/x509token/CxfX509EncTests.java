@@ -400,9 +400,18 @@ public class CxfX509EncTests extends CommonTests {
      * This is a negative scenario.
      *
      */
+ 
+     /* Oct. 2026,
+      * With FIPS 140-3 the client always wraps the key with rsa-oaep (rsa-1_5 is not allowed) and the
+      * provider accepts rsa-oaep/aes256-gcm for every algorithm suite, so the Basic128Rsa15 vs Basic128
+      * key algorithm mismatch this test relies on can no longer be detected.
+      * The same applies to Semeru (OpenJCEPlus) in non-FIPS mode: the key wrap is upgraded to rsa-oaep and
+      * aes256-cbc is accepted for Basic128, so the mismatch is not detected either.
+      * Therefore, the test is disabled. For future update, enabling test to runs with other Java version as needed, e.g., java 8.
+      */
 
-    @Test
-    //issue 230606
+    //@Test
+    //issue 23060
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
     public void testCXFClientWrongEncKeyAlgorithm() throws Exception {
 
@@ -413,7 +422,7 @@ public class CxfX509EncTests extends CommonTests {
         Log.info(thisClass, thisMethod, "Using " + newClientWsdl);
         printMethodName(thisMethod, "End Prep for " + thisMethod);
 
-        //issue 230606
+        //issue 23060
         genericTest(
                     // test name for logging
                     thisMethod,

@@ -44,6 +44,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
@@ -100,13 +102,17 @@ public class WSSecEncryptedKey extends WSSecBase {
      * Digest Algorithm to be used with RSA-OAEP. The default is SHA-1 (which is not
      * written out unless it is explicitly configured).
      */
-    private String digestAlgo;
+    // Liberty Change Start: set FIPS default
+    private String digestAlgo = CryptoUtils.isFips140_3Enabled() ? "SHA-256" : "SHA-1";
+    // Liberty Change End
 
     /**
      * MGF Algorithm to be used with RSA-OAEP. The default is MGF-SHA-1 (which is not
      * written out unless it is explicitly configured).
      */
-    private String mgfAlgo;
+    // Liberty Change Start: set FIPS default
+    private String mgfAlgo = CryptoUtils.isFips140_3Enabled() ? "MGF-SHA-256" : "MGF-SHA-1";
+    // Liberty Change End
 
     /**
      * xenc:EncryptedKey element
@@ -268,6 +274,17 @@ public class WSSecEncryptedKey extends WSSecBase {
      */
     protected void createEncryptedKeyElement(X509Certificate remoteCert, Crypto crypto, KeyAgreementParameters dhSpec)
             throws WSSecurityException {
+
+        // Liberty Change Start: set FIPS default
+        if (WSConstants.KEYTRANSPORT_RSAOAEP.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSA15.equals(keyEncAlgo)) {
+            keyEncAlgo = CryptoUtils.isFips140_3Enabled() 
+                     ? "http://www.w3.org/2009/xmlenc11#rsa-oaep"
+                     : "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
+        }
+        // Liberty Change End
+
         encryptedKeyElement = createEncryptedKey(getDocument(), keyEncAlgo);
         if (encKeyId == null || encKeyId.isEmpty()) {
             encKeyId = IDGenerator.generateID("EK-");
@@ -449,6 +466,17 @@ public class WSSecEncryptedKey extends WSSecBase {
      *  4) Create the CipherValue element structure and insert the encrypted session key
      */
     protected void createEncryptedKeyElement(Key key) throws WSSecurityException {
+
+        // Liberty Change Start: set FIPS default
+        if (WSConstants.KEYTRANSPORT_RSAOAEP.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSA15.equals(keyEncAlgo)) {
+            keyEncAlgo = CryptoUtils.isFips140_3Enabled() 
+                     ? "http://www.w3.org/2009/xmlenc11#rsa-oaep"
+                     : "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
+        }
+        // Liberty Change End
+
         encryptedKeyElement = createEncryptedKey(getDocument(), keyEncAlgo);
         if (encKeyId == null || encKeyId.isEmpty()) {
             encKeyId = IDGenerator.generateID("EK-");
@@ -687,11 +715,27 @@ public class WSSecEncryptedKey extends WSSecBase {
 
     private byte[] encryptSymmetricKey(Key encryptingKey, SecretKey keyToBeEncrypted)
         throws WSSecurityException {
+
+        // Liberty Change Start: set FIPS default
+         if (WSConstants.KEYTRANSPORT_RSAOAEP.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSA15.equals(keyEncAlgo)) {
+            keyEncAlgo = CryptoUtils.isFips140_3Enabled() 
+                     ? "http://www.w3.org/2009/xmlenc11#rsa-oaep"
+                     : "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
+            
+        }
+        // Liberty Change End
+
+
         Cipher cipher = KeyUtils.getCipherInstance(keyEncAlgo);
         try {
             OAEPParameterSpec oaepParameterSpec = null;
             if (WSConstants.KEYTRANSPORT_RSAOAEP.equals(keyEncAlgo)
-                    || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(keyEncAlgo)) {
+                    || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(keyEncAlgo)
+                    // Liberty Change Start: set FIPS default
+                    || WSConstants.KEYTRANSPORT_RSA15.equals(keyEncAlgo)) {    
+                    // Liberty Change End
                 oaepParameterSpec = XMLCipherUtil.constructOAEPParameters(keyEncAlgo, digestAlgo, mgfAlgo, null);
             }
             

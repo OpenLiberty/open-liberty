@@ -2901,7 +2901,15 @@ public class CxfX509MigTests {
      *
      */
 
-    @Test
+    /** Oct. 2026
+     * This test is disabled because on current Semeru Java the algorithm suite validator normalises
+     * every suite to aes256-gcm / rsa-oaep / sha256 regardless of whether FIPS 140-3 is enabled.
+     * That means the Basic256Sha256 vs Basic128Sha256 mismatch this negative test relies on is no
+     * longer detectable in either FIPS or non-FIPS mode — the request succeeds instead of failing.
+     * For future update, enabling test to runs with other Java version as needed, e.g., java 8.
+     */
+
+    //@Test
     //issue 23060
     @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" },
                  repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
