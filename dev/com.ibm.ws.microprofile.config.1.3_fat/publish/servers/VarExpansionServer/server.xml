@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="Server for testing variable expansion in Config">
+
+	<include location="../fatTestPorts.xml" />
+
+	<featureManager>
+		<feature>osgiconsole-1.0</feature>
+		<feature>cdi-2.0</feature>
+		<feature>servlet-4.0</feature>
+		<feature>componentTest-1.0</feature>
+		<feature>mpConfig-1.4</feature>
+	</featureManager>
+
+	<!-- List expansion: the list() function converts a comma-separated variable 
+		value into a list that can be used in server config attributes, e.g. <mongo 
+		ports="${list(mongoPorts)}" hosts="${list(mongoHosts)}" /> MicroProfile Config 
+		exposes the raw comma-separated string as a config property, which converts 
+		to String[] / List<String> automatically. -->
+	<variable name="examplePorts" value="27017,27018,27019" />
+	<variable name="exampleHosts"
+		value="mongo1.example.com,mongo2.example.com,mongo3.example.com" />
+
+
+	<!-- Simple arithmetic is supported for variables with integer values. The 
+		left and right sides of the operator can be either a variable or a number. 
+		The operator can be +, -, *, or /, as shown in the following example: -->
+
+	<variable name="arithmatic_one" value="1" />
+	<variable name="arithmatic_two" value="${one+1}" />
+	<variable name="arithmatic_three" value="${one+two}" />
+	<variable name="arithmatic_six" value="${two*three}" />
+	<variable name="arithmatic_five" value="${six-one}" />
+	<variable name="arithmatic_threeagain" value="${six/two}" />
+
+	<application location="varExpansionApp.war">
+		<appProperties>
+			<property name="app.appPropertyExamplePorts"
+				value="${list(examplePorts)}" />
+			<property name="app.appPropertyExampleHosts"
+				value="${list(exampleHosts)}" />
+			<property name="app.appPropertyArithmaticOne"   value="${arithmatic_one}" />
+			<property name="app.appPropertyArithmaticTwo"   value="${arithmatic_two}" />
+			<property name="app.appPropertyArithmaticThree" value="${arithmatic_three}" />
+			<property name="app.appPropertyArithmaticSix"   value="${arithmatic_six}" />
+			<property name="app.appPropertyArithmaticFive"  value="${arithmatic_five}" />
+			<property name="app.appPropertyArithmaticThreeAgain" value="${arithmatic_threeagain}" />
+		</appProperties>
+	</application>
+
+	<logging trace.specification="*=info:APPCONFIG=all" />
+</server>

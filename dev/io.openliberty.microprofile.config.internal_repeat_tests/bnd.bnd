@@ -21,6 +21,8 @@ Export-Package: io.openliberty.microprofile.config.fat.repeat
 test.project: true
 
 -buildpath: \
-        com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-        fattest.simplicity
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	fattest.simplicity,\
+	com.ibm.ws.kernel.service,\
+	io.openliberty.microprofile.config.internal.serverxml
 	

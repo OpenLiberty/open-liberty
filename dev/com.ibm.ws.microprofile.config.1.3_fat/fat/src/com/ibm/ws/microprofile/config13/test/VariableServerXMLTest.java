@@ -85,9 +85,6 @@ public class VariableServerXMLTest extends FATServletClient {
 
     /**
      * Copy a server config file to the server root and wait for notification that the server config has been updated
-     *
-     * @param filename
-     * @throws Exception
      */
     private static void copyConfigFileToLibertyServerRoot(String srcFile, String destFile) throws Exception {
         server.setMarkToEndOfLog();
