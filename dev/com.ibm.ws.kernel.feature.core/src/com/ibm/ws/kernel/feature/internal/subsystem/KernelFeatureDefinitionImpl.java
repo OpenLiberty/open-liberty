@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,6 +30,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.HeaderElementDefinition;
@@ -50,6 +52,8 @@ public class KernelFeatureDefinitionImpl extends SubsystemFeatureDefinitionImpl 
 
     /** FIXME: this is a hedge.. */
     private static volatile String kernelApiServices = null;
+
+    private static final TraceComponent tc = Tr.register(KernelFeatureDefinitionImpl.class);
 
     /**
      * Get the kernel feature definitions in use by the runtime.
@@ -114,14 +118,9 @@ public class KernelFeatureDefinitionImpl extends SubsystemFeatureDefinitionImpl 
             Iterator<String> mfFileNames = platformDir.getChildren(".*\\.mf");
             while (mfFileNames.hasNext()) {
                 WsResource kdr = platformDir.getChild(mfFileNames.next());
-                try {
-                    KernelFeatureDefinitionImpl kDef = new KernelFeatureDefinitionImpl(ctx, kdr, locationService);
+                ProvisioningFeatureDefinition kDef = readKernelFeature(ctx, kdr, locationService);
+                if (kDef != null) {
                     kernelFeatures.add(kDef);
-                } catch (IOException e) {
-                    // For the most part, we know the features are readable because we wouldn't
-                    // be running this code if the *.mf files hadn't been cracked open already...
-                    // We will have an FFDC for this, and otherwise, thise definition would
-                    // obviously be skipped... which might cause problems later..
                 }
             }
         } else {
@@ -147,8 +146,8 @@ public class KernelFeatureDefinitionImpl extends SubsystemFeatureDefinitionImpl 
 
             WsResource kdr;
             while ((kdr = resources.poll()) != null) {
-                try {
-                    KernelFeatureDefinitionImpl kDef = new KernelFeatureDefinitionImpl(ctx, kdr, locationService);
+                ProvisioningFeatureDefinition kDef = readKernelFeature(ctx, kdr, locationService);
+                if (kDef != null) {
                     kernelFeatures.add(kDef);
 
                     // A kernel feature may include another kernel feature.. we need to go find those, too.
@@ -164,16 +163,21 @@ public class KernelFeatureDefinitionImpl extends SubsystemFeatureDefinitionImpl 
                             resources.add(res);
                         }
                     }
-                } catch (IOException e) {
-                    // For the most part, we know the features are readable because we wouldn't
-                    // be running this code if the *.mf files hadn't been cracked open already...
-                    // We will have an FFDC for this, and otherwise, this definition will
-                    // obviously be skipped, which might cause problems later..
                 }
             }
         }
 
         return kernelFeatures;
+    }
+
+    private static ProvisioningFeatureDefinition readKernelFeature(BundleContext ctx, WsResource featureResource, WsLocationAdmin locationService) {
+        try {
+            return new KernelFeatureDefinitionImpl(ctx, featureResource, locationService);
+        } catch (IOException e) {
+            // auto-ffdc
+            Tr.error(tc, "FEATURES_ERROR_READING_FEATURE", featureResource.asFile().getAbsoluteFile(), e.getMessage());
+            return null;
+        }
     }
 
     private final boolean isSystemBundleProvider;
