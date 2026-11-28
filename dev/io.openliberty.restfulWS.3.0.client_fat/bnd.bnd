@@ -16,7 +16,8 @@ bVersion=1.0
 src: \
   fat/src,\
   test-applications/pathparam/src,\
-  test-applications/RegisterRestClient/src
+  test-applications/RegisterRestClient/src,\
+  test-applications/namebindingclientfilter/src
 
 	
 fat.project: true
