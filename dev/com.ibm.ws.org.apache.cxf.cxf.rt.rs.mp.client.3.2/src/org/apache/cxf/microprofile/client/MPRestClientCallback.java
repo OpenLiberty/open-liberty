@@ -33,6 +33,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.naming.InitialContext;
 import javax.ws.rs.client.InvocationCallback;
 
 import org.apache.cxf.jaxrs.client.JaxrsClientCallback;
@@ -51,7 +52,14 @@ public class MPRestClientCallback<T> extends JaxrsClientCallback<T> {
         ExecutorService es = outMessage.get(ExecutorService.class);
         if (es == null) {
             es = AccessController.doPrivileged((PrivilegedAction<ExecutorService>)() -> {
-                return ForkJoinPool.commonPool();
+                try {
+                    // Liberty's DefaultManagedExecutorService to avoid Java 2 Security issues
+                    InitialContext ctx = new InitialContext();
+                    return (ExecutorService) ctx.lookup("java:comp/DefaultManagedExecutorService");
+                } catch (Exception e) {
+                    // For backward compatibility in non-Liberty environments
+                    return ForkJoinPool.commonPool();
+                }
             });
         }
         executor = es;

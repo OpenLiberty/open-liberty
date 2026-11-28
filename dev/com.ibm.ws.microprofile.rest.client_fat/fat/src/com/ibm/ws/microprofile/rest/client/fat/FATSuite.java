@@ -21,6 +21,7 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                AsyncJava2SecurityTest.class,
                 AsyncMethodTest.class,
                 BasicTest.class,
                 BasicCdiTest.class,

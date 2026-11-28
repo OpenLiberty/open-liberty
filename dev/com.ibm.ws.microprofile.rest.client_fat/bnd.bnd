@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2025 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ bVersion=1.0
 src: \
   fat/src,\
   test-applications/asyncApp/src,\
+  test-applications/asyncJava2SecurityApp/src,\
   test-applications/basicClientApp/src,\
   test-applications/basicCdiClientApp/src,\
   test-applications/basicEJBClientApp/src,\

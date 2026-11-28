@@ -1,0 +1,20 @@
+<server>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>mpRestClient-2.0</feature>
+        <feature>jaxrs-2.1</feature>
+    </featureManager>
+
+    <webApplication id="asyncJava2SecurityApp" location="asyncJava2SecurityApp.war" />
+    <include location="../fatTestPorts.xml"/>
+
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+    <javaPermission className="java.util.logging.LoggingPermission" name="control" actions=""/>
+    <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default" actions="read"/>
+    <javaPermission className="java.util.PropertyPermission" name="os.name" actions="read"/>
+    <javaPermission className="java.lang.management.ManagementPermission" name="monitor"/>
+    <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
+    <javaPermission className="java.lang.RuntimePermission" name="*"/>
+    <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
+</server>
