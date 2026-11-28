@@ -473,8 +473,11 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
                     // Later, during afterGettingConnection() processing, the
                     // OS Thread Identity will then be returned to what it was.
 
-                    if ((m_ThreadSecurity && ThreadIdentityManager.isAppThreadIdentityEnabled()) ||
-                        (m_ThreadSecurity && ThreadIdentityManager.isJ2CThreadIdentityEnabled()) ||
+                    if ((m_ThreadSecurity && ThreadIdentityManager.isAppThreadIdentityEnabled())
+                        ||
+                        (m_ThreadSecurity && ThreadIdentityManager.isJ2CThreadIdentityEnabled()
+                         && (m_serviceType == AbstractConnectionFactoryService.SERVICE_JDBC_TYPE))
+                        ||
                         (m_ThreadSecurity && ThreadIdentityManager.isConnectorsThreadIdentityEnabled()
                          && (m_serviceType == AbstractConnectionFactoryService.SERVICE_CONECTORS_TYPE ||
                              m_serviceType == AbstractConnectionFactoryService.SERVICE_JDBC_TYPE))) {
