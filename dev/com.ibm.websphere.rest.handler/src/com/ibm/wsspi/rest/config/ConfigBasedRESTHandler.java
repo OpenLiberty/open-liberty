@@ -219,18 +219,43 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
         }
 
         // Filter by query parameters
-        for (Map.Entry<String, String[]> param : request.getParameterMap().entrySet()) {
+        //
+        // Skip the unwanted "_" parameter that is appended by API Discovery.
+        //
+        // Omit any parameters which are not valid.
+
+        for ( Map.Entry<String, String[]> param : request.getParameterMap().entrySet() ) {
             String key = param.getKey();
-            if (!filterBy(key) || "_".equals(key)) // Workaround for unwanted _ parameter that is appended by API Discovery
+            if ( !filterBy(key) || "_".equals(key) ) {
                 continue;
+            }
+
             String[] values = param.getValue();
-            if (values.length > 1)
+
+            String[] conditions = new String[ values.length ];
+            int numConditions = 0;
+
+            for ( String value : values ) {
+                try {
+                    String nextCondition = FilterUtils.createValidPropertyFilter(key, value);
+                    conditions[ numConditions++ ] = nextCondition;
+                } catch ( IllegalArgumentException e ) {
+                    // FFDC and continue
+                    // TODO: Review what should be done in this error case.
+                }
+            }
+
+            if ( numConditions > 1 ) {
                 filter.append("(|");
-            for (String value : values)
-                filter.append(FilterUtils.createPropertyFilter(key, value));
-            if (values.length > 1)
+            }
+            for ( int conditionNo = 0; conditionNo < numConditions; conditionNo++ ) {
+                filter.append( conditions[conditionNo] );
+            }
+            if ( numConditions > 1 ) {
                 filter.append(')');
+            }
         }
+
         filter.append(')');
 
         if (trace && tc.isDebugEnabled())
