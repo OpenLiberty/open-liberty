@@ -15,11 +15,15 @@ package test.jakarta.concurrency32cdi.ejb;
 import java.util.function.Function;
 
 import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 import jakarta.inject.Inject;
 
 /**
  * An EJB that provides access to trackers for methods annotated Schedule.
+ * It is a startup singleton so that its java:module env-entry is bound
+ * before any scheduled method runs.
  */
+@Startup
 @Singleton
 public class ScheduleTracker implements Function<String, Object> {
 
