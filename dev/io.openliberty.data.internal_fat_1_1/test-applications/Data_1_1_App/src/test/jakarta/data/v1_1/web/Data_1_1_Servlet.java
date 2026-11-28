@@ -813,7 +813,10 @@ public class Data_1_1_Servlet extends FATServlet {
                              BigDecimal.valueOf(3750, 4)),
                      fractions.whereTruncated(Between.bounds(0.333, 0.377))
                                      .stream()
-                                     .map(f -> f.decimal.truncated())
+                                     // Some databases (such as Oracle) do not preserve
+                                     // trailing zeros, so normalize the scale because
+                                     // BigDecimal.equals compares scale as well as value.
+                                     .map(f -> f.decimal.truncated().setScale(4))
                                      .toList());
     }
 
