@@ -195,11 +195,19 @@ public final class JAXRSUtils {
         Arrays.asList(InputStream.class, Reader.class, StreamingOutput.class));
     private static final Set<String> STREAMING_LIKE_OUT_TYPES = new HashSet<>(
         Arrays.asList(
-            "org.apache.cxf.jaxrs.ext.xml.XMLSource", 
-            "org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource", 
-            "org.apache.cxf.jaxrs.ext.multipart.MultipartBody", 
+            "org.apache.cxf.jaxrs.ext.xml.XMLSource",
+            "org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource",
+            "org.apache.cxf.jaxrs.ext.multipart.MultipartBody",
             "org.apache.cxf.jaxrs.ext.multipart.Attachment"
         ));
+    
+    // Liberty debug patch TFOLGH33409 - Static initializer to verify class loading
+    static {
+        System.out.println("===========================================");
+        System.out.println("DEBUG TFOLGH33409: JAXRSUtils class loaded");
+        System.out.println("DEBUG TFOLGH33409: This is the Liberty-modified version with enhanced error logging");
+        System.out.println("===========================================");
+    }
     private static final Set<String> REACTIVE_OUT_TYPES = new HashSet<>(
         Arrays.asList(
             // Reactive Streams
@@ -1672,7 +1680,7 @@ public final class JAXRSUtils {
             }
         }
 
-        logMessageHandlerProblem("NO_MSG_READER", targetTypeClass, contentType);
+        logMessageHandlerProblem("NO_MSG_READER", targetTypeClass, contentType, m);
         throw new WebApplicationException(Response.Status.UNSUPPORTED_MEDIA_TYPE);
     }
 
@@ -2256,7 +2264,83 @@ public final class JAXRSUtils {
         }
     }
 
+    // Overloaded method for backward compatibility - delegates to the 4-parameter version
     public static String logMessageHandlerProblem(String name, Class<?> cls, MediaType ct) {
+        return logMessageHandlerProblem(name, cls, ct, null);
+    }
+
+    public static String logMessageHandlerProblem(String name, Class<?> cls, MediaType ct, Message m) {
+        return logMessageHandlerProblem(name, cls, ct, m, null);
+    }
+
+    public static String logMessageHandlerProblem(String name, Class<?> cls, MediaType ct, Message m, Throwable cause) {
+        // TFOLGH33409 Enhanced Debug Patch V2 - Use Tr.error() for guaranteed log output
+        Tr.error(tc, "========== TFOLGH33409 DEBUG START ==========");
+        Tr.error(tc, "DEBUG: Method called with 5 parameters (enhanced V2)");
+        Tr.error(tc, "DEBUG: name=" + name);
+        Tr.error(tc, "DEBUG: class=" + (cls != null ? cls.getName() : "NULL"));
+        Tr.error(tc, "DEBUG: contentType=" + (ct != null ? ct.toString() : "NULL"));
+        Tr.error(tc, "DEBUG: Message object: " + (m == null ? "NULL" : "NOT NULL"));
+        Tr.error(tc, "DEBUG: Cause object: " + (cause == null ? "NULL" : "NOT NULL"));
+        
+        Thread.dumpStack(); // Stack trace showing execution path
+        
+        // Log cause exception if present
+        if (cause != null) {
+            Tr.error(tc, "DEBUG: Cause exception class: " + cause.getClass().getName());
+            Tr.error(tc, "DEBUG: Cause message: " + cause.getMessage());
+            try {
+                java.io.StringWriter sw = new java.io.StringWriter();
+                java.io.PrintWriter pw = new java.io.PrintWriter(sw);
+                cause.printStackTrace(pw);
+                Tr.error(tc, "DEBUG: Cause stack trace:\n" + sw.toString());
+            } catch (Exception e) {
+                Tr.error(tc, "DEBUG: Failed to log cause stack trace: " + e.getMessage());
+            }
+        } else {
+            Tr.error(tc, "DEBUG: Cause is NULL - no exception details available");
+        }
+        
+        // Extract and log message content if present
+        if (m != null) {
+            Tr.error(tc, "DEBUG: Attempting to extract message content...");
+            try {
+                InputStream is = m.getContent(InputStream.class);
+                if (is != null) {
+                    Tr.error(tc, "DEBUG: InputStream obtained, reading content...");
+                    LoadingByteArrayOutputStream baos = new LoadingByteArrayOutputStream();
+                    IOUtils.copy(is, baos);
+                    byte[] messageBytes = baos.toByteArray();
+                    
+                    // Reset the input stream so it can be read again if needed
+                    m.setContent(InputStream.class, baos.createInputStream());
+                    
+                    // Log the message content
+                    String messageContent = new String(messageBytes, StandardCharsets.UTF_8);
+                    Tr.error(tc, "DEBUG: Message content length: " + messageBytes.length + " bytes");
+                    Tr.error(tc, "DEBUG: Message content that failed to deserialize:");
+                    Tr.error(tc, messageContent);
+                } else {
+                    Tr.error(tc, "DEBUG: InputStream is NULL - cannot read content");
+                }
+            } catch (Exception e) {
+                Tr.error(tc, "DEBUG: Exception extracting message: " + e.getClass().getName());
+                Tr.error(tc, "DEBUG: Exception message: " + e.getMessage());
+                try {
+                    java.io.StringWriter sw = new java.io.StringWriter();
+                    java.io.PrintWriter pw = new java.io.PrintWriter(sw);
+                    e.printStackTrace(pw);
+                    Tr.error(tc, "DEBUG: Exception stack trace:\n" + sw.toString());
+                } catch (Exception ex) {
+                    Tr.error(tc, "DEBUG: Failed to log exception stack trace");
+                }
+            }
+        } else {
+            Tr.error(tc, "DEBUG: Message is NULL - cannot extract content");
+        }
+        
+        Tr.error(tc, "========== TFOLGH33409 DEBUG END ==========");
+        
         org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message(name, BUNDLE, cls.getName(), mediaTypeToString(ct));
         String errorMessage = errorMsg.toString();
         Tr.error(tc, errorMessage); // Libery Change

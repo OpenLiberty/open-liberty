@@ -618,4 +618,39 @@ public class ClientTestServlet extends HttpServlet {
 
         ret.append(response.readEntity(String.class));
     }
+    
+    /**
+     * Test to trigger "Problem with reading the data" error for TFOLGH33409 debug patch verification.
+     * This test intentionally causes a deserialization error by requesting JSON content
+     * but trying to read it as a plain String, which triggers the error path in JAXRSUtils.
+     */
+    public void testTriggerDeserializationError(Map<String, String> param, StringBuilder ret) {
+        String serverIP = param.get("serverIP");
+        String serverPort = param.get("serverPort");
+        
+        Client client = ClientBuilder.newClient();
+        
+        try {
+            // Request a Person object (which returns JSON) but try to read as String
+            // This should trigger: "Problem with reading the data, class java.lang.String, ContentType: application/json"
+            WebTarget target = client.target("http://" + serverIP + ":" + serverPort + "/" + moduleName + "/ComplexClientTest/ComplexResource/person");
+            Response response = target.request(MediaType.APPLICATION_JSON).get();
+            
+            // This will fail because we're trying to read JSON as a String
+            String result = response.readEntity(String.class);
+            ret.append("ERROR: Should have thrown ResponseProcessingException but got: " + result);
+            
+        } catch (ResponseProcessingException rpe) {
+            // Expected error - our debug code should have logged details
+            ret.append("SUCCESS: Caught expected ResponseProcessingException: " + rpe.getMessage());
+            ret.append("\nCheck server logs for DEBUG output from TFOLGH33409 patch");
+            
+        } catch (Exception e) {
+            ret.append("ERROR: Unexpected exception: " + e.getClass().getName() + ": " + e.getMessage());
+            e.printStackTrace();
+            
+        } finally {
+            client.close();
+        }
+    }
 }
