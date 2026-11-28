@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="REST 4.0 Examples FAT Server">
+
+    <featureManager>
+        <feature>restfulWS-4.0</feature>
+        <feature>restfulWSClient-4.0</feature>
+        <feature>jsonb-3.0</feature>
+        <feature>jsonp-2.1</feature>
+        <feature>servlet-6.1</feature>
+        <feature>componenttest-2.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <!-- Enable detailed logging -->
+    <logging traceSpecification="*=info:io.openliberty.restfulWS40.*=all:org.jboss.resteasy.*=all"
+             maxFileSize="100"
+             maxFiles="10"
+             consoleLogLevel="INFO"/>
+
+    <!-- Permissions for REST client operations -->
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.c"/>
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+    <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get"/>
+
+</server>
+
+<!-- Made with Bob -->
