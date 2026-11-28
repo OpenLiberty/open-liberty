@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ import javax.servlet.annotation.WebListener;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.webcontainer31.osgi.osgi.WebContainerConstants;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -186,7 +185,7 @@ public class ServletInjectionClassListCollaborator implements WebAppInjectionCla
         DeferredInfoStore deferredInfoStore = null;
 
         try {
-            WebAnnotations webAnnotations = AnnotationsBetaHelper.getWebAnnotations(moduleContainer); // throws UnableToAdaptException
+            WebAnnotations webAnnotations = moduleContainer.adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class); // throws UnableToAdaptException
             if ( !webDD.isMetadataComplete() ) {
                 annotationTargets = webAnnotations.getAnnotationTargets(); // throws UnableToAdaptException
             } else {

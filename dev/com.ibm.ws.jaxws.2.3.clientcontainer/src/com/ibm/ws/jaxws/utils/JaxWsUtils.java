@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import org.apache.cxf.common.util.PackageUtils;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.ModuleAnnotations;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.EJBModuleInfo;
@@ -676,9 +675,9 @@ public class JaxWsUtils {
 
     public static InfoStore getInfoStore(Container container) throws UnableToAdaptException {
         if ( JaxWsUtils.isEJBModule(container) ) {
-            return AnnotationsBetaHelper.getModuleAnnotations(container).getInfoStore();
+            return container.adapt(com.ibm.ws.container.service.annocache.ModuleAnnotations.class).getInfoStore();
         } else if ( JaxWsUtils.isWebModule(container) ) {
-            return AnnotationsBetaHelper.getWebAnnotations(container).getInfoStore();
+            return container.adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class).getInfoStore();
         }
         return null;
     }

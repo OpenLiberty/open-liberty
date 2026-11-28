@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2023 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.csi.J2EENameFactory;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.MetaDataService;
@@ -884,7 +883,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
   }
 
   private WebAnnotations getWebAnnotations() throws UnableToAdaptException {
-      return AnnotationsBetaHelper.getWebAnnotations( getModuleContainer() );
+      return getModuleContainer().adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
   }
 
   /*

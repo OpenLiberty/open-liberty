@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2025 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -104,7 +104,6 @@ import com.ibm.ws.container.Container;
 import com.ibm.ws.container.DeployedModule;
 import com.ibm.ws.container.ErrorPage;
 import com.ibm.ws.container.MimeFilter;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -822,7 +821,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     private AnnotationTargets_Targets getAnnotationTargets() {
         try {
             // Conditionally use the cache enabled implementation.
-            WebAnnotations webAnnotations = AnnotationsBetaHelper.getWebAnnotations( getModuleContainer() );
+            WebAnnotations webAnnotations = getModuleContainer().adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
             return webAnnotations.getAnnotationTargets();
         } catch ( UnableToAdaptException e ) {
             return null; // FFDC

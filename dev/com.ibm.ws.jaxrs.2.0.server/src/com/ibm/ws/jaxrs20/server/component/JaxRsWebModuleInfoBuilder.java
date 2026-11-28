@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ import org.osgi.service.component.annotations.Deactivate;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.api.JaxRsModuleInfoBuilder;
@@ -78,7 +77,7 @@ public class JaxRsWebModuleInfoBuilder implements JaxRsModuleInfoBuilder {
             return null;
         }
 
-        WebAnnotations webAnnotations = AnnotationsBetaHelper.getWebAnnotations(containerToAdapt);
+        WebAnnotations webAnnotations = containerToAdapt.adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
 
         try {
             WebAppConfig webAppConfig = containerToAdapt.adapt(WebAppConfig.class);

@@ -36,7 +36,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
@@ -230,7 +229,7 @@ public class GrpcServerComponent implements ServletContainerInitializer, Applica
     @FFDCIgnore(UnableToAdaptException.class)
     private GrpcServletApplication initGrpcServices(Container container, String appName)  {
         try {
-            WebAnnotations webAnno = AnnotationsBetaHelper.getWebAnnotations(container);
+            WebAnnotations webAnno = container.adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
             AnnotationTargets_Targets annoTargets = webAnno.getAnnotationTargets();
             Set<String> services = annoTargets.getAllImplementorsOf("io.grpc.BindableService");
             if (services != null && !services.isEmpty()) {

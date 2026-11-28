@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,6 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -103,7 +102,7 @@ public class ResteasyInjectionClassListCollaborator implements WebAppInjectionCl
         WebAnnotations webAnnotations;
         AnnotationTargets_Targets annotationTargets;
         try {
-            webAnnotations = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
+            webAnnotations = moduleContainer.adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
             annotationTargets = webAnnotations.getAnnotationTargets();
         } catch ( Exception e ) {
             // Detection cannot be done without annotations information.

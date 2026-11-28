@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
 import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.config.ServletConfigurator;
 import com.ibm.ws.container.service.config.ServletConfiguratorHelper;
@@ -85,7 +84,7 @@ public class WebAppConfigurator implements ServletConfigurator {
     private WebAnnotations webAnnotations;
 
     private void setWebAnnotations() throws UnableToAdaptException {
-        webAnnotations = AnnotationsBetaHelper.getWebAnnotations(moduleContainer);
+        webAnnotations = moduleContainer.adapt(com.ibm.ws.container.service.annocache.WebAnnotations.class);
     }
 
     @Override
