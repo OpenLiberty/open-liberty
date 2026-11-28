@@ -111,7 +111,7 @@ public class LdapHelper {
      *
      * @return The full Distinguished Name.
      */
-    public static String prepareDN(String DN, String searchRoot) {
+    public static String prepareDN(String DN, String searchRoot, String autoDiscoveryDN) {
         if (DN == null || DN.trim().length() == 0) {
             return searchRoot;
         }
@@ -179,6 +179,10 @@ public class LdapHelper {
             }
         }
         if (searchRoot == null || searchRoot.trim().length() == 0) {
+        	if (autoDiscoveryDN != null && !DN.toLowerCase().endsWith(autoDiscoveryDN.toLowerCase())) {
+        		 Tr.debug(tc, "prepareDN", "prepareDN", "No searchbase, adding " +autoDiscoveryDN +" to " + DN);
+        		DN = DN + LdapConstants.LDAP_DN_SEPARATOR + autoDiscoveryDN;
+        	}
             return DN;
         }
         StringTokenizer stDN = new StringTokenizer(DN, LdapConstants.LDAP_DN_SEPARATOR);
@@ -201,11 +205,43 @@ public class LdapHelper {
         } else {
             lastSearchRootToken = "";
         }
-        if (!lastDNToken.equalsIgnoreCase(lastSearchRootToken))
+         boolean addedSearchBase = false;
+        if (!lastDNToken.equalsIgnoreCase(lastSearchRootToken)){
             if (DN.length() > 0) {
                 DN = DN + LdapConstants.LDAP_DN_SEPARATOR + searchRoot;
             } else
                 DN = searchRoot;
+                 addedSearchBase = true;
+        }
+         if (autoDiscoveryDN != null) {
+        	/*
+             * PH02868, check if we need to append the autoDiscoveryDN on the DN. If the search base was
+             * already added, check if we also need to append the autoDiscoveryDN.
+             */
+            StringTokenizer discRoot = new StringTokenizer(autoDiscoveryDN, LdapConstants.LDAP_DN_SEPARATOR);
+            String lastDomainRoot = null;
+            while (discRoot.hasMoreTokens()) {
+                lastDomainRoot = discRoot.nextToken();
+            }
+            
+            
+            if (addedSearchBase) {
+            	if (!lastSearchRootToken.equalsIgnoreCase(lastDomainRoot)) {
+            		if (trcLogger.isLoggable(Level.FINE)) {
+            			trcLogger.logp(Level.FINE, CLASSNAME, METHODNAME, "adding " +autoDiscoveryDN +" after searchbase to " + DN);
+            		}
+            		DN = DN + LdapConstants.LDAP_DN_SEPARATOR + autoDiscoveryDN;
+            	}
+            } else  if (!lastDNToken.equalsIgnoreCase(lastDomainRoot)) {
+            	if (DN.length() > 0) {
+            		 Tr.debug(tc, "prepareDN", "adding " +autoDiscoveryDN +" to " + DN);
+            		DN = DN + LdapConstants.LDAP_DN_SEPARATOR + autoDiscoveryDN;
+            	} else {
+            		 Tr.debug(tc, "prepareDN",  "setting DN to " +autoDiscoveryDN);
+            		DN = autoDiscoveryDN;
+            	}
+            }
+        }
         return DN;
 
     }
