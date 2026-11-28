@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
@@ -172,20 +173,30 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
      * 4. Waits the small buffer period (x2) to ensure that the tokens have expired
      * 5. Invokes the app again and ensures that we need to authenticate again due to token expiry
      *
-     * @param appRoot - the root of the app to invoke
-     * @param app - the name of the app to invoke
+     * @param appRoot          - the root of the app to invoke
+     * @param app              - the name of the app to invoke
      * @param tokenMinValidity - the token minimum validity in milliseconds
      * @return the HtmlUnit Page response
      * @throws Exception
      */
     private Page runGoodEndToEndTokenMinValidityTest(String appRoot, String app, int tokenMinValidity) throws Exception {
-
+        System.out.println("In line 181" + appRoot);
+        System.out.println("In line 182" + app);
         String url = rpHttpsBase + "/" + appRoot + "/" + app;
 
         WebClient webClient = getAndSaveWebClient();
         Page response = runGoodEndToEndTest(webClient, appRoot, app);
 
-        actions.testLogAndSleep(getSecondsTilTokenExpiration(response) - (tokenMinValidity / 1000) - BUFFER_SECONDS);
+        int tilExpiry = getSecondsTilTokenExpiration(response);
+        int secondsToSleep = tilExpiry - (tokenMinValidity / 1000) - BUFFER_SECONDS;
+
+        Log.info(this.getClass(), "runGoodEndToEndTokenMinValidityTest", "the seconds til token exipry is::::::::::: " + tilExpiry);
+        //System.out.println("the seconds til token exipry is :::::::::::::::::::::::::::::::::" + tilExpiry);
+        //System.out.println("the seconds til token exipry minus token minimum validity :::::::::::::::::::::::::::::::::" + (tokenMinValidity / 1000));
+        //System.out.println("total seconds to sleep is ::::::::::::::::::::::::::::::::" + secondsToSleep);
+        Log.info(this.getClass(), "runGoodEndToEndTokenMinValidityTest", "total seconds to sleep is ::::::::::: " + secondsToSleep);
+
+        actions.testLogAndSleep(secondsToSleep);
         response = invokeAppGetToApp(webClient, url);
 
         actions.testLogAndSleep(2 * BUFFER_SECONDS);
@@ -205,6 +216,10 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
         JwtTokenForTest jwtToken = new JwtTokenForTest(token);
         JsonObject payload = jwtToken.getJsonPayload();
         JsonValue exp = payload.get(OpenIdConstant.EXPIRATION_IDENTIFIER);
+        Log.info(this.getClass(), "getExpFromIdToken", "The toke expiry time from the message strucuture is::::::::::: " + exp.toString());
+        Log.info(this.getClass(), "getExpFromIdToken", "The toke expiry time from the message strucuture is exp :::::::::::::::::::: " + exp);
+        //System.out.println("The toke expiry time from the message strucuture is :::::::::::::::::::::" + exp.toString());
+        //System.out.println("The toke expiry time from the message strucuture is exp :::::::::::::::::::::" + exp);
         return Long.parseLong(exp.toString());
     }
 
@@ -214,7 +229,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
      * tokenMinValidity values must not be used and checks that the appropriate warning message is logged by the RP.
      *
      * @param appRoot - the root of the app to invoke
-     * @param app - the name of the app to invoke
+     * @param app     - the name of the app to invoke
      * @throws Exception
      */
     private void runGoodEndToEndNegativeTokenMinValidityTest(String appRoot, String app) throws Exception {
@@ -233,8 +248,8 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
      * tokens, the RP should immediately redirect to the authentication endpoint for re-authentication,
      * since the tokens should be immediately considered expired based on the tokenMinValidity.
      *
-     * @param appRoot - the root of the app to invoke
-     * @param app - the name of the app to invoke
+     * @param appRoot          - the root of the app to invoke
+     * @param app              - the name of the app to invoke
      * @param tokenMinValidity - the token minimum validity in milliseconds
      * @throws Exception
      */
@@ -342,6 +357,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
      */
     @Test
     public void ConfigurationTokenMinValidityTests_tokenMinValidityExpression_20s() throws Exception {
+        System.out.println("In Cline 345");
 
         runGoodEndToEndTokenMinValidityTest("TokenMinValidityEL20s", "TokenMinValidityELServlet", 20 * 1000);
 
