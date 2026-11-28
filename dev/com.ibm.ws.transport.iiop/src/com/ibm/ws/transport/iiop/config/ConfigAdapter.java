@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright 2015,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.Map;
 import org.omg.CORBA.ORB;
 
 import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
+import com.ibm.ws.transport.iiop.spi.OrbConfigurator;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
 /**
@@ -38,7 +39,7 @@ public interface ConfigAdapter {
      * @return An ORB instance configured for the CORBABean.
      * @exception ConfigException
      */
-    public ORB createServerORB(Map<String, Object> config, Map<String, Object> extraConfig, List<IIOPEndpoint> endpoints, Collection<SubsystemFactory> subsystemFactories) throws ConfigException;
+    public ORB createServerORB(Map<String, Object> config, Map<String, Object> extraConfig, List<IIOPEndpoint> endpoints, Collection<OrbConfigurator> subsystemFactories) throws ConfigException;
 
     /**
      * Create an ORB for a CSSBean client context.
@@ -49,5 +50,5 @@ public interface ConfigAdapter {
      * @return An ORB instance configured for this client access.
      * @exception ConfigException
      */
-    public ORB createClientORB(Map<String, Object> clientProperties, Collection<SubsystemFactory> subsystemFactories) throws ConfigException;
+    public ORB createClientORB(Map<String, Object> clientProperties, Collection<OrbConfigurator> subsystemFactories) throws ConfigException;
 }

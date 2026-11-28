@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2015,2023 IBM Corporation and others.
+ * Copyright 2015,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,7 @@ package com.ibm.ws.transport.iiop.yoko;
 
 import static com.ibm.wsspi.kernel.service.location.WsLocationConstants.LOC_PROCESS_TYPE;
 import static com.ibm.wsspi.kernel.service.location.WsLocationConstants.LOC_PROCESS_TYPE_SERVER;
-import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -23,14 +23,13 @@ import org.omg.CORBA.ORB;
 import org.omg.CORBA.Policy;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.kernel.LibertyProcess;
-import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
+import com.ibm.ws.transport.iiop.spi.OrbConfigurator;
 
-@Component(configurationPolicy = IGNORE, property = { "service.vendor=IBM", "service.ranking:Integer=1" })
-public class DispatchSubsystemFactory implements SubsystemFactory {
+@Component(configurationPolicy = REQUIRE, property = { "service.vendor=IBM", "service.ranking:Integer=1" })
+public class DispatchOrbConfigurator implements OrbConfigurator {
     private ExecutorDispatchPolicy dispatcherPolicy;
 
     @Reference
