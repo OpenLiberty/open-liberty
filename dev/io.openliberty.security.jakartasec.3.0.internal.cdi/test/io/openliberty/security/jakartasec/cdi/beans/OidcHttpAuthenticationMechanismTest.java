@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -195,6 +195,18 @@ public class OidcHttpAuthenticationMechanismTest {
     }
 
     @Test
+    public void testValidateRequest_unprotectedResource_multipart_doesNotReadRequestBody() throws Exception {
+        // A multipart/form-data request must not cause the mechanism to call getParameter(), since doing so makes the
+        // web container parse and consume the request body, preventing the target (e.g. a JAX-RS resource taking
+        // List<EntityPart>) from reading it.
+        mechanismValidatesRequestForUnprotectedMultipartResource();
+        OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
+
+        AuthenticationStatus authenticationStatus = mechanism.validateRequest(request, response, httpMessageContext);
+        assertEquals("The AuthenticationStatus must be NOT_DONE.", AuthenticationStatus.NOT_DONE, authenticationStatus);
+    }
+
+    @Test
     public void testValidateRequest_unprotectedResource_callerAuthentication() throws Exception {
         mechanismValidatesRequestForUnprotectedResource(false, true); // not a protected resource
         containerInitatedFlowFalse();
@@ -369,6 +381,19 @@ public class OidcHttpAuthenticationMechanismTest {
         setHttpMessageContextExpectations(false, newAuthentication, callerAuthentication);
         withoutJaspicSessionPrincipal();
         doesNotContainStateParam();
+    }
+
+    private void mechanismValidatesRequestForUnprotectedMultipartResource() {
+        setModulePropertiesProvider();
+        setHttpMessageContextExpectations(false, false, false);
+        withoutJaspicSessionPrincipal();
+        mockery.checking(new Expectations() {
+            {
+                allowing(request).getContentType();
+                will(returnValue("multipart/form-data; boundary=----WebKitFormBoundaryABC123"));
+                never(request).getParameter(OpenIdConstant.STATE);
+            }
+        });
     }
 
     private void mechanismReceivesCallbackFromOP() {
@@ -570,6 +595,8 @@ public class OidcHttpAuthenticationMechanismTest {
     private void withCallbackRequest() {
         mockery.checking(new Expectations() {
             {
+                allowing(request).getContentType();
+                will(returnValue(null));
                 one(request).getParameter(OpenIdConstant.STATE);
                 will(returnValue("aStateValue"));
             }
@@ -579,6 +606,8 @@ public class OidcHttpAuthenticationMechanismTest {
     private void withoutCallbackRequest() {
         mockery.checking(new Expectations() {
             {
+                allowing(request).getContentType();
+                will(returnValue(null));
                 one(request).getParameter(OpenIdConstant.STATE);
                 will(returnValue(null));
             }
@@ -698,6 +727,8 @@ public class OidcHttpAuthenticationMechanismTest {
     private void doesNotContainStateParam() {
         mockery.checking(new Expectations() {
             {
+                allowing(request).getContentType();
+                will(returnValue(null));
                 one(request).getParameter(OpenIdConstant.STATE);
                 will(returnValue(null));
             }
