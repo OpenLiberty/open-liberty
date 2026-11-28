@@ -19,11 +19,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Component
+@RestController
+//@ConditionalOnProperty(value = "async-tasks", havingValue = "true")
 public class MyScheduledTask {
 
 	private final static Logger logger = LoggerFactory.getLogger(MyScheduledTask.class);
@@ -39,11 +45,11 @@ public class MyScheduledTask {
 
 	// Scheduled method for the Async tasks
 	@Scheduled(fixedDelay = 5000)
-	public void scheduledTask() throws InterruptedException, Throwable {
+	public void scheduledTask1() throws InterruptedException, Throwable {
 
-		AppRunner.assertManagedThread("ScheduledTask");
+		AppRunner.assertManagedThread("ScheduledTask1");
 
-		assertAsyncTask1and2Method("ScheduledTask");
+		assertAsyncTask1and2Method("ScheduledTask1");
 
 		logger.info("Task executed at: " + new java.util.Date());
 		this.latch.countDown();
@@ -78,10 +84,11 @@ public class MyScheduledTask {
 		return true;
 	}
 
-	public void assertAsyncTask1and2Method(String message) throws Exception {
-		if (!testedAsync1and2Methods.compareAndSet(false, true)) {
-			return;
-		}
+	@RequestMapping("/testAssertAsyncTask1and2Method")
+	public String assertAsyncTask1and2Method(String message) throws Exception {
+//		if (!testedAsync1and2Methods.compareAndSet(false, true)) {
+//			//return "AssertAsyncTask1and2Method ALREADY TESTED";
+//		}
 		concurrencyTasks.task1("Assert Async Method").whenComplete((r, e) -> {
 			if (e != null) {
 				logger.error("Async Task 1 exception", e);
@@ -104,12 +111,15 @@ public class MyScheduledTask {
 			}
 			logger.info(message + " Async task 2: ASSERT ASYNC METHOD VERIFICATION PASSED");
 		});
+		return "AssertAsyncTask1and2Method TESTED";
 	}
 	
-	public void assertAsyncTask3Method(String message) throws Exception {
-		if (!testedAsync3Methods.compareAndSet(false, true)) {
-			return;
-		}
+	
+ 	@RequestMapping("/testAssertAsyncTask3Method")
+	public String assertAsyncTask3Method(String message) throws Exception {
+//		if (!testedAsync3Methods.compareAndSet(false, true)) {
+//			return "AssertAsyncTask3Method ALREADY TESTED";
+//		}
 		concurrencyTasks.task3("Assert Async Method").whenComplete((r, e) -> {
 			if (e != null) {
 				logger.error("Async Task 3 exception", e);
@@ -121,5 +131,6 @@ public class MyScheduledTask {
 			}
 			logger.info(message + " Async task 3: ASSERT ASYNC METHOD VERIFICATION PASSED");
 		});
+		return "AssertAsyncTask3Method TESTED";
 	}
 }

@@ -67,7 +67,8 @@ tested.features: \
   springBoot-3.0, \
   messaging-3.1, \
   jndi-1.0,\
-  localconnector-1.0
+  localconnector-1.0,\
+  checkpoint
   
 
 src: \
