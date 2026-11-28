@@ -1,0 +1,1176 @@
+[JANDEX V3 Reader Notes][TFB; 31-Dec-2025][START]
+
+Part 0: Issues:
+
+Current active issue:
+
+"Upgrade Jandex Version to Support the Latest Persistent Format Version"
+https://github.com/OpenLiberty/open-liberty/issues/30943
+
+Child:
+
+"Jandex Development Notes"
+https://github.com/OpenLiberty/open-liberty/issues/33732
+
+Old / obsolete issue:
+
+"Jandex 3 Updates"
+https://github.com/OpenLiberty/open-liberty/issues/23908
+
+"Enable annotation caching to read Jandex v3.0 indexes"
+https://github.com/OpenLiberty/open-liberty/issues/23990
+
+"Test Jandex 3.0"
+https://github.com/OpenLiberty/open-liberty/issues/21592
+
+Part 1: Source references:
+
+Liberty sparse reader:
+
+  open-liberty/dev/com.ibm.ws.anno/src/com/ibm/ws/annocache/jandex/internal/
+    SparseIndexReader.java
+    SparseIndexReaderVersionImpl_V2.java
+
+Liberty sparse reader unit test and unit test data:
+
+  open-liberty/dev/com.ibm.ws.anno/test/com/ibm/ws/annocache/test/jandex/
+  open-liberty/dev/com.ibm.ws.anno/publish/jandex/
+
+Liberty jandex FAT:
+
+  open-liberty/dev/com.ibm.ws.anno_fat/fat/src/com/ibm/ws/tests/anno/jandex/
+
+Part 2: Work Decomposition
+
+(1) creation of the jandex 3.0 (index format 11) reader:
+- identify changes
+- create V3 reader
+- table reader changes
+- "skip" code updates
+- backfill of necessary data: subinterfaces
+(2) unit test updates
+- generation of new format indexes using the same source jars
+- update of test data with the new cases
+- test/debug
+(3) fat test updates
+- generation of new format indexes (in tests apps)
+- add test cases for the new test apps
+- test/debug
+
+Part 3: Change Notes
+
+// Source:
+//
+// Jandex 2.4 'IndexReaderV2.java':
+//   https://github.com/smallrye/jandex/blob/2.4/src/main/java/org/jboss/jandex/IndexReader.java
+//
+// Jandex 3.1 'IndexReaderV2.java':
+//   https://github.com/smallrye/jandex/blob/3.1/core/src/main/java/org/jboss/jandex/IndexReaderV2.java
+//
+// Jandex 3.2.3 'IndexReaderV2.java':
+//   https://github.com/smallrye/jandex/blame/3.2.3/core/src/main/java/org/jboss/jandex/IndexReaderV2.java
+
+// The code is the 2.4 with added comments showing differences between the 2.4 source and the 3.1 source.
+// The commends are annotated with [A] (minor adjustments), [R] small refactoring changes, and [M] major
+// changes.  The [A] and [R] changes should have no impact to the sparse reader.  The [M] changes will need
+// to be handled.
+//
+// Additional changes for index version 12, from the 3.2.3 jandex source, are attached.
+//
+// There are a few general cases:
+// -- Trivial updates, for example, changing MAX_VERSION.
+// -- New data which can be ignored (read but not stored).  For these cases,
+//    the new data is not stored in the liberty data.
+// -- Other complex cases which must be reviewed.  These have an impact which
+//    is not immediately evident.
+
+// Summary of changes:
+//
+// [A] Minor adjustments (changing 2.4 to match 3.1):
+// -- space corrections;
+// -- added comments;
+// -- removal of unnecessary (redundant inferred) type qualifiers;
+//
+// [R] Refactoring (changing 2.4 to match 3.1):
+// -- make 'version' an init parameter;
+// -- add 'final' qualifiers;
+// -- change to use 'EMPTY_ARRAY' in 'readAnnotationValues'
+// -- use 'AnnotationInstance.create' instead of 'new';
+// -- relocate 'INIT_METHOD_NAME' to 'Utils';
+
+// [M?] Major differences:
+// [M0] -- change MAX_VERSION to 11;
+// -- Trivial update
+// [M1] -- removal of obsolete 'MAX_DATA_VERSION' and 'toDataVersion';
+// -- Trivial update
+// [M3] -- addition of 'subinterfaces';
+// -- This new data might be ignored; the anno data handles this differently;
+// [M4] -- changes to 'readNameTable';
+// -- This needs to be reviewed.  The impact is not immediately evident.
+// [M5] -- addition of 'references' to 'readTypeTable';
+// -- This needs to be reviewed.  The impact is not immediately evident.
+// [M6] -- addition of 'visibility' to annotation instances;
+// -- This new data might be ignored; the anno data doesn't directly store this.
+// [M7] -- addition of 'descriptorParameters' to 'readMethodEntry';
+// -- This needs to be reviewed.  The impact is not immediately evident.
+// [M8] -- addition of read of 'hasNoArgsConstructor' to 'readClassEntry';
+// -- This new data might be ignored; the anno data doesn't directly record this.
+// [M9] -- added read of 'memberClasses' to 'readClassEntry';
+// -- This new data might be ignored; the anno data doesn't record this.
+
+// [M10 V3.2.3] -- Increased 'MAX_VERSION' to 12.
+// -- Needed
+// [M11 V3.2.3] -- Added 'memberClassNames' to 'TYPE_VARIABLE_REFERENCE';
+// -- This new data might be ignored; the anno data doesn't directly store this.
+// [M12 V3.2.3] -- Added 'permittedSubclasses' to 'readClassEntry'.
+// -- This new data might be ignored; the anno data doesn't directly store this.
+
+*** NOTE In the source, below, "m"|"M" + "aster" was replaced with "overall"
+         and "Overall".  That was done to pass prohibited word checks only.
+
+===
+
+*** Jandex 3.2.3 - 3.1 specific changes:
+
+//    static final int MAX_VERSION = 12; // [M10 V3.2.3]
+
+readTypeEntry'
+
+...
+
+            case TYPE_VARIABLE_REFERENCE: {
+                String identifier = stringTable[stream.readPackedU32()];
+                int position = stream.readPackedU32();
+//              DotName className = null; // [M11 V3.2.3]
+//              if (version >= 12) { // [M11 V3.2.3]
+//                  className = nameTable[stream.readPackedU32()]; // [M11 V3.2.3]
+//              } // [M11 V3.2.3]
+                AnnotationInstance[] annotations = readAnnotations(stream, null);
+                TypeVariableReference reference = new TypeVariableReference(identifier, null, annotations);
+//              TypeVariableReference reference = new TypeVariableReference(identifier, null, annotations, className); // [M11 V3.2.3]
+                references.put(reference, position);
+                return reference;
+            }
+
+'readClassEntry':
+
+...
+
+        Set<DotName> memberClasses = null;
+        if (version >= 11) {
+            int memberClassesCount = stream.readPackedU32();
+            if (memberClassesCount > 0) {
+                memberClasses = new HashSet<>(memberClassesCount);
+                for (int i = 0; i < memberClassesCount; i++) {
+                    memberClasses.add(nameTable[stream.readPackedU32()]);
+                }
+            }
+        }
+
+//      Set<DotName> permittedSubclasses = null; // [M12 V3.2.3]
+//      if (version >= 12) { // [M12 V3.2.3]
+//          int permittedSubclassesCount = stream.readPackedU32(); // [M12 V3.2.3]
+//          if (permittedSubclassesCount > 0) { // [M12 V3.2.3]
+//              permittedSubclasses = new HashSet<>(permittedSubclassesCount); // [M12 V3.2.3]
+//              for (int i = 0; i < permittedSubclassesCount; i++) { // [M12 V3.2.3]
+//                  permittedSubclasses.add(nameTable[stream.readPackedU32()]); // [M12 V3.2.3]
+//              } // [M12 V3.2.3]
+//          } // [M12 V3.2.3]
+//      } // [M12 V3.2.3]
+
+...
+
+        if (memberClasses != null) {
+            clazz.setMemberClasses(memberClasses);
+        }
+//      if (permittedSubclasses != null) { // [M12 V3.2.3]
+//          clazz.setPermittedSubclasses(permittedSubclasses); // [M12 V3.2.3]
+//      } // [M12 V3.2.3]
+
+===
+
+*** Jandex 3.1 - 2.4 specific changes
+
+/*
+ * JBoss, Home of Professional Open Source.
+ * Copyright 2014 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.jboss.jandex;
+
+import java.io.IOException;
+// import java.lang.reflect.Modifier; // [M3]
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+// import java.util.IdentityHashMap; // [M5]
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+/**
+ * Reads a Jandex index file and returns the saved index. See {@link Indexer}
+ * for a thorough description of how the Index data is produced.
+ *
+ * <p>
+ * An IndexReader loads the stream passed to it's constructor and applies the
+ * appropriate buffering. The Jandex index format is designed for efficient
+ * reading and low final memory storage.
+ *
+ * <p>
+ * <b>Thread-Safety</b>
+ * </p>
+ * IndexReader is not thread-safe and can not be shared between concurrent
+ * threads. The resulting index, however, is.
+ *
+ * @author Jason T. Greene
+ */
+final class IndexReaderV2 extends IndexReaderImpl {
+    static final int MIN_VERSION = 6;
+    static final int MAX_VERSION = 10;
+    // static final int MAX_VERSION = 11; [M0]
+    // static final int MAX_DATA_VERSION = 4; [M1]
+    private static final byte NULL_TARGET_TAG = 0;
+    private static final byte FIELD_TAG = 1;
+    private static final byte METHOD_TAG = 2;
+    private static final byte METHOD_PARAMETER_TAG = 3;
+    private static final byte CLASS_TAG = 4;
+    private static final byte EMPTY_TYPE_TAG = 5;
+    private static final byte CLASS_EXTENDS_TYPE_TAG = 6;
+    private static final byte TYPE_PARAMETER_TAG = 7;
+    private static final byte TYPE_PARAMETER_BOUND_TAG = 8;
+    private static final byte METHOD_PARAMETER_TYPE_TAG = 9;
+    private static final byte THROWS_TYPE_TAG = 10;
+    private static final byte RECORD_COMPONENT_TAG = 11;
+    private static final int AVALUE_BYTE = 1;
+    private static final int AVALUE_SHORT = 2;
+    private static final int AVALUE_INT = 3;
+    private static final int AVALUE_CHAR = 4;
+    private static final int AVALUE_FLOAT = 5;
+    private static final int AVALUE_DOUBLE = 6;
+    private static final int AVALUE_LONG = 7;
+    private static final int AVALUE_BOOLEAN = 8;
+    private static final int AVALUE_STRING = 9;
+    private static final int AVALUE_CLASS = 10;
+    private static final int AVALUE_ENUM = 11;
+    private static final int AVALUE_ARRAY = 12;
+    private static final int AVALUE_NESTED = 13;
+    private static final int HAS_ENCLOSING_METHOD = 1;
+    // private final static byte[] INIT_METHOD_NAME = Utils.toUTF8("<init>"); // [M2]
+
+    private PackedDataInputStream input;
+    // private final int version; // [R]
+    private byte[][] byteTable;
+    private String[] stringTable;
+    private DotName[] nameTable;
+    private Type[] typeTable;
+    private Type[][] typeListTable;
+    private AnnotationInstance[] annotationTable;
+    private MethodInternal[] methodTable;
+    private FieldInternal[] fieldTable;
+    private RecordComponentInternal[] recordComponentTable;
+    private HashMap<DotName, Set<DotName>> users;
+
+    // [A]
+    IndexReaderV2(PackedDataInputStream input) {
+    // IndexReaderV2(PackedDataInputStream input, int version) { // [R]
+        this.input = input;
+        // this.version = version; // [R]
+    }
+
+    Index read(int version) throws IOException {
+    // Index read() throws IOException { // [R]
+        try {
+            PackedDataInputStream stream = this.input;
+            int annotationsSize = stream.readPackedU32();
+            int implementorsSize = stream.readPackedU32();
+            // int subinterfacesSize = 0; // [M3]
+            // if (version >= 11) { // [M3]
+            //     subinterfacesSize = stream.readPackedU32(); // [M3]
+            // } // [M3]
+            int subclassesSize = stream.readPackedU32();
+            int usersSize = 0;
+            if (version >= 10) {
+                usersSize = stream.readPackedU32();
+                users = new HashMap<DotName, Set<DotName>>(usersSize);
+            }
+
+            readByteTable(stream);
+            readStringTable(stream);
+            readNameTable(stream);
+
+            typeTable = new Type[stream.readPackedU32() + 1];
+            typeListTable = new Type[stream.readPackedU32() + 1][];
+            annotationTable = new AnnotationInstance[stream.readPackedU32() + 1];
+
+            readTypeTable(stream);
+            readTypeListTable(stream);
+            if (version >= 10) {
+                readUsers(stream, usersSize);
+            }
+            readMethodTable(stream, version);
+            // readMethodTable(stream); // [R]
+            readFieldTable(stream);
+            if (version >= 10) {
+                readRecordComponentTable(stream);
+            }
+            return readClasses(stream, annotationsSize, implementorsSize, subclassesSize, version);
+            // return readClasses(stream, annotationsSize, implementorsSize, subinterfacesSize, subclassesSize); // [R] [M3]
+        } finally {
+            byteTable = null;
+            stringTable = null;
+            nameTable = null;
+            typeTable = null;
+            typeListTable = null;
+            annotationTable = null;
+            methodTable = null;
+            fieldTable = null;
+            recordComponentTable = null;
+            users = null;
+        }
+    }
+
+    private void readUsers(PackedDataInputStream stream, int usersSize) throws IOException {
+        for (int i = 0; i < usersSize; i++) {
+            DotName user = nameTable[stream.readPackedU32()];
+            int usesCount = stream.readPackedU32();
+            Set<DotName> uses = new HashSet<DotName>(usesCount);
+            for (int j = 0; j < usesCount; j++) {
+                uses.add(nameTable[stream.readPackedU32()]);
+            }
+            users.put(user, uses);
+        }
+    }
+
+    private void readByteTable(PackedDataInputStream stream) throws IOException {
+        // Null is the implicit first entry
+        int size = stream.readPackedU32() + 1;
+        byte[][] byteTable = this.byteTable = new byte[size][];
+        for (int i = 1; i < size; i++) {
+            int len = stream.readPackedU32();
+            byteTable[i] = new byte[len];
+            stream.readFully(byteTable[i], 0, len);
+        }
+    }
+
+    private void readStringTable(PackedDataInputStream stream) throws IOException {
+        // Null is the implicit first entry
+        int size = stream.readPackedU32() + 1;
+        String[] stringTable = this.stringTable = new String[size];
+        for (int i = 1; i < size; i++) {
+            stringTable[i] = stream.readUTF();
+        }
+    }
+
+    private void readNameTable(PackedDataInputStream stream) throws IOException {
+        // Null is the implicit first entry
+        int entries = stream.readPackedU32() + 1;
+        int lastDepth = -1;
+        DotName curr = null;
+
+        nameTable = new DotName[entries];
+        for (int i = 1; i < entries; i++) {
+            // [M4]
+
+            // if (version >= 11) { // [M4]
+            //     int prefixOffset = stream.readPackedU32(); // [M4]
+            //     boolean inner = (prefixOffset & 1) == 1; // [M4]
+            //     prefixOffset >>= 1; // [M4]
+            // // [M4]
+            //     int prefixPosition = prefixOffset == 0 ? 0 : i - prefixOffset; // [M4]
+            //     DotName prefix = nameTable[prefixPosition]; // [M4]
+            //     String local = stringTable[stream.readPackedU32()]; // [M4]
+            //     nameTable[i] = new DotName(prefix, local, true, inner); // [M4]
+            // } else ... // [M4]
+
+            int depth = stream.readPackedU32();
+            boolean inner = (depth & 1) == 1;
+            depth >>= 1;
+
+            String local = stringTable[stream.readPackedU32()];
+
+            if (depth <= lastDepth) {
+                while (lastDepth-- >= depth) {
+                    assert curr != null;
+                    curr = curr.prefix();
+                }
+            }
+
+            nameTable[i] = curr = new DotName(curr, local, true, inner);
+            lastDepth = depth;
+        }
+    }
+
+    private void readTypeTable(PackedDataInputStream stream) throws IOException {
+        // Map<TypeVariableReference, Integer> references = new IdentityHashMap<>(); // [M5]
+
+        // Null is the implicit first entry
+        for (int i = 1; i < typeTable.length; i++) {
+            typeTable[i] = readTypeEntry(stream);
+            // typeTable[i] = readTypeEntry(stream, references); // [M5]
+        }
+
+        // patch type variable references (see IndexWriterV2#addType) // [M5]
+        // for (Entry<TypeVariableReference, Integer> entry : references.entrySet()) { // [M5]
+        //     TypeVariableReference reference = entry.getKey(); // [M5]
+        //     Integer position = entry.getValue(); // [M5]
+        //     assert position != null; // [M5]
+        //     assert typeTable[position] instanceof TypeVariable; // [M5]
+        //     reference.setTarget((TypeVariable) typeTable[position]); // [M5]
+        // } // [M5]
+    }
+
+    private int findNextNull(Object[] array, int start) {
+        while (start < array.length) {
+            if (array[start] == null) {
+                return start;
+            }
+            start++;
+        }
+
+        return array.length;
+    }
+
+    private void readTypeListTable(PackedDataInputStream stream) throws IOException {
+        // Null is the implicit first entry
+        Type[][] typeListTable = this.typeListTable;
+        // Already emitted entries are omitted as gaps in the table portion
+        for (int i = findNextNull(typeListTable, 1); i < typeListTable.length; i = findNextNull(typeListTable, i)) {
+            typeListTable[i] = readTypeListEntry(stream);
+        }
+    }
+
+    private AnnotationInstance[] readAnnotations(PackedDataInputStream stream, AnnotationTarget target) throws IOException {
+        int size = stream.readPackedU32();
+        if (size == 0) {
+            return AnnotationInstance.EMPTY_ARRAY;
+        }
+
+        AnnotationInstance[] annotations = new AnnotationInstance[size];
+        for (int i = 0; i < size; i++) {
+            int reference = stream.readPackedU32();
+            if (annotationTable[reference] == null) {
+                annotationTable[reference] = readAnnotationEntry(stream, target);
+            }
+
+            annotations[i] = annotationTable[reference];
+        }
+        return annotations;
+    }
+
+    private AnnotationValue[] readAnnotationValues(PackedDataInputStream stream) throws IOException {
+        int numValues = stream.readPackedU32();
+        AnnotationValue[] values = numValues > 0 ? new AnnotationValue[numValues] : AnnotationValue.EMPTY_VALUE_ARRAY;
+        // AnnotationValue[] values = numValues > 0 ? new AnnotationValue[numValues] : AnnotationValue.EMPTY_ARRAY; // [R]
+
+        for (int i = 0; i < numValues; i++) {
+            AnnotationValue value = readAnnotationValue(stream);
+            values[i] = value;
+        }
+
+        return values;
+    }
+
+    private AnnotationValue readAnnotationValue(PackedDataInputStream stream) throws IOException {
+        String name = stringTable[stream.readPackedU32()];
+        int tag = stream.readByte();
+        AnnotationValue value;
+        switch (tag) {
+            case AVALUE_BYTE:
+                value = new AnnotationValue.ByteValue(name, stream.readByte());
+                break;
+            case AVALUE_SHORT:
+                value = new AnnotationValue.ShortValue(name, (short) stream.readPackedU32());
+                break;
+            case AVALUE_INT:
+                value = new AnnotationValue.IntegerValue(name, stream.readPackedU32());
+                break;
+            case AVALUE_CHAR:
+                value = new AnnotationValue.CharacterValue(name, (char) stream.readPackedU32());
+                break;
+            case AVALUE_FLOAT:
+                value = new AnnotationValue.FloatValue(name, stream.readFloat());
+                break;
+            case AVALUE_DOUBLE:
+                value = new AnnotationValue.DoubleValue(name, stream.readDouble());
+                break;
+            case AVALUE_LONG:
+                value = new AnnotationValue.LongValue(name, stream.readLong());
+                break;
+            case AVALUE_BOOLEAN:
+                value = new AnnotationValue.BooleanValue(name, stream.readBoolean());
+                break;
+            case AVALUE_STRING:
+                value = new AnnotationValue.StringValue(name, stringTable[stream.readPackedU32()]);
+                break;
+            case AVALUE_CLASS:
+                value = new AnnotationValue.ClassValue(name, typeTable[stream.readPackedU32()]);
+                break;
+            case AVALUE_ENUM:
+                value = new AnnotationValue.EnumValue(name, nameTable[stream.readPackedU32()], stringTable[stream.readPackedU32()]);
+                // value = new AnnotationValue.EnumValue(name, nameTable[stream.readPackedU32()], // [A]
+                //         stringTable[stream.readPackedU32()]); // [A]
+                break;
+            case AVALUE_ARRAY:
+                value = new AnnotationValue.ArrayValue(name, readAnnotationValues(stream));
+                break;
+            case AVALUE_NESTED: {
+                int reference = stream.readPackedU32();
+                AnnotationInstance nestedInstance = annotationTable[reference];
+                if (nestedInstance == null) {
+                    nestedInstance = annotationTable[reference] = readAnnotationEntry(stream, null);
+                }
+
+                value = new AnnotationValue.NestedAnnotation(name, nestedInstance);
+                break;
+            }
+            default:
+                throw new IllegalStateException("Invalid annotation value tag:" + tag);
+        }
+        return value;
+    }
+
+    private AnnotationInstance readAnnotationEntry(PackedDataInputStream stream, AnnotationTarget caller) throws IOException {
+        DotName name = nameTable[stream.readPackedU32()];
+        AnnotationTarget target = readAnnotationTarget(stream, caller);
+        AnnotationValue[] values = readAnnotationValues(stream);
+        // boolean visible = true; // [M6]
+        // if (version >= 11) { // [M6]
+        //     visible = stream.readBoolean(); // [M6]
+        // } // [M6]
+        return new AnnotationInstance(name, target, values);
+        // return AnnotationInstance.create(name, visible, target, values); // [R] [M6]
+    }
+
+    private Type[] readTypeListReference(PackedDataInputStream stream) throws IOException {
+        int reference = stream.readPackedU32();
+        Type[] types = typeListTable[reference];
+        if (types != null) {
+            return types;
+        }
+
+        return typeListTable[reference] = readTypeListEntry(stream);
+    }
+
+    private Type[] readTypeListEntry(PackedDataInputStream stream) throws IOException {
+        int size = stream.readPackedU32();
+        if (size == 0) {
+            return Type.EMPTY_ARRAY;
+        }
+
+        Type[] types = new Type[size];
+        for (int i = 0; i < size; i++) {
+            types[i] = typeTable[stream.readPackedU32()];
+        }
+
+        return types;
+    }
+
+    // [A]
+    private Type readTypeEntry(PackedDataInputStream stream) throws IOException {
+    // private Type readTypeEntry(PackedDataInputStream stream, Map<TypeVariableReference, Integer> references) // [M5]
+    //       throws IOException { // [M5]
+        Type.Kind kind = Type.Kind.fromOrdinal(stream.readUnsignedByte());
+
+        switch (kind) {
+            case CLASS: {
+                DotName name = nameTable[stream.readPackedU32()];
+                AnnotationInstance[] annotations = readAnnotations(stream, null);
+                return new ClassType(name, annotations);
+            }
+            case ARRAY: {
+                int dimensions = stream.readPackedU32();
+                Type component = typeTable[stream.readPackedU32()];
+                AnnotationInstance[] annotations = readAnnotations(stream, null);
+                return new ArrayType(component, dimensions, annotations);
+            }
+            case PRIMITIVE: {
+                int primitive = stream.readUnsignedByte();
+                Type type = PrimitiveType.fromOridinal(primitive);
+                AnnotationInstance[] annotations = readAnnotations(stream, null);
+                return annotations.length > 0 ? type.copyType(annotations) : type;
+            }
+            case VOID: {
+                Type type = VoidType.VOID;
+                AnnotationInstance[] annotations = readAnnotations(stream, null);
+                return annotations.length > 0 ? type.copyType(annotations) : type;
+            }
+            case TYPE_VARIABLE: {
+                String identifier = stringTable[stream.readPackedU32()];
+                Type[] bounds = readTypeListReference(stream);
+                AnnotationInstance[] annotations = readAnnotations(stream, null);
+                return new TypeVariable(identifier, bounds, annotations);
+            }
+            case UNRESOLVED_TYPE_VARIABLE: {
+                String identifier = stringTable[stream.readPackedU32()];
+                AnnotationInstance[] annotations = readAnnotations(stream, null);
+                return new UnresolvedTypeVariable(identifier, annotations);
+            }
+            case WILDCARD_TYPE: {
+                boolean isExtends = stream.readPackedU32() == 1;
+                Type bound = typeTable[stream.readPackedU32()];
+                // Type bound = typeTable[stream.readPackedU32()]; // may be null in case of an unbounded wildcard // [A]
+                AnnotationInstance[] annotations = readAnnotations(stream, null);
+                return new WildcardType(bound, isExtends, annotations);
+
+            }
+            case PARAMETERIZED_TYPE: {
+                DotName name = nameTable[stream.readPackedU32()];
+                int reference = stream.readPackedU32();
+                Type owner = typeTable[reference];
+                Type[] parameters = readTypeListReference(stream);
+                AnnotationInstance[] annotations = readAnnotations(stream, null);
+                return new ParameterizedType(name, parameters, owner, annotations);
+            }
+            // case TYPE_VARIABLE_REFERENCE: { // [M5]
+            //     String identifier = stringTable[stream.readPackedU32()]; // [M5]
+            //     int position = stream.readPackedU32(); // [M5]
+            //     AnnotationInstance[] annotations = readAnnotations(stream, null); // [M5]
+            //     TypeVariableReference reference = new TypeVariableReference(identifier, null, annotations); // [M5]
+            //     references.put(reference, position); // [M5]
+            //     return reference; // [M5]
+            // } // [M5]
+        }
+
+        throw new IllegalStateException("Unrecognized type: " + kind);
+    }
+
+    private AnnotationTarget readAnnotationTarget(PackedDataInputStream stream, AnnotationTarget caller) throws IOException {
+        byte tag = stream.readByte();
+        switch (tag) {
+            case NULL_TARGET_TAG:
+                return null;
+            case CLASS_TAG:
+            case FIELD_TAG:
+            case METHOD_TAG:
+            case RECORD_COMPONENT_TAG:
+                return caller;
+            case METHOD_PARAMETER_TAG: {
+                short parameter = (short)stream.readPackedU32();
+                // short parameter = (short) stream.readPackedU32(); // [A]
+                return new MethodParameterInfo((MethodInfo)caller, parameter);
+                // return new MethodParameterInfo((MethodInfo) caller, parameter); // [A]
+            }
+            case EMPTY_TYPE_TAG: {
+                Type target = typeTable[stream.readPackedU32()];
+                boolean isReceiver = stream.readPackedU32() == 1;
+                return new EmptyTypeTarget(caller, target, isReceiver);
+            }
+            case CLASS_EXTENDS_TYPE_TAG: {
+                Type target = typeTable[stream.readPackedU32()];
+                int pos = stream.readPackedU32();
+                return new ClassExtendsTypeTarget(caller, target, pos);
+            }
+            case TYPE_PARAMETER_TAG: {
+                Type target = typeTable[stream.readPackedU32()];
+                int pos = stream.readPackedU32();
+                return new TypeParameterTypeTarget(caller, target, pos);
+            }
+            case TYPE_PARAMETER_BOUND_TAG: {
+                Type target = typeTable[stream.readPackedU32()];
+                int pos = stream.readPackedU32();
+                int bound = stream.readPackedU32();
+                return new TypeParameterBoundTypeTarget(caller, target, pos, bound);
+            }
+            case METHOD_PARAMETER_TYPE_TAG: {
+                Type target = typeTable[stream.readPackedU32()];
+                int pos = stream.readPackedU32();
+                return new MethodParameterTypeTarget(caller, target, pos);
+            }
+            case THROWS_TYPE_TAG: {
+                Type target = typeTable[stream.readPackedU32()];
+                int pos = stream.readPackedU32();
+                return new ThrowsTypeTarget(caller, target, pos);
+            }
+        }
+
+        throw new IllegalStateException("Invalid tag: " + tag);
+    }
+
+    private void readMethodTable(PackedDataInputStream stream, int version) throws IOException {
+ // private void readMethodTable(PackedDataInputStream stream) throws IOException { // [R]
+        // Null holds the first slot
+        int size = stream.readPackedU32() + 1;
+        methodTable = new MethodInternal[size];
+        for (int i = 1; i < size; i++) {
+            methodTable[i] = readMethodEntry(stream, version);
+            // methodTable[i] = readMethodEntry(stream); // [R]
+        }
+
+    }
+
+    private void readFieldTable(PackedDataInputStream stream) throws IOException {
+        // Null holds the first slot
+        int size = stream.readPackedU32() + 1;
+        fieldTable = new FieldInternal[size];
+        for (int i = 1; i < size; i++) {
+            fieldTable[i] = readFieldEntry(stream);
+        }
+    }
+
+    private void readRecordComponentTable(PackedDataInputStream stream) throws IOException {
+        // Null holds the first slot
+        int size = stream.readPackedU32() + 1;
+        recordComponentTable = new RecordComponentInternal[size];
+        for (int i = 1; i < size; i++) {
+            recordComponentTable[i] = readRecordComponentEntry(stream);
+        }
+    }
+
+    private MethodInternal readMethodEntry(PackedDataInputStream stream, int version) throws IOException {
+    // private MethodInternal readMethodEntry(PackedDataInputStream stream) throws IOException { // [R]
+        byte[] name = byteTable[stream.readPackedU32()];
+        short flags = (short) stream.readPackedU32();
+        Type[] typeParameters = typeListTable[stream.readPackedU32()];
+        int reference = stream.readPackedU32();
+        Type receiverType = typeTable[reference];
+        Type returnType = typeTable[stream.readPackedU32()];
+        Type[] parameters = typeListTable[stream.readPackedU32()];
+        // Type[] descriptorParameters = parameters; // [M7]
+        // if (version >= 11) { // [M7]
+        //     descriptorParameters = typeListTable[stream.readPackedU32()]; // [M7]
+        // } // [M7]
+        Type[] exceptions = typeListTable[stream.readPackedU32()];
+        AnnotationValue defaultValue = null;
+        if (version >= 7) {
+            boolean hasDefaultValue = stream.readByte() > 0;
+            if (hasDefaultValue) {
+                defaultValue = readAnnotationValue(stream);
+            }
+        }
+        byte[][] methodParameterBytes = MethodInternal.EMPTY_PARAMETER_NAMES;
+        if (version >= 8) {
+            int size = stream.readPackedU32();
+            if (size > 0 ) {
+            // if (size > 0) { // [A]
+                methodParameterBytes = new byte[size][];
+                for (int i = 0; i < size; i++) {
+                    methodParameterBytes[i] = byteTable[stream.readPackedU32()];
+                }
+            }
+        }
+
+        MethodInfo methodInfo = new MethodInfo();
+        AnnotationInstance[] annotations = readAnnotations(stream, methodInfo);
+        MethodInternal methodInternal = new MethodInternal(name, methodParameterBytes, parameters, returnType, flags,
+        // MethodInternal methodInternal = new MethodInternal(name, methodParameterBytes, descriptorParameters, returnType, flags, // [M7]
+                receiverType, typeParameters,
+                exceptions, annotations, defaultValue);
+        methodInfo.setMethodInternal(methodInternal);
+        // methodInfo.setParameters(parameters); // [M7]
+        return methodInternal;
+    }
+
+    private FieldInternal readFieldEntry(PackedDataInputStream stream) throws IOException {
+        byte[] name = byteTable[stream.readPackedU32()];
+        short flags = (short) stream.readPackedU32();
+        Type type = typeTable[stream.readPackedU32()];
+
+        FieldInfo fieldInfo = new FieldInfo();
+        AnnotationInstance[] annotations = readAnnotations(stream, fieldInfo);
+        FieldInternal fieldInternal = new FieldInternal(name, type, flags, annotations);
+        fieldInfo.setFieldInternal(fieldInternal);
+        return fieldInternal;
+    }
+
+    private RecordComponentInternal readRecordComponentEntry(PackedDataInputStream stream) throws IOException {
+        byte[] name = byteTable[stream.readPackedU32()];
+        Type type = typeTable[stream.readPackedU32()];
+
+        RecordComponentInfo recordComponentInfo = new RecordComponentInfo();
+        AnnotationInstance[] annotations = readAnnotations(stream, recordComponentInfo);
+        RecordComponentInternal recordComponentInternal = new RecordComponentInternal(name, type, annotations);
+        recordComponentInfo.setRecordComponentInternal(recordComponentInternal);
+        return recordComponentInternal;
+    }
+
+    private ClassInfo readClassEntry(PackedDataInputStream stream,
+                                     Map<DotName, List<AnnotationInstance>> overallAnnotations, int version) throws IOException {
+                                     // Map<DotName, List<AnnotationInstance>> overallAnnotations) throws IOException { // [R]
+        DotName name  = nameTable[stream.readPackedU32()];
+        // DotName name = nameTable[stream.readPackedU32()]; // [A]
+        short flags = (short) stream.readPackedU32();
+        // boolean hasNoArgsConstructor = false; // [M8]
+        // if (version >= 11) { // [M8]
+        //     hasNoArgsConstructor = stream.readBoolean(); // [M8]
+        // } // [M8]
+        Type superType = typeTable[stream.readPackedU32()];
+        Type[] typeParameters = typeListTable[stream.readPackedU32()];
+        Type[] interfaceTypes = typeListTable[stream.readPackedU32()];
+
+        boolean hasEnclosingMethod = false;
+        boolean hasNesting = false;
+        if (version >= 9) {
+            int nestingMask = stream.readUnsignedByte();
+            if (nestingMask > 0) {
+                hasNesting = true;
+                hasEnclosingMethod = ((nestingMask & 2) == 2);
+            }
+        } else {
+            hasEnclosingMethod = hasNesting = true;
+        }
+
+        DotName enclosingClass = null;
+        ClassInfo.EnclosingMethodInfo enclosingMethod = null;
+        String simpleName = null;
+
+        if (hasNesting) {
+            enclosingClass = nameTable[stream.readPackedU32()];
+            simpleName = stringTable[stream.readPackedU32()];
+            enclosingMethod = hasEnclosingMethod ? readEnclosingMethod(stream, version) : null;
+            // enclosingMethod = hasEnclosingMethod ? readEnclosingMethod(stream) : null; // [R]
+        }
+
+        // Set<DotName> memberClasses = null; // [M9]
+        // if (version >= 11) { // [M0]
+        //     int memberClassesCount = stream.readPackedU32(); // [M9]
+        //     if (memberClassesCount > 0) { // [M9
+        //         memberClasses = new HashSet<>(memberClassesCount); // [M9]
+        //         for (int i = 0; i < memberClassesCount; i++) { // [M9]
+        //             memberClasses.add(nameTable[stream.readPackedU32()]); // [M9]
+        //         } // [M9]
+        //     } // [M9]
+        // } // [M9]
+
+        int size = stream.readPackedU32();
+
+        Map<DotName, List<AnnotationInstance>> annotations = size > 0
+                ? new HashMap<DotName, List<AnnotationInstance>>(size)
+                : Collections.<DotName, List<AnnotationInstance>>emptyMap();
+                // : Collections.<DotName, List<AnnotationInstance>> emptyMap(); // [A]
+        ClassInfo clazz = new ClassInfo(name, superType, flags, interfaceTypes);
+        // clazz.setHasNoArgsConstructor(hasNoArgsConstructor); // [M8]
+        clazz.setTypeParameters(typeParameters);
+
+        if (hasNesting) {
+            clazz.setEnclosingMethod(enclosingMethod);
+            // Version 8 and earlier records inner type info regardless of
+            // whether or not it is an inner type
+            clazz.setInnerClassInfo(enclosingClass, simpleName, version >= 9);
+        }
+        // if (memberClasses != null) { // [M9]
+        //     clazz.setMemberClasses(memberClasses); // [M9]
+        // } // [M9]
+
+        FieldInternal[] fields = readClassFields(stream, clazz);
+        clazz.setFieldArray(fields);
+
+        if (version >= 10) {
+            clazz.setFieldPositionArray(byteTable[stream.readPackedU32()]);
+        }
+
+        MethodInternal[] methods = readClassMethods(stream, clazz);
+        clazz.setMethodArray(methods);
+
+        if (version >= 10) {
+            clazz.setMethodPositionArray(byteTable[stream.readPackedU32()]);
+        }
+
+        if (version >= 10) {
+            RecordComponentInternal[] recordComponents = readClassRecordComponents(stream, clazz);
+            clazz.setRecordComponentArray(recordComponents);
+            clazz.setRecordComponentPositionArray(byteTable[stream.readPackedU32()]);
+        }
+
+        for (int i = 0; i < size; i++) {
+            List<AnnotationInstance> instances = convertToList(readAnnotations(stream, clazz));
+            if (instances.size() > 0) {
+                DotName annotationName = instances.get(0).name();
+                annotations.put(annotationName, instances);
+                addToOverall(overallAnnotations, annotationName, instances);
+            }
+        }
+
+        clazz.setAnnotations(annotations);
+
+        return clazz;
+    }
+
+    private ModuleInfo readModuleEntry(PackedDataInputStream stream, ClassInfo moduleInfoClass) throws IOException {
+        DotName moduleName  = nameTable[stream.readPackedU32()];
+        // DotName moduleName = nameTable[stream.readPackedU32()]; // [A]
+        short moduleFlags = (short) stream.readPackedU32();
+        String moduleVersion = stringTable[stream.readPackedU32()];
+        DotName mainClass = nameTable[stream.readPackedU32()];
+
+        ModuleInfo module = new ModuleInfo(moduleInfoClass, moduleName, moduleFlags, moduleVersion);
+        module.setMainClass(mainClass);
+
+        // requires
+        int requiredCount = stream.readPackedU32();
+        List<ModuleInfo.RequiredModuleInfo> requires = Utils.listOfCapacity(requiredCount);
+
+        for (int i = 0; i < requiredCount; i++) {
+            DotName name  = nameTable[stream.readPackedU32()];
+            // DotName name = nameTable[stream.readPackedU32()]; // [A]
+            short flags = (short) stream.readPackedU32();
+            String version = stringTable[stream.readPackedU32()];
+            requires.add(new ModuleInfo.RequiredModuleInfo(name, flags, version));
+        }
+
+        module.setRequires(requires);
+
+        // exports
+        int exportedCount = stream.readPackedU32();
+        List<ModuleInfo.ExportedPackageInfo> exports = Utils.listOfCapacity(exportedCount);
+
+        for (int i = 0; i < exportedCount; i++) {
+            DotName source  = nameTable[stream.readPackedU32()];
+            // DotName source = nameTable[stream.readPackedU32()]; // [A]
+            short flags = (short) stream.readPackedU32();
+            List<DotName> targets = readDotNames(stream);
+            exports.add(new ModuleInfo.ExportedPackageInfo(source, flags, targets));
+        }
+
+        module.setExports(exports);
+
+        // uses
+        module.setUses(readDotNames(stream));
+
+        // opens
+        int openedCount = stream.readPackedU32();
+        List<ModuleInfo.OpenedPackageInfo> opens = Utils.listOfCapacity(openedCount);
+
+        for (int i = 0; i < openedCount; i++) {
+            DotName source  = nameTable[stream.readPackedU32()];
+            // DotName source = nameTable[stream.readPackedU32()]; // [A]
+            short flags = (short) stream.readPackedU32();
+            List<DotName> targets = readDotNames(stream);
+            opens.add(new ModuleInfo.OpenedPackageInfo(source, flags, targets));
+        }
+
+        module.setOpens(opens);
+
+        // provides
+        int providedCount = stream.readPackedU32();
+        List<ModuleInfo.ProvidedServiceInfo> provides = Utils.listOfCapacity(providedCount);
+
+        for (int i = 0; i < providedCount; i++) {
+            DotName service  = nameTable[stream.readPackedU32()];
+            // DotName service = nameTable[stream.readPackedU32()]; // [A]
+            List<DotName> providers = readDotNames(stream);
+            provides.add(new ModuleInfo.ProvidedServiceInfo(service, providers));
+        }
+
+        module.setProvides(provides);
+
+        // packages
+        module.setPackages(readDotNames(stream));
+
+        return module;
+    }
+
+    private List<DotName> readDotNames(PackedDataInputStream stream) throws IOException {
+        int size = stream.readPackedU32();
+        List<DotName> names = Utils.listOfCapacity(size);
+
+        for (int i = 0; i < size; i++) {
+            names.add(nameTable[stream.readPackedU32()]);
+        }
+
+        return names;
+    }
+
+    private void addToOverall(Map<DotName, List<AnnotationInstance>> overallAnnotations, DotName name,
+                             List<AnnotationInstance> annotations) {
+    //       List<AnnotationInstance> annotations) { // [A]
+        List<AnnotationInstance> entry = overallAnnotations.get(name);
+        if (entry == null) {
+            overallAnnotations.put(name, new ArrayList<AnnotationInstance>(annotations));
+            return;
+        }
+
+        entry.addAll(annotations);
+    }
+
+    private List<AnnotationInstance> convertToList(AnnotationInstance[] annotationInstances) {
+        if (annotationInstances.length == 0) {
+            return Collections.emptyList();
+        }
+
+        return new ImmutableArrayList<AnnotationInstance>(annotationInstances);
+        // return new ImmutableArrayList<>(annotationInstances); // [A]
+    }
+
+    private void addClassToMap(HashMap<DotName, List<ClassInfo>> map, DotName name, ClassInfo currentClass) {
+        List<ClassInfo> list = map.get(name);
+        if (list == null) {
+            list = new ArrayList<ClassInfo>();
+            map.put(name, list);
+        }
+
+        list.add(currentClass);
+    }
+
+    private FieldInternal[] readClassFields(PackedDataInputStream stream, ClassInfo clazz) throws IOException {
+        int len = stream.readPackedU32();
+        FieldInternal[] fields = len > 0 ? new FieldInternal[len] : FieldInternal.EMPTY_ARRAY;
+        for (int i = 0; i < len; i++) {
+            FieldInternal field = fieldTable[stream.readPackedU32()];
+            updateAnnotationTargetInfo(field.annotationArray(), clazz);
+            fields[i] = field;
+        }
+        return fields;
+    }
+
+    private RecordComponentInternal[] readClassRecordComponents(PackedDataInputStream stream, ClassInfo clazz) throws IOException {
+    // private RecordComponentInternal[] readClassRecordComponents(PackedDataInputStream stream, ClassInfo clazz) // [A]
+    //          throws IOException { // [A]
+        int len = stream.readPackedU32();
+        RecordComponentInternal[] recordComponents = len > 0 ? new RecordComponentInternal[len] : RecordComponentInternal.EMPTY_ARRAY;
+        // RecordComponentInternal[] recordComponents = len > 0 ? new RecordComponentInternal[len] // [A]
+        //          : RecordComponentInternal.EMPTY_ARRAY; // [A]
+        for (int i = 0; i < len; i++) {
+            RecordComponentInternal recordComponent = recordComponentTable[stream.readPackedU32()];
+            updateAnnotationTargetInfo(recordComponent.annotationArray(), clazz);
+            recordComponents[i] = recordComponent;
+        }
+        return recordComponents;
+    }
+
+    private MethodInternal[] readClassMethods(PackedDataInputStream stream, ClassInfo clazz) throws IOException {
+        int len = stream.readPackedU32();
+        MethodInternal[] methods = len > 0 ? new MethodInternal[len] : MethodInternal.EMPTY_ARRAY;
+        for (int i = 0; i < len; i++) {
+            MethodInternal method = methodTable[stream.readPackedU32()];
+            updateAnnotationTargetInfo(method.annotationArray(), clazz);
+            methods[i] = method;
+
+            if (method.parameterArray().length == 0 && Arrays.equals(INIT_METHOD_NAME, method.nameBytes())) {
+            // if (version < 11 && method.parameterTypesArray().length == 0 // [R] [M8]
+            //          && Arrays.equals(Utils.INIT_METHOD_NAME, method.nameBytes())) { // [R] [M8]
+                clazz.setHasNoArgsConstructor(true);
+            }
+        }
+        return methods;
+    }
+
+    private void updateAnnotationTargetInfo(AnnotationInstance[] annotations, ClassInfo clazz) {
+        // Update a method or field internals annotations to reference the class.
+        // This update is possible since annotations on a non-null target are unique and not shared
+        for (AnnotationInstance annotation : annotations) {
+            AnnotationTarget target = annotation.target();
+            if (target instanceof TypeTarget) {
+                target = ((TypeTarget) target).enclosingTarget();
+            }
+            if (target instanceof MethodInfo) {
+                ((MethodInfo)target).setClassInfo(clazz);
+                // ((MethodInfo) target).setClassInfo(clazz); // [A]
+            } else if (target instanceof MethodParameterInfo) {
+                ((MethodParameterInfo)target).method().setClassInfo(clazz);
+                // ((MethodParameterInfo) target).method().setClassInfo(clazz); // [A]
+            } else if (target instanceof FieldInfo) {
+                ((FieldInfo)target).setClassInfo(clazz);
+                // ((FieldInfo) target).setClassInfo(clazz); // [A]
+            } else if (target instanceof RecordComponentInfo) {
+                ((RecordComponentInfo) target).setClassInfo(clazz);
+            }
+        }
+    }
+
+    private ClassInfo.EnclosingMethodInfo readEnclosingMethod(PackedDataInputStream stream, int version) throws IOException {
+    // private ClassInfo.EnclosingMethodInfo readEnclosingMethod(PackedDataInputStream stream) throws IOException { // [R]
+        if (version < 9 && stream.readUnsignedByte() != HAS_ENCLOSING_METHOD) {
+            return null;
+        }
+
+        String eName = stringTable[stream.readPackedU32()];
+        DotName eClass = nameTable[stream.readPackedU32()];
+        Type returnType = typeTable[stream.readPackedU32()];
+        Type[] parameters = typeListTable[stream.readPackedU32()];
+        return new ClassInfo.EnclosingMethodInfo(eName, returnType, parameters, eClass);
+    }
+
+    private Index readClasses(PackedDataInputStream stream,
+                              int annotationsSize, int implementorsSize, int subclassesSize, int version) throws IOException {
+                              // int annotationsSize, int implementorsSize, int subclassesSize) throws IOException { // [R]
+        int classesSize = stream.readPackedU32();
+        HashMap<DotName, ClassInfo> classes = new HashMap<DotName, ClassInfo>(classesSize);
+        HashMap<DotName, List<ClassInfo>> subclasses = new HashMap<DotName, List<ClassInfo>>(subclassesSize);
+        // HashMap<DotName, List<ClassInfo>> subinterfaces = new HashMap<DotName, List<ClassInfo>>(subinterfacesSize); // [M3]
+        HashMap<DotName, List<ClassInfo>> implementors = new HashMap<DotName, List<ClassInfo>>(implementorsSize);
+        HashMap<DotName, List<AnnotationInstance>> overallAnnotations =
+                new HashMap<DotName, List<AnnotationInstance>>(annotationsSize);
+        // HashMap<DotName, List<AnnotationInstance>> overallAnnotations = new HashMap<DotName, List<AnnotationInstance>>(// [A]
+        //         annotationsSize); // [A]
+
+        for (int i = 0; i < classesSize; i++) {
+            ClassInfo clazz = readClassEntry(stream, overallAnnotations, version);
+            // ClassInfo clazz = readClassEntry(stream, overallAnnotations); // [R]
+            addClassToMap(subclasses, clazz.superName(), clazz);
+            for (Type interfaceType : clazz.interfaceTypeArray()) {
+                // if (Modifier.isInterface(clazz.flags())) { // [M3]
+                //     addClassToMap(subinterfaces, interfaceType.name(), clazz); // [M3]
+                // } // [M3]
+                // // interfaces are intentionally added to implementors // [A]
+                // // it is counter-intuitive, but we keep it to maintain behavioral compatibility // [A]
+                addClassToMap(implementors, interfaceType.name(), clazz);
+            }
+            classes.put(clazz.name(), clazz);
+        }
+        Map<DotName, List<ClassInfo>> users = null;
+        if (version >= 10) {
+            users = new HashMap<DotName, List<ClassInfo>>(this.users.size());
+            for (Entry<DotName, Set<DotName>> entry : this.users.entrySet()) {
+                List<ClassInfo> usedBy = new ArrayList<ClassInfo>(entry.getValue().size());
+                users.put(entry.getKey(), usedBy);
+                for (DotName usedByName : entry.getValue()) {
+                    usedBy.add(classes.get(usedByName));
+                }
+            }
+        } else {
+            users = Collections.emptyMap();
+        }
+
+        Map<DotName, ModuleInfo> modules = (version >= 10) ?
+            readModules(stream, overallAnnotations, version) : Collections.<DotName, ModuleInfo>emptyMap();
+            // readModules(stream, overallAnnotations) : Collections.<DotName, ModuleInfo>emptyMap(); // [A] [R]
+
+        return Index.create(overallAnnotations, subclasses, implementors, classes, modules, users);
+        // return Index.create(overallAnnotations, subclasses, subinterfaces, implementors, classes, modules, users); // [M3]
+    }
+
+    private Map<DotName, ModuleInfo> readModules(PackedDataInputStream stream,
+                                                 Map<DotName, List<AnnotationInstance>> overallAnnotations,
+                                                 int version) throws IOException {
+            // Map<DotName, List<AnnotationInstance>> overallAnnotations) throws IOException { // [A] [R]
+
+        int modulesSize = stream.readPackedU32();
+        Map<DotName, ModuleInfo> modules = modulesSize > 0 ?
+            new HashMap<DotName, ModuleInfo>(modulesSize) :
+                Collections.<DotName, ModuleInfo>emptyMap();
+        // Map<DotName, ModuleInfo> modules = modulesSize > 0 ? new HashMap<DotName, ModuleInfo>(modulesSize) // [A]
+        //         : Collections.<DotName, ModuleInfo>emptyMap(); // [A]
+
+        for (int i = 0; i < modulesSize; i++) {
+            ClassInfo clazz = readClassEntry(stream, overallAnnotations, version);
+            // ClassInfo clazz = readClassEntry(stream, overallAnnotations); // [R]
+            ModuleInfo module = readModuleEntry(stream, clazz);
+            modules.put(module.name(), module);
+        }
+
+        return modules;
+    }
+
+    //    int toDataVersion(int version) { // [M1]
+    //        return MAX_DATA_VERSION; // [M1]
+    //    } // [M1]
+}
+
+[JANDEX V3 Reader Notes][TFB; 31-Dec-2025][END]
